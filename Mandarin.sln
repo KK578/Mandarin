@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin", "Mandarin\Mandarin.csproj", "{8CC62BDF-5FCD-43C6-8188-32711797819D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CC62BDF-5FCD-43C6-8188-32711797819D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC62BDF-5FCD-43C6-8188-32711797819D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC62BDF-5FCD-43C6-8188-32711797819D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC62BDF-5FCD-43C6-8188-32711797819D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

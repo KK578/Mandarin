@@ -1,0 +1,81 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[Setup] Checkout Repository"
+        uses: actions/checkout@v1
+
+      - name: "[Setup] Ensure 'master' branch exists"
+        run: |
+          git fetch --tags
+          git branch --create-reflog master origin/master
+
+      - name: "[Setup] Create GitVersion"
+        uses: docker://gittools/gitversion:5.1.3-linux-netcoreapp2.1
+        with:
+          args: /github/workspace /nofetch /exec /bin/sh /execargs "-c \"echo $GitVersion_FullSemVer > /github/workspace/version.txt\"
+
+      - name: "[Setup] Install .NET Core"
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+
+      - name: "[Coverage] Instrument with Sonar"
+        env:
+          SONARCLOUD_LOGIN: ${{ secrets.SONARCLOUD_LOGIN }}
+        run: |
+          dotnet tool install --global dotnet-sonarscanner --version 4.8.0
+          ~/.dotnet/tools/dotnet-sonarscanner begin \
+            /k:"KK578_Mandarin" \
+            /o:"kk578" \
+            /d:sonar.login="$SONARCLOUD_LOGIN" \
+            /d:sonar.host.url=https://sonarcloud.io \
+            /d:sonar.cs.opencover.reportsPaths="coverage/coverage.opencover.xml" \
+            /d:sonar.cs.nunit.reportsPaths="test/*/TestResults/TestResults.xml" \
+            /v:$GitVersion_FullSemVer
+
+      - name: "[Build] NuGet Restore"
+        run: dotnet restore
+
+      - name: "[Build] Build Solution"
+        run: |
+          dotnet build \
+            --no-restore \
+            --configuration Release \
+            /p:VersionPrefix=$GitVersion_MajorMinorPatch \
+            /p:VersionSuffix=$GitVersion_PreReleaseLabel \
+            /p:AssemblyVersion=$GitVersion_AssemblySemVer \
+            /p:FileVersion=$GitVersion_AssemblySemFileVer \
+            /p:InformationalVersion=$GitVersion_InformationalVersion \
+            /p:RepositoryBranch=${GITHUB_REF#refs/heads/} \
+            /p:RepositoryCommit=$GITHUB_SHA
+
+      - name: "[Coverage] Upload to SonarCloud"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONARCLOUD_LOGIN: ${{ secrets.SONARCLOUD_LOGIN }}
+        run: |
+          ~/.dotnet/tools/dotnet-sonarscanner end /d:sonar.login="$SONARCLOUD_LOGIN"
+
+      - name: "[Coverage] Upload to Coveralls"
+        uses: coverallsapp/github-action@v1.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: "./coverage/coverage.info"
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'release'
+    steps:
+      - name: "TODO"
+        run: echo "TODO"
