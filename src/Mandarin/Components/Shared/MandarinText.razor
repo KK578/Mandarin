@@ -1,7 +1,12 @@
-﻿<p class="font-body text-grey text-center mt-3 mb-3">@ChildContent</p>
+﻿<p class="@FullClass">@ChildContent</p>
 
 @code
 {
+  private string FullClass => string.Join(" ", "font-body text-grey text-center mt-3 mb-3", Class ?? string.Empty);
+
   [Parameter]
   public RenderFragment ChildContent { get; set; }
+
+  [Parameter]
+  public string Class { get; set; }
 }

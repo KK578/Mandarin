@@ -1,7 +1,9 @@
 ﻿@using Mandarin.Components.Navigation;
 @inherits LayoutComponentBase
 
-<div class="align-middle container mx-auto px-2 text-center">
+<div class="align-middle container h-full mx-auto px-2 text-center flex flex-col">
   <MandarinHeader />
   <div>@Body</div>
+  <div class="flex-grow"></div>
+  <MandarinFooter />
 </div>
