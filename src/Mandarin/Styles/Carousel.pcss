@@ -1,0 +1,41 @@
+﻿@keyframes carouselFade {
+    0% {
+        opacity: 1;
+    }
+    20% { /* 3s / 15s */
+        opacity: 1;
+    }
+    25% { /* (3s + 3/4s) / 15s */
+        opacity: 0;
+    }
+    95% { /* 15s - 3/4s */
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.carousel img {
+    animation-name: carouselFade;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-duration: 15s;
+    animation-direction: alternate;
+}
+
+.carousel img:nth-of-type(1) {
+    animation-delay: 11.25s;
+}
+
+.carousel img:nth-of-type(2) {
+    animation-delay: 7.5s;
+}
+
+.carousel img:nth-of-type(3) {
+    animation-delay: 3.75s;
+}
+
+.carousel img:nth-of-type(4) {
+    animation-delay: 0s;
+}
