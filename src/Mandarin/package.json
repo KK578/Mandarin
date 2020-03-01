@@ -1,4 +1,6 @@
 {
+  "name": "mandarin",
+  "version": "1.0.0",
   "devDependencies": {
     "autoprefixer": "^9.7.4",
     "gulp": "^4.0.2",

@@ -5,7 +5,7 @@ function css() {
     const cleanCss = require("gulp-clean-css");
     const sourceMaps = require("gulp-sourcemaps");
 
-    return gulp.src("./Styles/*.css")
+    return gulp.src("./Styles/*.pcss")
         .pipe(postcss([
             require("precss"),
             require("tailwindcss"),
