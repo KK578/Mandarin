@@ -1,5 +1,5 @@
 ﻿<div class="flex-1">
-  <NavLink class="block hover:opacity-50 text-grey text-center py-1 transition-colors transition-opacity duration-200 ease-in-out"
+  <NavLink class="block hover:opacity-50 text-grey text-xs text-center py-1 transition-colors transition-opacity duration-200 ease-in-out"
            ActiveClass="bg-gold text-white hover:opacity-100 cursor-default"
            Match="NavLinkMatch.All"
            href="@Href">@ChildContent</NavLink>
@@ -9,7 +9,7 @@
 {
   [Parameter]
   public RenderFragment ChildContent { get; set; }
-  
+
   [Parameter]
   public string Href { get; set; }
 }
