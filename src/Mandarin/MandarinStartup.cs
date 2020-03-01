@@ -1,3 +1,4 @@
+using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,8 @@ namespace Mandarin
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            services.AddSingleton<IIndexPageViewModel, IndexPageViewModel>();
         }
 
         /// <summary>

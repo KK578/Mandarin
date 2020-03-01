@@ -1,12 +1,14 @@
 ﻿@page "/"
 @using Mandarin.Components.Index;
 @using Mandarin.Components.Shared;
+@using Mandarin.ViewModels
+@inject IIndexPageViewModel ViewModel;
 
 <hr class="border-mandarin-gold border-t-2"/>
 
-<MandarinText>The Little Mandarin is a family-run Art and Illustration Shop and Confectionary found in the heart of Walthamstow Village, E17. The owner, Eileen Kai Hing Kwan is a local Illustrator who has lived in Walthamstow for most of her life and after taking over from her parents, the previous owners, this makes The Little Mandarin the third chapter of the family’s shop.</MandarinText>
-<MandarinText>The Little Mandarin believes in welcoming and supporting all types of artists and styles of art, bringing a range of art prints, framed art, notebooks, gifts and more, from our little space in the village into the thriving creative community of Walthamstow.</MandarinText>
-<MandarinText>We are also the proud hosts of, The Mini Mandarin, selling handmade and hand finished ‘bearcarons’ (bear shaped macarons!) alongside a variety of sweet snacks and drinks from Asia.</MandarinText>
-<MandarinText>We hope to see you soon!</MandarinText>
+@foreach (var paragraph in ViewModel.Paragraphs)
+{
+  <MandarinText>@paragraph</MandarinText>
+}
 
 <MandarinBar />

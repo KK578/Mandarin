@@ -58,6 +58,17 @@ jobs:
             /p:RepositoryBranch=${GITHUB_REF#refs/heads/} \
             /p:RepositoryCommit=$GITHUB_SHA
 
+      - name: "[Test] Run Tests"
+        run: |
+          dotnet test \
+            --configuration Release \
+            --no-build \
+            test/Mandarin.Tests/Mandarin.Tests.csproj
+
+      - name: "[Deploy] Build docker image"
+        run: |
+          echo "TODO"
+
       - name: "[Coverage] Upload to SonarCloud"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,5 +88,5 @@ jobs:
     needs: build
     if: github.event_name == 'release'
     steps:
-      - name: "TODO"
+      - name: "[Deploy] Publish docker image"
         run: echo "TODO"
