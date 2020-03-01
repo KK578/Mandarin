@@ -28,6 +28,9 @@ jobs:
         with:
           dotnet-version: 3.1.101
 
+      - name: "[Setup] Install gulp"
+        run: npm install -g gulp-cli
+
       - name: "[Coverage] Instrument with Sonar"
         env:
           SONARCLOUD_LOGIN: ${{ secrets.SONARCLOUD_LOGIN }}
@@ -41,6 +44,14 @@ jobs:
             /d:sonar.cs.opencover.reportsPaths="coverage/coverage.opencover.xml" \
             /d:sonar.cs.nunit.reportsPaths="test/*/TestResults/TestResults.xml" \
             /v:$GitVersion_FullSemVer
+
+      - name: "[Build] npm install"
+        working-directory: src/Mandarin/
+        run: npm install
+
+      - name: "[Build] Build css"
+        working-directory: src/Mandarin/
+        run: gulp css
 
       - name: "[Build] NuGet Restore"
         run: dotnet restore
