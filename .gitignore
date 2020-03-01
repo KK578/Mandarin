@@ -8,7 +8,7 @@
 *.scss.map
 
 *.css
-!Mandarin/Styles/*.css
+!src/Mandarin/Styles/*.css
 
 ############################################
 # End of https://www.gitignore.io/api/sass #
