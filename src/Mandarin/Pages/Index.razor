@@ -4,7 +4,7 @@
 @using Mandarin.ViewModels
 @inject IIndexPageViewModel ViewModel;
 
-<hr class="border-gold border-t-2"/>
+<hr class="border-gold border-t-2" />
 
 @foreach (var paragraph in ViewModel.Paragraphs)
 {
@@ -13,7 +13,7 @@
 
 <MandarinBar />
 
-<div class="container flex flex-col sm:flex-row mt-3">
-  <MandarinOpeningTimes />
+<div class="container flex flex-col justify-around md:flex-row mt-3 mx-auto self-center">
+  <MandarinOpeningTimes class="mb-5 self-center" />
   <MandarinMap />
 </div>
