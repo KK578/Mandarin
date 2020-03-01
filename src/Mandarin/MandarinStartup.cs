@@ -33,6 +33,7 @@ namespace Mandarin
             services.AddServerSideBlazor();
 
             services.AddSingleton<IIndexPageViewModel, IndexPageViewModel>();
+            services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
         }
 
         /// <summary>

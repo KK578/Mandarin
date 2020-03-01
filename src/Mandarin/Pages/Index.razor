@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Mandarin.Components.Index;
 @using Mandarin.Components.Shared;
 @using Mandarin.ViewModels
 @inject IIndexPageViewModel ViewModel;
@@ -11,3 +12,8 @@
 }
 
 <MandarinBar />
+
+<div class="container flex flex-col sm:flex-row mt-3">
+  <MandarinOpeningTimes />
+  <MandarinMap />
+</div>

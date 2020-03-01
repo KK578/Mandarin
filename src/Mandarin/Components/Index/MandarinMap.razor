@@ -1,0 +1,13 @@
+﻿<iframe src="@Src" class="border-0" width="@Width" height="@Height" frameborder="0" allowfullscreen=""></iframe>
+
+@code
+{
+  [Parameter]
+  public Uri Src { get; set; } = new Uri("https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d619.8081400436498!2d-0.013219!3d51.582301!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x541a94670a2a54e2!2sThe%20Little%20Mandarin!5e0!3m2!1sen!2suk!4v1583077967669!5m2!1sen!2suk");
+
+  [Parameter]
+  public int Width { get; set; } = 400;
+
+  [Parameter]
+  public int Height { get; set; } = 300;
+}

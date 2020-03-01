@@ -2,11 +2,16 @@
 
 @code
 {
-  private string FullClass => string.Join(" ", "font-body text-grey text-center mt-3 mb-3", Class ?? string.Empty);
+  private string FullClass => string.Join(" ", "font-body text-grey text-center", MarginClass, Class ?? string.Empty);
+
+  private string MarginClass => $"mt-{Margin} mb-{Margin}";
 
   [Parameter]
   public RenderFragment ChildContent { get; set; }
 
   [Parameter]
   public string Class { get; set; }
+
+  [Parameter]
+  public int Margin { get; set; } = 3;
 }
