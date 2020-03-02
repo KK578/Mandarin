@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace Mandarin.ViewModels
 {
-    public interface IOpeningTimesViewModel
-    {
-        IReadOnlyList<OpeningTime> OpeningTimes { get; }
-    }
-
     internal sealed class OpeningTimesViewModel : IOpeningTimesViewModel
     {
         public IReadOnlyList<OpeningTime> OpeningTimes { get; }
@@ -28,25 +23,7 @@ namespace Mandarin.ViewModels
                 new OpeningTime("Friday", time1230, time1730),
                 new OpeningTime("Saturday", time1230, time1730),
                 new OpeningTime("Sunday", time1300, time1600),
-
             };
         }
-    }
-
-    public class OpeningTime
-    {
-        public OpeningTime(string nameOfDay, DateTime openTime, DateTime closingTime)
-            : this(nameOfDay, $"{openTime:HH:mm} - {closingTime:HH:mm}")
-        {
-        }
-
-        public OpeningTime(string nameOfDay, string message)
-        {
-            NameOfDay = nameOfDay;
-            Message = message;
-        }
-
-        public string NameOfDay { get; }
-        public string Message { get; }
     }
 }
