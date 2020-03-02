@@ -1,8 +1,18 @@
-﻿<div class="w-full h-auto">
+﻿@using Mandarin.ViewModels
+@inject ICarouselViewModel ViewModel;
+
+<div class="w-full h-auto">
   <div class="carousel relative h-auto w-full mx-auto">
-    <img class="relative" src="https://thelittlemandarin.co.uk/static/images/about/TheLittleMandarin-1.jpg" alt="Honk" />
-    <img class="absolute top-0 left-0 bottom-0 right-0" src="https://thelittlemandarin.co.uk/static/images/about/TheLittleMandarin-2.jpg" alt="Honk" />
-    <img class="absolute top-0 left-0 bottom-0 right-0" src="https://thelittlemandarin.co.uk/static/images/about/TheLittleMandarin-3.jpg" alt="Honk" />
-    <img class="absolute top-0 left-0 bottom-0 right-0" src="https://thelittlemandarin.co.uk/static/images/about/TheLittleMandarin-4.jpg" alt="Honk" />
+    @for (var i = ViewModel.Images.Count - 1; i >= 0; i--)
+    {
+      if (i == ViewModel.Images.Count - 1)
+      {
+        <img class="relative" src="@ViewModel.Images[i].SourceUrl" alt="@ViewModel.Images[i].Description" />
+      }
+      else
+      {
+        <img class="absolute top-0 left-0 bottom-0 right-0" src="@ViewModel.Images[i].SourceUrl" alt="@ViewModel.Images[i].Description" />
+      }
+    }
   </div>
 </div>

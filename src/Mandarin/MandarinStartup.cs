@@ -34,6 +34,7 @@ namespace Mandarin
 
             services.AddSingleton<IIndexPageViewModel, IndexPageViewModel>();
             services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
+            services.AddSingleton<ICarouselViewModel, CarouselViewModel>();
         }
 
         /// <summary>
