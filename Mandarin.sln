@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin", "src\Mandarin\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Tests", "test\Mandarin.Tests\Mandarin.Tests.csproj", "{269208F2-749E-4E75-95D4-0CA5A8477462}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.ViewModels", "src\Mandarin.ViewModels\Mandarin.ViewModels.csproj", "{5487E7C1-8BC2-419F-A7E0-89629A376403}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Interfaces", "src\Mandarin.Interfaces\Mandarin.Interfaces.csproj", "{DC5D8A45-FDC0-4456-B167-CCCE4F9A3F2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{269208F2-749E-4E75-95D4-0CA5A8477462}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269208F2-749E-4E75-95D4-0CA5A8477462}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269208F2-749E-4E75-95D4-0CA5A8477462}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5487E7C1-8BC2-419F-A7E0-89629A376403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5487E7C1-8BC2-419F-A7E0-89629A376403}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5487E7C1-8BC2-419F-A7E0-89629A376403}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5487E7C1-8BC2-419F-A7E0-89629A376403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5D8A45-FDC0-4456-B167-CCCE4F9A3F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5D8A45-FDC0-4456-B167-CCCE4F9A3F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5D8A45-FDC0-4456-B167-CCCE4F9A3F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5D8A45-FDC0-4456-B167-CCCE4F9A3F2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

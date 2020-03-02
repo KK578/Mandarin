@@ -32,9 +32,7 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            services.AddSingleton<IIndexPageViewModel, IndexPageViewModel>();
-            services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
-            services.AddSingleton<ICarouselViewModel, CarouselViewModel>();
+            services.AddMandarinViewModels();
         }
 
         /// <summary>

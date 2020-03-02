@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +15,7 @@ namespace Mandarin.Tests.Pages
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            this.factory = new WebApplicationFactory<MandarinStartup>()
-                .WithWebHostBuilder(c =>
-                {
-                    c.ConfigureTestServices(s => s.AddSingleton<IIndexPageViewModel, TestIndexPageViewModel>());
-                });
+            this.factory = new WebApplicationFactory<MandarinStartup>();
         }
 
         [Test]
@@ -37,20 +32,7 @@ namespace Mandarin.Tests.Pages
             Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
 
             var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("Simple Content"));
-        }
-
-        internal sealed class TestIndexPageViewModel : IIndexPageViewModel
-        {
-            public IReadOnlyList<string> Paragraphs { get; }
-
-            public TestIndexPageViewModel()
-            {
-                Paragraphs = new List<string>
-                {
-                    "Simple Content"
-                }.AsReadOnly();
-            }
+            Assert.That(pageResponse, Contains.Substring("we hope to see you soon!"));
         }
     }
 }

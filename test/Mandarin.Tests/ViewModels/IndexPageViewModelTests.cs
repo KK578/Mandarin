@@ -1,4 +1,4 @@
-﻿using Mandarin.ViewModels;
+﻿using Mandarin.ViewModels.Index;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.ViewModels

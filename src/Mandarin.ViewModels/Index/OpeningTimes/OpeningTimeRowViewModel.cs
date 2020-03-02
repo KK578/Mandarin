@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.ViewModels.Index.OpeningTimes
 {
-    public class OpeningTime
+    public class OpeningTimeRowViewModel : IOpeningTimeRowViewModel
     {
-        public OpeningTime(string nameOfDay, DateTime openTime, DateTime closingTime)
+        public OpeningTimeRowViewModel(string nameOfDay, DateTime openTime, DateTime closingTime)
             : this(nameOfDay, $"{openTime:HH:mm} - {closingTime:HH:mm}")
         {
         }
 
-        public OpeningTime(string nameOfDay, string message)
+        public OpeningTimeRowViewModel(string nameOfDay, string message)
         {
             NameOfDay = nameOfDay;
             Message = message;

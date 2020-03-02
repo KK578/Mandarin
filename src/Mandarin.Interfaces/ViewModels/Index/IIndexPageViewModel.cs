@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.ViewModels.Index
 {
     public interface IIndexPageViewModel
     {

@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin\Mandarin.csproj" />
+    <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
