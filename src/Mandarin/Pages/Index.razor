@@ -5,14 +5,14 @@
 @inject IIndexPageViewModel ViewModel;
 
 <MandarinCarousel />
-<hr class="border-gold border-t-2 mt-3" />
+<hr class="border-gold border-t-2 mt-6" />
 
 @foreach (var paragraph in ViewModel.Paragraphs)
 {
   <MandarinText>@paragraph</MandarinText>
 }
 
-<MandarinBar />
+<MandarinBar class="mt-6" />
 
 <div class="container flex flex-col justify-around md:flex-row mt-3 mx-auto self-center">
   <MandarinOpeningTimes class="mb-5 self-center" />
