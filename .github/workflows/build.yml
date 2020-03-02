@@ -76,10 +76,8 @@ jobs:
 
       - name: "[Test] Run Tests"
         run: |
-          dotnet test \
-            --configuration Release \
-            --no-build \
-            test/Mandarin.Tests/Mandarin.Tests.csproj
+          dotnet test --configuration Release --no-build test/Mandarin.ViewModels.Tests/Mandarin.ViewModels.Tests.csproj
+          dotnet test --configuration Release --no-build test/Mandarin.Tests/Mandarin.Tests.csproj
 
       - name: "[Deploy] Build docker image"
         run: |

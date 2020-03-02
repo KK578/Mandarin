@@ -2,7 +2,7 @@
 
 namespace Mandarin.ViewModels.Index.OpeningTimes
 {
-    public class OpeningTimeRowViewModel : IOpeningTimeRowViewModel
+    internal sealed class OpeningTimeRowViewModel : IOpeningTimeRowViewModel
     {
         public OpeningTimeRowViewModel(string nameOfDay, DateTime openTime, DateTime closingTime)
             : this(nameOfDay, $"{openTime:HH:mm} - {closingTime:HH:mm}")

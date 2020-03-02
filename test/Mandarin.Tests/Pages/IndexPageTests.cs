@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
@@ -32,7 +29,7 @@ namespace Mandarin.Tests.Pages
             Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
 
             var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("we hope to see you soon!"));
+            Assert.That(pageResponse, Contains.Substring("We hope to see you soon!"));
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace Mandarin.ViewModels.Index.Carousel
+﻿using System;
+
+namespace Mandarin.ViewModels.Index.Carousel
 {
     public interface ICarouselImageViewModel
     {
-        string SourceUrl { get; }
+        Uri SourceUrl { get; }
         string Description { get; }
     }
 }

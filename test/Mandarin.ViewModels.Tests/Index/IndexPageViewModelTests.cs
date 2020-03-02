@@ -1,7 +1,7 @@
 ﻿using Mandarin.ViewModels.Index;
 using NUnit.Framework;
 
-namespace Mandarin.Tests.ViewModels
+namespace Mandarin.ViewModels.Tests.Index
 {
     [TestFixture]
     public class IndexPageViewModelTests
