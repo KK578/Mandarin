@@ -11,6 +11,7 @@
     <MergeWith>../../coverage/coverage.json</MergeWith>
     <CoverletOutput>../../coverage/</CoverletOutput>
     <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
+    <Exclude>[Mandarin.Views]*</Exclude>
   </PropertyGroup>
 
   <ItemGroup>
