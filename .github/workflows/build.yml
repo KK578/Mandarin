@@ -81,9 +81,14 @@ jobs:
             --no-build \
             test/Mandarin.Tests/Mandarin.Tests.csproj
 
+      - name: "[Deploy] Build Publish Version"
+        run: dotnet publish --no-restore --configuration Release src/Mandarin/Mandarin.csproj
+
       - name: "[Deploy] Build docker image"
         run: |
-          echo "TODO"
+          docker login -u KK578 -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+          docker build -t docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_NuGetVersionV2
+          docker push docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_NuGetVersionV2
 
       - name: "[Coverage] Upload to SonarCloud"
         env:
