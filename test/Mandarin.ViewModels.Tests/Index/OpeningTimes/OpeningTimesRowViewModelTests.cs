@@ -1,12 +1,32 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Mandarin.ViewModels.Index.OpeningTimes;
 using NUnit.Framework;
+// ReSharper disable InconsistentNaming
 
 namespace Mandarin.ViewModels.Tests.Index.OpeningTimes
 {
     [TestFixture]
     public class OpeningTimeRowViewModelTests
     {
+        private static readonly DateTime Time9AM = new DateTime(2020, 1, 1, 09, 00, 00, DateTimeKind.Utc);
+        private static readonly DateTime Time11AM = new DateTime(2020, 1, 1, 11, 00, 00, DateTimeKind.Utc);
+        private static readonly DateTime Time1PM = new DateTime(2020, 1, 1, 13, 00, 00, DateTimeKind.Utc);
+        private static readonly DateTime Time5PM = new DateTime(2020, 1, 1, 17, 00, 00, DateTimeKind.Utc);
+        private static readonly DateTime Time530PM = new DateTime(2020, 1, 1, 17, 30, 00, DateTimeKind.Utc);
+
+        private static IEnumerable<TestCaseData> TestCases
+        {
+            get
+            {
+                yield return new TestCaseData(Time9AM, Time5PM).Returns("9:00AM - 5:00PM");
+                yield return new TestCaseData(Time11AM, Time5PM).Returns("11:00AM - 5:00PM");
+                yield return new TestCaseData(Time1PM, Time5PM).Returns("1:00PM - 5:00PM");
+                yield return new TestCaseData(Time1PM, Time530PM).Returns("1:00PM - 5:30PM");
+            }
+        }
+
         [Test]
         public void Properties_ShouldMatchConstructorInputs()
         {
@@ -16,12 +36,11 @@ namespace Mandarin.ViewModels.Tests.Index.OpeningTimes
         }
 
         [Test]
-        public void Message_GivenTwoDateTimes_ShouldShowFormattedTimes()
+        [TestCaseSource(nameof(TestCases))]
+        public string Message_GivenTwoDateTimes_ShouldShowFormattedTimes(DateTime openTime, DateTime closeTime)
         {
-            var openTime = new DateTime(2020, 1, 1, 09, 00, 00, DateTimeKind.Utc);
-            var closeTime = new DateTime(2020, 1, 1, 17, 00, 00, DateTimeKind.Utc);
             var subject = new OpeningTimeRowViewModel("Monday", openTime, closeTime);
-            Assert.That(subject.Message, Is.EqualTo("09:00 - 17:00"));
+            return subject.Message;
         }
     }
 }
