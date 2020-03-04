@@ -87,8 +87,15 @@ jobs:
       - name: "[Deploy] Build docker image"
         run: |
           docker login -u KK578 -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
-          docker build -t docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_FullSemVer .
-          docker push docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_FullSemVer
+          docker build -t docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_NuGetVersionV2 .
+          docker push docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_NuGetVersionV2
+          echo $GitVersion_NuGetVersionV2 > Version.txt
+
+      - name: "[Deploy] Upload Version.txt artifact"
+        uses: actions/upload-artifact@v1
+        with:
+          name: Artifacts.Version
+          path: Version.txt
 
       - name: "[Coverage] Upload to SonarCloud"
         env:
@@ -107,7 +114,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'release'
+    #if: github.event_name == 'release'
     steps:
+      - name: "[Artifacts] Download Nuget Package"
+        uses: actions/download-artifact@v1
+        with:
+          name: Artifacts.Version
+
       - name: "[Deploy] Publish docker image"
-        run: echo "TODO"
+        run: |
+          GitVersion_NuGetVersionV2=$(cat Artifacts.Version/Version.txt)
+          docker login -u KK578 -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+          docker pull docker.pkg.github.com/kk578/mandarin/mandarin:$GitVersion_NuGetVersionV2
