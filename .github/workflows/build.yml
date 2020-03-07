@@ -84,8 +84,9 @@ jobs:
       - name: "[Deploy] Publish build"
         run: |
           dotnet publish src/Mandarin/Mandarin.csproj \
+            --output publish \
             --no-restore \
-            --configuration Release
+            --configuration Release \
             /p:VersionPrefix=$GitVersion_MajorMinorPatch \
             /p:VersionSuffix=$GitVersion_PreReleaseLabel \
             /p:AssemblyVersion=$GitVersion_AssemblySemVer \
@@ -93,13 +94,13 @@ jobs:
             /p:InformationalVersion=$GitVersion_InformationalVersion \
             /p:RepositoryBranch=${GITHUB_REF#refs/heads/} \
             /p:RepositoryCommit=$GITHUB_SHA
-          echo $GitVersion_NuGetVersionV2 > src/Mandarin/bin/Release/netcoreapp3.1/publish/Version.txt
+          echo $GitVersion_NuGetVersionV2 > publish/Version.txt
 
       - name: "[Deploy] Upload build artifact"
         uses: actions/upload-artifact@v1
         with:
           name: Mandarin.Build
-          path: src/Mandarin/bin/Release/netcoreapp3.1/publish/
+          path: publish
 
       - name: "[Coverage] Upload to SonarCloud"
         env:
@@ -127,6 +128,8 @@ jobs:
 
       - name: "[Deploy] Publish docker image"
         run: |
-          cd Mandarin.Build
-          GitVersion_NuGetVersionV2=$(cat Version.txt)
-          octo pack --version $GitVersion_NuGetVersionV2
+          GitVersion_NuGetVersionV2=$(cat Mandarin.Build/Version.txt)
+          octo pack \
+            --base-path Mandarin.Build \
+            --id Mandarin \
+            --version $GitVersion_NuGetVersionV2
