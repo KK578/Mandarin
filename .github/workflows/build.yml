@@ -132,9 +132,9 @@ jobs:
       - name: "[Deploy] octo pack"
         uses: docker://octopusdeploy/octo:7.1.3
         with:
-          args: pack --id Mandarin --version $GitVersion_NuGetVersionV2 --base-path Mandarin.Build
+          args: pack --id Mandarin --version ${{ GitVersion_NuGetVersionV2 }} --base-path Mandarin.Build
 
       - name: "[Deploy] octo push"
         uses: docker://octopusdeploy/octo:7.1.3
         with:
-          args: push --package Mandarin.$GitVersion_NuGetVersionV2.nupkg --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+          args: push --package Mandarin.${{ GitVersion_NuGetVersionV2 }}.nupkg --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
