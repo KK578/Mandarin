@@ -1,8 +1,9 @@
-﻿@using Mandarin.Components.Shared;
+﻿@using Mandarin.ViewModels.Components.Navigation
+@inject IMandarinHeaderViewModel ViewModel
 
 <div class="mx-auto text-center w-full">
   <MandarinBar Class="mb-8 mt-5" />
-  <img alt="The Little Mandarin" class="h-12 mx-auto w-12" src="images/logo.png" />
+  <MandarinImage class="h-12 mx-auto w-12" ViewModel="@ViewModel.LogoImageViewModel" />
   <h3 class="font-title text-3xl text-gold">The Little Mandarin</h3>
   <MandarinBar Class="mt-6" />
   <MandarinNavigation Class="mb-6" />

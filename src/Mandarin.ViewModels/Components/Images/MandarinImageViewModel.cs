@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace Mandarin.ViewModels.Index.Carousel
+namespace Mandarin.ViewModels.Components.Images
 {
-    internal sealed class CarouselImageViewModel : ICarouselImageViewModel
+    internal sealed class MandarinImageViewModel : IMandarinImageViewModel
     {
-        public CarouselImageViewModel(string sourceUrl, string description)
+        public MandarinImageViewModel(string sourceUrl, string description)
         {
-            SourceUrl = ParseUri(sourceUrl) ?? throw new ArgumentException($"Invalid sourceUrl {sourceUrl}", nameof(sourceUrl));
-            Description = description;
+            this.SourceUrl = ParseUri(sourceUrl) ?? throw new ArgumentException($"Invalid sourceUrl {sourceUrl}", nameof(sourceUrl));
+            this.Description = description;
         }
 
         public Uri SourceUrl { get; }

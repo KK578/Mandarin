@@ -1,11 +1,9 @@
 ﻿@page "/"
-@using Mandarin.Components.Index;
-@using Mandarin.Components.Shared;
 @using Mandarin.ViewModels.Index;
 @inject IIndexPageViewModel ViewModel;
 
 <MandarinCarousel />
-<hr class="border-gold border-t-2 mt-6" />
+<MandarinBar Class="mt-6" />
 
 @foreach (var paragraph in ViewModel.Paragraphs)
 {

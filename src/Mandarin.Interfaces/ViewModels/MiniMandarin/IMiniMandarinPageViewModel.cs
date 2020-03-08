@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Mandarin.ViewModels.Index.Carousel;
+using Mandarin.ViewModels.Components.Images;
 
 namespace Mandarin.ViewModels.MiniMandarin
 {
     public interface IMiniMandarinPageViewModel
     {
         IReadOnlyList<string> Paragraphs { get; }
-        ICarouselImageViewModel BannerImageViewModel { get; }
-        IReadOnlyList<ICarouselImageViewModel> MacaronImageViewModels { get; }
+        IMandarinImageViewModel BannerImageViewModel { get; }
+        IReadOnlyList<IMandarinImageViewModel> MacaronImageViewModels { get; }
     }
 }

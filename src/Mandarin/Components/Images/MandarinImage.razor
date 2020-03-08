@@ -1,0 +1,12 @@
+﻿@using Mandarin.ViewModels.Components.Images
+
+<img class="@Class" src="@ViewModel.SourceUrl" alt="@ViewModel.Description"/>
+
+@code
+{
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public IMandarinImageViewModel ViewModel { get; set; }
+}

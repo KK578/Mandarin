@@ -1,8 +1,7 @@
-﻿@using Mandarin.Components.Shared;
-@using Mandarin.ViewModels.Index.OpeningTimes
+﻿@using Mandarin.ViewModels.Index.OpeningTimes
 @inject IOpeningTimesViewModel ViewModel;
 
-<div class="@FullClass">
+<div class="container text-left max-w-xs @Class">
   <MandarinText class="font-bold text-grey-normal text-left" Margin="0">Opening Times</MandarinText>
 
   <div class="container max-w-xs">
@@ -19,8 +18,6 @@
 
 @code
 {
-  private string FullClass => string.Join(" ", "container text-left max-w-xs", Class ?? string.Empty);
-
   [Parameter]
   public string Class { get; set; }
 }
