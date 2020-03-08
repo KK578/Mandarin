@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Update="package.json" CopyToPublishDirectory="Never" />
+    <Content Update="package-lock.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
