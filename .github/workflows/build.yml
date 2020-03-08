@@ -119,7 +119,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    #if: github.event_name == 'release'
+    if: github.event_name == 'release'
     steps:
       - name: "[Artifacts] Download build artifact"
         uses: actions/download-artifact@v1
