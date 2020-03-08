@@ -81,9 +81,26 @@ jobs:
             --no-build \
             test/Mandarin.Tests/Mandarin.Tests.csproj
 
-      - name: "[Deploy] Build docker image"
+      - name: "[Deploy] Publish build"
         run: |
-          echo "TODO"
+          dotnet publish src/Mandarin/Mandarin.csproj \
+            --output publish \
+            --no-restore \
+            --configuration Release \
+            /p:VersionPrefix=$GitVersion_MajorMinorPatch \
+            /p:VersionSuffix=$GitVersion_PreReleaseLabel \
+            /p:AssemblyVersion=$GitVersion_AssemblySemVer \
+            /p:FileVersion=$GitVersion_AssemblySemFileVer \
+            /p:InformationalVersion=$GitVersion_InformationalVersion \
+            /p:RepositoryBranch=${GITHUB_REF#refs/heads/} \
+            /p:RepositoryCommit=$GITHUB_SHA
+          echo $GitVersion_NuGetVersionV2 > publish/Version.txt
+
+      - name: "[Deploy] Upload build artifact"
+        uses: actions/upload-artifact@v1
+        with:
+          name: Mandarin.Build
+          path: publish
 
       - name: "[Coverage] Upload to SonarCloud"
         env:
@@ -104,5 +121,20 @@ jobs:
     needs: build
     if: github.event_name == 'release'
     steps:
-      - name: "[Deploy] Publish docker image"
-        run: echo "TODO"
+      - name: "[Artifacts] Download build artifact"
+        uses: actions/download-artifact@v1
+        with:
+          name: Mandarin.Build
+
+      - name: "[Deploy] Set Version Environment Variable"
+        run: echo "::set-env name=GitVersion_NuGetVersionV2::$(cat Mandarin.Build/Version.txt)"
+
+      - name: "[Deploy] octo pack"
+        uses: docker://octopusdeploy/octo:7.1.3
+        with:
+          args: pack --id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --format zip --basePath Mandarin.Build
+
+      - name: "[Deploy] octo push"
+        uses: docker://octopusdeploy/octo:7.1.3
+        with:
+          args: push --package Mandarin.${{ env.GitVersion_NuGetVersionV2 }}.zip --replace-existing --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
