@@ -7,7 +7,7 @@
 *.sass.map
 *.scss.map
 
-*.css
+**/wwwroot/css/
 
 ############################################
 # End of https://www.gitignore.io/api/sass #

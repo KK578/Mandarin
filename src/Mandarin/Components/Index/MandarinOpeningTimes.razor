@@ -1,0 +1,26 @@
+﻿@using Mandarin.Components.Shared;
+@using Mandarin.ViewModels.Index.OpeningTimes
+@inject IOpeningTimesViewModel ViewModel;
+
+<div class="@FullClass">
+  <MandarinText class="font-bold text-grey-normal text-left" Margin="0">Opening Times</MandarinText>
+
+  <div class="container max-w-xs">
+    @foreach (var openingTime in ViewModel.OpeningTimes)
+    {
+      <div class="flex flex-row">
+        <MandarinText Margin="0">@openingTime.NameOfDay</MandarinText>
+        <div class="flex-grow"></div>
+        <MandarinText Margin="0">@openingTime.Message</MandarinText>
+      </div>
+    }
+  </div>
+</div>
+
+@code
+{
+  private string FullClass => string.Join(" ", "container text-left max-w-xs", Class ?? string.Empty);
+
+  [Parameter]
+  public string Class { get; set; }
+}

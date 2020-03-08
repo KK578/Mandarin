@@ -75,11 +75,7 @@ jobs:
             /p:RepositoryCommit=$GITHUB_SHA
 
       - name: "[Test] Run Tests"
-        run: |
-          dotnet test \
-            --configuration Release \
-            --no-build \
-            test/Mandarin.Tests/Mandarin.Tests.csproj
+        run: dotnet test --configuration Release
 
       - name: "[Deploy] Publish build"
         run: |

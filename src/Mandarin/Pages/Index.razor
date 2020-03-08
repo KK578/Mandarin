@@ -1,14 +1,20 @@
 ﻿@page "/"
 @using Mandarin.Components.Index;
 @using Mandarin.Components.Shared;
-@using Mandarin.ViewModels
+@using Mandarin.ViewModels.Index;
 @inject IIndexPageViewModel ViewModel;
 
-<hr class="border-mandarin-gold border-t-2"/>
+<MandarinCarousel />
+<hr class="border-gold border-t-2 mt-6" />
 
 @foreach (var paragraph in ViewModel.Paragraphs)
 {
   <MandarinText>@paragraph</MandarinText>
 }
 
-<MandarinBar />
+<MandarinBar class="mt-6" />
+
+<div class="container flex flex-col justify-around md:flex-row mt-3 mx-auto self-center">
+  <MandarinOpeningTimes class="mb-5 self-center" />
+  <MandarinMap />
+</div>

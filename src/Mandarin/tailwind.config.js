@@ -2,7 +2,10 @@
     theme: {
         colors: {
             gold: "#C9B85B",
-            grey: "#676561",
+            grey: {
+                light: "#f9f9f9",
+                normal: "#676561",
+            },
             white: "#FFFFFF"
         },
         fontFamily: {

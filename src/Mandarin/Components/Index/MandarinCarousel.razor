@@ -1,0 +1,20 @@
+﻿@using Mandarin.ViewModels.Index.Carousel
+@inject ICarouselViewModel ViewModel;
+
+<div class="w-full h-auto">
+  <div class="carousel relative h-auto w-full mx-auto">
+    @for (var i = ViewModel.Images.Count - 1; i >= 0; i--)
+    {
+      // First item must be relative to ensure it is placed in the DOM with it's full height/width.
+      // Other items are then placed on top of the first image to allow the fade to form the carousel effect.
+      if (i == ViewModel.Images.Count - 1)
+      {
+        <img class="relative" src="@ViewModel.Images[i].SourceUrl" alt="@ViewModel.Images[i].Description" />
+      }
+      else
+      {
+        <img class="absolute top-0 left-0 bottom-0 right-0" src="@ViewModel.Images[i].SourceUrl" alt="@ViewModel.Images[i].Description" />
+      }
+    }
+  </div>
+</div>

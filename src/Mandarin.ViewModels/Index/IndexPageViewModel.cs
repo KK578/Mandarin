@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.ViewModels.Index
 {
     internal sealed class IndexPageViewModel : IIndexPageViewModel
     {
