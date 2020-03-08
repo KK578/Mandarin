@@ -8,6 +8,8 @@ using NUnit.Framework;
 namespace Mandarin.ViewModels.Tests.Index.OpeningTimes
 {
     [TestFixture]
+    [SetCulture("en-GB")]
+    [SetUICulture("en-GB")]
     public class OpeningTimeRowViewModelTests
     {
         private static readonly DateTime Time9AM = new DateTime(2020, 1, 1, 09, 00, 00, DateTimeKind.Utc);
@@ -20,10 +22,10 @@ namespace Mandarin.ViewModels.Tests.Index.OpeningTimes
         {
             get
             {
-                yield return new TestCaseData(Time9AM, Time5PM).Returns("9:00AM - 5:00PM");
-                yield return new TestCaseData(Time11AM, Time5PM).Returns("11:00AM - 5:00PM");
-                yield return new TestCaseData(Time1PM, Time5PM).Returns("1:00PM - 5:00PM");
-                yield return new TestCaseData(Time1PM, Time530PM).Returns("1:00PM - 5:30PM");
+                yield return new TestCaseData(Time9AM, Time5PM).Returns("9:00am - 5:00pm");
+                yield return new TestCaseData(Time11AM, Time5PM).Returns("11:00am - 5:00pm");
+                yield return new TestCaseData(Time1PM, Time5PM).Returns("1:00pm - 5:00pm");
+                yield return new TestCaseData(Time1PM, Time530PM).Returns("1:00pm - 5:30pm");
             }
         }
 

@@ -9,11 +9,11 @@
       // Other items are then placed on top of the first image to allow the fade to form the carousel effect.
       if (i == ViewModel.Images.Count - 1)
       {
-        <img class="relative" src="@ViewModel.Images[i].SourceUrl" alt="@ViewModel.Images[i].Description" />
+        <MandarinImage class="relative" ViewModel="@ViewModel.Images[i]" />
       }
       else
       {
-        <img class="absolute top-0 left-0 bottom-0 right-0" src="@ViewModel.Images[i].SourceUrl" alt="@ViewModel.Images[i].Description" />
+        <MandarinImage class="absolute top-0 left-0 bottom-0 right-0" ViewModel="@ViewModel.Images[i]" />
       }
     }
   </div>

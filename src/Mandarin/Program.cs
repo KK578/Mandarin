@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -16,6 +17,8 @@ namespace Mandarin
         /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
             CreateHostBuilder(args).Build().Run();
         }
 
