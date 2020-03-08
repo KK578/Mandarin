@@ -1,5 +1,6 @@
 ﻿using Mandarin.ViewModels.Index;
 using Mandarin.ViewModels.Index.Carousel;
+using Mandarin.ViewModels.Index.MandarinMap;
 using Mandarin.ViewModels.Index.OpeningTimes;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ namespace Mandarin.ViewModels
         {
             services.AddSingleton<IIndexPageViewModel, IndexPageViewModel>();
             services.AddSingleton<ICarouselViewModel, CarouselViewModel>();
+            services.AddSingleton<IMandarinMapViewModel, MandarinMapViewModel>();
             services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
         }
     }
