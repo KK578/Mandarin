@@ -11,8 +11,8 @@ namespace Mandarin.ViewModels.Index.OpeningTimes
 
         public OpeningTimeRowViewModel(string nameOfDay, string message)
         {
-            NameOfDay = nameOfDay;
-            Message = message;
+            this.NameOfDay = nameOfDay;
+            this.Message = message;
         }
 
         public string NameOfDay { get; }
