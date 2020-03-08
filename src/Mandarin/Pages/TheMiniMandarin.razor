@@ -1,3 +1,19 @@
 ﻿@page "/the-mini-mandarin"
+@using Mandarin.Components.Shared;
+@using Mandarin.ViewModels.MiniMandarin
+@inject IMiniMandarinPageViewModel ViewModel;
 
-<h1>The Mini Mandarin.</h1>
+<img src="@ViewModel.BannerImageViewModel.SourceUrl" alt="@ViewModel.BannerImageViewModel.Description"/>
+<hr class="border-gold border-t-2 mt-6" />
+
+@foreach (var paragraph in ViewModel.Paragraphs)
+{
+  <MandarinText>@paragraph</MandarinText>
+}
+
+<div class="flex flex-1 flex-wrap flex-row justify-center">
+  @foreach (var macaronViewModel in ViewModel.MacaronImageViewModels)
+  {
+    <img class="px-6 w-full max-w-xs" src="@macaronViewModel.SourceUrl" alt="@macaronViewModel.Description" />
+  }
+</div>

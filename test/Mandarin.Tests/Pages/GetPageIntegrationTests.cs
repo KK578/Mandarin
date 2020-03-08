@@ -1,0 +1,54 @@
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using NUnit.Framework;
+
+namespace Mandarin.Tests.Pages
+{
+    [TestFixture("Development")]
+    [TestFixture("Production")]
+    public class GetPageIntegrationTests
+    {
+        private readonly WebApplicationFactory<MandarinStartup> factory;
+
+        public GetPageIntegrationTests(string environment)
+        {
+            this.factory = new WebApplicationFactory<MandarinStartup>()
+                .WithWebHostBuilder(b => b.UseEnvironment(environment));
+        }
+
+        [Test]
+        public async Task GetIndex_ShouldRenderHomePage()
+        {
+            // Arrange
+            var client = this.factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync("/");
+
+            // Assert
+            Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
+            Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
+
+            var pageResponse = await response.Content.ReadAsStringAsync();
+            Assert.That(pageResponse, Contains.Substring("We hope to see you soon!"));
+        }
+
+        [Test]
+        public async Task GetMiniMandarin_ShouldRenderMiniMandarinPage()
+        {
+            // Arrange
+            var client = this.factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync("/the-mini-mandarin");
+
+            // Assert
+            Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
+            Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
+
+            var pageResponse = await response.Content.ReadAsStringAsync();
+            Assert.That(pageResponse, Contains.Substring("bear shaped macarons!"));
+        }
+    }
+}
