@@ -1,6 +1,8 @@
+using Elastic.Apm.NetCoreAll;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -11,6 +13,13 @@ namespace Mandarin
     /// </summary>
     public class MandarinStartup
     {
+        private readonly IConfiguration configuration;
+
+        public MandarinStartup(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         /// <summary>
         /// Configures the provided service collection with all the dependencies required for Mandarin.
         /// <br />
@@ -46,6 +55,7 @@ namespace Mandarin
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app)
         {
+            app.UseAllElasticApm(this.configuration);
             var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
             if (env.IsDevelopment())
             {

@@ -1,7 +1,10 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Debugging;
 
 namespace Mandarin
 {
@@ -17,13 +20,29 @@ namespace Mandarin
         /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
-            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+                CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
+                CreateHostBuilder(args).Build().Run();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog((b, c) =>
+                {
+                    if (b.HostingEnvironment.IsDevelopment())
+                    {
+                        SelfLog.Enable(Console.Error);
+                    }
+
+                    c.ReadFrom.Configuration(b.Configuration);
+                })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<MandarinStartup>());
     }
 }
