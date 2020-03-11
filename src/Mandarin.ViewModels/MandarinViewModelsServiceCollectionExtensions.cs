@@ -21,6 +21,8 @@ namespace Mandarin.ViewModels
             services.AddSingleton<IMandarinMapViewModel, MandarinMapViewModel>();
             services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
 
+            services.AddSingleton<IArtistsPageViewModel, ArtistsPageViewModel>();
+
             services.AddSingleton<IMiniMandarinPageViewModel, MiniMandarinPageViewModel>();
         }
     }
