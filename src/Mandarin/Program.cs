@@ -24,7 +24,7 @@ namespace Mandarin
             {
                 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
-                CreateHostBuilder(args).Build().Run();
+                Program.CreateHostBuilder(args).Build().Run();
             }
             finally
             {
@@ -34,15 +34,17 @@ namespace Mandarin
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog((b, c) =>
-                {
-                    if (b.HostingEnvironment.IsDevelopment())
-                    {
-                        SelfLog.Enable(Console.Error);
-                    }
-
-                    c.ReadFrom.Configuration(b.Configuration);
-                })
+                .UseSerilog(Program.ConfigureSerilog)
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<MandarinStartup>());
+
+        private static void ConfigureSerilog(HostBuilderContext b, LoggerConfiguration c)
+        {
+            if (b.HostingEnvironment.IsDevelopment())
+            {
+                SelfLog.Enable(Console.Error);
+            }
+
+            c.ReadFrom.Configuration(b.Configuration);
+        }
     }
 }

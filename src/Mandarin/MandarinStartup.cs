@@ -1,4 +1,3 @@
-using System;
 using Mandarin.Elastic;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -26,9 +25,9 @@ namespace Mandarin
         /// <br />
         /// Currently this includes:
         /// <list type="bullet">
-        /// <listheader>
-        /// <term>Razor</term>
-        /// </listheader>
+        /// <item><term>Razor Pages</term></item>
+        /// <item><term>Server Side Blazor</term></item>
+        /// <item><term>View Models</term></item>
         /// </list>
         ///
         /// <remarks>
@@ -56,6 +55,7 @@ namespace Mandarin
         public void Configure(IApplicationBuilder app)
         {
             app.SafeUseAllElasticApm(this.configuration);
+
             var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
             if (env.IsDevelopment())
             {
