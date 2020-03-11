@@ -1,6 +1,8 @@
+using Mandarin.Elastic;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -11,14 +13,21 @@ namespace Mandarin
     /// </summary>
     public class MandarinStartup
     {
+        private readonly IConfiguration configuration;
+
+        public MandarinStartup(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         /// <summary>
         /// Configures the provided service collection with all the dependencies required for Mandarin.
         /// <br />
         /// Currently this includes:
         /// <list type="bullet">
-        /// <listheader>
-        /// <term>Razor</term>
-        /// </listheader>
+        /// <item><term>Razor Pages</term></item>
+        /// <item><term>Server Side Blazor</term></item>
+        /// <item><term>View Models</term></item>
         /// </list>
         ///
         /// <remarks>
@@ -42,10 +51,11 @@ namespace Mandarin
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </remarks>
         /// </summary>
-        /// <param name="app"></param>
-        /// <param name="env"></param>
+        /// <param name="app">The application to be configured.</param>
         public void Configure(IApplicationBuilder app)
         {
+            app.SafeUseAllElasticApm(this.configuration);
+
             var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
             if (env.IsDevelopment())
             {
