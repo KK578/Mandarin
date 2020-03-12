@@ -7,7 +7,6 @@ namespace Mandarin.ViewModels.Artists
         string Name { get; }
         string Description { get; }
         Uri ImageUrl { get; }
-
         Uri WebsiteUrl { get; }
         Uri TwitterUrl { get; }
         Uri InstagramUrl { get; }
