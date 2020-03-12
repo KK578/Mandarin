@@ -64,7 +64,7 @@ namespace Mandarin.Tests.Pages
                 Name = "My Artist Name",
                 Description = TestData.WellKnownString
             };
-            var client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(s => s.AddSingleton(viewModel)))
+            var client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(s => s.AddSingleton<IArtistViewModel>(viewModel)))
                              .CreateClient();
 
             // Act
