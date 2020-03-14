@@ -1,0 +1,35 @@
+﻿@using Mandarin.ViewModels.Artists
+
+<div class="text-center mx-auto">
+  <img src="@ViewModel.ImageUrl" alt="@ViewModel.Name" />
+  <MandarinText class="text-2xl mt-2" Margin="0">@ViewModel.Name</MandarinText>
+  @if (@ViewModel.WebsiteUrl != null)
+  {
+    <a class="hover:text-gold text-grey-medium transition transition-colors duration-200 ease-in-out" href="@ViewModel.WebsiteUrl">@ViewModel.WebsiteUrl.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped)</a>
+  }
+  <div class="content-center flex justify-center mt-2 mx-auto">
+    @if (@ViewModel.TwitterUrl != null)
+    {
+      <TwitterIcon Href="@ViewModel.TwitterUrl" />
+    }
+    @if (@ViewModel.InstagramUrl != null)
+    {
+      <InstagramIcon Href="@ViewModel.InstagramUrl" />
+    }
+    @if (@ViewModel.FacebookUrl != null)
+    {
+      <FacebookIcon Href="@ViewModel.FacebookUrl" />
+    }
+    @if (@ViewModel.TumblrUrl != null)
+    {
+      <TumblrIcon Href="@ViewModel.TumblrUrl" />
+    }
+  </div>
+  <MandarinText>@ViewModel.Description</MandarinText>
+</div>
+
+@code
+{
+  [Parameter]
+  public IArtistViewModel ViewModel { get; set; }
+}

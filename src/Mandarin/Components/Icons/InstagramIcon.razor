@@ -1,4 +1,4 @@
-﻿<a href="@Href" target="_blank">
+﻿<a class="mx-1" href="@Href" target="_blank">
   <div class="h-8 text-gold w-8">
     <svg class="social-svg" style="border-radius: 50%; fill-rule: evenodd;" viewBox="0 0 64 64">
       <g class="social-svg-background" style="transition: fill 170ms ease-in-out 0s; fill: transparent;">
@@ -17,8 +17,8 @@
 @code
 {
   [Parameter]
-  public string ColorHexCode { get; set; }
+  public string ColorHexCode { get; set; } = "#3F729B";
 
   [Parameter]
-  public string Href { get; set; }
+  public Uri Href { get; set; }
 }

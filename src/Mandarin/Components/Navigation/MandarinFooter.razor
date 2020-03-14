@@ -1,8 +1,12 @@
-﻿
-<div class="container mt-3 mx-auto text-center">
+﻿<div class="container mt-3 mx-auto text-center">
   <MandarinBar />
-  <div class="mt-2 mx-auto content-center flex justify-center">
-    <InstagramIcon ColorHexCode="#C9B85B" Href="https://instagram.com/thelittlemandarin_e17/"/>
+  <div class="content-center flex justify-center mt-2 mx-auto">
+    <InstagramIcon ColorHexCode="#C9B85B" Href="@instagramUri" />
   </div>
   <MandarinText class="text-xs">Copyright © 2020 The Little Mandarin</MandarinText>
 </div>
+
+@code
+{
+  private readonly Uri instagramUri = new Uri("https://instagram.com/thelittlemandarin_e17/");
+}

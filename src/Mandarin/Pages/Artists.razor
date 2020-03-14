@@ -1,3 +1,14 @@
 ﻿@page "/artists"
+@using Mandarin.ViewModels.Artists
+@using Mandarin.Components.Artists
+@inject IArtistsPageViewModel ViewModel
 
-<h1>Artists</h1>
+@for (var i = 0; i < @ViewModel.ViewModels.Count; i++)
+{
+  if (i != 0)
+  {
+    <MandarinBar class="my-8" />
+  }
+
+  <MandarinArtist ViewModel="@ViewModel.ViewModels[i]" />
+}

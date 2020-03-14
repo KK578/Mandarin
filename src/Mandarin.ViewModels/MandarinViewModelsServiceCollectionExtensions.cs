@@ -1,4 +1,5 @@
-﻿using Mandarin.ViewModels.Components.Navigation;
+﻿using Mandarin.ViewModels.Artists;
+using Mandarin.ViewModels.Components.Navigation;
 using Mandarin.ViewModels.Index;
 using Mandarin.ViewModels.Index.Carousel;
 using Mandarin.ViewModels.Index.MandarinMap;
@@ -18,6 +19,8 @@ namespace Mandarin.ViewModels
             services.AddSingleton<ICarouselViewModel, CarouselViewModel>();
             services.AddSingleton<IMandarinMapViewModel, MandarinMapViewModel>();
             services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
+
+            services.AddSingleton<IArtistsPageViewModel, ArtistsPageViewModel>();
 
             services.AddSingleton<IMiniMandarinPageViewModel, MiniMandarinPageViewModel>();
         }
