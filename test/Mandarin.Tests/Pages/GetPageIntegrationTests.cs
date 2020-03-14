@@ -4,7 +4,6 @@ using Mandarin.ViewModels.Artists;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
@@ -59,13 +58,7 @@ namespace Mandarin.Tests.Pages
         public async Task GetArtists_ShouldRenderArtistsPage()
         {
             // Arrange
-            var viewModel = new ArtistViewModel
-            {
-                Name = "My Artist Name",
-                Description = TestData.WellKnownString
-            };
-            var client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(s => s.AddSingleton<IArtistViewModel>(viewModel)))
-                             .CreateClient();
+            var client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterViewModels)).CreateClient();
 
             // Act
             var response = await client.GetAsync("/artists");
@@ -77,6 +70,17 @@ namespace Mandarin.Tests.Pages
             var pageResponse = await response.Content.ReadAsStringAsync();
             Assert.That(pageResponse, Contains.Substring("My Artist Name"));
             Assert.That(pageResponse, Contains.Substring(TestData.WellKnownString));
+
+
+            static void RegisterViewModels(IServiceCollection s)
+            {
+                s.AddSingleton<IArtistViewModel>(new ArtistViewModel
+                {
+                    Name = "My Artist Name",
+                    Description = TestData.WellKnownString,
+                });
+                s.AddSingleton<IArtistViewModel>(TestData.Create<ArtistViewModel>());
+            }
         }
     }
 }
