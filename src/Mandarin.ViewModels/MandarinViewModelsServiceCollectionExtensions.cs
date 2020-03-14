@@ -1,5 +1,4 @@
-﻿using System;
-using Mandarin.ViewModels.Artists;
+﻿using Mandarin.ViewModels.Artists;
 using Mandarin.ViewModels.Components.Navigation;
 using Mandarin.ViewModels.Index;
 using Mandarin.ViewModels.Index.Carousel;
