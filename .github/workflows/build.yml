@@ -92,6 +92,12 @@ jobs:
             /p:RepositoryCommit=$GITHUB_SHA
           echo $GitVersion_NuGetVersionV2 > publish/Version.txt
 
+      - name: "[Deploy] Create Octopus BuildInformation.json"
+        working-directory: src/Mandarin/
+        run: |
+          gulp buildInformation
+          mv BuildInformation.json ../../publish/
+
       - name: "[Deploy] Upload build artifact"
         uses: actions/upload-artifact@v1
         with:
@@ -134,3 +140,8 @@ jobs:
         uses: docker://octopusdeploy/octo:7.1.3
         with:
           args: push --package Mandarin.${{ env.GitVersion_NuGetVersionV2 }}.zip --replace-existing --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+
+      - name: "[Metadata] octo build-information"
+        uses: docker://octopusdeploy/octo:7.1.3
+        with:
+          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/BuildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
