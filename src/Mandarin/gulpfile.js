@@ -24,8 +24,8 @@ async function buildInformation() {
         return;
     }
 
-    const revList = await git.raw(["log", "--pretty=format:%H|%s", `${fromVersionSha}..${toVersionSha}`]);
-    const commits = revList.split("\n")
+    const rawCommits = await git.raw(["log", "--pretty=format:%H|%s", `${fromVersionSha}..${toVersionSha}`]);
+    const commits = rawCommits.split("\n")
         .filter(x => x)
         .map(x => x.split("|"))
         .map(x => ({
