@@ -1,3 +1,4 @@
+using Mandarin.Controllers;
 using Mandarin.Elastic;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +43,7 @@ namespace Mandarin
             services.AddServerSideBlazor();
 
             services.AddMandarinViewModels();
+            services.AddSingleton<IEmailService, EmailService>();
         }
 
         /// <summary>
@@ -75,6 +77,8 @@ namespace Mandarin
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
