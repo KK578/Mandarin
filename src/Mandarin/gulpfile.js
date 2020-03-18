@@ -21,7 +21,8 @@ async function buildInformation() {
         return;
     }
 
-    const fromVersionSha = await git.raw(["describe", "--abbrev=0", "--tags", `${toVersionSha}^`]);
+    const rawFromVersionSha = await git.raw(["describe", "--abbrev=0", "--tags", `${toVersionSha}^`]);
+    const fromVersionSha = rawFromVersionSha.split("\n")[0];
 
     const rawCommits = await git.raw(["log", "--pretty=format:%H|%s", `${fromVersionSha}..${toVersionSha}`]);
     const commits = rawCommits.split("\n")
