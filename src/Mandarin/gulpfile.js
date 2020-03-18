@@ -7,7 +7,7 @@ async function buildInformation() {
     const fs = require("fs");
     const packageJson = require("./package.json");
 
-    const toVersionSha = process.env["$GITHUB_REF"];
+    const toVersionSha = process.env["GITHUB_REF"];
     const buildNumber = process.env["GITHUB_RUN_ID"];
 
     if (!toVersionSha || !buildNumber)
