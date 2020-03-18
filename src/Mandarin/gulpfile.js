@@ -7,7 +7,7 @@ async function buildInformation() {
     const fs = require("fs");
     const packageJson = require("./package.json");
 
-    const toVersionSha = process.env["GITHUB_REF"];
+    const toVersionSha = process.env["GITHUB_SHA"];
     const buildNumber = process.env["GITHUB_RUN_ID"];
 
     if (!toVersionSha || !buildNumber)
@@ -15,7 +15,7 @@ async function buildInformation() {
         fancyLog.warn("Not running on GitHub CI.");
         fancyLog.info("To run locally, please set the following environment variables:");
         if (!toVersionSha)
-            fancyLog.info(" - GITHUB_REF = [Current Tag]")
+            fancyLog.info(" - GITHUB_SHA = [Current Tag]")
         if (!buildNumber)
             fancyLog.info(" - GITHUB_RUN_ID = [Github Action run identifier]")
         return;
