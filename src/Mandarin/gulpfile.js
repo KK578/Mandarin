@@ -7,22 +7,22 @@ async function buildInformation() {
     const fs = require("fs");
     const packageJson = require("./package.json");
 
-    const fromVersionSha = process.env["GitVersion_VersionSourceSha"];
-    const toVersionSha = process.env["GitVersion_Sha"];
+    const toVersionSha = process.env["GITHUB_SHA"];
     const buildNumber = process.env["GITHUB_RUN_ID"];
 
-    if (!fromVersionSha || !toVersionSha || !buildNumber)
+    if (!toVersionSha || !buildNumber)
     {
         fancyLog.warn("Not running on GitHub CI.");
         fancyLog.info("To run locally, please set the following environment variables:");
-        if (!fromVersionSha)
-            fancyLog.info(" - GitVersion_VersionSourceSha = [From Version SHA]");
         if (!toVersionSha)
-            fancyLog.info(" - GitVersion_Sha = [To Version SHA]")
+            fancyLog.info(" - GITHUB_SHA = [Current Tag]")
         if (!buildNumber)
             fancyLog.info(" - GITHUB_RUN_ID = [Github Action run identifier]")
         return;
     }
+
+    const rawFromVersionSha = await git.raw(["describe", "--abbrev=0", "--tags", `${toVersionSha}^`]);
+    const fromVersionSha = rawFromVersionSha.split("\n")[0];
 
     const rawCommits = await git.raw(["log", "--pretty=format:%H|%s", `${fromVersionSha}..${toVersionSha}`]);
     const commits = rawCommits.split("\n")
