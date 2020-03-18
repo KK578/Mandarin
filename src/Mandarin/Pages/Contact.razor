@@ -1,3 +1,59 @@
 ﻿@page "/contact"
+@using Mandarin.Controllers
+@inject IEmailService EmailService;
 
-<h1>Contact Us.</h1>
+@if (submitSuccessful)
+{
+  <MandarinText>Thank you for your message!</MandarinText>
+}
+else
+{
+  <MandarinText>Feel free to contact us through this form and we will get back to you as soon as we can.</MandarinText>
+
+  <EditForm Model="@model" class="mx-auto w-4/5" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="name">Name</label>
+      <InputText class="@InputClass" id="name" placeholder="Your name..." @bind-Value="model.Name" />
+      <ValidationMessage class="text-grey-medium" For="@(() => model.Name)" />
+    </div>
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="email">Email</label>
+      <InputText class="@InputClass" id="email" placeholder="Your email..." @bind-Value="model.Email" />
+      <ValidationMessage For="@(() => model.Email)" />
+    </div>
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="reason">Reason</label>
+      <InputText class="@InputClass" id="reason" placeholder="Reason for contacting us..." @bind-Value="model.Reason" />
+      <ValidationMessage For="@(() => model.Reason)" />
+    </div>
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="comment">Comment</label>
+      <InputTextArea class="@Contact.InputClass" id="comment" placeholder="Your comment here." @bind-Value="model.Comment" />
+      <ValidationMessage For="@(() => model.Comment)" />
+    </div>
+
+    <div class="mt-3 text-left">
+      <button class="bg-gold duration-200 ease-in-out focus:outline-none focus:shadow-outline font-bold hover:opacity-75 px-4 py-2 rounded text-white transition-opacity"
+              type="submit">
+        Sign In
+      </button>
+    </div>
+
+  </EditForm>
+}
+
+@code
+{
+    private const string InputClass = "appearance-none border-2 border-grey-light focus:border-gold focus:outline-none focus:bg-white bg-grey-light transition-colors duration-200 ease-in-out leading-tight px-4 py-2 rounded text-grey-medium w-full";
+  private readonly ContactDetailsModel model = new ContactDetailsModel();
+
+  private bool submitSuccessful = false;
+
+  private async Task Submit()
+  {
+    var response = await EmailService.SendEmailAsync();
+    submitSuccessful = true;
+  }
+}

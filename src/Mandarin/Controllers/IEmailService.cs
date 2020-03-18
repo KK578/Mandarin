@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Mandarin.Controllers
 {
     public interface IEmailService
     {
-        EmailResponse SendEmailAsync();
+        Task<EmailResponse> SendEmailAsync();
     }
 
     internal sealed class EmailService : IEmailService
     {
-        public EmailResponse SendEmailAsync()
+        public Task<EmailResponse> SendEmailAsync()
         {
-            return new EmailResponse(StatusCodes.Status202Accepted);
+            return Task.FromResult(new EmailResponse(StatusCodes.Status202Accepted));
         }
     }
 }

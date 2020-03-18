@@ -22,7 +22,7 @@ namespace Mandarin.Controllers
                 return this.BadRequest(this.ModelState);
             }
 
-            var response = this.emailService.SendEmailAsync();
+            var response = await this.emailService.SendEmailAsync();
             return this.StatusCode(response.StatusCode);
         }
     }
