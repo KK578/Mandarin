@@ -1,5 +1,8 @@
-using Mandarin.Controllers;
+using System;
+using System.Linq;
 using Mandarin.Elastic;
+using Mandarin.Services;
+using Mandarin.Services.Email;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +30,7 @@ namespace Mandarin
         /// Currently this includes:
         /// <list type="bullet">
         /// <item><term>Razor Pages</term></item>
+        /// <item><term>Http Client</term></item>
         /// <item><term>Server Side Blazor</term></item>
         /// <item><term>View Models</term></item>
         /// </list>
@@ -40,6 +44,12 @@ namespace Mandarin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddHttpClient("base",
+                                   o =>
+                                   {
+                                       var url = this.configuration["ASPNETCORE_URLS"].Split(",").First();
+                                       o.BaseAddress = new Uri(url);
+                                   });
             services.AddServerSideBlazor();
 
             services.AddMandarinViewModels();
