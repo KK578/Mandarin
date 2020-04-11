@@ -43,9 +43,9 @@ namespace Mandarin.Services.Email
             return email;
         }
 
-        public async Task<EmailResponse> SendEmailAsync(SendGridMessage sendGridMessage)
+        public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
         {
-            var response = await this.sendGridClient.SendEmailAsync(sendGridMessage);
+            var response = await this.sendGridClient.SendEmailAsync(email);
             var bodyContent = await response.Body.ReadAsStringAsync();
             this.logger.LogInformation("SendGrid SendEmail: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
             return new EmailResponse((int)response.StatusCode);
