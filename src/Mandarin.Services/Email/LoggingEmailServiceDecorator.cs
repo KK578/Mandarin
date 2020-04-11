@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mandarin.Models;
+using Mandarin.Models.Contact;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 

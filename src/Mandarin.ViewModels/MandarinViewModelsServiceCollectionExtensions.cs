@@ -1,5 +1,6 @@
 ﻿using Mandarin.ViewModels.Artists;
 using Mandarin.ViewModels.Components.Navigation;
+using Mandarin.ViewModels.Contact;
 using Mandarin.ViewModels.Index;
 using Mandarin.ViewModels.Index.Carousel;
 using Mandarin.ViewModels.Index.MandarinMap;
@@ -23,6 +24,8 @@ namespace Mandarin.ViewModels
             services.AddSingleton<IArtistsPageViewModel, ArtistsPageViewModel>();
 
             services.AddSingleton<IMiniMandarinPageViewModel, MiniMandarinPageViewModel>();
+
+            services.AddTransient<IContactPageViewModel, ContactPageViewModel>();
         }
     }
 }

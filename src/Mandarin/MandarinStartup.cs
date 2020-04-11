@@ -1,5 +1,5 @@
 using Mandarin.Elastic;
-using Mandarin.Services.Email;
+using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,10 +43,8 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
-            services.AddSendGridClient(this.configuration);
-            services.AddSingleton<IEmailService, SendGridEmailService>();
-            services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
         }
 
         /// <summary>

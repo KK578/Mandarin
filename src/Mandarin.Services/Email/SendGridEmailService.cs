@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Threading.Tasks;
-using Mandarin.Extensions;
-using Mandarin.Models;
+using Bashi.Core.Enums;
+using Mandarin.Models.Contact;
 using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -21,6 +22,8 @@ namespace Mandarin.Services.Email
 
         public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
         {
+            Validator.ValidateObject(model, new ValidationContext(model));
+
             var email = new SendGridMessage();
             email.From = new EmailAddress(model.Email);
             email.Subject = model.Name + " - " + model.Reason.GetDescription();

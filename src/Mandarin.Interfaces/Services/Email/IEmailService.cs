@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Mandarin.Models;
+using Mandarin.Models.Contact;
 using SendGrid.Helpers.Mail;
 
 namespace Mandarin.Services.Email

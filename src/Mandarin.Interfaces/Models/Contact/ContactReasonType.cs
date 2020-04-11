@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Mandarin.Models
+namespace Mandarin.Models.Contact
 {
     public enum ContactReasonType
     {

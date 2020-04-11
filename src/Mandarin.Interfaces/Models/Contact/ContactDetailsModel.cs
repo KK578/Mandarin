@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using BlazorInputFile;
 
-namespace Mandarin.Models
+namespace Mandarin.Models.Contact
 {
     public class ContactDetailsModel : IValidatableObject
     {
