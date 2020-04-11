@@ -2,18 +2,21 @@
 using System.Threading.Tasks;
 using Mandarin.Extensions;
 using Mandarin.Models;
+using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace Mandarin.Services.Email
 {
-    internal sealed class EmailService : IEmailService
+    internal sealed class SendGridEmailService : IEmailService
     {
+        private readonly ILogger<SendGridEmailService> logger;
         private readonly ISendGridClient sendGridClient;
 
-        public EmailService()
+        public SendGridEmailService(ISendGridClient sendGridClient, ILogger<SendGridEmailService> logger)
         {
-            this.sendGridClient = new SendGridClient("");
+            this.logger = logger;
+            this.sendGridClient = sendGridClient;
         }
 
         public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
@@ -40,6 +43,8 @@ namespace Mandarin.Services.Email
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage sendGridMessage)
         {
             var response = await this.sendGridClient.SendEmailAsync(sendGridMessage);
+            var bodyContent = await response.Body.ReadAsStringAsync();
+            this.logger.LogInformation("SendGrid SendEmail: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
             return new EmailResponse((int)response.StatusCode);
         }
     }

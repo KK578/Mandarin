@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using Mandarin.Elastic;
-using Mandarin.Services;
 using Mandarin.Services.Email;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -44,16 +41,12 @@ namespace Mandarin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddHttpClient("base",
-                                   o =>
-                                   {
-                                       var url = this.configuration["ASPNETCORE_URLS"].Split(",").First();
-                                       o.BaseAddress = new Uri(url);
-                                   });
             services.AddServerSideBlazor();
 
             services.AddMandarinViewModels();
-            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSendGridClient(this.configuration);
+            services.AddSingleton<IEmailService, SendGridEmailService>();
+            services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
         }
 
         /// <summary>
