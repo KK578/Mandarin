@@ -22,7 +22,7 @@ namespace Mandarin.Services.Email
 
         public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
         {
-            Validator.ValidateObject(model, new ValidationContext(model));
+            Validator.ValidateObject(model, new ValidationContext(model), true);
 
             var email = new SendGridMessage();
             email.From = new EmailAddress(model.Email);

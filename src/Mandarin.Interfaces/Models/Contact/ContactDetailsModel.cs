@@ -19,7 +19,7 @@ namespace Mandarin.Models.Contact
         [MaxLength(2500, ErrorMessage = "The Comment field must not be longer than 2500 characters.")]
         public string Comment { get; set; }
 
-        public List<IFileListEntry> Attachments { get; set; }
+        public List<IFileListEntry> Attachments { get; set; } = new List<IFileListEntry>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

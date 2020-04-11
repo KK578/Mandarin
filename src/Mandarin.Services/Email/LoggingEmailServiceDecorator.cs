@@ -22,21 +22,23 @@ namespace Mandarin.Services.Email
             return this.emailService.BuildEmailAsync(model);
         }
 
-        public Task<EmailResponse> SendEmailAsync(SendGridMessage email)
+        public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
         {
             this.logger.LogInformation("Sending Email: From={From}, Subject={Subject}, Content={Content}, Attachments={Attachments}",
                                        email.From.Email,
                                        email.Subject,
                                        email.PlainTextContent,
-                                       email.Attachments.Count);
+                                       email.Attachments?.Count);
 
             try
             {
-                return this.emailService.SendEmailAsync(email);
+                return await this.emailService.SendEmailAsync(email);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Exception whilst attempting to send email on behalf of {From}.", email.From.Email);
+                this.logger.LogError(ex,
+                                     "Exception whilst attempting to send email on behalf of {From}.",
+                                     email.From.Email);
                 throw;
             }
         }
