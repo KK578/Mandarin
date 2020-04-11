@@ -1,9 +1,10 @@
 ﻿@page "/contact"
 @using Mandarin.Services.Email
 @using Mandarin.Models
-@using System.Reflection
-@using System.ComponentModel
+@using Mandarin.Extensions
+@using Microsoft.Extensions.Logging
 @inject IEmailService EmailService;
+@inject ILogger<Contact> Logger;
 
 @if (submitSuccessful)
 {
@@ -31,7 +32,7 @@ else
       <InputSelect class="@Contact.InputClass" id="reason" placeholder="Reason for contacting us..." @bind-Value="model.Reason">
         @foreach (var value in Enum.GetValues(typeof(ContactReasonType)).Cast<ContactReasonType>())
         {
-          <option value="@value">@Contact.GetDescription(value)</option>
+          <option value="@value">@value.GetDescription()</option>
         }
       </InputSelect>
       <ValidationMessage For="@(() => model.Reason)" />
@@ -51,6 +52,11 @@ else
     </div>
 
     <div class="mt-3 text-left">
+      <InputFile OnChange="this.OnFileChange" multiple></InputFile>
+      <ValidationMessage For="@(() => model.Attachments)" />
+    </div>
+
+    <div class="mt-3 text-left">
       @if (submitException != null)
       {
         <MandarinText>Sorry something went wrong... Try again in a moment.</MandarinText>
@@ -67,6 +73,7 @@ else
 @code
 {
   private const string InputClass = "appearance-none border-2 border-grey-light focus:border-gold focus:outline-none focus:bg-white bg-grey-light transition-colors duration-200 ease-in-out leading-tight px-4 py-2 rounded text-grey-medium w-full";
+
   private readonly ContactDetailsModel model = new ContactDetailsModel();
 
   private bool submitSuccessful;
@@ -76,7 +83,8 @@ else
   {
     try
     {
-      var response = await EmailService.SendEmailAsync();
+      var email = await EmailService.BuildEmailAsync(model);
+      var response = await EmailService.SendEmailAsync(email);
       if (response.IsSuccess)
       {
         submitSuccessful = true;
@@ -88,18 +96,9 @@ else
     }
   }
 
-  private static string GetDescription(ContactReasonType value)
+  private void OnFileChange(IFileListEntry[] files)
   {
-    var type = typeof(ContactReasonType);
-    var enumName = Enum.GetName(typeof(ContactReasonType), value);
-    if (enumName == null)
-      return value.ToString();
-
-    var member = type.GetMember(enumName).FirstOrDefault();
-    var attribute = member?.GetCustomAttribute<DescriptionAttribute>();
-    if (attribute == null)
-      return value.ToString();
-
-    return attribute.Description;
+    model.Attachments = files.ToList();
   }
+
 }
