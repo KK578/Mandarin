@@ -21,37 +21,25 @@ namespace Mandarin.Tests.Pages
         }
 
         [Test]
-        public async Task GetIndex_ShouldRenderHomePage()
+        [TestCase("/", "We hope to see you soon!")]
+        [TestCase("/the-mini-mandarin", "The Mini Mandarin also has a range of sweet snacks and drinks from Asia to enjoy!")]
+        [TestCase("/contact", "Feel free to contact us through this form and we will get back to you as soon as we can.")]
+        public async Task BasicRenderTest_ShouldBeAbleToRenderRoute_AndFindSimpleStaticContentOnPage(
+            string route,
+            string expected)
         {
             // Arrange
             var client = this.factory.CreateClient();
 
             // Act
-            var response = await client.GetAsync("/");
+            var response = await client.GetAsync(route);
 
             // Assert
             Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
             Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
 
-            var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("We hope to see you soon!"));
-        }
-
-        [Test]
-        public async Task GetMiniMandarin_ShouldRenderMiniMandarinPage()
-        {
-            // Arrange
-            var client = this.factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync("/the-mini-mandarin");
-
-            // Assert
-            Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
-            Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
-
-            var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("bear shaped macarons!"));
+            var pageContent = await response.Content.ReadAsStringAsync();
+            Assert.That(pageContent, Contains.Substring(expected));
         }
 
         [Test]

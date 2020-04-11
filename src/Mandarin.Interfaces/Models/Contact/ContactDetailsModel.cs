@@ -13,10 +13,10 @@ namespace Mandarin.Models.Contact
 
         [Required] public ContactReasonType Reason { get; set; }
 
-        [MaxLength(100, ErrorMessage = "Maximum 100 characters.")]
+        [MaxLength(100, ErrorMessage = "The Other Reason field must not be longer than 100 characters.")]
         public string AdditionalReason { get; set; }
 
-        [MaxLength(2500, ErrorMessage = "Maximum 2500 characters.")]
+        [MaxLength(2500, ErrorMessage = "The Comment field must not be longer than 2500 characters.")]
         public string Comment { get; set; }
 
         public List<IFileListEntry> Attachments { get; set; }
@@ -25,7 +25,7 @@ namespace Mandarin.Models.Contact
         {
             if (this.Reason == ContactReasonType.NotSelected)
             {
-                yield return new ValidationResult("Please select a contact reason.", new[] { nameof(this.Reason) });
+                yield return new ValidationResult("The Reason field must not be left unselected.", new[] { nameof(this.Reason) });
             }
 
             if (this.Reason == ContactReasonType.Other && string.IsNullOrWhiteSpace(this.AdditionalReason))
