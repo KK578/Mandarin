@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using BlazorInputFile;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Email;
 using Mandarin.ViewModels.Contact;
@@ -21,6 +23,14 @@ namespace Mandarin.ViewModels.Tests.Contact
         {
             this.emailService = new Mock<IEmailService>();
             this.subject = new ContactPageViewModel(this.emailService.Object);
+        }
+
+        [Test]
+        public async Task OnFileChange_SetsModelAttachments()
+        {
+            var attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>() };
+            this.subject.OnFileChange(attachments);
+            Assert.That(this.subject.Model.Attachments, Is.EqualTo(attachments).AsCollection);
         }
 
         [Test]

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using BlazorInputFile;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Email;
 
@@ -17,6 +20,11 @@ namespace Mandarin.ViewModels.Contact
         {
             this.emailService = emailService;
             this.Model = new ContactDetailsModel();
+        }
+
+        public void OnFileChange(IEnumerable<IFileListEntry> files)
+        {
+            this.Model.Attachments = files.ToList();
         }
 
         public async Task SubmitAsync()
