@@ -28,7 +28,7 @@ namespace Mandarin.Services.Email
                                        email.From.Email,
                                        email.Subject,
                                        email.PlainTextContent,
-                                       email.Attachments?.Count);
+                                       email.Attachments?.Count ?? 0);
 
             try
             {

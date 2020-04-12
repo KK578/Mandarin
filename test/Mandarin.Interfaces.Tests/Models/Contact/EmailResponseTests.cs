@@ -7,6 +7,7 @@ namespace Mandarin.Interfaces.Tests.Models.Contact
     public class EmailResponseTests
     {
         [Test]
+        [TestCase(101, false)]
         [TestCase(200, true)]
         [TestCase(204, true)]
         [TestCase(304, true)]

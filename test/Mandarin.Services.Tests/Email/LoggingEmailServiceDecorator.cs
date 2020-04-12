@@ -27,21 +27,39 @@ namespace Mandarin.Services.Tests.Email
         }
 
         [Test]
-        public void SendEmailAsync_WhenSuccessful_IsFallthrough()
+        public void SendEmailAsync_WhenSuccessful_WritesLogCorrectly()
         {
             var email = new SendGridMessage();
             email.SetFrom("SomeEmail@address.com");
             email.Subject = "Hello";
             email.PlainTextContent = "Content";
 
-            var service = Mock.Of<IEmailService>(x => x.SendEmailAsync(It.IsAny<SendGridMessage>()) == Task.FromResult(new EmailResponse(200)));
+            var service = Mock.Of<IEmailService>();
             var logger = new TestableLogger<IEmailService>();
             var subject = new LoggingEmailServiceDecorator(service, logger);
             subject.SendEmailAsync(email);
 
             Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
-            Assert.That(logger.LogEntries[0].Message, Is.EqualTo("Sending Email: From=SomeEmail@address.com, Subject=Hello, Content=Content, Attachments=(null)"));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("From=SomeEmail@address.com"));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Subject=Hello"));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Content=Content"));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Attachments=0"));
+        }
 
+        [Test]
+        public void SendEmailAsync_WhenSuccessfulWithAttachment_WritesLogCorrectly()
+        {
+            var email = new SendGridMessage();
+            email.SetFrom("SomeEmail@address.com");
+            email.AddAttachment("FileName", "Content");
+
+            var service = Mock.Of<IEmailService>();
+            var logger = new TestableLogger<IEmailService>();
+            var subject = new LoggingEmailServiceDecorator(service, logger);
+            subject.SendEmailAsync(email);
+
+            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Attachments=1"));
         }
 
         [Test]

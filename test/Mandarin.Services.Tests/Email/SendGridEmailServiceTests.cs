@@ -58,6 +58,25 @@ namespace Mandarin.Services.Tests.Email
         }
 
         [Test]
+        public async Task BuildEmailAsync_GivenValidModel_WhenReasonIsOther_ShouldUseAdditionalReason()
+        {
+            var model = new ContactDetailsModel
+            {
+                Name = "My Name",
+                Email = "MyValid@Email.com",
+                Reason = ContactReasonType.Other,
+                AdditionalReason = "My Special Reason",
+                Comment = "My extra long comment."
+            };
+
+            var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), NullLogger<SendGridEmailService>.Instance);
+            var result = await subject.BuildEmailAsync(model);
+
+            Assert.That(result.Subject, Is.EqualTo("My Name - Other (My Special Reason)"));
+            Assert.That(result.PlainTextContent, Contains.Substring("Reason: My Special Reason"));
+        }
+
+        [Test]
         public async Task BuildEmailAsync_GivenAttachment_ShouldCopyDataFromStream()
         {
             var data = new MemoryStream(Encoding.ASCII.GetBytes("Attachment"));

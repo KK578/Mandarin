@@ -26,7 +26,7 @@ namespace Mandarin.Services.Email
 
             var email = new SendGridMessage();
             email.From = new EmailAddress(model.Email);
-            email.Subject = model.Name + " - " + model.Reason.GetDescription();
+            email.Subject = $"{model.Name} - {(model.Reason == ContactReasonType.Other ? $"Other ({model.AdditionalReason})" : model.Reason.GetDescription())}";
 
             foreach (var attachment in model.Attachments)
             {
