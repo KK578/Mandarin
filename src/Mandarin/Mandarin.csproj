@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.1.0-preview-00002" />
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.4.0" />
-    <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.4.4" />
+    <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.0" />
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.4.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
