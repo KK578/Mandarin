@@ -6,6 +6,6 @@ namespace Mandarin.Services.Fruity
 {
     public interface IArtistService
     {
-        public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetails();
+        public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync();
     }
 }

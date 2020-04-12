@@ -49,7 +49,7 @@ namespace Mandarin.Tests.Pages
                                        null)
             }.AsReadOnly();
             var artistsService = new Mock<IArtistService>();
-            artistsService.Setup(x => x.GetArtistDetails()).ReturnsAsync(data);
+            artistsService.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data);
             this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterServices)).CreateClient();
 
             void RegisterServices(IServiceCollection s)

@@ -17,7 +17,7 @@ namespace Mandarin.ViewModels.Tests.Artists
             // Arrange
             var data = new List<ArtistDetailsModel> { TestData.Create<ArtistDetailsModel>() }.AsReadOnly();
             var artistsService = new Mock<IArtistService>();
-            artistsService.Setup(x => x.GetArtistDetails()).ReturnsAsync(data);
+            artistsService.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data);
 
             // Act
             var subject = new ArtistsPageViewModel(artistsService.Object);

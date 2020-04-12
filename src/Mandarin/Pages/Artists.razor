@@ -2,12 +2,19 @@
 @using Mandarin.ViewModels.Artists
 @inject IArtistsPageViewModel ViewModel
 
-@for (var i = 0; i < @ViewModel.ViewModels.Count; i++)
+@if (ViewModel.IsLoading)
 {
-  if (i != 0)
+  <MandarinText>Just a moment...</MandarinText>
+}
+else
+{
+  @for (var i = 0; i < @ViewModel.ViewModels.Count; i++)
   {
-    <MandarinBar class="my-8" />
-  }
+    if (i != 0)
+    {
+      <MandarinBar class="my-8" />
+    }
 
-  <MandarinArtist ViewModel="@ViewModel.ViewModels[i]" />
+    <MandarinArtist ViewModel="@ViewModel.ViewModels[i]" />
+  }
 }

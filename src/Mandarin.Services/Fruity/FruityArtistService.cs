@@ -19,7 +19,7 @@ namespace Mandarin.Services.Fruity
             this.serializer = new JsonSerializer();
         }
 
-        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetails()
+        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
             var response = await this.httpClient.GetAsync("/api/stockists");
             var stream = await response.Content.ReadAsStreamAsync();

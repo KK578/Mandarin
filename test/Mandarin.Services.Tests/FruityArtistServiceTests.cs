@@ -78,7 +78,7 @@ namespace Mandarin.Services.Tests
         private Task<IReadOnlyList<ArtistDetailsModel>> WhenGetArtistDetail()
         {
             var subject = new FruityArtistService(this.httpClient);
-            return subject.GetArtistDetails();
+            return subject.GetArtistDetailsAsync();
         }
     }
 }
