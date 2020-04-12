@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Mandarin.Services.Fruity;
 
 namespace Mandarin.ViewModels.Artists
 {
     internal sealed class ArtistsPageViewModel : IArtistsPageViewModel
     {
-        public ArtistsPageViewModel(IEnumerable<IArtistViewModel> viewModels)
+        public ArtistsPageViewModel(IArtistsService artistsService)
         {
-            this.ViewModels = viewModels.ToList().AsReadOnly();
+            var details = artistsService.GetArtistDetails().Result;
+            this.ViewModels = details.Select(x => new ArtistViewModel(x)).ToList().AsReadOnly();
         }
 
         public IReadOnlyList<IArtistViewModel> ViewModels { get; }

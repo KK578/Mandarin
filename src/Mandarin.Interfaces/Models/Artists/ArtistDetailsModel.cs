@@ -6,11 +6,11 @@ namespace Mandarin.Models.Artists
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        [Url] public string ImageUri { get; set; }
-        [Url] public string TwitterUri { get; set; }
-        [Url] public string InstagramUri { get; set; }
-        [Url] public string FacebookUri { get; set; }
-        [Url] public string TumblrUri { get; set; }
-        [Url] public string WebsiteUri { get; set; }
+        [Url] public string Image { get; set; }
+        [Url] public string Twitter { get; set; }
+        [Url] public string Instagram { get; set; }
+        [Url] public string Facebook { get; set; }
+        [Url] public string Tumblr { get; set; }
+        [Url] public string Website { get; set; }
     }
 }

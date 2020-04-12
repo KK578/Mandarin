@@ -1,5 +1,5 @@
-﻿using System;
-using Bashi.Tests.Framework.Data;
+﻿using Bashi.Tests.Framework.Data;
+using Mandarin.Models.Artists;
 using Mandarin.ViewModels.Artists;
 using NUnit.Framework;
 
@@ -12,7 +12,7 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenNoArguments_CreatesEmptyObject()
         {
             // Act
-            var subject = new ArtistViewModel();
+            var subject = new ArtistViewModel(new ArtistDetailsModel());
 
             // Assert
             Assert.That(subject.Name, Is.Null);
@@ -33,11 +33,12 @@ namespace Mandarin.ViewModels.Tests.Artists
             var description = TestData.WellKnownString;
 
             // Act
-            var subject = new ArtistViewModel
+            var model = new ArtistDetailsModel
             {
                 Name = name,
                 Description = description,
             };
+            var subject = new ArtistViewModel(model);
 
             // Assert
             Assert.That(subject.Name, Is.EqualTo(name));
@@ -47,19 +48,17 @@ namespace Mandarin.ViewModels.Tests.Artists
         [Test]
         public void Builder_GivenUri_CreatesValueCorrectly()
         {
-            // Arrange
-            var uri = new Uri($"https://{TestData.WellKnownString}");
-
             // Act
-            var subject = new ArtistViewModel
+            var model = new ArtistDetailsModel
             {
-                TwitterUrl = new Uri(uri, "/twitter"),
-                FacebookUrl = new Uri(uri, "/facebook"),
-                ImageUrl = new Uri(uri, "/image"),
-                InstagramUrl = new Uri(uri, "/instagram"),
-                TumblrUrl = new Uri(uri, "/tumblr"),
-                WebsiteUrl = new Uri(uri, "/website"),
+                Twitter = "https://localhost/twitter",
+                Facebook = "https://localhost/facebook",
+                Image = "https://localhost/image",
+                Instagram = "https://localhost/instagram",
+                Tumblr = "https://localhost/tumblr",
+                Website = "https://localhost/website",
             };
+            var subject = new ArtistViewModel(model);
 
             // Assert
             Assert.That(subject.TwitterUrl.ToString(), Contains.Substring("twitter"));
