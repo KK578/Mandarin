@@ -10,7 +10,7 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 
-namespace Mandarin.Services.Tests
+namespace Mandarin.Services.Tests.Fruity
 {
     [TestFixture]
     public class FruityArtistServiceTests
@@ -32,10 +32,10 @@ namespace Mandarin.Services.Tests
         }
 
         [Test]
-        public async Task GetArtistDetail_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
+        public async Task GetArtistDetailsAsync_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
         {
-            GivenFruityClientReturns(FruityArtistServiceTests.MinimalArtistData);
-            var artistDetails = await WhenGetArtistDetail();
+            this.GivenFruityClientReturns(FruityArtistServiceTests.MinimalArtistData);
+            var artistDetails = await this.WhenGetArtistDetail();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
             Assert.That(artistDetails[0].Description, Is.EqualTo("Artist's Description."));
@@ -48,10 +48,10 @@ namespace Mandarin.Services.Tests
         }
 
         [Test]
-        public async Task GetArtistDetail_GivenJsonDataFromService_ShouldDeserializeCorrectly()
+        public async Task GetArtistDetailsAsync_GivenJsonDataFromService_ShouldDeserializeCorrectly()
         {
-            GivenFruityClientReturns(FruityArtistServiceTests.FullArtistData);
-            var artistDetails = await WhenGetArtistDetail();
+            this.GivenFruityClientReturns(FruityArtistServiceTests.FullArtistData);
+            var artistDetails = await this.WhenGetArtistDetail();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
             Assert.That(artistDetails[0].Description, Is.EqualTo("Artist's Description."));
@@ -67,7 +67,9 @@ namespace Mandarin.Services.Tests
         {
             this.messageHandler
                 .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                                                  ItExpr.IsAny<HttpRequestMessage>(),
+                                                  ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,

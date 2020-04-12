@@ -14,6 +14,7 @@ namespace Mandarin.Services
         {
             services.AddEmailServices(configuration);
             services.AddFruityServices(configuration);
+            services.AddMemoryCache();
 
             return services;
         }
@@ -40,6 +41,7 @@ namespace Mandarin.Services
                 var options = s.GetRequiredService<IOptions<FruityClientOptions>>();
                 client.BaseAddress = new Uri(options.Value.Url);
             });
+            services.Decorate<IArtistService, CachingArtistServiceDecorator>();
         }
     }
 }
