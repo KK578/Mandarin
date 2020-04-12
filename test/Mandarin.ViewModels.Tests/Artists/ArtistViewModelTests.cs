@@ -1,4 +1,5 @@
-﻿using Bashi.Tests.Framework.Data;
+﻿using System;
+using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
 using Mandarin.ViewModels.Artists;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenNoArguments_CreatesEmptyObject()
         {
             // Act
-            var subject = new ArtistViewModel(new ArtistDetailsModel());
+            var subject = new ArtistViewModel(new ArtistDetailsModel(null, null, null, null, null, null, null, null));
 
             // Assert
             Assert.That(subject.Name, Is.Null);
@@ -33,11 +34,7 @@ namespace Mandarin.ViewModels.Tests.Artists
             var description = TestData.WellKnownString;
 
             // Act
-            var model = new ArtistDetailsModel
-            {
-                Name = name,
-                Description = description,
-            };
+            var model = new ArtistDetailsModel(name, description, null, null, null, null, null, null);
             var subject = new ArtistViewModel(model);
 
             // Assert
@@ -49,15 +46,14 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenUri_CreatesValueCorrectly()
         {
             // Act
-            var model = new ArtistDetailsModel
-            {
-                Twitter = "https://localhost/twitter",
-                Facebook = "https://localhost/facebook",
-                Image = "https://localhost/image",
-                Instagram = "https://localhost/instagram",
-                Tumblr = "https://localhost/tumblr",
-                Website = "https://localhost/website",
-            };
+            var model = new ArtistDetailsModel(null,
+                                               null,
+                                               new Uri("https://localhost/image"),
+                                               new Uri("https://localhost/twitter"),
+                                               new Uri("https://localhost/instagram"),
+                                               new Uri("https://localhost/facebook"),
+                                               new Uri("https://localhost/tumblr"),
+                                               new Uri("https://localhost/website"));
             var subject = new ArtistViewModel(model);
 
             // Assert

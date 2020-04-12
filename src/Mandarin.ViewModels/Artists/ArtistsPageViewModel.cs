@@ -6,9 +6,9 @@ namespace Mandarin.ViewModels.Artists
 {
     internal sealed class ArtistsPageViewModel : IArtistsPageViewModel
     {
-        public ArtistsPageViewModel(IArtistsService artistsService)
+        public ArtistsPageViewModel(IArtistService artistService)
         {
-            var details = artistsService.GetArtistDetails().Result;
+            var details = artistService.GetArtistDetails().Result;
             this.ViewModels = details.Select(x => new ArtistViewModel(x)).ToList().AsReadOnly();
         }
 

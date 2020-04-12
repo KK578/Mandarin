@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
@@ -28,13 +29,26 @@ namespace Mandarin.Tests.Pages
         [SetUp]
         public void SetUp()
         {
-            var model = new ArtistDetailsModel
+            var data = new List<ArtistDetailsModel>
             {
-                Name = ArtistPageIntegrationTests.ArtistName,
-                Description = TestData.WellKnownString,
-            };
-            var data = new List<ArtistDetailsModel> { model }.AsReadOnly();
-            var artistsService = new Mock<IArtistsService>();
+                new ArtistDetailsModel(ArtistPageIntegrationTests.ArtistName,
+                                       TestData.WellKnownString,
+                                       new Uri("https://localhost/image"),
+                                       new Uri("https://localhost/twitter"),
+                                       new Uri("https://localhost/instagram"),
+                                       new Uri("https://localhost/facebook"),
+                                       new Uri("https://localhost/tumblr"),
+                                       new Uri("https://localhost/website")),
+                new ArtistDetailsModel("Another Name",
+                                       "Another description",
+                                       null,
+                                       null,
+                                       null,
+                                       null,
+                                       null,
+                                       null)
+            }.AsReadOnly();
+            var artistsService = new Mock<IArtistService>();
             artistsService.Setup(x => x.GetArtistDetails()).ReturnsAsync(data);
             this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterServices)).CreateClient();
 

@@ -35,7 +35,7 @@ namespace Mandarin.Services
         private static void AddFruityServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<FruityClientOptions>(configuration.GetSection("Fruity"));
-            services.AddHttpClient<IArtistsService, FruityArtistsService>((s, client) =>
+            services.AddHttpClient<IArtistService, FruityArtistService>((s, client) =>
             {
                 var options = s.GetRequiredService<IOptions<FruityClientOptions>>();
                 client.BaseAddress = new Uri(options.Value.Url);

@@ -4,7 +4,7 @@ using Mandarin.Models.Artists;
 
 namespace Mandarin.Services.Fruity
 {
-    public interface IArtistsService
+    public interface IArtistService
     {
         public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetails();
     }
