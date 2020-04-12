@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Bashi.Tests.Framework.Data;
+using Mandarin.Models.Artists;
 using Mandarin.ViewModels.Artists;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,11 +26,12 @@ namespace Mandarin.Tests.Pages
         [SetUp]
         public void SetUp()
         {
-            this.artistViewModel = new ArtistViewModel
+            var model = new ArtistDetailsModel
             {
                 Name = "My Artist Name",
                 Description = TestData.WellKnownString,
             };
+            this.artistViewModel = new ArtistViewModel(model);
             this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterViewModels)).CreateClient();
 
             void RegisterViewModels(IServiceCollection s)

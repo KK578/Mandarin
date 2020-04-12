@@ -1,5 +1,6 @@
 ﻿using System;
 using Mandarin.Services.Email;
+using Mandarin.Services.Fruity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,23 +12,34 @@ namespace Mandarin.Services
     {
         public static IServiceCollection AddMandarinServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSendGridClient(configuration);
-            services.AddSingleton<IEmailService, SendGridEmailService>();
-            services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
+            services.AddEmailServices(configuration);
+            services.AddFruityServices(configuration);
 
             return services;
         }
 
-        private static void AddSendGridClient(this IServiceCollection services, IConfiguration configuration)
+        private static void AddEmailServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<SendGridClientOptions>(configuration.GetSection("SendGrid"));
-            services.AddSingleton(MandarinServicesServiceCollectionExtensions.CreateClient);
+            services.AddSingleton(CreateClient);
+            services.AddSingleton<IEmailService, SendGridEmailService>();
+            services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
+
+            static ISendGridClient CreateClient(IServiceProvider provider)
+            {
+                var options = provider.GetRequiredService<IOptions<SendGridClientOptions>>();
+                return new SendGridClient(options.Value);
+            }
         }
 
-        private static ISendGridClient CreateClient(IServiceProvider provider)
+        private static void AddFruityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var options = provider.GetRequiredService<IOptions<SendGridClientOptions>>();
-            return new SendGridClient(options.Value);
+            services.Configure<FruityClientOptions>(configuration.GetSection("Fruity"));
+            services.AddHttpClient<IArtistsService, FruityArtistsService>((s, client) =>
+            {
+                var options = s.GetRequiredService<IOptions<FruityClientOptions>>();
+                client.BaseAddress = new Uri(options.Value.Url);
+            });
         }
     }
 }
