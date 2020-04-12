@@ -66,12 +66,17 @@ namespace Mandarin.Tests.Pages
             var exception = new Exception("Failed to send.");
             GivenContactPageViewModelSubmissionError(exception);
             var contactPage = await WhenGetContactPage();
-            Assert.That(contactPage.DocumentElement.TextContent, Contains.Substring("Sorry something went wrong... Try again in a moment."));
+            Assert.That(contactPage.DocumentElement.TextContent,
+                        Contains.Substring("Sorry something went wrong... Try again in a moment."));
         }
 
         private void GivenContactPageViewModelReason(ContactReasonType reason) => this.model.Reason = reason;
-        private void GivenContactPageViewModelSubmissionError(Exception exception) => this.viewModel.SetupGet(x => x.SubmitException).Returns(exception);
-        private void GivenContactPageViewModelSubmissionComplete() => this.viewModel.SetupGet(x => x.LastSubmitSuccessful).Returns(true);
+
+        private void GivenContactPageViewModelSubmissionError(Exception exception) =>
+            this.viewModel.SetupGet(x => x.SubmitException).Returns(exception);
+
+        private void GivenContactPageViewModelSubmissionComplete() =>
+            this.viewModel.SetupGet(x => x.LastSubmitSuccessful).Returns(true);
 
         private async Task<IDocument> WhenGetContactPage()
         {
