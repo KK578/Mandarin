@@ -1,12 +1,14 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
-using Mandarin.ViewModels.Artists;
+using Mandarin.Services.Fruity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
@@ -16,7 +18,7 @@ namespace Mandarin.Tests.Pages
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private HttpClient client;
-        private IArtistViewModel artistViewModel;
+        private const string ArtistName = "Artist Name";
 
         public ArtistPageIntegrationTests()
         {
@@ -28,16 +30,17 @@ namespace Mandarin.Tests.Pages
         {
             var model = new ArtistDetailsModel
             {
-                Name = "My Artist Name",
+                Name = ArtistPageIntegrationTests.ArtistName,
                 Description = TestData.WellKnownString,
             };
-            this.artistViewModel = new ArtistViewModel(model);
-            this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterViewModels)).CreateClient();
+            var data = new List<ArtistDetailsModel> { model }.AsReadOnly();
+            var artistsService = new Mock<IArtistsService>();
+            artistsService.Setup(x => x.GetArtistDetails()).ReturnsAsync(data);
+            this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterServices)).CreateClient();
 
-            void RegisterViewModels(IServiceCollection s)
+            void RegisterServices(IServiceCollection s)
             {
-                s.AddSingleton(this.artistViewModel);
-                s.AddSingleton<IArtistViewModel>(TestData.Create<ArtistViewModel>());
+                s.AddSingleton(artistsService.Object);
             }
         }
 
@@ -45,7 +48,7 @@ namespace Mandarin.Tests.Pages
         public async Task GetArtists_ShouldRenderRegisteredArtistViewModels()
         {
             var artistPage = await this.WhenGetArtistPage();
-            Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(this.artistViewModel.Name));
+            Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(ArtistPageIntegrationTests.ArtistName));
             Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(TestData.WellKnownString));
         }
 
