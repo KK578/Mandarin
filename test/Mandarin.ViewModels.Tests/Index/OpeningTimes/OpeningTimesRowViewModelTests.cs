@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Mandarin.ViewModels.Index.OpeningTimes;
 using NUnit.Framework;

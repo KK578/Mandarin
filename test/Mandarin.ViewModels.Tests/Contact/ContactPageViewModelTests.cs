@@ -26,7 +26,7 @@ namespace Mandarin.ViewModels.Tests.Contact
         }
 
         [Test]
-        public async Task OnFileChange_SetsModelAttachments()
+        public void OnFileChange_SetsModelAttachments()
         {
             var attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>() };
             this.subject.OnFileChange(attachments);
