@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorInputFile" Version="0.1.0-preview-00002" />
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.4.0" />
     <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.4.4" />
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.4.4" />
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
+    <ProjectReference Include="..\Mandarin.Services\Mandarin.Services.csproj" />
     <ProjectReference Include="..\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
   </ItemGroup>
 

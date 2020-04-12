@@ -1,9 +1,9 @@
+using System.Net.Http;
 using System.Threading.Tasks;
-using Bashi.Tests.Framework.Data;
-using Mandarin.ViewModels.Artists;
+using AngleSharp;
+using AngleSharp.Dom;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
@@ -13,6 +13,7 @@ namespace Mandarin.Tests.Pages
     public class GetPageIntegrationTests
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
+        private HttpClient client;
 
         public GetPageIntegrationTests(string environment)
         {
@@ -20,67 +21,32 @@ namespace Mandarin.Tests.Pages
                 .WithWebHostBuilder(b => b.UseEnvironment(environment));
         }
 
-        [Test]
-        public async Task GetIndex_ShouldRenderHomePage()
+        [SetUp]
+        public void SetUp()
         {
-            // Arrange
-            var client = this.factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync("/");
-
-            // Assert
-            Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
-            Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
-
-            var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("We hope to see you soon!"));
+            this.client = this.factory.CreateClient();
         }
 
         [Test]
-        public async Task GetMiniMandarin_ShouldRenderMiniMandarinPage()
+        [TestCase("/", "We hope to see you soon!")]
+        [TestCase("/the-mini-mandarin", "The Mini Mandarin also has a range of sweet snacks and drinks from Asia to enjoy!")]
+        [TestCase("/contact", "Feel free to contact us through this form and we will get back to you as soon as we can.")]
+        public async Task BasicRenderTest_ShouldBeAbleToRenderRoute_AndFindSimpleStaticContentOnPage(
+            string route,
+            string expected)
         {
-            // Arrange
-            var client = this.factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync("/the-mini-mandarin");
-
-            // Assert
-            Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
-            Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
-
-            var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("bear shaped macarons!"));
+            var document = await WhenGetPage(route);
+            Assert.That(document.DocumentElement.TextContent, Contains.Substring(expected));
         }
 
-        [Test]
-        public async Task GetArtists_ShouldRenderArtistsPage()
+        private async Task<IDocument> WhenGetPage(string path)
         {
-            // Arrange
-            var client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterViewModels)).CreateClient();
-
-            // Act
-            var response = await client.GetAsync("/artists");
-
-            // Assert
+            var response = await this.client.GetAsync(path);
+            var content = await response.Content.ReadAsStringAsync();
             Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing);
             Assert.That(response.Content.Headers.ContentType.MediaType, Contains.Substring("text/html"));
-
-            var pageResponse = await response.Content.ReadAsStringAsync();
-            Assert.That(pageResponse, Contains.Substring("My Artist Name"));
-            Assert.That(pageResponse, Contains.Substring(TestData.WellKnownString));
-
-
-            static void RegisterViewModels(IServiceCollection s)
-            {
-                s.AddSingleton<IArtistViewModel>(new ArtistViewModel
-                {
-                    Name = "My Artist Name",
-                    Description = TestData.WellKnownString,
-                });
-                s.AddSingleton<IArtistViewModel>(TestData.Create<ArtistViewModel>());
-            }
+            var document = await BrowsingContext.New().OpenAsync(req => req.Content(content));
+            return document;
         }
     }
 }

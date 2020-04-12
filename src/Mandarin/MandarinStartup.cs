@@ -1,4 +1,5 @@
 using Mandarin.Elastic;
+using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace Mandarin
         /// Currently this includes:
         /// <list type="bullet">
         /// <item><term>Razor Pages</term></item>
+        /// <item><term>Http Client</term></item>
         /// <item><term>Server Side Blazor</term></item>
         /// <item><term>View Models</term></item>
         /// </list>
@@ -41,6 +43,7 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }
 
@@ -75,6 +78,8 @@ namespace Mandarin
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

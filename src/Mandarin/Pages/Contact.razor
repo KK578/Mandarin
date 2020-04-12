@@ -1,3 +1,76 @@
 ﻿@page "/contact"
+@using Bashi.Core.Enums
+@using Mandarin.Models.Contact
+@using Mandarin.ViewModels.Contact
+@inject IContactPageViewModel ViewModel;
 
-<h1>Contact Us.</h1>
+@if (ViewModel.LastSubmitSuccessful)
+{
+  <MandarinText>Thank you for your message!</MandarinText>
+}
+else
+{
+  <MandarinText>Feel free to contact us through this form and we will get back to you as soon as we can.</MandarinText>
+
+  <EditForm Model="@ViewModel.Model" class="mx-auto w-4/5" OnValidSubmit="ViewModel.SubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="name">Name</label>
+      <InputText class="@Contact.InputClass" id="name" placeholder="Your name..." @bind-Value="ViewModel.Model.Name" />
+      <ValidationMessage class="text-grey-medium" For="@(() => ViewModel.Model.Name)" />
+    </div>
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="email">Email</label>
+      <InputText class="@Contact.InputClass" id="email" placeholder="Your email..." @bind-Value="ViewModel.Model.Email" />
+      <ValidationMessage For="@(() => ViewModel.Model.Email)" />
+    </div>
+
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="reason">Reason</label>
+      <InputSelect class="@Contact.InputClass" id="reason" placeholder="Reason for contacting us..." @bind-Value="ViewModel.Model.Reason">
+        @foreach (var value in Enum.GetValues(typeof(ContactReasonType)).Cast<ContactReasonType>())
+        {
+          <option value="@value">@value.GetDescription()</option>
+        }
+      </InputSelect>
+      <ValidationMessage For="@(() => ViewModel.Model.Reason)" />
+    </div>
+    @if (ViewModel.Model.Reason == ContactReasonType.Other)
+    {
+      <div class="mt-3 text-left">
+        <label class="text-grey-normal" for="otherReason">Other Reason</label>
+        <InputText class="@Contact.InputClass" id="otherReason" placeholder="Other reason..." @bind-Value="ViewModel.Model.AdditionalReason" />
+        <ValidationMessage For="@(() => ViewModel.Model.AdditionalReason)" />
+      </div>
+    }
+
+    <div class="mt-3 text-left">
+      <label class="text-grey-normal" for="comment">Comment</label>
+      <InputTextArea class="@Contact.InputClass" id="comment" placeholder="Your comment here." @bind-Value="ViewModel.Model.Comment" />
+      <ValidationMessage For="@(() => ViewModel.Model.Comment)" />
+    </div>
+
+    <div class="mt-3 text-left">
+      <InputFile OnChange="@ViewModel.OnFileChange" multiple></InputFile>
+      <ValidationMessage For="@(() => ViewModel.Model.Attachments)" />
+    </div>
+
+    <div class="mt-3 text-left">
+      @if (ViewModel.SubmitException != null)
+      {
+        <MandarinText>Sorry something went wrong... Try again in a moment.</MandarinText>
+      }
+      <button class="bg-gold duration-200 ease-in-out focus:outline-none focus:shadow-outline font-bold hover:opacity-75 px-4 py-2 rounded text-white transition-opacity"
+              type="submit">
+        Submit
+      </button>
+    </div>
+
+  </EditForm>
+}
+
+@code
+{
+  private const string InputClass = "appearance-none border-2 border-grey-light focus:border-gold focus:outline-none focus:bg-white bg-grey-light transition-colors duration-200 ease-in-out leading-tight px-4 py-2 rounded text-grey-medium w-full";
+}
