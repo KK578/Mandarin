@@ -5,7 +5,7 @@ using Mandarin.Services.Fruity;
 
 namespace Mandarin.ViewModels.Artists
 {
-    internal sealed class ArtistsPageViewModel : IArtistsPageViewModel
+    internal sealed class ArtistsPageViewModel : ViewModelBase, IArtistsPageViewModel
     {
         private readonly IArtistService artistService;
 
@@ -26,6 +26,8 @@ namespace Mandarin.ViewModels.Artists
             finally
             {
                 this.IsLoading = false;
+                this.OnPropertyChanged(nameof(this.IsLoading));
+                this.OnPropertyChanged(nameof(this.ViewModels));
             }
         }
 

@@ -21,7 +21,7 @@ namespace Mandarin.Services.Fruity
 
         public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
-            var response = await this.httpClient.GetAsync("/api/stockists");
+            var response = await this.httpClient.GetAsync("/api/stockist");
             var stream = await response.Content.ReadAsStreamAsync();
             using var reader = new StreamReader(stream);
             using var jsonReader = new JsonTextReader(reader);

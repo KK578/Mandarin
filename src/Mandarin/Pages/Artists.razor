@@ -18,3 +18,12 @@ else
     <MandarinArtist ViewModel="@ViewModel.ViewModels[i]" />
   }
 }
+
+@code {
+
+  protected override void OnInitialized()
+  {
+    ViewModel.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
+  }
+
+}
