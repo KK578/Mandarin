@@ -3,7 +3,6 @@ using Mandarin.Models.Artists;
 
 namespace Mandarin.Services.Fruity
 {
-    // TODO KK: Consider AutoMapper.
     internal static class ArtistMapper
     {
         private const string FacebookFormat = "https://facebook.com/{0}";

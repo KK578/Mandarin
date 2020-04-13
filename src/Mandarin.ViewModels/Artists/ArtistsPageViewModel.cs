@@ -12,7 +12,9 @@ namespace Mandarin.ViewModels.Artists
         public ArtistsPageViewModel(IArtistService artistService)
         {
             this.artistService = artistService;
-            var unused = this.UpdateViewModels();
+            #pragma warning disable 4014
+            this.UpdateViewModels();
+            #pragma warning restore 4014
         }
 
         private async Task UpdateViewModels()

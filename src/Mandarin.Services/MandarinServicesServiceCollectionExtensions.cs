@@ -41,6 +41,7 @@ namespace Mandarin.Services
                 var options = s.GetRequiredService<IOptions<FruityClientOptions>>();
                 client.BaseAddress = new Uri(options.Value.Url);
             });
+            services.Decorate<IArtistService, LoggingArtistServiceDecorator>();
             services.Decorate<IArtistService, CachingArtistServiceDecorator>();
         }
     }
