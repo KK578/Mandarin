@@ -29,7 +29,7 @@ namespace Mandarin.Services.Fruity
                     e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
                     return await this.artistService.GetArtistDetailsAsync();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     e.AbsoluteExpiration = DateTimeOffset.MinValue;
                     return new List<ArtistDetailsModel>().AsReadOnly();
