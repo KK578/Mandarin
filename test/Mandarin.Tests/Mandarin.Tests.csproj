@@ -13,10 +13,6 @@
     <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
     <Exclude>[Mandarin.Views]*</Exclude>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <None Update="TestData/**/*.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
@@ -33,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin\Mandarin.csproj" />
     <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
+    <ProjectReference Include="..\..\tests\Mandarin.TestData\Mandarin.TestData.csproj" />
   </ItemGroup>
 
 </Project>

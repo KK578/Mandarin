@@ -1,0 +1,12 @@
+﻿[
+  {
+    "stockist_name": "Artist Name",
+    "description": "Artist's Description.",
+    "image_url": "https://localhost/images/artist1.jpg",
+    "twitter_handle": "ArtistTwitter",
+    "instagram_handle": "ArtistInstagram",
+    "facebook_handle": "ArtistFacebook",
+    "tumblr_handle": "ArtistTumblr",
+    "website_url": "https://localhost/artist/website"
+  }
+]

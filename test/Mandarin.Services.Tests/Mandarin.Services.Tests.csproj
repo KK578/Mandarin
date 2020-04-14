@@ -22,11 +22,13 @@
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     <PackageReference Include="NunitXml.TestLogger" Version="2.1.41" />
+    <PackageReference Include="WireMock.Net" Version="1.2.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
     <ProjectReference Include="..\..\src\Mandarin.Services\Mandarin.Services.csproj" />
+    <ProjectReference Include="..\..\tests\Mandarin.TestData\Mandarin.TestData.csproj" />
   </ItemGroup>
 
 </Project>

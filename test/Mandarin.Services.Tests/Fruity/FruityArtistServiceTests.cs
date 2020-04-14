@@ -2,39 +2,41 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Fruity;
-using Moq;
-using Moq.Protected;
 using NUnit.Framework;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 namespace Mandarin.Services.Tests.Fruity
 {
     [TestFixture]
     public class FruityArtistServiceTests
     {
-        private const string MinimalArtistData = @"[{""stockist_name"": ""Artist Name"", ""description"": ""Artist's Description."", ""image_url"": ""https://localhost/images/artist1.jpg""}]";
-        private const string FullArtistData = @"[{""stockist_name"": ""Artist Name"", ""description"": ""Artist's Description."", ""image_url"": ""https://localhost/images/artist1.jpg"", ""twitter_handle"": ""ArtistTwitter"", ""instagram_handle"": ""ArtistInstagram"", ""facebook_handle"": ""ArtistFacebook"", ""tumblr_handle"": ""ArtistTumblr"", ""website_url"": ""https://localhost/artist/website"" }]";
+        private const string BaseAddress = "http://localhost:9090";
 
-        private Mock<HttpMessageHandler> messageHandler;
         private HttpClient httpClient;
+        private WireMockServer fruityMock;
 
         [SetUp]
         public void SetUp()
         {
-            this.messageHandler = new Mock<HttpMessageHandler>();
-            this.httpClient = new HttpClient(this.messageHandler.Object)
-            {
-                BaseAddress = new Uri("http://localhost:9000")
-            };
+            this.fruityMock = WireMockServer.Start(FruityArtistServiceTests.BaseAddress);
+            this.httpClient = new HttpClient { BaseAddress = new Uri(FruityArtistServiceTests.BaseAddress) };
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            this.fruityMock.Dispose();
         }
 
         [Test]
         public async Task GetArtistDetailsAsync_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
         {
-            this.GivenFruityClientReturns(FruityArtistServiceTests.MinimalArtistData);
+            this.GivenFruityClientReturns("MinimalArtistData");
             var artistDetails = await this.WhenGetArtistDetail();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
@@ -50,7 +52,7 @@ namespace Mandarin.Services.Tests.Fruity
         [Test]
         public async Task GetArtistDetailsAsync_GivenJsonDataFromService_ShouldDeserializeCorrectly()
         {
-            this.GivenFruityClientReturns(FruityArtistServiceTests.FullArtistData);
+            this.GivenFruityClientReturns("FullArtistData");
             var artistDetails = await this.WhenGetArtistDetail();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
@@ -63,18 +65,11 @@ namespace Mandarin.Services.Tests.Fruity
             Assert.That(artistDetails[0].WebsiteUrl, Is.EqualTo(new Uri("https://localhost/artist/website")));
         }
 
-        private void GivenFruityClientReturns(string data)
+        private void GivenFruityClientReturns(string filename)
         {
-            this.messageHandler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync",
-                                                  ItExpr.IsAny<HttpRequestMessage>(),
-                                                  ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(data)
-                });
+            this.fruityMock
+                .Given(Request.Create().WithPath("/api/stockist"))
+                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile($"TestData/Fruity/Stockist/{filename}.json"));
         }
 
         private Task<IReadOnlyList<ArtistDetailsModel>> WhenGetArtistDetail()
