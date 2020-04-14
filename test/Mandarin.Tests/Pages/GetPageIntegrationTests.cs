@@ -1,10 +1,19 @@
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
+using Mandarin.Models.Artists;
+using Mandarin.Services.Fruity;
+using Mandarin.ViewModels.Artists;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 namespace Mandarin.Tests.Pages
 {
@@ -14,11 +23,22 @@ namespace Mandarin.Tests.Pages
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private HttpClient client;
+        private WireMockServer fruityMock;
 
         public GetPageIntegrationTests(string environment)
         {
             this.factory = new WebApplicationFactory<MandarinStartup>()
                 .WithWebHostBuilder(b => b.UseEnvironment(environment));
+        }
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            this.fruityMock = WireMockServer.Start("http://localhost:9090");
+            this.fruityMock.Given(Request.Create().WithPath("/api/stockist"))
+                .RespondWith(Response.Create()
+                                     .WithStatusCode(HttpStatusCode.OK)
+                                     .WithBodyFromFile("TestData/GetApiStockist.json"));
         }
 
         [SetUp]
@@ -27,17 +47,35 @@ namespace Mandarin.Tests.Pages
             this.client = this.factory.CreateClient();
         }
 
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            this.fruityMock.Dispose();
+        }
+
         [Test]
         [TestCase("/", "We hope to see you soon!")]
         [TestCase("/the-mini-mandarin", "The Mini Mandarin also has a range of sweet snacks and drinks from Asia to enjoy!")]
-        [TestCase("/artists", "Just a moment...")]
+        [TestCase("/artists", "The Little Mandarin in-house art team!")]
         [TestCase("/contact", "Feel free to contact us through this form and we will get back to you as soon as we can.")]
         public async Task BasicRenderTest_ShouldBeAbleToRenderRoute_AndFindSimpleStaticContentOnPage(
             string route,
             string expected)
         {
+            if (route == "/artists")
+            {
+                await this.GivenArtistServiceHasPreCached();
+            }
+
             var document = await WhenGetPage(route);
             Assert.That(document.DocumentElement.TextContent, Contains.Substring(expected));
+        }
+
+        private Task GivenArtistServiceHasPreCached()
+        {
+            var artistService = this.factory.Services.GetService<IArtistService>();
+            Assert.That(artistService, Is.InstanceOf<CachingArtistServiceDecorator>());
+            return artistService.GetArtistDetailsAsync();
         }
 
         private async Task<IDocument> WhenGetPage(string path)

@@ -13,6 +13,10 @@
     <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
     <Exclude>[Mandarin.Views]*</Exclude>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Update="TestData/**/*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
@@ -23,6 +27,7 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     <PackageReference Include="NunitXml.TestLogger" Version="2.1.41" />
+    <PackageReference Include="WireMock.Net" Version="1.2.4" />
   </ItemGroup>
 
   <ItemGroup>
