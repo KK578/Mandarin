@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using Bashi.Core.Enums;
 using Mandarin.Models.Contact;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -13,11 +15,15 @@ namespace Mandarin.Services.Email
     {
         private readonly ILogger<SendGridEmailService> logger;
         private readonly ISendGridClient sendGridClient;
+        private readonly IOptions<SendGridConfiguration> sendGridConfigurationOption;
 
-        public SendGridEmailService(ISendGridClient sendGridClient, ILogger<SendGridEmailService> logger)
+        public SendGridEmailService(ISendGridClient sendGridClient,
+                                    IOptions<SendGridConfiguration> sendGridConfigurationOption,
+                                    ILogger<SendGridEmailService> logger)
         {
             this.logger = logger;
             this.sendGridClient = sendGridClient;
+            this.sendGridConfigurationOption = sendGridConfigurationOption;
         }
 
         public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
@@ -25,7 +31,10 @@ namespace Mandarin.Services.Email
             Validator.ValidateObject(model, new ValidationContext(model), true);
 
             var email = new SendGridMessage();
-            email.From = new EmailAddress(model.Email);
+            var configuration = this.sendGridConfigurationOption.Value;
+            email.From = new EmailAddress(configuration.ServiceEmail);
+            email.ReplyTo = new EmailAddress(model.Email);
+            email.AddTo(new EmailAddress(configuration.RealContactEmail));
             email.Subject = $"{model.Name} - {(model.Reason == ContactReasonType.Other ? $"Other ({model.AdditionalReason})" : model.Reason.GetDescription())}";
 
             foreach (var attachment in model.Attachments)
@@ -46,9 +55,22 @@ namespace Mandarin.Services.Email
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
         {
             var response = await this.sendGridClient.SendEmailAsync(email);
-            var bodyContent = await response.Body.ReadAsStringAsync();
+            var bodyContent = await SendGridEmailService.GetBodyContent(response);
             this.logger.LogInformation("SendGrid SendEmail: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
             return new EmailResponse((int)response.StatusCode);
+        }
+
+        private static async Task<string> GetBodyContent(Response response)
+        {
+            try
+            {
+                var bodyContent = await response.Body.ReadAsStringAsync();
+                return bodyContent;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
