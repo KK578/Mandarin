@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Logging;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Email;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
@@ -77,48 +76,5 @@ namespace Mandarin.Services.Tests.Email
             Assert.That(logger.LogEntries.Count, Is.EqualTo(2));
             Assert.That(logger.LogEntries[1].Exception, Is.EqualTo(ex));
         }
-    }
-
-    public class TestableLogger<T> : TestableLogger, ILogger<T>
-    {
-    }
-
-    public class TestableLogger : ILogger
-    {
-        private readonly List<TestLogEntry> logs = new List<TestLogEntry>();
-        public IReadOnlyList<TestLogEntry> LogEntries => this.logs.AsReadOnly();
-
-        public void Log<TState>(LogLevel logLevel,
-                                EventId eventId,
-                                TState state,
-                                Exception exception,
-                                Func<TState, Exception, string> formatter)
-        {
-            this.logs.Add(new TestLogEntry(logLevel, exception, formatter(state, exception)));
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return true;
-        }
-
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return null;
-        }
-    }
-
-    public class TestLogEntry
-    {
-        public TestLogEntry(LogLevel logLevel, Exception exception, string message)
-        {
-            this.LogLevel = logLevel;
-            this.Exception = exception;
-            this.Message = message;
-        }
-
-        public LogLevel LogLevel { get; }
-        public Exception Exception { get; }
-        public string Message { get; }
     }
 }

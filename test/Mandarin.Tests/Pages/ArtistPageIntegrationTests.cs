@@ -1,11 +1,15 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Bashi.Tests.Framework.Data;
-using Mandarin.ViewModels.Artists;
+using Mandarin.Models.Artists;
+using Mandarin.Services.Fruity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
@@ -15,7 +19,8 @@ namespace Mandarin.Tests.Pages
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private HttpClient client;
-        private IArtistViewModel artistViewModel;
+        private Mock<IArtistService> artistService;
+        private const string ArtistName = "Artist Name";
 
         public ArtistPageIntegrationTests()
         {
@@ -25,26 +30,48 @@ namespace Mandarin.Tests.Pages
         [SetUp]
         public void SetUp()
         {
-            this.artistViewModel = new ArtistViewModel
-            {
-                Name = "My Artist Name",
-                Description = TestData.WellKnownString,
-            };
-            this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterViewModels)).CreateClient();
+            this.artistService = new Mock<IArtistService>();
+            this.client = this.factory.WithWebHostBuilder(b => b.ConfigureServices(RegisterServices)).CreateClient();
 
-            void RegisterViewModels(IServiceCollection s)
+            void RegisterServices(IServiceCollection s)
             {
-                s.AddSingleton(this.artistViewModel);
-                s.AddSingleton<IArtistViewModel>(TestData.Create<ArtistViewModel>());
+                s.AddSingleton(this.artistService.Object);
             }
         }
 
         [Test]
-        public async Task GetArtists_ShouldRenderRegisteredArtistViewModels()
+        public async Task GetArtists_WhenDataIsLoading_ShouldRenderLoadingText()
         {
+            var tcs = GivenArtistServiceWaitsForReturn();
             var artistPage = await this.WhenGetArtistPage();
-            Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(this.artistViewModel.Name));
+            Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring("Just a moment..."));
+            tcs.SetCanceled();
+        }
+
+        [Test]
+        public async Task GetArtists_WhenDataIsAvailable_ShouldRenderRegisteredArtistViewModels()
+        {
+            GivenArtistServiceReturnsDataImmediately();
+            var artistPage = await this.WhenGetArtistPage();
+            Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(ArtistPageIntegrationTests.ArtistName));
             Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(TestData.WellKnownString));
+        }
+
+        private TaskCompletionSource<IReadOnlyList<ArtistDetailsModel>> GivenArtistServiceWaitsForReturn()
+        {
+            var tcs = new TaskCompletionSource<IReadOnlyList<ArtistDetailsModel>>();
+            this.artistService.Setup(x => x.GetArtistDetailsAsync()).Returns(tcs.Task);
+            return tcs;
+        }
+
+
+        private void GivenArtistServiceReturnsDataImmediately()
+        {
+            var data = TestData.Create<List<ArtistDetailsModel>>()
+                               .Append(new ArtistDetailsModel(ArtistPageIntegrationTests.ArtistName, TestData.WellKnownString, null, null, null, null, null, null))
+                               .ToList()
+                               .AsReadOnly();
+            this.artistService.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data);
         }
 
         private async Task<IDocument> WhenGetArtistPage()
