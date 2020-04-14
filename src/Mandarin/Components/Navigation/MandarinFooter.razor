@@ -2,11 +2,13 @@
   <MandarinBar />
   <div class="content-center flex justify-center mt-2 mx-auto">
     <InstagramIcon ColorHexCode="#C9B85B" Href="@instagramUri" />
+    <TwitterIcon Href="@twitterUri" />
   </div>
   <MandarinText class="text-xs">Copyright © 2020 The Little Mandarin</MandarinText>
 </div>
 
 @code
 {
-  private readonly Uri instagramUri = new Uri("https://instagram.com/thelittlemandarin_e17/");
+  private readonly Uri instagramUri = new Uri("https://instagram.com/thelittlemandarin_e17");
+  private readonly Uri twitterUri = new Uri("https://twitter.com/TLM_e17");
 }

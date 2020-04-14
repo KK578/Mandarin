@@ -9,7 +9,7 @@ namespace Mandarin.ViewModels.MiniMandarin
         {
             this.Paragraphs = new List<string>
             {
-                "The Mini Mandarin is the younger sister of The Little Mandarin and is run by the baker of yummy treats in the family. Come drop by for handmade and hand finished ‘bearcarons’ – bear shaped macarons! – choose from three delightful flavours, chocolate, strawberry and matcha! The Mini Mandarin also has a range of sweet snacks and drinks from Asia to enjoy!"
+                "The Mini Mandarin is the younger sister of The Little Mandarin and is run by the baker of yummy treats in the family. Come drop by for handmade and hand finished ‘bearcarons’ – bear shaped macarons! Choose from three delightful flavours, chocolate, strawberry and matcha! Other special flavours pop up all year round and JUMBO sized macarons too, so come back to see what's new! The Mini Mandarin also offers a range of sweets and chocolates suitable for vegetarians and vegans - there's a treat for everyone!"
             }.AsReadOnly();
 
             this.BannerImageViewModel = new MandarinImageViewModel("/images/the-mini-mandarin/TheMiniMandarin-Banner.jpg", "The Mini Mandarin - Bearcarons");

@@ -10,9 +10,18 @@
   <MandarinText>@paragraph</MandarinText>
 }
 
-<div class="flex flex-1 flex-wrap flex-row justify-center">
+<MandarinText>
+  You can follow The Mini Mandarin on Instagram
+  <a class="duration-200 ease-in-out hover:opacity-75 text-gold transition-opacity"
+     href="https://instagram.com/theminimandarin_e17"
+     target="_blank">
+    @@theminimandarin_e17
+  </a> to make sure you don't miss out!
+</MandarinText>
+
+<div class="flex flex-1 flex-row flex-wrap justify-center">
   @foreach (var macaronViewModel in ViewModel.MacaronImageViewModels)
   {
-    <MandarinImage class="px-6 w-full max-w-xs" ViewModel="@macaronViewModel" />
+    <MandarinImage class="max-w-xs px-6 w-full" ViewModel="@macaronViewModel" />
   }
 </div>
