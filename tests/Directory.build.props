@@ -1,10 +1,12 @@
 <Project>
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
   <PropertyGroup>
     <VSTestLogger>NUnit</VSTestLogger>
     <CollectCoverage>true</CollectCoverage>
-    <MergeWith>../coverage/coverage.json</MergeWith>
-    <CoverletOutput>../coverage/</CoverletOutput>
+    <MergeWith>$(MSBuildThisFileDirectory)../coverage/coverage.json</MergeWith>
+    <CoverletOutput>$(MSBuildThisFileDirectory)../coverage/</CoverletOutput>
     <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
     <Exclude>[Mandarin.Views]*</Exclude>
   </PropertyGroup>
