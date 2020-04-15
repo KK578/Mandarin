@@ -140,6 +140,18 @@ namespace Mandarin.Services.Tests.Email
         }
 
         [Test]
+        public void SendEmailAsync_GivenResponseBodyIsNull_NoExceptionIsThrown()
+        {
+            var email = new SendGridMessage();
+            var sendGridClient = new Mock<ISendGridClient>();
+            sendGridClient.Setup(x => x.SendEmailAsync(email, It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(new Response(HttpStatusCode.Accepted, null, null));
+            var subject = new SendGridEmailService(sendGridClient.Object, this.configuration, NullLogger<SendGridEmailService>.Instance);
+
+            Assert.DoesNotThrowAsync(() => subject.SendEmailAsync(email));
+        }
+
+        [Test]
         public async Task SendEmailAsync_GivenResponse_StatusCodeIsCopiedToResponse()
         {
             var email = new SendGridMessage();
