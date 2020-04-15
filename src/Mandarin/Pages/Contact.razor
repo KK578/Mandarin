@@ -52,7 +52,9 @@ else
     </div>
 
     <div class="mt-3 text-left">
-      <InputFile OnChange="@ViewModel.OnFileChange" multiple></InputFile>
+      <label class="text-grey-normal" for="attachments">Image attachments (Total maximum 10MB)</label>
+      <br/>
+      <InputFile OnChange="@ViewModel.OnFileChange" id="attachments" multiple accept="image/*"></InputFile>
       <ValidationMessage For="@(() => ViewModel.Model.Attachments)" />
     </div>
 
