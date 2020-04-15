@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Logging;
 using BlazorInputFile;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Email;
@@ -119,6 +120,23 @@ namespace Mandarin.Services.Tests.Email
 
             Assert.That(result.Attachments.Count, Is.EqualTo(1));
             Assert.That(Convert.FromBase64String(result.Attachments[0].Content), Is.EqualTo("Attachment"));
+        }
+
+        [Test]
+        public async Task SendEmailAsync_GivenErrorResponse_BodyIsLogged_AndStatusCodeIsCopiedToResponse()
+        {
+            var email = new SendGridMessage();
+            var sendGridClient = new Mock<ISendGridClient>();
+            sendGridClient.Setup(x => x.SendEmailAsync(email, It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(new Response(HttpStatusCode.Unauthorized, new StringContent("Invalid API Key"), null));
+            var logger = new TestableLogger<SendGridEmailService>();
+            var subject = new SendGridEmailService(sendGridClient.Object, this.configuration, logger);
+            var result = await subject.SendEmailAsync(email);
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.StatusCode, Is.EqualTo(401));
+            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Invalid API Key"));
         }
 
         [Test]

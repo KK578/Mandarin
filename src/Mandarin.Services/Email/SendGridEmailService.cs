@@ -62,15 +62,11 @@ namespace Mandarin.Services.Email
 
         private static async Task<string> GetBodyContent(Response response)
         {
-            try
-            {
-                var bodyContent = await response.Body.ReadAsStringAsync();
-                return bodyContent;
-            }
-            catch (Exception ex)
-            {
+            if (response.Body == null)
                 return null;
-            }
+
+            var bodyContent = await response.Body.ReadAsStringAsync();
+            return bodyContent;
         }
     }
 }
