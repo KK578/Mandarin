@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bashi.Tests.Framework" Version="1.1.0" />
+    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="WireMock.Net" Version="1.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
+    <ProjectReference Include="..\..\src\Mandarin.Services\Mandarin.Services.csproj" />
+    <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
+  </ItemGroup>
+
+</Project>

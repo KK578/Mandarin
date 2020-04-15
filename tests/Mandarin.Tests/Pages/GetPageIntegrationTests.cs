@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Mandarin.Services.Fruity;
+using Mandarin.Tests.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,7 @@ namespace Mandarin.Tests.Pages
             this.fruityMock = WireMockServer.Start("http://localhost:9090");
             this.fruityMock
                 .Given(Request.Create().WithPath("/api/stockist"))
-                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile("TestData/Fruity/Stockist/TheLittleMandarin.json"));
+                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile(WellKnownTestData.Fruity.Stockist.TheLittleMandarin));
         }
 
         [SetUp]
