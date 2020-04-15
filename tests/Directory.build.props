@@ -1,0 +1,20 @@
+<Project>
+
+  <PropertyGroup>
+    <VSTestLogger>NUnit</VSTestLogger>
+    <CollectCoverage>true</CollectCoverage>
+    <MergeWith>../coverage/coverage.json</MergeWith>
+    <CoverletOutput>../coverage/</CoverletOutput>
+    <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
+    <Exclude>[Mandarin.Views]*</Exclude>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="2.8.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+    <PackageReference Include="NunitXml.TestLogger" Version="2.1.41" />
+  </ItemGroup>
+
+</Project>

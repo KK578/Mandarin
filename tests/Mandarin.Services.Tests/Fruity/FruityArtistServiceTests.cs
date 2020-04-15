@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Fruity;
+using Mandarin.Tests.Data;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -36,7 +37,7 @@ namespace Mandarin.Services.Tests.Fruity
         [Test]
         public async Task GetArtistDetailsAsync_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
         {
-            this.GivenFruityClientReturns("MinimalArtistData");
+            this.GivenFruityClientReturns(WellKnownTestData.Fruity.Stockist.MinimalArtistData);
             var artistDetails = await this.WhenGetArtistDetail();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
@@ -52,7 +53,7 @@ namespace Mandarin.Services.Tests.Fruity
         [Test]
         public async Task GetArtistDetailsAsync_GivenJsonDataFromService_ShouldDeserializeCorrectly()
         {
-            this.GivenFruityClientReturns("FullArtistData");
+            this.GivenFruityClientReturns(WellKnownTestData.Fruity.Stockist.FullArtistData);
             var artistDetails = await this.WhenGetArtistDetail();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
@@ -69,7 +70,7 @@ namespace Mandarin.Services.Tests.Fruity
         {
             this.fruityMock
                 .Given(Request.Create().WithPath("/api/stockist"))
-                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile($"TestData/Fruity/Stockist/{filename}.json"));
+                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile(filename));
         }
 
         private Task<IReadOnlyList<ArtistDetailsModel>> WhenGetArtistDetail()

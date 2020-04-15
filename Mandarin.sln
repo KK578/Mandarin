@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.ViewModels", "src\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5E228764-3B22-4EB1-950E-718CD5D28FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.TestData", "tests\Mandarin.TestData\Mandarin.TestData.csproj", "{4739F825-79D2-4A65-81BF-4CDF333694CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Tests.Data", "tests\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj", "{4739F825-79D2-4A65-81BF-4CDF333694CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Tests", "tests\Mandarin.Tests\Mandarin.Tests.csproj", "{269208F2-749E-4E75-95D4-0CA5A8477462}"
 EndProject
