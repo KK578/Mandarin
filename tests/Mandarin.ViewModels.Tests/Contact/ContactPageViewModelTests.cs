@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using BlazorInputFile;
+using Mandarin.Configuration;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Email;
 using Mandarin.ViewModels.Contact;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SendGrid.Helpers.Mail;
@@ -16,13 +18,25 @@ namespace Mandarin.ViewModels.Tests.Contact
     public class ContactPageViewModelTests
     {
         private Mock<IEmailService> emailService;
+        private MandarinConfiguration configuration;
         private IContactPageViewModel subject;
 
         [SetUp]
         public void SetUp()
         {
             this.emailService = new Mock<IEmailService>();
-            this.subject = new ContactPageViewModel(this.emailService.Object);
+            this.configuration = new MandarinConfiguration();
+            var options = Options.Create(this.configuration);
+            this.subject = new ContactPageViewModel(this.emailService.Object, options);
+        }
+
+        [Test]
+        public void EnableAttachmentsUpload_AlwaysValueFromConfiguration()
+        {
+            this.configuration.EnableAttachments = false;
+            Assert.That(this.subject.EnableAttachmentsUpload, Is.False);
+            this.configuration.EnableAttachments = true;
+            Assert.That(this.subject.EnableAttachmentsUpload, Is.True);
         }
 
         [Test]
