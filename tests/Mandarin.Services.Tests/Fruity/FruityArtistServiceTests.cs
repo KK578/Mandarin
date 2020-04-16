@@ -50,7 +50,7 @@ namespace Mandarin.Services.Tests.Fruity
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
             Assert.That(artistDetails[0].Description, Is.EqualTo("Artist's Description."));
-            Assert.That(artistDetails[0].ImageUrl, Is.EqualTo(new Uri("https://localhost/images/artist1.jpg")));
+            Assert.That(artistDetails[0].ImageUrl, Is.EqualTo(new Uri("https://localhost/static/images/artist1.jpg")));
             Assert.That(artistDetails[0].TwitterUrl, Is.Null);
             Assert.That(artistDetails[0].InstagramUrl, Is.Null);
             Assert.That(artistDetails[0].FacebookUrl, Is.Null);
@@ -66,7 +66,7 @@ namespace Mandarin.Services.Tests.Fruity
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].Name, Is.EqualTo("Artist Name"));
             Assert.That(artistDetails[0].Description, Is.EqualTo("Artist's Description."));
-            Assert.That(artistDetails[0].ImageUrl, Is.EqualTo(new Uri("https://localhost/images/artist1.jpg")));
+            Assert.That(artistDetails[0].ImageUrl, Is.EqualTo(new Uri("https://localhost/static/images/artist1.jpg")));
             Assert.That(artistDetails[0].TwitterUrl, Is.EqualTo(new Uri("https://twitter.com/ArtistTwitter")));
             Assert.That(artistDetails[0].InstagramUrl, Is.EqualTo(new Uri("https://instagram.com/ArtistInstagram")));
             Assert.That(artistDetails[0].FacebookUrl, Is.EqualTo(new Uri("https://facebook.com/ArtistFacebook")));

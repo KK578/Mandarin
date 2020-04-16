@@ -17,7 +17,7 @@ namespace Mandarin.ViewModels.Index
                 "We are also the proud hosts of, The Mini Mandarin, selling handmade and hand finished 'bearcarons' (bear shaped macarons!) alongside a variety of sweets and chocolates suitable for vegetarians and vegans!",
                 "We hope to see you soon!",
             }.AsReadOnly();
-            this.GiftCardImageViewModel = new MandarinImageViewModel("/images/about/GiftCards.gif", "The Little Mandarin - Gift Card Designs");
+            this.GiftCardImageViewModel = new MandarinImageViewModel("/static/images/about/GiftCards.gif", "The Little Mandarin - Gift Card Designs");
         }
     }
 }

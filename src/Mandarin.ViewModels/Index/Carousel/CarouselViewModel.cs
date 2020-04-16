@@ -9,10 +9,10 @@ namespace Mandarin.ViewModels.Index.Carousel
         {
             this.Images = new List<IMandarinImageViewModel>
             {
-                new MandarinImageViewModel("/images/about/ShopFront.jpg", "The Little Mandarin - Shop Front"),
-                new MandarinImageViewModel("/images/about/ShopWallDisplay.jpg", "The Little Mandarin - Display"),
-                new MandarinImageViewModel("/images/about/ShopDisplay.jpg", "The Little Mandarin - Interior"),
-                new MandarinImageViewModel("/images/about/Macarons.jpg", "The Mini Mandarin - Macarons"),
+                new MandarinImageViewModel("/static/images/about/ShopFront.jpg", "The Little Mandarin - Shop Front"),
+                new MandarinImageViewModel("/static/images/about/ShopWallDisplay.jpg", "The Little Mandarin - Display"),
+                new MandarinImageViewModel("/static/images/about/ShopDisplay.jpg", "The Little Mandarin - Interior"),
+                new MandarinImageViewModel("/static/images/about/Macarons.jpg", "The Mini Mandarin - Macarons"),
             }.AsReadOnly();
         }
 

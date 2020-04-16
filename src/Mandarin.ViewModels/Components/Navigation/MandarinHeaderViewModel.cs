@@ -6,7 +6,7 @@ namespace Mandarin.ViewModels.Components.Navigation
     {
         public MandarinHeaderViewModel()
         {
-            this.LogoImageViewModel = new MandarinImageViewModel("/images/logo.png", "The Little Mandarin");
+            this.LogoImageViewModel = new MandarinImageViewModel("/static/images/logo.png", "The Little Mandarin");
         }
 
         public IMandarinImageViewModel LogoImageViewModel { get; }
