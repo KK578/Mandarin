@@ -6,6 +6,7 @@ namespace Mandarin.Services.Fruity
     internal sealed class ArtistDto
     {
         [JsonProperty("stockist_name")] public string StockistName { get; set; }
+        [JsonProperty("status")] public string Status { get; set; }
         [JsonProperty("description")] public string Description { get; set; }
         [JsonProperty("image_url")] public string ImageUrl { get; set; }
         [JsonProperty("twitter_handle")] public string TwitterHandle { get; set; }
