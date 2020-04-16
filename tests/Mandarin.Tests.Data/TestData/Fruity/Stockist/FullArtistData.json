@@ -3,7 +3,7 @@
     "stockist_name": "Artist Name",
     "status": "ACTIVE",
     "description": "Artist's Description.",
-    "image_url": "https://localhost/images/artist1.jpg",
+    "image_url": "https://localhost/static/images/artist1.jpg",
     "twitter_handle": "ArtistTwitter",
     "instagram_handle": "ArtistInstagram",
     "facebook_handle": "ArtistFacebook",
