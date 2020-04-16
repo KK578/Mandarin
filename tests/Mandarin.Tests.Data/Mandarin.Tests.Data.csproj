@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <None Update="TestData/**/*.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData\Fruity\Stockist\InactiveArtistData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

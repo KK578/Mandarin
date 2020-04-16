@@ -1,6 +1,7 @@
 ﻿[
   {
     "stockist_name": "Artist Name",
+    "status": "ACTIVE",
     "description": "Artist's Description.",
     "image_url": "https://localhost/images/artist1.jpg",
     "twitter_handle": "ArtistTwitter",
