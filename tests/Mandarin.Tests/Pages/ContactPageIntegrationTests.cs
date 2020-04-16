@@ -40,8 +40,8 @@ namespace Mandarin.Tests.Pages
         }
 
         [Test]
-        [TestCase(ContactReasonType.NotSelected, 3)]
-        [TestCase(ContactReasonType.Other, 4)]
+        [TestCase(ContactReasonType.NotSelected, 2)]
+        [TestCase(ContactReasonType.Other, 3)]
         public async Task GivenReasonIsSetToOther_ThenAdditionalInputIsRendered(
             ContactReasonType reason,
             int expectedInputs)
@@ -49,6 +49,14 @@ namespace Mandarin.Tests.Pages
             GivenContactPageViewModelReason(reason);
             var contactPage = await WhenGetContactPage();
             Assert.That(contactPage.DocumentElement.QuerySelectorAll("input"), Has.Length.EqualTo(expectedInputs));
+        }
+
+        [Test]
+        public async Task GivenEnableAttachmentsIsTrue_ThenAdditionalInputIsRendered()
+        {
+            GivenAttachmentUploadsAreEnabled();
+            var contactPage = await this.WhenGetContactPage();
+            Assert.That(contactPage.DocumentElement.QuerySelectorAll("input"), Has.Length.EqualTo(3));
         }
 
         [Test]
@@ -70,13 +78,25 @@ namespace Mandarin.Tests.Pages
                         Contains.Substring("Sorry something went wrong... Try again in a moment."));
         }
 
-        private void GivenContactPageViewModelReason(ContactReasonType reason) => this.model.Reason = reason;
+        private void GivenContactPageViewModelReason(ContactReasonType reason)
+        {
+            this.model.Reason = reason;
+        }
 
-        private void GivenContactPageViewModelSubmissionError(Exception exception) =>
+        private void GivenContactPageViewModelSubmissionError(Exception exception)
+        {
             this.viewModel.SetupGet(x => x.SubmitException).Returns(exception);
+        }
 
-        private void GivenContactPageViewModelSubmissionComplete() =>
+        private void GivenContactPageViewModelSubmissionComplete()
+        {
             this.viewModel.SetupGet(x => x.LastSubmitSuccessful).Returns(true);
+        }
+
+        private void GivenAttachmentUploadsAreEnabled()
+        {
+            this.viewModel.SetupGet(x => x.EnableAttachmentsUpload).Returns(true);
+        }
 
         private async Task<IDocument> WhenGetContactPage()
         {

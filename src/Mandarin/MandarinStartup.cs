@@ -1,3 +1,4 @@
+using Mandarin.Configuration;
 using Mandarin.Elastic;
 using Mandarin.Services;
 using Mandarin.ViewModels;
@@ -43,6 +44,7 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }

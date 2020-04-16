@@ -8,7 +8,9 @@ namespace Mandarin.ViewModels.Contact
 {
     public interface IContactPageViewModel
     {
+        bool EnableAttachmentsUpload { get; }
         ContactDetailsModel Model { get; }
+
         bool LastSubmitSuccessful { get; }
         Exception SubmitException { get; }
 

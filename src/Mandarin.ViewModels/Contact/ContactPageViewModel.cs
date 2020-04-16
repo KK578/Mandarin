@@ -3,22 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorInputFile;
+using Mandarin.Configuration;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Email;
+using Microsoft.Extensions.Options;
 
 namespace Mandarin.ViewModels.Contact
 {
     internal sealed class ContactPageViewModel : IContactPageViewModel
     {
         private readonly IEmailService emailService;
+        private readonly IOptions<MandarinConfiguration> configuration;
 
+        public bool EnableAttachmentsUpload => this.configuration.Value.EnableAttachments;
         public ContactDetailsModel Model { get; }
+
         public bool LastSubmitSuccessful { get; private set; }
         public Exception SubmitException { get; private set; }
 
-        public ContactPageViewModel(IEmailService emailService)
+        public ContactPageViewModel(IEmailService emailService, IOptions<MandarinConfiguration> configuration)
         {
             this.emailService = emailService;
+            this.configuration = configuration;
             this.Model = new ContactDetailsModel();
         }
 
