@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -26,7 +27,8 @@ namespace Mandarin.Services.Fruity
             using var reader = new StreamReader(stream);
             using var jsonReader = new JsonTextReader(reader);
             var results = this.serializer.Deserialize<List<ArtistDto>>(jsonReader);
-            var models = results.Select(ArtistMapper.ConvertToModel).ToList().AsReadOnly();
+            var models = results.Where(x => string.Equals(x.Status, "ACTIVE", StringComparison.OrdinalIgnoreCase))
+                                .Select(ArtistMapper.ConvertToModel).ToList().AsReadOnly();
             return models;
         }
     }

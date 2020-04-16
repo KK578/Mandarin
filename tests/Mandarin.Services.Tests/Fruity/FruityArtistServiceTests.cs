@@ -35,6 +35,14 @@ namespace Mandarin.Services.Tests.Fruity
         }
 
         [Test]
+        public async Task GivenArtistDetailsAsync_GivenInactiveArtistDataFromService_ReturnsEmptyList()
+        {
+            this.GivenFruityClientReturns(WellKnownTestData.Fruity.Stockist.InactiveArtistData);
+            var artistDetails = await this.WhenGetArtistDetail();
+            Assert.That(artistDetails, Has.Count.Zero);
+        }
+
+        [Test]
         public async Task GetArtistDetailsAsync_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
         {
             this.GivenFruityClientReturns(WellKnownTestData.Fruity.Stockist.MinimalArtistData);
