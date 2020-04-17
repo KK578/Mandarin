@@ -1,9 +1,15 @@
+using System;
+using System.Threading.Tasks;
 using Mandarin.Configuration;
 using Mandarin.Elastic;
 using Mandarin.Services;
 using Mandarin.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,7 +50,13 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
+            services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }
@@ -77,6 +89,10 @@ namespace Mandarin
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
