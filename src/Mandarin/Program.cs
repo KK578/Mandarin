@@ -1,10 +1,8 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Debugging;
 
 namespace Mandarin
 {
@@ -34,17 +32,7 @@ namespace Mandarin
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog(Program.ConfigureSerilog)
+                .UseSerilog((h, l) => l.ReadFrom.Configuration(h.Configuration))
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<MandarinStartup>());
-
-        private static void ConfigureSerilog(HostBuilderContext b, LoggerConfiguration c)
-        {
-            if (b.HostingEnvironment.IsDevelopment())
-            {
-                SelfLog.Enable(Console.Error);
-            }
-
-            c.ReadFrom.Configuration(b.Configuration);
-        }
     }
 }
