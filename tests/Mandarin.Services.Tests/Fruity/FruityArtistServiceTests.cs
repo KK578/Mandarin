@@ -1,41 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Fruity;
 using Mandarin.Tests.Data;
+using Moq;
+using Moq.Protected;
 using NUnit.Framework;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 
 namespace Mandarin.Services.Tests.Fruity
 {
     [TestFixture]
     public class FruityArtistServiceTests
     {
-        private const string BaseAddress = "http://localhost:9090";
-
         private HttpClient httpClient;
-        private WireMockServer fruityMock;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.fruityMock = WireMockServer.Start(FruityArtistServiceTests.BaseAddress);
-            this.httpClient = new HttpClient { BaseAddress = new Uri(FruityArtistServiceTests.BaseAddress) };
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.fruityMock.Dispose();
-        }
 
         [Test]
-        public async Task GivenArtistDetailsAsync_GivenInactiveArtistDataFromService_ReturnsEmptyList()
+        public async Task GetArtistDetailsAsync_GivenInactiveArtistDataFromService_ReturnsEmptyList()
         {
             this.GivenFruityClientReturns(WellKnownTestData.Fruity.Stockist.InactiveArtistData);
             var artistDetails = await this.WhenGetArtistDetail();
@@ -76,9 +61,12 @@ namespace Mandarin.Services.Tests.Fruity
 
         private void GivenFruityClientReturns(string filename)
         {
-            this.fruityMock
-                .Given(Request.Create().WithPath("/api/stockist"))
-                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile(filename));
+            var data = File.ReadAllText(filename);
+            var handler = new Mock<HttpMessageHandler>();
+            handler.Protected()
+                   .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                   .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(data) });
+            this.httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost:9090") };
         }
 
         private Task<IReadOnlyList<ArtistDetailsModel>> WhenGetArtistDetail()
