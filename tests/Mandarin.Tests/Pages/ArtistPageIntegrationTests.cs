@@ -7,6 +7,7 @@ using AngleSharp.Dom;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Fruity;
+using Mandarin.Tests.Factory;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -24,7 +25,7 @@ namespace Mandarin.Tests.Pages
 
         public ArtistPageIntegrationTests()
         {
-            this.factory = new WebApplicationFactory<MandarinStartup>();
+            this.factory = MandarinApplicationFactory.Create();
         }
 
         [SetUp]

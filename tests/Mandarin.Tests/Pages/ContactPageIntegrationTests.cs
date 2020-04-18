@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Mandarin.Models.Contact;
+using Mandarin.Tests.Factory;
 using Mandarin.ViewModels.Contact;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,7 @@ namespace Mandarin.Tests.Pages
 
         public ContactPageIntegrationTests()
         {
-            this.factory = new WebApplicationFactory<MandarinStartup>();
+            this.factory = MandarinApplicationFactory.Create();
         }
 
         [SetUp]

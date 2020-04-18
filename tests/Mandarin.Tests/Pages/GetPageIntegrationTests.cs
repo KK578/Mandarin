@@ -4,6 +4,7 @@ using AngleSharp;
 using AngleSharp.Dom;
 using Mandarin.Services.Fruity;
 using Mandarin.Tests.Mocks;
+using Mandarin.Tests.Factory;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,8 +21,7 @@ namespace Mandarin.Tests.Pages
 
         public GetPageIntegrationTests(string environment)
         {
-            this.factory = new WebApplicationFactory<MandarinStartup>()
-                .WithWebHostBuilder(b => b.UseEnvironment(environment));
+            this.factory = MandarinApplicationFactory.Create().WithWebHostBuilder(b => b.UseEnvironment(environment));
         }
 
         [OneTimeSetUp]
