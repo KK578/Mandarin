@@ -1,17 +1,13 @@
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Mandarin.Services.Fruity;
-using Mandarin.Tests.Data;
+using Mandarin.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 
 namespace Mandarin.Tests.Pages
 {
@@ -21,7 +17,6 @@ namespace Mandarin.Tests.Pages
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private HttpClient client;
-        private WireMockServer fruityMock;
 
         public GetPageIntegrationTests(string environment)
         {
@@ -32,22 +27,13 @@ namespace Mandarin.Tests.Pages
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            this.fruityMock = WireMockServer.Start("http://localhost:9090");
-            this.fruityMock
-                .Given(Request.Create().WithPath("/api/stockist"))
-                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK).WithBodyFromFile(WellKnownTestData.Fruity.Stockist.TheLittleMandarin));
+            FruityMock.EnsureStarted();
         }
 
         [SetUp]
         public void SetUp()
         {
             this.client = this.factory.CreateClient();
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            this.fruityMock.Dispose();
         }
 
         [Test]
