@@ -16,6 +16,6 @@
     "gulp-sourcemaps": "^2.6.5",
     "precss": "^4.0.0",
     "simple-git": "^1.132.0",
-    "tailwindcss": "^1.2.0"
+    "tailwindcss": "^1.4.0"
   }
 }
