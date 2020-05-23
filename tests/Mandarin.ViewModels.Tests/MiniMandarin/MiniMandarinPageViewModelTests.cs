@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using AngleSharp;
+using AngleSharp.Dom;
 using Mandarin.ViewModels.MiniMandarin;
 using NUnit.Framework;
 
@@ -7,16 +10,18 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
     public class MiniMandarinPageViewModelTests
     {
         [Test]
-        public void Paragraphs_ShouldContainASingleParagraph()
+        public async Task TextContent_ShouldBeHtmlContent()
         {
-            var subject = new MiniMandarinPageViewModel();
-            Assert.That(subject.Paragraphs, Has.Count.EqualTo(1));
+            var subject = new MiniMandarinPageViewModel(null);
+            var document = await BrowsingContext.New().OpenAsync(req => req.Content(subject.TextContent.Value));
+            var link = document.Body.QuerySelector("a");
+            Assert.That(link.Attributes["href"].Value, Is.EqualTo("https://instagram.com/theminimandarin_e17"));
         }
 
         [Test]
         public void BannerImageViewModel_ShouldPointToBanner()
         {
-            var subject = new MiniMandarinPageViewModel();
+            var subject = new MiniMandarinPageViewModel(null);
             Assert.That(subject.BannerImageViewModel.SourceUrl.ToString(), Contains.Substring("Banner"));
             Assert.That(subject.BannerImageViewModel.Description, Contains.Substring("Bearcarons"));
         }
@@ -24,7 +29,7 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
         [Test]
         public void MacaronImageViewModels_ShouldHave3Images()
         {
-            var subject = new MiniMandarinPageViewModel();
+            var subject = new MiniMandarinPageViewModel(null);
             Assert.That(subject.MacaronImageViewModels, Has.Count.EqualTo(3));
         }
     }

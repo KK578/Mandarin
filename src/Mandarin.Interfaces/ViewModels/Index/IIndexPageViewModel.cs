@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Mandarin.ViewModels.Components.Images;
+﻿using Mandarin.ViewModels.Components.Images;
+using Microsoft.AspNetCore.Components;
 
 namespace Mandarin.ViewModels.Index
 {
@@ -9,9 +9,14 @@ namespace Mandarin.ViewModels.Index
     public interface IIndexPageViewModel
     {
         /// <summary>
-        /// Gets the main heading text content.
+        /// Gets the main section's text content.
         /// </summary>
-        IReadOnlyList<string> Paragraphs { get; }
+        MarkupString MainContent { get; }
+
+        /// <summary>
+        /// Gets the gift card section's text content.
+        /// </summary>
+        MarkupString GiftCardContent { get; }
 
         /// <summary>
         /// Gets the image details for the eGiftCard animation.

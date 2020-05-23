@@ -7,6 +7,52 @@
     src: url("/static/fonts/Century-Schoolbook-Std-Regular.otf");
 }
 
+hr {
+    @apply border-gold border-t-2;
+    @apply mt-6;
+}
+
+a {
+    @apply duration-200;
+    @apply ease-in-out;
+    @apply text-gold;
+    @apply transition-opacity;
+
+    &:hover {
+        @apply opacity-75;
+    }
+
+    &.gift-card-button {
+        @apply bg-gold font-medium px-4 py-2 rounded text-white;
+
+        &:focus {
+            @apply outline-none shadow-outline
+        }
+    }
+}
+
+h1, h2, h3, h4, h5, h6, p, td {
+    @apply font-body text-grey-normal text-center;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    @apply mt-3 mb-3;
+}
+
+h3 {
+    @apply font-bold text-xl;
+}
+
+.gift-card-container {
+    @apply flex flex-col
+}
+
+@media (min-width: 768px) {
+    .gift-card-container {
+        @apply flex-row;
+    }
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

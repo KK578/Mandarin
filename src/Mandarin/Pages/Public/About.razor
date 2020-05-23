@@ -3,58 +3,26 @@
 @inject IIndexPageViewModel ViewModel;
 
 <MandarinCarousel />
-<MandarinBar Class="mt-6" />
 
-@foreach (var paragraph in ViewModel.Paragraphs)
-{
-  <MandarinText>@paragraph</MandarinText>
-}
-
-<MandarinBar class="mt-6" />
+@ViewModel.MainContent
 
 <div class="flex md:flex-row flex-col">
-  <div class="mr-8">
-    <MandarinText class="font-bold text-xl">eGift Cards</MandarinText>
-
-    <MandarinText>
-      The Little Mandarin is temporarily closed due to COVID-19, and we unfortunately do not have the means to move online.
-      The kindness and support we've received has been overwhelming and humbling, and we are happy to say that you can now
-      support our independent and family-run shop by purchasing one of our eGift Cards online!
-    </MandarinText>
-
-    <MandarinText>
-      There are several cute designs to choose from and the eGift Card is emailed directly to you or your giftee and can
-      be redeemed in-store after we reopen. Our eGift Cards are non refundable and can only be redeemed in store but they
-      do not expire, so there’s no rush to use them! Your eGift Card(s) can be redeemed in-store to make full or partial
-      payments, and checking any remaining balance can be easily done and at any time via our website.
-    </MandarinText>
-
-    <MandarinText>
-      We want to sincerely thank everyone for their amazing support and kindness during this time and we look forward to
-      seeing you all again for art and sweets when it is safe for us to reopen.
-    </MandarinText>
-
-    <MandarinText>Until then, please take care and stay safe!</MandarinText>
-  </div>
+  <div class="md:mr-8 mr-0">@ViewModel.GiftCardContent</div>
 
   <div class="text-center align-middle self-center">
     <MandarinImage class="h-auto max-w-xs mb-4 mx-auto" ViewModel="@ViewModel.GiftCardImageViewModel" />
 
     <div class="my-6">
-      <a class="bg-gold duration-200 ease-in-out focus:outline-none focus:shadow-outline font-medium hover:opacity-75 px-4 py-2 rounded text-white transition-opacity" href="https://squareup.com/gift/PT1RCJ52GTP8E/order" target="_blank">
-        Buy eGift Card
-      </a>
+      <a class="gift-card-button" href="https://squareup.com/gift/PT1RCJ52GTP8E/order" target="_blank">Buy eGift Card</a>
     </div>
 
     <div class="my-6">
-      <a class="bg-gold duration-200 ease-in-out focus:outline-none focus:shadow-outline font-medium hover:opacity-75 my-6 px-4 py-2 rounded text-white transition-opacity" href="https://squareup.com/gift/PT1RCJ52GTP8E/check-balance" target="_blank">
-        Check eGift Card Balance
-      </a>
+      <a class="gift-card-button" href="https://squareup.com/gift/PT1RCJ52GTP8E/check-balance" target="_blank">Check eGift Card Balance</a>
     </div>
   </div>
 </div>
 
-<MandarinBar class="mt-6" />
+<hr class="mt-6" />
 
 <div class="container flex flex-col justify-around md:flex-row mt-3 mx-auto self-center">
   <MandarinOpeningTimes class="mb-5 self-center" />

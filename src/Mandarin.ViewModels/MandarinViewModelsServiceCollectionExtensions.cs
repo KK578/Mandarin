@@ -1,4 +1,5 @@
-﻿using Mandarin.ViewModels.Artists;
+﻿using System;
+using Mandarin.ViewModels.Artists;
 using Mandarin.ViewModels.Components.Navigation;
 using Mandarin.ViewModels.Contact;
 using Mandarin.ViewModels.Index;
@@ -6,6 +7,7 @@ using Mandarin.ViewModels.Index.Carousel;
 using Mandarin.ViewModels.Index.MandarinMap;
 using Mandarin.ViewModels.Index.OpeningTimes;
 using Mandarin.ViewModels.MiniMandarin;
+using Markdig;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.ViewModels
@@ -22,6 +24,7 @@ namespace Mandarin.ViewModels
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
+            services.AddSingleton(MandarinViewModelsServiceCollectionExtensions.CreateMarkdownPipeline);
             services.AddTransient<IViewModelFactory, ViewModelFactory>();
 
             services.AddTransient<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
@@ -38,6 +41,11 @@ namespace Mandarin.ViewModels
             services.AddTransient<IContactPageViewModel, ContactPageViewModel>();
 
             return services;
+        }
+
+        private static MarkdownPipeline CreateMarkdownPipeline(IServiceProvider arg)
+        {
+            return new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         }
     }
 }

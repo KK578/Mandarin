@@ -1,19 +1,20 @@
 ﻿@using Mandarin.ViewModels.Index.OpeningTimes
 @inject IOpeningTimesViewModel ViewModel;
 
-<div class="container text-left max-w-xs @Class">
-  <MandarinText class="font-bold text-grey-normal text-left" Margin="0">Opening Times</MandarinText>
+<div class="container max-w-xs @Class">
+  <h3 class="font-bold">Opening Times</h3>
 
-  <div class="container max-w-xs">
+  <table class="w-full">
+    <tbody>
     @foreach (var openingTime in ViewModel.OpeningTimes)
     {
-      <div class="flex flex-row">
-        <MandarinText Margin="0">@openingTime.NameOfDay</MandarinText>
-        <div class="flex-grow"></div>
-        <MandarinText Margin="0">@openingTime.Message</MandarinText>
-      </div>
+      <tr>
+        <td class="text-left">@openingTime.NameOfDay</td>
+        <td class="text-right">@openingTime.Message</td>
+      </tr>
     }
-  </div>
+    </tbody>
+  </table>
 </div>
 
 @code

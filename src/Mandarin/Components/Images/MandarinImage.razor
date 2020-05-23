@@ -1,14 +1,14 @@
 ﻿@using Mandarin.ViewModels.Components.Images
 
-<img class="@Class" src="@ViewModel.SourceUrl" alt="@ViewModel.Description" />
+<img @attributes="@Properties" src="@ViewModel.SourceUrl" alt="@ViewModel.Description" />
 
 @code
 {
   /// <summary>
-  /// Gets or sets the class attribute for the image tag.
+  /// Gets or sets the additional attributes for the image tag.
   /// </summary>
-  [Parameter]
-  public string Class { get; set; }
+  [Parameter(CaptureUnmatchedValues = true)]
+  public Dictionary<string, object> Properties { get; set; }
 
   /// <summary>
   /// Gets or sets the backing data model for the image.

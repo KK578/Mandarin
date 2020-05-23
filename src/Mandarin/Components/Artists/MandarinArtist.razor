@@ -2,7 +2,7 @@
 
 <div class="text-center mx-auto">
   <img src="@ViewModel.ImageUrl" alt="@ViewModel.Name" />
-  <MandarinText class="text-2xl mt-2" Margin="0">@ViewModel.Name</MandarinText>
+  <p class="text-2xl mt-2 mb-0">@ViewModel.Name</p>
   @if (@ViewModel.WebsiteUrl != null)
   {
     <a class="hover:text-gold text-grey-medium transition transition-colors duration-200 ease-in-out" href="@ViewModel.WebsiteUrl" target="_blank">@ViewModel.WebsiteUrl.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped)</a>
@@ -25,7 +25,7 @@
       <TumblrIcon Href="@ViewModel.TumblrUrl" />
     }
   </div>
-  <MandarinText>@ViewModel.Description</MandarinText>
+  <p>@ViewModel.Description</p>
 </div>
 
 @code

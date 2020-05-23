@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Mandarin.ViewModels.Components.Images;
+using Microsoft.AspNetCore.Components;
 
 namespace Mandarin.ViewModels.MiniMandarin
 {
@@ -9,9 +10,9 @@ namespace Mandarin.ViewModels.MiniMandarin
     public interface IMiniMandarinPageViewModel
     {
         /// <summary>
-        /// Gets the main heading text content.
+        /// Gets the main section's text content.
         /// </summary>
-        IReadOnlyList<string> Paragraphs { get; }
+        MarkupString TextContent { get; }
 
         /// <summary>
         /// Gets the image details for the heading banner.

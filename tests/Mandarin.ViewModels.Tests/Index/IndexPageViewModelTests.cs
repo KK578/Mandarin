@@ -7,10 +7,11 @@ namespace Mandarin.ViewModels.Tests.Index
     public class IndexPageViewModelTests
     {
         [Test]
-        public void Paragraphs_ShouldContain4Paragraphs()
+        public void MainContent_ShouldBeHtmlString()
         {
-            var subject = new IndexPageViewModel();
-            Assert.That(subject.Paragraphs, Has.Count.EqualTo(4));
+            var subject = new IndexPageViewModel(null);
+            Assert.That(subject.MainContent.Value, Is.Not.Null);
+            Assert.That(subject.MainContent.Value, Contains.Substring("<p>"));
         }
     }
 }
