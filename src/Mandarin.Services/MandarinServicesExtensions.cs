@@ -3,10 +3,14 @@ using System.Net.Http;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Fruity;
 using Mandarin.Services.SendGrid;
+using Mandarin.Services.Square;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SendGrid;
+using Square;
+using Environment = Square.Environment;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Mandarin.Services
 {
@@ -17,6 +21,7 @@ namespace Mandarin.Services
             services.AddMemoryCache();
             services.AddSendGridServices(configuration);
             services.AddFruityServices(configuration);
+            services.AddSquareServices(configuration);
 
             return services;
         }
@@ -47,6 +52,21 @@ namespace Mandarin.Services
             {
                 var options = s.GetRequiredService<IOptions<FruityClientOptions>>();
                 client.BaseAddress = new Uri(options.Value.Url);
+            }
+        }
+
+        private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton(ConfigureSquareClient);
+            services.AddTransient<ITransactionService, SquareTransactionService>();
+            services.AddTransient<IInventoryService, SquareInventoryService>();
+
+            ISquareClient ConfigureSquareClient(IServiceProvider provider)
+            {
+                return new SquareClient.Builder()
+                                .Environment(configuration.GetValue<Environment>("Square:Environment"))
+                                .AccessToken(configuration.GetValue<string>("Square:ApiKey"))
+                                .Build();
             }
         }
     }
