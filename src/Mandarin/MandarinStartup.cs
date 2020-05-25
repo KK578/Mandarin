@@ -1,9 +1,10 @@
 using Mandarin.Configuration;
-using Mandarin.Elastic;
+using Mandarin.Extensions;
 using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,8 +29,9 @@ namespace Mandarin
         /// Currently this includes:
         /// <list type="bullet">
         /// <item><term>Razor Pages</term></item>
-        /// <item><term>Http Client</term></item>
         /// <item><term>Server Side Blazor</term></item>
+        /// <item><term>Authentication</term></item>
+        /// <item><term>Application Services</term></item>
         /// <item><term>View Models</term></item>
         /// </list>
         ///
@@ -44,7 +46,13 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
+            services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }
@@ -77,6 +85,10 @@ namespace Mandarin
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
