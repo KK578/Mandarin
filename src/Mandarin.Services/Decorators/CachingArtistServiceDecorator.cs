@@ -8,7 +8,7 @@ namespace Mandarin.Services.Decorators
 {
     internal sealed class CachingArtistServiceDecorator : IArtistService
     {
-        private const string CacheKey = "IArtistService.GetArtistDetailsAsync";
+        private const string CacheKey = nameof(IArtistService) + "." + nameof(CachingArtistServiceDecorator.GetArtistDetailsAsync);
         private readonly IArtistService artistService;
         private readonly IMemoryCache memoryCache;
 

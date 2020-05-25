@@ -59,7 +59,9 @@ namespace Mandarin.Services
         {
             services.AddSingleton(ConfigureSquareClient);
             services.AddTransient<ITransactionService, SquareTransactionService>();
+            services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
             services.AddTransient<IInventoryService, SquareInventoryService>();
+            services.Decorate<IInventoryService, CachingInventoryServiceDecorator>();
 
             ISquareClient ConfigureSquareClient(IServiceProvider provider)
             {
