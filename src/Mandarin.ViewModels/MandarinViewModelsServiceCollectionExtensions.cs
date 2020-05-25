@@ -14,16 +14,16 @@ namespace Mandarin.ViewModels
     {
         public static void AddMandarinViewModels(this IServiceCollection services)
         {
-            services.AddSingleton<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
+            services.AddTransient<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
 
-            services.AddSingleton<IIndexPageViewModel, IndexPageViewModel>();
-            services.AddSingleton<ICarouselViewModel, CarouselViewModel>();
-            services.AddSingleton<IMandarinMapViewModel, MandarinMapViewModel>();
-            services.AddSingleton<IOpeningTimesViewModel, OpeningTimesViewModel>();
+            services.AddTransient<IIndexPageViewModel, IndexPageViewModel>();
+            services.AddTransient<ICarouselViewModel, CarouselViewModel>();
+            services.AddTransient<IMandarinMapViewModel, MandarinMapViewModel>();
+            services.AddTransient<IOpeningTimesViewModel, OpeningTimesViewModel>();
 
             services.AddTransient<IArtistsPageViewModel, ArtistsPageViewModel>();
 
-            services.AddSingleton<IMiniMandarinPageViewModel, MiniMandarinPageViewModel>();
+            services.AddTransient<IMiniMandarinPageViewModel, MiniMandarinPageViewModel>();
 
             services.AddTransient<IContactPageViewModel, ContactPageViewModel>();
         }
