@@ -1,0 +1,11 @@
+<Project>
+
+  <Choose>
+    <When Condition=" '$(Configuration)' == 'Debug' ">
+      <ItemGroup>
+        <PackageReference Include="LiveSharp" Version="1.5.15" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+</Project>
