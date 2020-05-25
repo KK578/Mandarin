@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
-using Mandarin.Services.Fruity;
+using Mandarin.Services.Decorators;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;

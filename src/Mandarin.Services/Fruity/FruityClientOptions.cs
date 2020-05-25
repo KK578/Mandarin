@@ -1,4 +1,4 @@
-﻿namespace Mandarin.Services
+﻿namespace Mandarin.Services.Fruity
 {
     internal sealed class FruityClientOptions
     {

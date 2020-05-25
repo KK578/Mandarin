@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Mandarin.Models.Contact;
+using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Email
+namespace Mandarin.Services.Decorators
 {
     internal sealed class LoggingEmailServiceDecorator : IEmailService
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BlazorInputFile;
 using Mandarin.Configuration;
 using Mandarin.Models.Contact;
-using Mandarin.Services.Email;
+using Mandarin.Services;
 using Microsoft.Extensions.Options;
 
 namespace Mandarin.ViewModels.Contact

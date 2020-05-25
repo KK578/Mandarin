@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 
-namespace Mandarin.Services.Fruity
+namespace Mandarin.Services
 {
     public interface IArtistService
     {

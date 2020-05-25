@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 using Microsoft.Extensions.Logging;
 
-namespace Mandarin.Services.Fruity
+namespace Mandarin.Services.Decorators
 {
     internal sealed class LoggingArtistServiceDecorator : IArtistService
     {

@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Mandarin.Models.Contact;
+using Mandarin.Services.Objects;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Email
+namespace Mandarin.Services
 {
     public interface IEmailService
     {
