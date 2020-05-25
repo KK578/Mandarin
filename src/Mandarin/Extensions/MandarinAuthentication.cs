@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mandarin.Elastic
+namespace Mandarin.Extensions
 {
     public static class MandarinAuthentication
     {
@@ -25,6 +26,7 @@ namespace Mandarin.Elastic
             options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         }
 
+        [ExcludeFromCodeCoverage]
         private static void ConfigureOpenId(OpenIdConnectOptions options, IConfiguration configuration)
         {
             options.ClaimsIssuer = "Auth0";

@@ -2,9 +2,9 @@ using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
-namespace Mandarin.Elastic
+namespace Mandarin.Extensions
 {
-    internal static class ElasticApmApplicationBuilderExtensions
+    internal static class MandarinElasticApm
     {
         /// <summary>
         /// This registers Elastic APM Agent in the <paramref name="app"/>, using the provided <paramref name="configuration"/>.

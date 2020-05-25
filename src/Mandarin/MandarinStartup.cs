@@ -1,12 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Mandarin.Configuration;
-using Mandarin.Elastic;
+using Mandarin.Extensions;
 using Mandarin.Services;
 using Mandarin.ViewModels;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,8 +29,9 @@ namespace Mandarin
         /// Currently this includes:
         /// <list type="bullet">
         /// <item><term>Razor Pages</term></item>
-        /// <item><term>Http Client</term></item>
         /// <item><term>Server Side Blazor</term></item>
+        /// <item><term>Authentication</term></item>
+        /// <item><term>Application Services</term></item>
         /// <item><term>View Models</term></item>
         /// </list>
         ///
