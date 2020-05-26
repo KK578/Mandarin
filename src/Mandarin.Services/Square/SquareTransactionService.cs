@@ -23,35 +23,33 @@ namespace Mandarin.Services.Square
 
         public IObservable<Order> GetAllTransactions(DateTime start, DateTime end)
         {
+            this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
             return Observable.Create<Order>(SubscribeToOrders);
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
             {
-                var builder = new SearchOrdersRequest.Builder()
-                              .LocationIds(await this.ListAllLocationsAsync(ct))
-                              .Query(new SearchOrdersQuery.Builder()
-                                     .Filter(new SearchOrdersFilter.Builder()
-                                             .StateFilter(new SearchOrdersStateFilter(new[] { "COMPLETED" }))
-                                             .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
-                                                             .ClosedAt(new TimeRange.Builder()
-                                                                       .StartAt(SquareTransactionService
-                                                                                    .FormatDateTime(start))
-                                                                       .EndAt(SquareTransactionService
-                                                                                  .FormatDateTime(end))
-                                                                       .Build())
-                                                             .Build())
-                                             .Build())
-                                     .Sort(new SearchOrdersSort("CLOSED_AT"))
-                                     .Build())
-                              .Limit(100)
-                              .ReturnEntries(false);
+                var builder = new SearchOrdersRequest.Builder();
+                builder.LocationIds(await this.ListAllLocationsAsync(ct));
+                builder.Limit(100);
+                builder.Query(new SearchOrdersQuery.Builder()
+                              .Filter(new SearchOrdersFilter.Builder()
+                                      .StateFilter(new SearchOrdersStateFilter(new[] { "COMPLETED" }))
+                                      .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
+                                                      .ClosedAt(new TimeRange.Builder()
+                                                                .StartAt(this.FormatDateTime(start))
+                                                                .EndAt(this.FormatDateTime(end))
+                                                                .Build())
+                                                      .Build())
+                                      .Build())
+                              .Sort(new SearchOrdersSort("CLOSED_AT"))
+                              .Build());
 
                 SearchOrdersResponse response = null;
                 do
                 {
                     var request = builder.Cursor(response?.Cursor).Build();
                     response = await this.squareClient.OrdersApi.SearchOrdersAsync(request, ct);
-                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Orders", response.Orders.Count);
+                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Order(s).", response.Orders.Count);
                     foreach (var order in response.Orders)
                     {
                         o.OnNext(order);
@@ -70,7 +68,7 @@ namespace Mandarin.Services.Square
             return locations.Locations.Select(x => x.Id).ToList().AsReadOnly();
         }
 
-        private static string FormatDateTime(in DateTime dateTime)
+        private string FormatDateTime(in DateTime dateTime)
         {
             return dateTime.ToString("s");
         }

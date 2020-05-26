@@ -1,0 +1,120 @@
+﻿@page "/admin/transactions"
+@using Mandarin.Services
+@using System.Reactive.Linq
+@using System.Reactive.Threading.Tasks
+@using Square.Models
+@inject ITransactionService TransactionService;
+
+<div class="flex flex-col flex-grow">
+  <div class="bg-grey-light">
+    <EditForm EditContext="@editContext">
+      <InputDate @bind-Value="@StartDate" />
+      <InputDate @bind-Value="@EndDate" />
+      @if (isLoading)
+      {
+        <span>Loading</span>
+      }
+    </EditForm>
+  </div>
+  <table class="text-left">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Id</th>
+      <th>Transaction Time</th>
+      <th>Money</th>
+      <th>Items</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for (var i = 0; i < transactions.Count; i++)
+    {
+      <tr>
+        <td>@(i)</td>
+        <td>@(transactions[i].Id)</td>
+        <td>@(transactions[i].UpdatedAt)</td>
+        <td>@(transactions[i].TotalMoney?.Amount)@(transactions[i].TotalMoney?.Currency)</td>
+        <td>
+          <ul>
+            @foreach (var item in transactions[i].LineItems)
+            {
+              <li class="flex flex-row">
+                <span class="text-left">@(item.Name)</span>
+                <div class="flex-grow"></div>
+                <span>@(item.TotalMoney.Amount)</span>
+                <span class="text-right">@(item.TotalMoney.Currency) (@(item.Quantity) x @(item.BasePriceMoney.Currency)@(item.BasePriceMoney.Amount))]</span>
+              </li>
+            }
+          </ul>
+        </td>
+        <td>
+          @if (transactions[i].Discounts == null)
+          {
+            <span>None</span>
+          }
+          else
+          {
+            <ul>
+              @foreach (var discount in transactions[i].Discounts)
+              {
+                <li>@(discount.Name) [@(discount.AmountMoney.Amount)@(discount.AmountMoney.Currency)]</li>
+              }
+            </ul>
+          }
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
+
+@code
+{
+  private EditContext editContext;
+  private DateTime startDate = DateTime.Today.AddDays(-1);
+  private DateTime endDate = DateTime.Today;
+  private bool isLoading = false;
+
+  private DateTime StartDate
+  {
+    get => startDate;
+    set
+    {
+      startDate = value;
+      UpdateTransactionsAsync();
+    }
+  }
+
+  private DateTime EndDate
+  {
+    get => endDate;
+    set
+    {
+      endDate = value;
+      UpdateTransactionsAsync();
+    }
+  }
+
+  protected override void OnInitialized()
+  {
+    editContext = new EditContext(this);
+  }
+
+  private async Task UpdateTransactionsAsync()
+  {
+    try
+    {
+      isLoading = true;
+      transactions = await TransactionService.GetAllTransactions(startDate, endDate)
+                                             .ToList()
+                                             .ToTask();
+    }
+    finally
+    {
+      isLoading = false;
+      StateHasChanged();
+    }
+  }
+
+  private IList<Order> transactions = new List<Order>();
+}
