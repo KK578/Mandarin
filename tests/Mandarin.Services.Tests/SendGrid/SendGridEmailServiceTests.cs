@@ -18,7 +18,7 @@ using NUnit.Framework;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Tests.Email
+namespace Mandarin.Services.Tests.SendGrid
 {
     [TestFixture]
     public class SendGridEmailServiceTests

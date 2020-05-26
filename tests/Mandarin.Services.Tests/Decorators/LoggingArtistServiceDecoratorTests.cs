@@ -8,7 +8,7 @@ using Mandarin.Services.Decorators;
 using Moq;
 using NUnit.Framework;
 
-namespace Mandarin.Services.Tests.Fruity
+namespace Mandarin.Services.Tests.Decorators
 {
     [TestFixture]
     public class LoggingArtistServiceDecoratorTests

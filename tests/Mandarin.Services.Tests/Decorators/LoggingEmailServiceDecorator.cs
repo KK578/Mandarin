@@ -9,7 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Tests.Email
+namespace Mandarin.Services.Tests.Decorators
 {
     [TestFixture]
     public class LoggingEmailServiceDecoratorTests

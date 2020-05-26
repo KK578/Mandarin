@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 
-namespace Mandarin.Services.Tests.Fruity
+namespace Mandarin.Services.Tests.Decorators
 {
     [TestFixture]
     public class CachingArtistServiceDecoratorTests
