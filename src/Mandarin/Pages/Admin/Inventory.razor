@@ -5,29 +5,14 @@
 @using System.Reactive.Threading.Tasks
 @inject IInventoryService InventoryService;
 
-<div class="flex flex-col flex-grow">
-  <table class="text-left">
-    <thead>
-    <tr>
-      <th>#</th>
-      <th>Id</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    @for (var i = 0; i < inventory.Count; i++)
-    {
-      <tr>
-        <td>@(i)</td>
-        <td>@(inventory[i].Id)</td>
-        <td>@(inventory[i].ItemData.Name)</td>
-        <td>@(inventory[i].ItemData.Description)</td>
-      </tr>
-    }
-    </tbody>
-  </table>
-</div>
+<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+            AllowSorting="true" Data="@inventory" ColumnWidth="200px">
+  <Columns>
+    <RadzenGridColumn TItem="CatalogObject" Property="Id" Title="Square Item Id" />
+    <RadzenGridColumn TItem="CatalogObject" Property="ItemData.Name" Title="Name" />
+    <RadzenGridColumn TItem="CatalogObject" Property="ItemData.Description" Title="Description" />
+  </Columns>
+</RadzenGrid>
 
 @code
 {

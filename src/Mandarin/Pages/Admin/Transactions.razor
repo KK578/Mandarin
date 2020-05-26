@@ -5,116 +5,94 @@
 @using Square.Models
 @inject ITransactionService TransactionService;
 
-<div class="flex flex-col flex-grow">
-  <div class="bg-grey-light">
-    <EditForm EditContext="@editContext">
-      <InputDate @bind-Value="@StartDate" />
-      <InputDate @bind-Value="@EndDate" />
-      @if (isLoading)
-      {
-        <span>Loading</span>
-      }
-    </EditForm>
-  </div>
-  <table class="text-left">
-    <thead>
-    <tr>
-      <th>#</th>
-      <th>Id</th>
-      <th>Transaction Time</th>
-      <th>Money</th>
-      <th>Items</th>
-    </tr>
-    </thead>
-    <tbody>
-    @for (var i = 0; i < transactions.Count; i++)
-    {
-      <tr>
-        <td>@(i)</td>
-        <td>@(transactions[i].Id)</td>
-        <td>@(transactions[i].UpdatedAt)</td>
-        <td>@(transactions[i].TotalMoney?.Amount)@(transactions[i].TotalMoney?.Currency)</td>
-        <td>
-          <ul>
-            @foreach (var item in transactions[i].LineItems)
-            {
-              <li class="flex flex-row">
-                <span class="text-left">@(item.Name)</span>
-                <div class="flex-grow"></div>
-                <span>@(item.TotalMoney.Amount)</span>
-                <span class="text-right">@(item.TotalMoney.Currency) (@(item.Quantity) x @(item.BasePriceMoney.Currency)@(item.BasePriceMoney.Amount))]</span>
-              </li>
-            }
-          </ul>
-        </td>
-        <td>
-          @if (transactions[i].Discounts == null)
-          {
-            <span>None</span>
-          }
-          else
-          {
-            <ul>
-              @foreach (var discount in transactions[i].Discounts)
-              {
-                <li>@(discount.Name) [@(discount.AmountMoney.Amount)@(discount.AmountMoney.Currency)]</li>
-              }
-            </ul>
-          }
-        </td>
-      </tr>
-    }
-    </tbody>
-  </table>
-</div>
+<EditForm EditContext="@EditContext">
+  <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
+  <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
+
+  <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
+</EditForm>
+
+<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+            AllowSorting="true" Data="@AllTransactions" ColumnWidth="200px" Value="@SelectedTransaction" RowSelect="@((Order order) => OnSelect(order))">
+  <Columns>
+    <RadzenGridColumn TItem="Order" Property="Id" Title="Square Transaction Id" />
+    <RadzenGridColumn TItem="Order" Property="UpdatedAt" Title="Transaction Time">
+      <Template Context="data">@($"{DateTime.Parse(data.UpdatedAt):F}")</Template>
+    </RadzenGridColumn>
+    <RadzenGridColumn TItem="Order" Property="TotalDiscountMoney" Title="Discounts">
+      <Template Context="data">@($"{-1 * data.TotalDiscountMoney.Amount / 100.0:C}")</Template>
+    </RadzenGridColumn>
+    <RadzenGridColumn TItem="Order" Property="TotalMoney" Title="Total Amount">
+      <Template Context="data">@($"{data.TotalMoney.Amount / 100.0:C}")</Template>
+    </RadzenGridColumn>
+  </Columns>
+</RadzenGrid>
+
+@if (SelectedTransaction?.LineItems != null)
+{
+  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+              AllowSorting="true" Data="@SelectedTransaction.LineItems" ColumnWidth="200px">
+    <Columns>
+      <RadzenGridColumn TItem="OrderLineItem" Property="Name" Title="Name" />
+      <RadzenGridColumn TItem="OrderLineItem" Property="BasePriceMoney" Title="Unit Price">
+        <Template Context="data">@($"{data.BasePriceMoney.Amount / 100.0:C}")</Template>
+      </RadzenGridColumn>
+      <RadzenGridColumn TItem="OrderLineItem" Property="Quantity" Title="Quantity" />
+      <RadzenGridColumn TItem="OrderLineItem" Property="TotalMoney" Title="Subtotal">
+        <Template Context="data">@($"{data.TotalMoney.Amount / 100.0:C}")</Template>
+      </RadzenGridColumn>
+    </Columns>
+  </RadzenGrid>
+}
+
+@if (SelectedTransaction?.Discounts != null)
+{
+  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+              AllowSorting="true" Data="@SelectedTransaction.Discounts" ColumnWidth="200px">
+    <Columns>
+      <RadzenGridColumn TItem="OrderLineItemDiscount" Property="Name" Title="Name" />
+      <RadzenGridColumn TItem="OrderLineItemDiscount" Property="AmountMoney" Title="Discount Amount">
+        <Template Context="data">@($"{data.AmountMoney.Amount / 100.0:C}")</Template>
+      </RadzenGridColumn>
+    </Columns>
+  </RadzenGrid>
+}
 
 @code
 {
-  private EditContext editContext;
-  private DateTime startDate = DateTime.Today.AddDays(-1);
-  private DateTime endDate = DateTime.Today;
-  private bool isLoading = false;
+  private bool IsLoading { get; set; } = false;
+  private IList<Order> AllTransactions { get; set; } = new List<Order>();
+  private Order SelectedTransaction { get; set; } = null;
 
-  private DateTime StartDate
-  {
-    get => startDate;
-    set
-    {
-      startDate = value;
-      UpdateTransactionsAsync();
-    }
-  }
-
-  private DateTime EndDate
-  {
-    get => endDate;
-    set
-    {
-      endDate = value;
-      UpdateTransactionsAsync();
-    }
-  }
+  private EditContext EditContext { get; set; }
+  private DateTime StartDate { get; set; } = DateTime.Today.AddDays(-1);
+  private DateTime EndDate { get; set; } = DateTime.Today;
 
   protected override void OnInitialized()
   {
-    editContext = new EditContext(this);
+    EditContext = new EditContext(this);
   }
 
   private async Task UpdateTransactionsAsync()
   {
     try
     {
-      isLoading = true;
-      transactions = await TransactionService.GetAllTransactions(startDate, endDate)
-                                             .ToList()
-                                             .ToTask();
+      IsLoading = true;
+      AllTransactions = await TransactionService.GetAllTransactions(StartDate, EndDate)
+                                                .ToList()
+                                                .ToTask();
     }
     finally
     {
-      isLoading = false;
+      IsLoading = false;
       StateHasChanged();
     }
   }
 
-  private IList<Order> transactions = new List<Order>();
+  private Task OnSelect(Order order)
+  {
+    this.SelectedTransaction = order;
+    return Task.CompletedTask;
+  }
+
 }
