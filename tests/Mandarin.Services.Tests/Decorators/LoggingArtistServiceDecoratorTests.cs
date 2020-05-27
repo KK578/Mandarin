@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using Bashi.Tests.Framework.Logging;
 using Mandarin.Models.Artists;
-using Mandarin.Services.Fruity;
+using Mandarin.Services.Decorators;
 using Moq;
 using NUnit.Framework;
 
-namespace Mandarin.Services.Tests.Fruity
+namespace Mandarin.Services.Tests.Decorators
 {
     [TestFixture]
     public class LoggingArtistServiceDecoratorTests

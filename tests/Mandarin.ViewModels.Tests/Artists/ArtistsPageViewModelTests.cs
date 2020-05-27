@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
-using Mandarin.Services.Fruity;
+using Mandarin.Services;
 using Mandarin.ViewModels.Artists;
 using Moq;
 using NUnit.Framework;

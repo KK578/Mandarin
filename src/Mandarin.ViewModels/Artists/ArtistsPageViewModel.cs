@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Mandarin.Services.Fruity;
+using Mandarin.Services;
 
 namespace Mandarin.ViewModels.Artists
 {

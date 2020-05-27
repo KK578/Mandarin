@@ -1,0 +1,27 @@
+﻿@page "/admin/inventory"
+@using Mandarin.Services
+@using Square.Models
+@using System.Reactive.Linq
+@using System.Reactive.Threading.Tasks
+@inject IInventoryService InventoryService;
+
+<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+            AllowSorting="true" Data="@inventory" ColumnWidth="200px">
+  <Columns>
+    <RadzenGridColumn TItem="CatalogObject" Property="Id" Title="Square Item Id" />
+    <RadzenGridColumn TItem="CatalogObject" Property="ItemData.Name" Title="Name" />
+    <RadzenGridColumn TItem="CatalogObject" Property="ItemData.Description" Title="Description" />
+  </Columns>
+</RadzenGrid>
+
+@code
+{
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    inventory = await InventoryService.GetInventory().ToList().ToTask();
+  }
+
+  private IList<CatalogObject> inventory = new List<CatalogObject>();
+}

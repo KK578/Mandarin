@@ -1,4 +1,4 @@
-﻿namespace Mandarin.Services.Email
+﻿namespace Mandarin.Services.SendGrid
 {
     internal class SendGridConfiguration
     {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Bashi.Tests.Framework.Logging;
 using BlazorInputFile;
 using Mandarin.Models.Contact;
-using Mandarin.Services.Email;
+using Mandarin.Services.SendGrid;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -18,7 +18,7 @@ using NUnit.Framework;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Tests.Email
+namespace Mandarin.Services.Tests.SendGrid
 {
     [TestFixture]
     public class SendGridEmailServiceTests

@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Logging;
 using Mandarin.Models.Contact;
-using Mandarin.Services.Email;
+using Mandarin.Services.Decorators;
+using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Tests.Email
+namespace Mandarin.Services.Tests.Decorators
 {
     [TestFixture]
     public class LoggingEmailServiceDecoratorTests

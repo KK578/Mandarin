@@ -6,7 +6,7 @@ using AngleSharp;
 using AngleSharp.Dom;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
-using Mandarin.Services.Fruity;
+using Mandarin.Services;
 using Mandarin.Tests.Factory;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;

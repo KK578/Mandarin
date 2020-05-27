@@ -1,0 +1,14 @@
+﻿{
+  "cursor": "TestData/Square/CatalogApi/ListCatalog/ListCatalog.ITEM.2.json",
+  "objects": [
+    {
+      "type": "ITEM",
+      "id": "ID-1",
+      "item_data": {
+        "name": "Item1",
+        "description": "Item1's Description",
+        "product_type": "REGULAR"
+      }
+    }
+  ]
+}

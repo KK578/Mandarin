@@ -1,15 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using Bashi.Core.Enums;
 using Mandarin.Models.Contact;
+using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.Email
+namespace Mandarin.Services.SendGrid
 {
     internal sealed class SendGridEmailService : IEmailService
     {

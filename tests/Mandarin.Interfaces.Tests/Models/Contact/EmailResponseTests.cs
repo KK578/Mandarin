@@ -1,4 +1,4 @@
-﻿using Mandarin.Services.Email;
+﻿using Mandarin.Services.Objects;
 using NUnit.Framework;
 
 namespace Mandarin.Interfaces.Tests.Models.Contact

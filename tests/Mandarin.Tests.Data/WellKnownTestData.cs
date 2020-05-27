@@ -12,5 +12,26 @@
                 public const string TheLittleMandarin = "TestData/Fruity/Stockist/TheLittleMandarin.json";
             }
         }
+
+        public static class Square
+        {
+            public class CatalogApi
+            {
+                public class ListCatalog
+                {
+                    public const string ItemsOnlyPage1 = "TestData/Square/CatalogApi/ListCatalog/ListCatalog.ITEM.1.json";
+                    public const string ItemsOnlyPage2 = "TestData/Square/CatalogApi/ListCatalog/ListCatalog.ITEM.2.json";
+                }
+            }
+
+            public class OrdersApi
+            {
+                public class SearchOrders
+                {
+                    public const string SearchOrdersPage1 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.1.json";
+                    public const string SearchOrdersPage2 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.2.json";
+                }
+            }
+        }
     }
 }
