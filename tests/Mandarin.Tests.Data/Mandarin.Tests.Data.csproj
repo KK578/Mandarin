@@ -8,8 +8,4 @@
     <None Update="TestData/**/*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestData\Square\CatalogApi" />
-  </ItemGroup>
-
 </Project>
