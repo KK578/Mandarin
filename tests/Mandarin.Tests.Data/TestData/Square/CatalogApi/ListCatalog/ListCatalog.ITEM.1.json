@@ -2,11 +2,20 @@
   "cursor": "TestData/Square/CatalogApi/ListCatalog/ListCatalog.ITEM.2.json",
   "objects": [
     {
-      "type": "ITEM",
-      "id": "ID-1",
       "item_data": {
         "name": "Item1",
         "description": "Item1's Description",
+        "variations": [
+          {
+            "item_variation_data": {
+              "sku": "ID-1",
+              "price_money": {
+                "amount": 200,
+                "currency": "GBP"
+              }
+            }
+          }
+        ],
         "product_type": "REGULAR"
       }
     }

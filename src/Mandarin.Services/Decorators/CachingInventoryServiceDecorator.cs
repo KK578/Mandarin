@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Mandarin.Models.Inventory;
 using Microsoft.Extensions.Caching.Memory;
-using Square.Models;
 
 namespace Mandarin.Services.Decorators
 {
@@ -21,12 +21,12 @@ namespace Mandarin.Services.Decorators
             this.memoryCache = memoryCache;
         }
 
-        public IObservable<CatalogObject> GetInventory()
+        public IObservable<Product> GetInventory()
         {
             return Observable.FromAsync(() => this.memoryCache.GetOrCreateAsync(CachingInventoryServiceDecorator.CacheKey, CreateEntry))
                              .SelectMany(x => x);
 
-            async Task<IReadOnlyList<CatalogObject>> CreateEntry(ICacheEntry e)
+            async Task<IReadOnlyList<Product>> CreateEntry(ICacheEntry e)
             {
                 try
                 {
@@ -37,7 +37,7 @@ namespace Mandarin.Services.Decorators
                 catch (Exception)
                 {
                     e.AbsoluteExpiration = DateTimeOffset.MinValue;
-                    return new List<CatalogObject>().AsReadOnly();
+                    return new List<Product>().AsReadOnly();
                 }
             }
         }

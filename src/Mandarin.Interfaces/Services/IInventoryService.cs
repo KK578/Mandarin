@@ -1,10 +1,10 @@
 ﻿using System;
-using Square.Models;
+using Mandarin.Models.Inventory;
 
 namespace Mandarin.Services
 {
     public interface IInventoryService
     {
-        IObservable<CatalogObject> GetInventory();
+        IObservable<Product> GetInventory();
     }
 }

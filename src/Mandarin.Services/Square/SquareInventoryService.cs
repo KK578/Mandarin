@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Mandarin.Models.Inventory;
 using Microsoft.Extensions.Logging;
 using Square;
 using Square.Models;
@@ -19,9 +22,10 @@ namespace Mandarin.Services.Square
             this.squareClient = squareClient;
         }
 
-        public IObservable<CatalogObject> GetInventory()
+        public IObservable<Product> GetInventory()
         {
-            return Observable.Create<CatalogObject>(SubscribeToListCatalog);
+            return Observable.Create<CatalogObject>(SubscribeToListCatalog)
+                             .SelectMany(SquareInventoryService.MapToProduct);
 
             async Task SubscribeToListCatalog(IObserver<CatalogObject> o, CancellationToken ct)
             {
@@ -38,6 +42,21 @@ namespace Mandarin.Services.Square
                 } while (response.Cursor != null);
 
                 o.OnCompleted();
+            }
+        }
+
+        private static IEnumerable<Product> MapToProduct(CatalogObject catalogObject)
+        {
+            var productName = catalogObject.ItemData.Name.Split(" - ").Last();
+            var description = catalogObject.ItemData.Description;
+
+            foreach (var variation in catalogObject.ItemData.Variations)
+            {
+                var variationName = $"{productName} ({variation.ItemVariationData.Name})";
+                var productCode = variation.ItemVariationData.Sku;
+                var price = variation.ItemVariationData.PriceMoney;
+                var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
+                yield return new Product(productCode, variationName, description, unitPrice);
             }
         }
     }

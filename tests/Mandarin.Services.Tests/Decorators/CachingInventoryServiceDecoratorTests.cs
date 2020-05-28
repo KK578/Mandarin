@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Data;
+using Mandarin.Models.Inventory;
 using Mandarin.Services.Decorators;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
-using Square.Models;
 
 namespace Mandarin.Services.Tests.Decorators
 {
@@ -43,10 +44,7 @@ namespace Mandarin.Services.Tests.Decorators
 
         private void GivenServiceReturnsData()
         {
-            var data = new List<CatalogObject>()
-            {
-                new CatalogObject("Type", "Id")
-            };
+            var data = TestData.Create<List<Product>>();
             this.service.Setup(x => x.GetInventory())
                 .Returns(data.ToObservable())
                 .Verifiable();
