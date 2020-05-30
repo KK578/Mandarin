@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LazyCache;
 using Mandarin.Models.Artists;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -10,17 +11,17 @@ namespace Mandarin.Services.Decorators
     {
         private const string CacheKey = nameof(IArtistService) + "." + nameof(CachingArtistServiceDecorator.GetArtistDetailsAsync);
         private readonly IArtistService artistService;
-        private readonly IMemoryCache memoryCache;
+        private readonly IAppCache appCache;
 
-        public CachingArtistServiceDecorator(IArtistService artistService, IMemoryCache memoryCache)
+        public CachingArtistServiceDecorator(IArtistService artistService, IAppCache appCache)
         {
             this.artistService = artistService;
-            this.memoryCache = memoryCache;
+            this.appCache = appCache;
         }
 
         public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
-            return this.memoryCache.GetOrCreateAsync(CachingArtistServiceDecorator.CacheKey, CreateEntry);
+            return this.appCache.GetOrAddAsync(CachingArtistServiceDecorator.CacheKey, CreateEntry);
 
             async Task<IReadOnlyList<ArtistDetailsModel>> CreateEntry(ICacheEntry e)
             {

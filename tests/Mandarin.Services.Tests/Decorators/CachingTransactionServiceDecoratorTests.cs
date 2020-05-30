@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Data;
+using LazyCache;
+using Mandarin.Models.Transactions;
 using Mandarin.Services.Decorators;
-using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
-using Square.Models;
 
 namespace Mandarin.Services.Tests.Decorators
 {
@@ -18,7 +19,7 @@ namespace Mandarin.Services.Tests.Decorators
         private static readonly DateTime EndDate = new DateTime(2020, 05, 27);
 
         private Mock<ITransactionService> service;
-        private IMemoryCache memoryCache;
+        private IAppCache appCache;
 
         [SetUp]
         public void SetUp()
@@ -50,7 +51,7 @@ namespace Mandarin.Services.Tests.Decorators
             this.GivenServiceReturnsData();
             this.GivenRealMemoryCache();
 
-            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.memoryCache);
+            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache);
             var startDate = CachingTransactionServiceDecoratorTests.StartDate;
             var midDate = CachingTransactionServiceDecoratorTests.StartDate.AddDays(1);
             var endDate = CachingTransactionServiceDecoratorTests.EndDate;
@@ -77,7 +78,7 @@ namespace Mandarin.Services.Tests.Decorators
 
         private void GivenRealMemoryCache()
         {
-            this.memoryCache = new MemoryCache(new MemoryCacheOptions());
+            this.appCache = new CachingService();
         }
 
         private void GivenServiceThrowsException()
@@ -89,7 +90,7 @@ namespace Mandarin.Services.Tests.Decorators
 
         private async Task WhenServiceIsCalledMultipleTimes(int times)
         {
-            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.memoryCache);
+            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache);
             for (var i = 0; i < times; i++)
             {
                 await subject.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate).ToList().ToTask();

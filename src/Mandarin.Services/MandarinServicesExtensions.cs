@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Fruity;
@@ -18,7 +18,7 @@ namespace Mandarin.Services
     {
         public static IServiceCollection AddMandarinServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMemoryCache();
+            services.AddLazyCache();
             services.AddSendGridServices(configuration);
             services.AddFruityServices(configuration);
             services.AddSquareServices(configuration);
