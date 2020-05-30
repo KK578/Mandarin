@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
@@ -67,10 +67,7 @@ namespace Mandarin.Services.Tests.Decorators
 
         private void GivenServiceReturnsData()
         {
-            var data = new List<Order>()
-            {
-                new Order("LocationId", "Id")
-            };
+            var data = TestData.Create<List<Transaction>>();
             this.service.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(data.ToObservable())
                 .Verifiable();

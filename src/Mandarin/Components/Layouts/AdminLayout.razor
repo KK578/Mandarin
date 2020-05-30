@@ -1,5 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="align-middle bg-white flex flex-col min-h-full px-3 text-center">
-  @Body
+  <RadzenMenu>
+    <RadzenMenuItem Text="Home" Icon="home" Path="/admin" />
+    <RadzenMenuItem Text="Artists" Path="/admin/artists" Icon="person" />
+    <RadzenMenuItem Text="Inventory" Path="/admin/inventory" Icon="storefront" />
+    <RadzenMenuItem Text="Transactions" Path="/admin/transactions" Icon="attach_money" />
+  </RadzenMenu>
+  <div>
+    @Body
+  </div>
 </div>

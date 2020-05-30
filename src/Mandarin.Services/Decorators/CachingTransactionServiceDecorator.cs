@@ -4,8 +4,9 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using LazyCache;
+using Mandarin.Models.Transactions;
 using Microsoft.Extensions.Caching.Memory;
-using Square.Models;
 
 namespace Mandarin.Services.Decorators
 {
@@ -13,21 +14,21 @@ namespace Mandarin.Services.Decorators
     {
         private const string CacheKey = nameof(ITransactionService) + "." + nameof(CachingTransactionServiceDecorator.GetAllTransactions);
         private readonly ITransactionService transactionService;
-        private readonly IMemoryCache memoryCache;
+        private readonly IAppCache appCache;
 
-        public CachingTransactionServiceDecorator(ITransactionService transactionService, IMemoryCache memoryCache)
+        public CachingTransactionServiceDecorator(ITransactionService transactionService, IAppCache appCache)
         {
             this.transactionService = transactionService;
-            this.memoryCache = memoryCache;
+            this.appCache = appCache;
         }
 
-        public IObservable<Order> GetAllTransactions(DateTime start, DateTime end)
+        public IObservable<Transaction> GetAllTransactions(DateTime start, DateTime end)
         {
             return Observable
-                   .FromAsync(() => this.memoryCache.GetOrCreateAsync(CachingTransactionServiceDecorator.CreateCacheKey(start, end), CreateEntry))
+                   .FromAsync(() => this.appCache.GetOrAddAsync(CachingTransactionServiceDecorator.CreateCacheKey(start, end), CreateEntry))
                    .SelectMany(x => x);
 
-            async Task<IReadOnlyList<Order>> CreateEntry(ICacheEntry e)
+            async Task<IReadOnlyList<Transaction>> CreateEntry(ICacheEntry e)
             {
                 try
                 {
@@ -38,7 +39,7 @@ namespace Mandarin.Services.Decorators
                 catch (Exception)
                 {
                     e.AbsoluteExpiration = DateTimeOffset.MinValue;
-                    return new List<Order>().AsReadOnly();
+                    return new List<Transaction>().AsReadOnly();
                 }
             }
         }

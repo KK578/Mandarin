@@ -13,8 +13,14 @@
   <title>The Little Mandarin</title>
   <base href="~/" />
   <link href="css/Main.css" rel="stylesheet" />
-  <link href="css/Carousel.css" rel="stylesheet" />
-  <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+  @if (Request.Path.Value.StartsWith("/admin"))
+  {
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+  }
+  else
+  {
+    <link href="css/Carousel.css" rel="stylesheet" />
+  }
 </head>
 <body class="h-screen">
 <app class="block h-full overflow-y-scroll bg-grey-light">
@@ -33,7 +39,13 @@
 </div>
 
 <script src="_framework/blazor.server.js"></script>
-<script src="_content/BlazorInputFile/inputfile.js"></script>
-<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+@if (Request.Path.Value.StartsWith("/admin"))
+{
+  <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+}
+else
+{
+  <script src="_content/BlazorInputFile/inputfile.js"></script>
+}
 </body>
 </html>

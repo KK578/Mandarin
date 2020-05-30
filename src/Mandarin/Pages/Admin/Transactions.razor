@@ -2,7 +2,7 @@
 @using Mandarin.Services
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
-@using Square.Models
+@using Mandarin.Models.Transactions
 @inject ITransactionService TransactionService;
 
 <EditForm EditContext="@EditContext">
@@ -13,46 +13,30 @@
 </EditForm>
 
 <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-            AllowSorting="true" Data="@AllTransactions" ColumnWidth="200px" Value="@SelectedTransaction" RowSelect="@((Order order) => OnSelect(order))">
+            AllowSorting="true" Data="@AllTransactions" ColumnWidth="200px" Value="@SelectedTransaction" RowSelect="@((Transaction transaction) => OnSelect(transaction))">
   <Columns>
-    <RadzenGridColumn TItem="Order" Property="Id" Title="Square Transaction Id" />
-    <RadzenGridColumn TItem="Order" Property="UpdatedAt" Title="Transaction Time">
-      <Template Context="data">@($"{DateTime.Parse(data.UpdatedAt):F}")</Template>
+    <RadzenGridColumn TItem="Transaction" Property="Timestamp" Title="Transaction Time">
+      <Template Context="data">@($"{data.Timestamp:F}")</Template>
     </RadzenGridColumn>
-    <RadzenGridColumn TItem="Order" Property="TotalDiscountMoney" Title="Discounts">
-      <Template Context="data">@($"{-1 * data.TotalDiscountMoney.Amount / 100.0:C}")</Template>
-    </RadzenGridColumn>
-    <RadzenGridColumn TItem="Order" Property="TotalMoney" Title="Total Amount">
-      <Template Context="data">@($"{data.TotalMoney.Amount / 100.0:C}")</Template>
+    <RadzenGridColumn TItem="Transaction" Property="TotalMoney" Title="Total Amount">
+      <Template Context="data">@($"{data.TotalAmount:C}")</Template>
     </RadzenGridColumn>
   </Columns>
 </RadzenGrid>
 
-@if (SelectedTransaction?.LineItems != null)
+@if (SelectedTransaction?.Subtransactions != null)
 {
   <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@SelectedTransaction.LineItems" ColumnWidth="200px">
+              AllowSorting="true" Data="@SelectedTransaction.Subtransactions" ColumnWidth="200px">
     <Columns>
-      <RadzenGridColumn TItem="OrderLineItem" Property="Name" Title="Name" />
-      <RadzenGridColumn TItem="OrderLineItem" Property="BasePriceMoney" Title="Unit Price">
-        <Template Context="data">@($"{data.BasePriceMoney.Amount / 100.0:C}")</Template>
+      <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductCode" Title="Product Code" />
+      <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductName" Title="Name" />
+      <RadzenGridColumn TItem="Subtransaction" Property="TransactionUnitPrice" Title="Unit Price">
+        <Template Context="data">@($"{data.TransactionUnitPrice:C}")</Template>
       </RadzenGridColumn>
-      <RadzenGridColumn TItem="OrderLineItem" Property="Quantity" Title="Quantity" />
-      <RadzenGridColumn TItem="OrderLineItem" Property="TotalMoney" Title="Subtotal">
-        <Template Context="data">@($"{data.TotalMoney.Amount / 100.0:C}")</Template>
-      </RadzenGridColumn>
-    </Columns>
-  </RadzenGrid>
-}
-
-@if (SelectedTransaction?.Discounts != null)
-{
-  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@SelectedTransaction.Discounts" ColumnWidth="200px">
-    <Columns>
-      <RadzenGridColumn TItem="OrderLineItemDiscount" Property="Name" Title="Name" />
-      <RadzenGridColumn TItem="OrderLineItemDiscount" Property="AmountMoney" Title="Discount Amount">
-        <Template Context="data">@($"{data.AmountMoney.Amount / 100.0:C}")</Template>
+      <RadzenGridColumn TItem="Subtransaction" Property="Quantity" Title="Quantity" />
+      <RadzenGridColumn TItem="Subtransaction" Property="Subtotal" Title="Subtotal">
+        <Template Context="data">@($"{data.Subtotal:C}")</Template>
       </RadzenGridColumn>
     </Columns>
   </RadzenGrid>
@@ -61,8 +45,8 @@
 @code
 {
   private bool IsLoading { get; set; } = false;
-  private IList<Order> AllTransactions { get; set; } = new List<Order>();
-  private Order SelectedTransaction { get; set; } = null;
+  private IList<Transaction> AllTransactions { get; set; } = new List<Transaction>();
+  private Transaction SelectedTransaction { get; set; } = null;
 
   private EditContext EditContext { get; set; }
   private DateTime StartDate { get; set; } = DateTime.Today.AddDays(-1);
@@ -89,9 +73,9 @@
     }
   }
 
-  private Task OnSelect(Order order)
+  private Task OnSelect(Transaction transaction)
   {
-    this.SelectedTransaction = order;
+    this.SelectedTransaction = transaction;
     return Task.CompletedTask;
   }
 

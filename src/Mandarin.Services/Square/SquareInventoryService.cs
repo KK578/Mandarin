@@ -25,7 +25,14 @@ namespace Mandarin.Services.Square
         public IObservable<Product> GetInventory()
         {
             return Observable.Create<CatalogObject>(SubscribeToListCatalog)
-                             .SelectMany(SquareInventoryService.MapToProduct);
+                             .SelectMany(catalogObject =>
+                             {
+                                 if (catalogObject.ItemData != null)
+                                     return SquareInventoryService.MapToProduct(catalogObject.ItemData);
+
+                                 return Enumerable.Empty<Product>();
+                             })
+                             .Where(x => x != null);
 
             async Task SubscribeToListCatalog(IObserver<CatalogObject> o, CancellationToken ct)
             {
@@ -45,18 +52,19 @@ namespace Mandarin.Services.Square
             }
         }
 
-        private static IEnumerable<Product> MapToProduct(CatalogObject catalogObject)
+        private static IEnumerable<Product> MapToProduct(CatalogItem catalogItem)
         {
-            var productName = catalogObject.ItemData.Name.Split(" - ").Last();
-            var description = catalogObject.ItemData.Description;
+            var productName = catalogItem.Name.Split(" - ").Last();
+            var description = catalogItem.Description;
 
-            foreach (var variation in catalogObject.ItemData.Variations)
+            foreach (var variation in catalogItem.Variations)
             {
+                var squareId = variation.Id;
                 var variationName = $"{productName} ({variation.ItemVariationData.Name})";
                 var productCode = variation.ItemVariationData.Sku;
                 var price = variation.ItemVariationData.PriceMoney;
                 var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
-                yield return new Product(productCode, variationName, description, unitPrice);
+                yield return new Product(squareId, productCode, variationName, description, unitPrice);
             }
         }
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Fruity;
@@ -62,6 +62,7 @@ namespace Mandarin.Services
             services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
             services.AddTransient<IInventoryService, SquareInventoryService>();
             services.Decorate<IInventoryService, CachingInventoryServiceDecorator>();
+            services.AddSingleton(s => (IQueryableInventoryService)s.GetRequiredService<IInventoryService>());
 
             ISquareClient ConfigureSquareClient(IServiceProvider provider)
             {
