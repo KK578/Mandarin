@@ -5,41 +5,47 @@
 @using Mandarin.Models.Transactions
 @inject ITransactionService TransactionService;
 
-<EditForm EditContext="@EditContext">
-  <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
-  <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
+<RadzenCard>
+  <EditForm EditContext="@EditContext">
+    <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
+    <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
 
-  <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
-</EditForm>
+    <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
+  </EditForm>
+</RadzenCard>
 
-<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-            AllowSorting="true" Data="@AllTransactions" ColumnWidth="200px" Value="@SelectedTransaction" RowSelect="@((Transaction transaction) => OnSelect(transaction))">
-  <Columns>
-    <RadzenGridColumn TItem="Transaction" Property="Timestamp" Title="Transaction Time">
-      <Template Context="data">@($"{data.Timestamp:F}")</Template>
-    </RadzenGridColumn>
-    <RadzenGridColumn TItem="Transaction" Property="TotalMoney" Title="Total Amount">
-      <Template Context="data">@($"{data.TotalAmount:C}")</Template>
-    </RadzenGridColumn>
-  </Columns>
-</RadzenGrid>
-
-@if (SelectedTransaction?.Subtransactions != null)
-{
+<RadzenCard>
   <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@SelectedTransaction.Subtransactions" ColumnWidth="200px">
+              AllowSorting="true" Data="@AllTransactions" ColumnWidth="200px" Value="@SelectedTransaction" RowSelect="@((Transaction transaction) => OnSelect(transaction))">
     <Columns>
-      <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductCode" Title="Product Code" />
-      <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductName" Title="Name" />
-      <RadzenGridColumn TItem="Subtransaction" Property="TransactionUnitPrice" Title="Unit Price">
-        <Template Context="data">@($"{data.TransactionUnitPrice:C}")</Template>
+      <RadzenGridColumn TItem="Transaction" Property="Timestamp" Title="Transaction Time">
+        <Template Context="data">@($"{data.Timestamp:F}")</Template>
       </RadzenGridColumn>
-      <RadzenGridColumn TItem="Subtransaction" Property="Quantity" Title="Quantity" />
-      <RadzenGridColumn TItem="Subtransaction" Property="Subtotal" Title="Subtotal">
-        <Template Context="data">@($"{data.Subtotal:C}")</Template>
+      <RadzenGridColumn TItem="Transaction" Property="TotalMoney" Title="Total Amount">
+        <Template Context="data">@($"{data.TotalAmount:C}")</Template>
       </RadzenGridColumn>
     </Columns>
   </RadzenGrid>
+</RadzenCard>
+
+@if (SelectedTransaction?.Subtransactions != null)
+{
+  <RadzenCard>
+    <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+                AllowSorting="true" Data="@SelectedTransaction.Subtransactions" ColumnWidth="200px">
+      <Columns>
+        <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductCode" Title="Product Code" />
+        <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductName" Title="Name" />
+        <RadzenGridColumn TItem="Subtransaction" Property="TransactionUnitPrice" Title="Unit Price">
+          <Template Context="data">@($"{data.TransactionUnitPrice:C}")</Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Subtransaction" Property="Quantity" Title="Quantity" />
+        <RadzenGridColumn TItem="Subtransaction" Property="Subtotal" Title="Subtotal">
+          <Template Context="data">@($"{data.Subtotal:C}")</Template>
+        </RadzenGridColumn>
+      </Columns>
+    </RadzenGrid>
+  </RadzenCard>
 }
 
 @code

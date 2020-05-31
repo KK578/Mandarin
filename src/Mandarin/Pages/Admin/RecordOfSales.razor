@@ -5,39 +5,69 @@
 @using Mandarin.Models.Commissions
 @inject ICommissionService CommissionService;
 
-<EditForm EditContext="@EditContext">
-  <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
-  <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
+<RadzenCard>
+  <EditForm EditContext="@DatePickerEditContext">
+    <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
+    <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
 
-  <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
-</EditForm>
+    <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
+  </EditForm>
+</RadzenCard>
 
-<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-            AllowSorting="true" Data="@Commissions" ColumnWidth="200px" Value="@SelectedCommission" RowSelect="@((ArtistSales commission) => OnSelect(commission))">
-  <Columns>
-    <RadzenGridColumn TItem="ArtistSales" Property="StockistCode" Title="Artist Code" />
-    <RadzenGridColumn TItem="ArtistSales" Property="Name" Title="Name" />
-    <RadzenGridColumn TItem="ArtistSales" Property="Rate" Title="Commission Rate" FormatString="{0:P}" />
-    <RadzenGridColumn TItem="ArtistSales" Property="Subtotal" Title="Subtotal" FormatString="{0:C}" />
-    <RadzenGridColumn TItem="ArtistSales" Property="CommissionTotal" Title="Commission" FormatString="{0:C}" />
-    <RadzenGridColumn TItem="ArtistSales" Property="Total" Title="Total" FormatString="{0:C}" />
-  </Columns>
-</RadzenGrid>
+<RadzenCard>
+  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
+              AllowSorting="true" Data="@Commissions" ColumnWidth="200px" Value="@SelectedCommission" RowSelect="@((ArtistSales commission) => OnSelect(commission))">
+    <Columns>
+      <RadzenGridColumn TItem="ArtistSales" Property="StockistCode" Title="Artist Code" />
+      <RadzenGridColumn TItem="ArtistSales" Property="Name" Title="Name" />
+      <RadzenGridColumn TItem="ArtistSales" Property="Rate" Title="Commission Rate" FormatString="{0:P}" />
+      <RadzenGridColumn TItem="ArtistSales" Property="Subtotal" Title="Subtotal" FormatString="{0:C}" />
+      <RadzenGridColumn TItem="ArtistSales" Property="CommissionTotal" Title="Commission" FormatString="{0:C}" />
+      <RadzenGridColumn TItem="ArtistSales" Property="Total" Title="Total" FormatString="{0:C}" />
+    </Columns>
+  </RadzenGrid>
+</RadzenCard>
 
 @if (SelectedCommission != null)
 {
-  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@SelectedCommission.Sales" ColumnWidth="200px">
-    <Columns>
-      <RadzenGridColumn TItem="Sale" Property="ProductCode" Title="Product Code" />
-      <RadzenGridColumn TItem="Sale" Property="ProductName" Title="Product Name" />
-      <RadzenGridColumn TItem="Sale" Property="Quantity" Title="Quantity" />
-      <RadzenGridColumn TItem="Sale" Property="UnitPrice" Title="Unit Price" FormatString="{0:C}" />
-      <RadzenGridColumn TItem="Sale" Property="Commission" Title="Commission" FormatString="{0:C}" />
-      <RadzenGridColumn TItem="Sale" Property="Subtotal" Title="Subtotal" FormatString="{0:C}" />
-      <RadzenGridColumn TItem="Sale" Property="Total" Title="Total" FormatString="{0:C}" />
-    </Columns>
-  </RadzenGrid>
+  <RadzenCard>
+    <div class="text-left">
+      <h3>Record of Sale for @(SelectedCommission.Name)</h3>
+      <p>Subtotal: @($"{SelectedCommission.Subtotal:C}")</p>
+      <p>Commission: @($"{SelectedCommission.CommissionTotal:C}") (@($"{SelectedCommission.Rate:P}"))</p>
+      <p>Total: @($"{SelectedCommission.Total:C}")</p>
+    </div>
+
+    @if (SelectedCommission.Sales != null)
+    {
+      <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+                  AllowSorting="true" Data="@SelectedCommission.Sales" ColumnWidth="200px">
+        <Columns>
+          <RadzenGridColumn TItem="Sale" Property="ProductCode" Title="Product Code" />
+          <RadzenGridColumn TItem="Sale" Property="ProductName" Title="Product Name" />
+          <RadzenGridColumn TItem="Sale" Property="Quantity" Title="Quantity" />
+          <RadzenGridColumn TItem="Sale" Property="UnitPrice" Title="Unit Price" FormatString="{0:C}" />
+          <RadzenGridColumn TItem="Sale" Property="Subtotal" Title="Subtotal" FormatString="{0:C}" />
+          <RadzenGridColumn TItem="Sale" Property="Commission" Title="Commission" FormatString="{0:C}" />
+          <RadzenGridColumn TItem="Sale" Property="Total" Title="Total" FormatString="{0:C}" />
+        </Columns>
+      </RadzenGrid>
+    }
+    else
+    {
+      <div>No sales occurred in this period.</div>
+    }
+
+    <EditForm class="flex flex-col" Model="@RecordOfSalesModel">
+      <div class="mt-5 grid grid-cols-3 gap-4">
+        <RadzenLabel class="self-center" Text="Email Address:" />
+        <RadzenTextBox class="col-span-2" Placeholder="@SelectedCommission.EmailAddress" @bind-Value="@RecordOfSalesModel.EmailAddress" />
+
+        <RadzenLabel class="self-center" Text="Custom Message:" />
+        <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" @bind-Value="@RecordOfSalesModel.CustomMessage" />
+      </div>
+    </EditForm>
+  </RadzenCard>
 }
 
 @code
@@ -46,13 +76,15 @@
   private IList<ArtistSales> Commissions { get; set; } = new List<ArtistSales>();
   private ArtistSales SelectedCommission { get; set; } = null;
 
-  private EditContext EditContext { get; set; }
+  private EditContext DatePickerEditContext { get; set; }
   private DateTime StartDate { get; set; } = DateTime.Today.AddDays(-1);
   private DateTime EndDate { get; set; } = DateTime.Today;
 
+  private SendRecordOfSalesModel RecordOfSalesModel { get; set; }
+
   protected override void OnInitialized()
   {
-    EditContext = new EditContext(this);
+    DatePickerEditContext = new EditContext(this);
   }
 
   private async Task UpdateTransactionsAsync()
@@ -74,6 +106,7 @@
   private Task OnSelect(ArtistSales commission)
   {
     this.SelectedCommission = commission;
+    RecordOfSalesModel = new SendRecordOfSalesModel(commission);
     return Task.CompletedTask;
   }
 

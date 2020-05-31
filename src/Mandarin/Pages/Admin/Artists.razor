@@ -3,19 +3,21 @@
 @using Mandarin.Models.Artists
 @inject IArtistService ArtistService;
 
-<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-            AllowSorting="true" Data="@artists" ColumnWidth="200px">
-  <Columns>
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="Name" Title="Name" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="Description" Title="Description" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="ImageUrl" Title="Public Image Url" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="TwitterUrl" Title="Twitter Handle" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="InstagramUrl" Title="Instagram Handle" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="FacebookUrl" Title="Facebook Handle" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="TumblrUrl" Title="Tumblr Handle" />
-    <RadzenGridColumn TItem="ArtistDetailsModel" Property="WebsiteUrl" Title="Website Link" />
-  </Columns>
-</RadzenGrid>
+<RadzenCard>
+  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+              AllowSorting="true" Data="@artists" ColumnWidth="200px">
+    <Columns>
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="Name" Title="Name" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="Description" Title="Description" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="ImageUrl" Title="Public Image Url" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="TwitterUrl" Title="Twitter Handle" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="InstagramUrl" Title="Instagram Handle" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="FacebookUrl" Title="Facebook Handle" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="TumblrUrl" Title="Tumblr Handle" />
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="WebsiteUrl" Title="Website Link" />
+    </Columns>
+  </RadzenGrid>
+</RadzenCard>
 
 @code
 {
