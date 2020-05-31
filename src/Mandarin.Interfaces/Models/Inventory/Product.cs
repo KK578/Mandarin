@@ -16,5 +16,10 @@
         public string ProductName { get; }
         public string Description { get; }
         public decimal? UnitPrice { get; }
+
+        public override string ToString()
+        {
+            return $"{this.ProductCode}: {this.ProductName}";
+        }
     }
 }

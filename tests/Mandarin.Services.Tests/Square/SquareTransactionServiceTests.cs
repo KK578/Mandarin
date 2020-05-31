@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Square;
 using Square.Models;
+using Transaction = Mandarin.Models.Transactions.Transaction;
 
 namespace Mandarin.Services.Tests.Square
 {
@@ -22,6 +23,7 @@ namespace Mandarin.Services.Tests.Square
         private static readonly JsonSerializer Serializer = new JsonSerializer();
 
         private Mock<ISquareClient> squareClient;
+        private Mock<IQueryableInventoryService> inventoryService;
 
         [TearDown]
         public void TearDown()
@@ -49,8 +51,8 @@ namespace Mandarin.Services.Tests.Square
             this.GivenSquareClientOrdersApiReturnsData();
             var transactions = await this.WhenListingTransactions();
             Assert.That(transactions.Count, Is.EqualTo(2));
-            Assert.That(transactions[0].Id, Is.EqualTo("Order1"));
-            Assert.That(transactions[1].Id, Is.EqualTo("Order2"));
+            Assert.That(transactions[0].SquareId, Is.EqualTo("Order1"));
+            Assert.That(transactions[1].SquareId, Is.EqualTo("Order2"));
         }
 
         private void GivenSquareClientLocationApiReturnsData()
@@ -84,9 +86,9 @@ namespace Mandarin.Services.Tests.Square
             return waitHandle;
         }
 
-        private Task<IList<Order>> WhenListingTransactions(CancellationToken ct = default)
+        private Task<IList<Transaction>> WhenListingTransactions(CancellationToken ct = default)
         {
-            var subject = new SquareTransactionService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object);
+            var subject = new SquareTransactionService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object, this.inventoryService.Object);
             return subject.GetAllTransactions(DateTime.Now, DateTime.Now).ToList().ToTask(ct);
         }
 

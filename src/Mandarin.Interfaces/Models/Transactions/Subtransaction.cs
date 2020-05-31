@@ -15,5 +15,10 @@ namespace Mandarin.Models.Transactions
         public int Quantity { get; }
         public decimal TransactionUnitPrice => this.Subtotal / this.Quantity;
         public decimal Subtotal { get; }
+
+        public override string ToString()
+        {
+            return $"{this.Product}: {this.TransactionUnitPrice:C} * {this.Quantity:C} = {this.Subtotal:C}";
+        }
     }
 }

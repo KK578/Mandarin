@@ -50,10 +50,10 @@ namespace Mandarin.Services.Decorators
 
         public Task<Product> GetProductByNameAsync(string productName)
         {
-            // This should be a look up from configuration. And definitely not in a caching decorator!
+            // TODO: Move this to a config-based lookup. And move it out of the decorator!
             if (string.Equals(productName, "eGift Card", StringComparison.OrdinalIgnoreCase))
             {
-                return Task.FromResult(new Product("TheGiftCardIdDoesNotExist", "TLM-GC", productName, "eGift Card", null));
+                return Task.FromResult(new Product("TLM-GC", "TLM-GC", productName, "eGift Card", null));
             }
             else
             {

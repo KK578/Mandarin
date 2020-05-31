@@ -13,7 +13,7 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenNoArguments_CreatesEmptyObject()
         {
             // Act
-            var subject = new ArtistViewModel(new ArtistDetailsModel(null, null, null, null, null, null, null, null));
+            var subject = new ArtistViewModel(new ArtistDetailsModel(null, null, null, 0, null, null, null, null, null, null, null));
 
             // Assert
             Assert.That(subject.Name, Is.Null);
@@ -34,7 +34,7 @@ namespace Mandarin.ViewModels.Tests.Artists
             var description = TestData.WellKnownString;
 
             // Act
-            var model = new ArtistDetailsModel(name, description, null, null, null, null, null, null);
+            var model = new ArtistDetailsModel(null, name, description, 0, null, null, null, null, null, null, null);
             var subject = new ArtistViewModel(model);
 
             // Assert
@@ -47,6 +47,9 @@ namespace Mandarin.ViewModels.Tests.Artists
         {
             // Act
             var model = new ArtistDetailsModel(null,
+                                               null,
+                                               null,
+                                               0,
                                                null,
                                                new Uri("https://localhost/image"),
                                                new Uri("https://localhost/twitter"),

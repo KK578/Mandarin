@@ -25,6 +25,10 @@ namespace Mandarin.Models.Transactions
         public string InsertedBy { get; }
 
         public IReadOnlyList<Subtransaction> Subtransactions { get; }
-        public int NumberOfItems => this.Subtransactions.Count;
+
+        public override string ToString()
+        {
+            return $"{this.Timestamp}: {this.Subtransactions.Count} Transactions = {this.TotalAmount:C}";
+        }
     }
 }

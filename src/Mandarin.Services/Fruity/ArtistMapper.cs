@@ -12,8 +12,11 @@ namespace Mandarin.Services.Fruity
 
         public static ArtistDetailsModel ConvertToModel(ArtistDto dto)
         {
-            return new ArtistDetailsModel(dto.StockistName,
+            return new ArtistDetailsModel(dto.StockistCode,
+                                          dto.StockistName,
                                           dto.Description,
+                                          decimal.Divide(dto.Rate, 100),
+                                          dto.EmailAddress,
                                           new Uri(dto.ImageUrl),
                                           ArtistMapper.MapUri(dto.TwitterHandle, ArtistMapper.TwitterFormat),
                                           ArtistMapper.MapUri(dto.InstagramHandle, ArtistMapper.InstagramFormat),
