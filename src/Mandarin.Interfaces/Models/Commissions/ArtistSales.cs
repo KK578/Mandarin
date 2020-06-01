@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Mandarin.Converters;
 using Newtonsoft.Json;
 
@@ -32,6 +33,21 @@ namespace Mandarin.Models.Commissions
             this.Total = total;
         }
 
+        public ArtistSales WithValues(string emailAddress, string customMessage)
+        {
+            return new ArtistSales(this.StockistCode,
+                                   this.Name,
+                                   emailAddress ?? this.EmailAddress,
+                                   customMessage ?? this.CustomMessage,
+                                   this.StartDate,
+                                   this.EndDate,
+                                   this.Rate,
+                                   this.Sales.ToList(),
+                                   this.Subtotal,
+                                   this.CommissionTotal,
+                                   this.Total);
+        }
+
         [JsonProperty("stockistCode")] public string StockistCode { get; }
         [JsonProperty("name")] public string Name { get; }
         [JsonProperty("emailAddress")] public string EmailAddress { get; }
@@ -39,12 +55,12 @@ namespace Mandarin.Models.Commissions
 
         [JsonProperty("startDate"), JsonConverter(typeof(IsoDateConverter))] public DateTime StartDate { get; }
         [JsonProperty("endDate"), JsonConverter(typeof(IsoDateConverter))] public DateTime EndDate { get; }
-        [JsonProperty("rate"), JsonConverter(typeof(DoubleAsPercentageConverter))] public decimal Rate { get; }
+        [JsonProperty("rate"), JsonConverter(typeof(NumberAsPercentageConverter))] public decimal Rate { get; }
 
-        [JsonProperty("sales")] public IEnumerable<Sale> Sales { get; }
-        [JsonProperty("subtotal"), JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal Subtotal { get; }
-        [JsonProperty("commissionTotal"), JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal CommissionTotal { get; }
-        [JsonProperty("total"), JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal Total { get; }
+        [JsonProperty("sales")] public IReadOnlyList<Sale> Sales { get; }
+        [JsonProperty("subtotal"), JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal Subtotal { get; }
+        [JsonProperty("commissionTotal"), JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal CommissionTotal { get; }
+        [JsonProperty("total"), JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal Total { get; }
 
         public override string ToString()
         {

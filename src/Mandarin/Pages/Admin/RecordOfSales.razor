@@ -4,6 +4,7 @@
 @using System.Reactive.Threading.Tasks
 @using Mandarin.Models.Commissions
 @inject ICommissionService CommissionService;
+@inject IEmailService EmailService;
 
 <RadzenCard>
   <EditForm EditContext="@DatePickerEditContext">
@@ -58,13 +59,21 @@
       <div>No sales occurred in this period.</div>
     }
 
-    <EditForm class="flex flex-col" Model="@RecordOfSalesModel">
+    <EditForm class="flex flex-col" Model="@RecordOfSalesModel" OnValidSubmit="SendEmailAsync">
       <div class="mt-5 grid grid-cols-3 gap-4">
         <RadzenLabel class="self-center" Text="Email Address:" />
         <RadzenTextBox class="col-span-2" Placeholder="@SelectedCommission.EmailAddress" @bind-Value="@RecordOfSalesModel.EmailAddress" />
 
         <RadzenLabel class="self-center" Text="Custom Message:" />
         <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" @bind-Value="@RecordOfSalesModel.CustomMessage" />
+
+        <div class="col-span-2">
+          @if (EmailException != null)
+          {
+            <span>Error sending email: @(EmailException?.Message)</span>
+          }
+        </div>
+        <RadzenButton ButtonType="ButtonType.Submit" Disabled="@IsLoading">Submit</RadzenButton>
       </div>
     </EditForm>
   </RadzenCard>
@@ -81,6 +90,7 @@
   private DateTime EndDate { get; set; } = DateTime.Today;
 
   private SendRecordOfSalesModel RecordOfSalesModel { get; set; }
+  private Exception EmailException { get; set; }
 
   protected override void OnInitialized()
   {
@@ -108,6 +118,24 @@
     this.SelectedCommission = commission;
     RecordOfSalesModel = new SendRecordOfSalesModel(commission);
     return Task.CompletedTask;
+  }
+
+  public async Task SendEmailAsync()
+  {
+    try
+    {
+      IsLoading = true;
+      var email = EmailService.BuildRecordOfSalesEmail(RecordOfSalesModel);
+      await EmailService.SendEmailAsync(email);
+    }
+    catch (Exception ex)
+    {
+      EmailException = ex;
+    }
+    finally
+    {
+      IsLoading = false;
+    }
   }
 
 }

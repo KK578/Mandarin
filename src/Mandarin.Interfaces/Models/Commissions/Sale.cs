@@ -26,10 +26,10 @@ namespace Mandarin.Models.Commissions
         [JsonProperty("productCode")] public string ProductCode { get; }
         [JsonProperty("productName")] public string ProductName { get; }
         [JsonProperty("quantity")] public int Quantity { get; set; }
-        [JsonProperty("unitPrice")] [JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal UnitPrice { get; }
-        [JsonProperty("subtotal")] [JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal Subtotal { get; }
-        [JsonProperty("commission")] [JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal Commission { get; }
-        [JsonProperty("total")] [JsonConverter(typeof(DoubleAsCurrencyConverter))] public decimal Total { get; }
+        [JsonProperty("unitPrice")] [JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal UnitPrice { get; }
+        [JsonProperty("subtotal")] [JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal Subtotal { get; }
+        [JsonProperty("commission")] [JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal Commission { get; }
+        [JsonProperty("total")] [JsonConverter(typeof(NumberAsCurrencyConverter))] public decimal Total { get; }
 
         public override string ToString()
         {
