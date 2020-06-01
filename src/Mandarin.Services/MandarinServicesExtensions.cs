@@ -30,6 +30,7 @@ namespace Mandarin.Services
 
         private static void AddMandarinDomainServices(this IServiceCollection services)
         {
+            services.AddTransient<ITransactionMapper, TransactionMapper>();
             services.AddTransient<ICommissionService, CommissionService>();
         }
 

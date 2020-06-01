@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Data;
 using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -23,18 +25,20 @@ namespace Mandarin.Services.Tests.Square
         private static readonly JsonSerializer Serializer = new JsonSerializer();
 
         private Mock<ISquareClient> squareClient;
-        private Mock<IQueryableInventoryService> inventoryService;
+        private Mock<ITransactionMapper> transactionMapper;
 
         [TearDown]
         public void TearDown()
         {
             this.squareClient = null;
+            this.transactionMapper = null;
         }
 
         [Test]
         public void GetTransaction_WhenRequestIsCancelled_ShouldThrowException()
         {
             this.GivenSquareClientLocationApiReturnsData();
+            this.GivenTransactionMapperIsInitialized();
             var waitHandle = this.GivenSquareClientOrderApiWaitsToContinue();
             var cts = new CancellationTokenSource();
             var task = this.WhenListingTransactions(cts.Token);
@@ -49,10 +53,10 @@ namespace Mandarin.Services.Tests.Square
         {
             this.GivenSquareClientLocationApiReturnsData();
             this.GivenSquareClientOrdersApiReturnsData();
+            this.GivenTransactionMapperMapsToFakeData();
             var transactions = await this.WhenListingTransactions();
-            Assert.That(transactions.Count, Is.EqualTo(2));
-            Assert.That(transactions[0].SquareId, Is.EqualTo("Order1"));
-            Assert.That(transactions[1].SquareId, Is.EqualTo("Order2"));
+            Assert.That(transactions.Count, Is.EqualTo(6));
+            Assert.That(transactions[0].SquareId, Contains.Substring("squareId"));
         }
 
         private void GivenSquareClientLocationApiReturnsData()
@@ -86,9 +90,21 @@ namespace Mandarin.Services.Tests.Square
             return waitHandle;
         }
 
+        private void GivenTransactionMapperIsInitialized()
+        {
+            this.transactionMapper ??= new Mock<ITransactionMapper>();
+        }
+
+        private void GivenTransactionMapperMapsToFakeData()
+        {
+            this.transactionMapper ??= new Mock<ITransactionMapper>();
+            this.transactionMapper.Setup(x => x.MapToTransaction(It.IsAny<Order>()))
+                .Returns(TestData.Create<List<Transaction>>().ToObservable());
+        }
+
         private Task<IList<Transaction>> WhenListingTransactions(CancellationToken ct = default)
         {
-            var subject = new SquareTransactionService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object, this.inventoryService.Object);
+            var subject = new SquareTransactionService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object, this.transactionMapper.Object);
             return subject.GetAllTransactions(DateTime.Now, DateTime.Now).ToList().ToTask(ct);
         }
 

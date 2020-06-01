@@ -5,8 +5,11 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using LazyCache;
+using LazyCache.Providers;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Decorators;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 
@@ -75,7 +78,7 @@ namespace Mandarin.Services.Tests.Decorators
 
         private void GivenRealMemoryCache()
         {
-            this.appCache = new CachingService();
+            this.appCache = new CachingService(new MemoryCacheProvider(new MemoryCache(Options.Create(new MemoryCacheOptions()))));
         }
 
         private void GivenServiceThrowsException()
