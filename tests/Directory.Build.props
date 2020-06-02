@@ -3,6 +3,10 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <PropertyGroup>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)/../Mandarin.Tests.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <VSTestLogger>NUnit</VSTestLogger>
     <CollectCoverage>true</CollectCoverage>
     <MergeWith>$(MSBuildThisFileDirectory)../coverage/coverage.json</MergeWith>
