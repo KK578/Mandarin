@@ -12,8 +12,4 @@
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Models\Commissions\CommissionRate.cs" />
-  </ItemGroup>
-
 </Project>
