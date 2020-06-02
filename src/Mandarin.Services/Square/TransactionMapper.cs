@@ -57,19 +57,20 @@ namespace Mandarin.Services.Square
 
             if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase))
             {
-                product = new Product("BUN-DCM", "BUN-DCM", "Box of Macarons Discount", "Buy 6 macarons for \"£12.00\"", 0.01m);
+                product = new Product("BUN-DCM", "BUN-DCM", "Box of Macarons Discount", "Buy 6 macarons for \"£12.00\"", -0.01m);
             }
             else if (orderLineItemDiscount.Name.Contains("pocky", StringComparison.OrdinalIgnoreCase))
             {
-                product = new Product("BUN-DCP", "BUN-DCP", "Box of Pocky Discount", "Discount on buying multiple packs of Pocky.", 0.01m);
+                product = new Product("BUN-DCP", "BUN-DCP", "Box of Pocky Discount", "Discount on buying multiple packs of Pocky.", -0.01m);
             }
             else
             {
-                product = new Product("TLM-D", "TLM-D", "Other discounts", "Discounts that aren't tracked.", 0.01m);
+                product = new Product("TLM-D", "TLM-D", "Other discounts", "Discounts that aren't tracked.", -0.01m);
             }
 
-            var quantity = (int)(orderLineItemDiscount.AmountMoney.Amount ?? 0);
-            var subtransaction = new Subtransaction(product, quantity, orderLineItemDiscount.AmountMoney.Amount ?? 0);
+            var quantity = orderLineItemDiscount.AmountMoney.Amount ?? 0;
+            var amount = decimal.Divide(quantity, 100);
+            var subtransaction = new Subtransaction(product, (int)quantity, -amount);
             return Observable.Return(subtransaction);
         }
 
