@@ -87,9 +87,19 @@ namespace Mandarin.Services.Square
 
         private Task<Product> GetProductAsync(string squareId, string name)
         {
-            return squareId != null
-                ? this.inventoryService.GetProductByIdAsync(squareId)
-                : this.inventoryService.GetProductByNameAsync(name);
+            if (squareId != null)
+            {
+                return this.inventoryService.GetProductByIdAsync(squareId);
+            }
+            else if (name != null)
+            {
+                return this.inventoryService.GetProductByNameAsync(name);
+            }
+            else
+            {
+                var unknownProduct = new Product(null, "TLM-Unknown", "Unknown Product", "Unknown Product", null);
+                return Task.FromResult(unknownProduct);
+            }
         }
     }
 }

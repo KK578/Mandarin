@@ -18,7 +18,7 @@ namespace Mandarin.Models.Transactions
 
         public override string ToString()
         {
-            return $"{this.Product}: {this.TransactionUnitPrice:C} * {this.Quantity:C} = {this.Subtotal:C}";
+            return $"{this.Product}: {this.TransactionUnitPrice:C} * {this.Quantity} = {this.Subtotal:C}";
         }
     }
 }

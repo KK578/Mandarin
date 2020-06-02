@@ -1,4 +1,4 @@
-﻿@page "/admin/sales"
+﻿@page "/admin/record-of-sales"
 @using Mandarin.Services
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
@@ -8,10 +8,15 @@
 
 <RadzenCard>
   <EditForm EditContext="@DatePickerEditContext">
-    <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
-    <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
-
-    <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
+    <div class="flex flex-row">
+      <div class="flex-col flex-grow">
+        <RadzenDatePicker @bind-Value="SelectedDate" DateFormat="MMM yyyy" />
+        <RadzenButton class="mt-2" Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
+      </div>
+      <div class="self-center flex-grow">
+        <span>This will include transactions from <i>@($"{StartDate:d}")</i> to <i>@($"{EndDate:d}")</i>.</span>
+      </div>
+    </div>
   </EditForm>
 </RadzenCard>
 
@@ -86,8 +91,11 @@
   private ArtistSales SelectedCommission { get; set; } = null;
 
   private EditContext DatePickerEditContext { get; set; }
-  private DateTime StartDate { get; set; } = DateTime.Today.AddDays(-1);
-  private DateTime EndDate { get; set; } = DateTime.Today;
+  private DateTime SelectedDate { get; set; } = DateTime.Today;
+
+  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+  private DateTime StartDate => SelectedMonth.AddDays(-15);
+  private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
 
   private SendRecordOfSalesModel RecordOfSalesModel { get; set; }
   private Exception EmailException { get; set; }

@@ -24,7 +24,7 @@ namespace Mandarin.Services.Commission
         {
             return this.transactionService.GetAllTransactions(start, end)
                        .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                       .GroupBy(subtransaction => subtransaction.Product.ProductCode)
+                       .GroupBy(subtransaction => subtransaction.Product?.ProductCode ?? "TLM-Unknown")
                        .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
                        .ToList()
                        .Zip(Observable.FromAsync(this.artistService.GetArtistDetailsAsync), (s, a) => (Subtransactions: s, Artists: a))
