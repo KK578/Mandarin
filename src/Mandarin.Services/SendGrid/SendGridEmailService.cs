@@ -62,7 +62,7 @@ namespace Mandarin.Services.SendGrid
             email.AddTo(new EmailAddress(recordOfSalesModel.EmailAddress ?? recordOfSalesModel.Commission.EmailAddress));
             email.AddBcc(configuration.RealContactEmail);
             email.TemplateId = configuration.RecordOfSalesTemplateId;
-            email.SetTemplateData(recordOfSalesModel.Commission.WithValues(recordOfSalesModel.EmailAddress, recordOfSalesModel.CustomMessage));
+            email.SetTemplateData(recordOfSalesModel.Commission.WithMessageCustomisations(recordOfSalesModel.EmailAddress, recordOfSalesModel.CustomMessage));
 
             return email;
         }

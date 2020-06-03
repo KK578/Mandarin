@@ -2,6 +2,11 @@
 {
     public static class WellKnownTestData
     {
+        public static class Commissions
+        {
+            public const string ArtistSalesTLM = "TestData/Commissions/ArtistSales.TLM.json";
+        }
+
         public static class Fruity
         {
             public static class Stockist

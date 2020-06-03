@@ -33,7 +33,7 @@ namespace Mandarin.Models.Commissions
             this.Total = total;
         }
 
-        public ArtistSales WithValues(string emailAddress, string customMessage)
+        public ArtistSales WithMessageCustomisations(string emailAddress, string customMessage)
         {
             return new ArtistSales(this.StockistCode,
                                    this.Name,
