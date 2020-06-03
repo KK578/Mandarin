@@ -45,7 +45,7 @@ namespace Mandarin.Extensions
             static Task OnRedirectToIdentityProviderForSignOut(RedirectContext context)
             {
                 var request = context.Request;
-                var returnTo = $"{request.Scheme}://{request.Host}{request.PathBase}{context.Properties.RedirectUri}";
+                var returnTo = $"https://{request.Host}{request.PathBase}{context.Properties.RedirectUri}";
 
                 var logoutUri = new UriBuilder(context.Options.Authority);
                 logoutUri.Path = "/v2/logout";
