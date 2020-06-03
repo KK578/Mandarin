@@ -7,8 +7,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Data;
 using Bashi.Tests.Framework.Logging;
 using BlazorInputFile;
+using FluentAssertions;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Contact;
 using Mandarin.Services.SendGrid;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -25,6 +28,7 @@ namespace Mandarin.Services.Tests.SendGrid
     {
         private const string ServiceEmail = "noreply@example.com";
         private const string RealContactEmail = "contact@example.com";
+        private const string TemplateId = "TemplateId";
 
         private IOptions<SendGridConfiguration> configuration;
 
@@ -35,6 +39,7 @@ namespace Mandarin.Services.Tests.SendGrid
             {
                 ServiceEmail = SendGridEmailServiceTests.ServiceEmail,
                 RealContactEmail = SendGridEmailServiceTests.RealContactEmail,
+                RecordOfSalesTemplateId = SendGridEmailServiceTests.TemplateId
             });
         }
 
@@ -120,6 +125,22 @@ namespace Mandarin.Services.Tests.SendGrid
 
             Assert.That(result.Attachments.Count, Is.EqualTo(1));
             Assert.That(Convert.FromBase64String(result.Attachments[0].Content), Is.EqualTo("Attachment"));
+        }
+
+        [Test]
+        public void BuildRecordOfSalesEmail_GivenValidModel_ShouldCopyValuesCorrectly()
+        {
+            var model = TestData.Create<SendRecordOfSalesModel>();
+            var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
+            var result = subject.BuildRecordOfSalesEmail(model);
+
+            Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
+            Assert.That(result.ReplyTo.Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
+            Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
+            Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
+            result.Personalizations[0].TemplateData
+                  .Should().BeEquivalentTo(model.Commission,
+                                           o => o.Excluding(a => a.EmailAddress).Excluding(sales => sales.CustomMessage));
         }
 
         [Test]

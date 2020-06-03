@@ -69,7 +69,7 @@ namespace Mandarin.Tests.Pages
         private void GivenArtistServiceReturnsDataImmediately()
         {
             var data = TestData.Create<List<ArtistDetailsModel>>()
-                               .Append(new ArtistDetailsModel(ArtistPageIntegrationTests.ArtistName, TestData.WellKnownString, null, null, null, null, null, null))
+                               .Append(new ArtistDetailsModel(null, ArtistPageIntegrationTests.ArtistName, TestData.WellKnownString, 0, null, null, null, null, null, null, null))
                                .ToList()
                                .AsReadOnly();
             this.artistService.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data);

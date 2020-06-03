@@ -1,0 +1,32 @@
+﻿{
+  "stockistCode": "TLM",
+  "name": "The Little Mandarin",
+  "emailAddress": "email@address.com",
+  "customMessage": "My Message",
+  "startDate": "01/06/2020",
+  "endDate": "03/06/2020",
+  "rate": "10.00%",
+  "sales": [
+    {
+      "productCode": "TLM-001",
+      "productName": "A Mandarin",
+      "quantity": 1,
+      "unitPrice": "£2.00",
+      "subtotal": "£2.00",
+      "commission": "-£0.20",
+      "total": "£1.80"
+    },
+    {
+      "productCode": "TLM-002",
+      "productName": "An Orange",
+      "quantity": 2,
+      "unitPrice": "£4.00",
+      "subtotal": "£8.00",
+      "commission": "-£0.80",
+      "total": "£9.20"
+    }
+  ],
+  "subtotal": "£10.00",
+  "commissionTotal": "-£1.00",
+  "total": "£9.00"
+}

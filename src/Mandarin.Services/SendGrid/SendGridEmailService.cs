@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Bashi.Core.Enums;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging;
@@ -48,6 +49,20 @@ namespace Mandarin.Services.SendGrid
                      .AppendLine("Comment:")
                      .AppendLine(model.Comment);
             email.PlainTextContent = sb.ToString();
+
+            return email;
+        }
+
+        public SendGridMessage BuildRecordOfSalesEmail(SendRecordOfSalesModel recordOfSalesModel)
+        {
+            var email = new SendGridMessage();
+            var configuration = this.sendGridConfigurationOption.Value;
+            email.From = new EmailAddress(configuration.ServiceEmail);
+            email.ReplyTo = new EmailAddress(configuration.RealContactEmail);
+            email.AddTo(new EmailAddress(recordOfSalesModel.EmailAddress ?? recordOfSalesModel.Commission.EmailAddress));
+            email.AddBcc(configuration.RealContactEmail);
+            email.TemplateId = configuration.RecordOfSalesTemplateId;
+            email.SetTemplateData(recordOfSalesModel.Commission.WithMessageCustomisations(recordOfSalesModel.EmailAddress, recordOfSalesModel.CustomMessage));
 
             return email;
         }

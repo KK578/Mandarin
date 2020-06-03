@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Square;
 using Square.Models;
+using Transaction = Mandarin.Models.Transactions.Transaction;
 
 namespace Mandarin.Services.Square
 {
@@ -14,17 +15,22 @@ namespace Mandarin.Services.Square
     {
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
+        private readonly ITransactionMapper transactionMapper;
 
-        public SquareTransactionService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
+        public SquareTransactionService(ILogger<SquareTransactionService> logger,
+                                        ISquareClient squareClient,
+                                        ITransactionMapper transactionMapper)
         {
             this.logger = logger;
             this.squareClient = squareClient;
+            this.transactionMapper = transactionMapper;
         }
 
-        public IObservable<Order> GetAllTransactions(DateTime start, DateTime end)
+        public IObservable<Transaction> GetAllTransactions(DateTime start, DateTime end)
         {
             this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
-            return Observable.Create<Order>(SubscribeToOrders);
+            return Observable.Create<Order>(SubscribeToOrders)
+                             .SelectMany(this.transactionMapper.MapToTransaction);
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
             {
@@ -36,8 +42,8 @@ namespace Mandarin.Services.Square
                                       .StateFilter(new SearchOrdersStateFilter(new[] { "COMPLETED" }))
                                       .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
                                                       .ClosedAt(new TimeRange.Builder()
-                                                                .StartAt(this.FormatDateTime(start))
-                                                                .EndAt(this.FormatDateTime(end))
+                                                                .StartAt(start.ToString("s"))
+                                                                .EndAt(end.ToString("s"))
                                                                 .Build())
                                                       .Build())
                                       .Build())
@@ -49,7 +55,8 @@ namespace Mandarin.Services.Square
                 {
                     var request = builder.Cursor(response?.Cursor).Build();
                     response = await this.squareClient.OrdersApi.SearchOrdersAsync(request, ct);
-                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Order(s).", response.Orders.Count);
+                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Order(s).",
+                                               response.Orders.Count);
                     foreach (var order in response.Orders)
                     {
                         o.OnNext(order);
@@ -66,11 +73,6 @@ namespace Mandarin.Services.Square
             var locations = await this.squareClient.LocationsApi.ListLocationsAsync(ct);
             ct.ThrowIfCancellationRequested();
             return locations.Locations.Select(x => x.Id).ToList().AsReadOnly();
-        }
-
-        private string FormatDateTime(in DateTime dateTime)
-        {
-            return dateTime.ToString("s");
         }
     }
 }

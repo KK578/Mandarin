@@ -2,11 +2,20 @@
   "cursor": null,
   "objects": [
     {
-      "type": "ITEM",
-      "id": "ID-2",
       "item_data": {
         "name": "Item2",
         "description": "Item2's Description",
+        "variations": [
+          {
+            "item_variation_data": {
+              "sku": "ID-2",
+              "price_money": {
+                "amount": 100,
+                "currency": "GBP"
+              }
+            }
+          }
+        ],
         "product_type": "REGULAR"
       }
     }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Mandarin.Models.Inventory;
 using Microsoft.Extensions.Logging;
 using Square;
 using Square.Models;
@@ -19,9 +22,17 @@ namespace Mandarin.Services.Square
             this.squareClient = squareClient;
         }
 
-        public IObservable<CatalogObject> GetInventory()
+        public IObservable<Product> GetInventory()
         {
-            return Observable.Create<CatalogObject>(SubscribeToListCatalog);
+            return Observable.Create<CatalogObject>(SubscribeToListCatalog)
+                             .SelectMany(catalogObject =>
+                             {
+                                 if (catalogObject.ItemData != null)
+                                     return SquareInventoryService.MapToProduct(catalogObject.ItemData);
+
+                                 return Enumerable.Empty<Product>();
+                             })
+                             .Where(x => x != null);
 
             async Task SubscribeToListCatalog(IObserver<CatalogObject> o, CancellationToken ct)
             {
@@ -38,6 +49,22 @@ namespace Mandarin.Services.Square
                 } while (response.Cursor != null);
 
                 o.OnCompleted();
+            }
+        }
+
+        private static IEnumerable<Product> MapToProduct(CatalogItem catalogItem)
+        {
+            var productName = catalogItem.Name.Split(" - ").Last();
+            var description = catalogItem.Description;
+
+            foreach (var variation in catalogItem.Variations)
+            {
+                var squareId = variation.Id;
+                var variationName = $"{productName} ({variation.ItemVariationData.Name})";
+                var productCode = variation.ItemVariationData.Sku;
+                var price = variation.ItemVariationData.PriceMoney;
+                var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
+                yield return new Product(squareId, productCode, variationName, description, unitPrice);
             }
         }
     }

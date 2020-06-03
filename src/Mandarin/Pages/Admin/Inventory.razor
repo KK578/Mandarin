@@ -1,18 +1,23 @@
 ﻿@page "/admin/inventory"
 @using Mandarin.Services
-@using Square.Models
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
+@using Mandarin.Models.Inventory
 @inject IInventoryService InventoryService;
 
-<RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-            AllowSorting="true" Data="@inventory" ColumnWidth="200px">
-  <Columns>
-    <RadzenGridColumn TItem="CatalogObject" Property="Id" Title="Square Item Id" />
-    <RadzenGridColumn TItem="CatalogObject" Property="ItemData.Name" Title="Name" />
-    <RadzenGridColumn TItem="CatalogObject" Property="ItemData.Description" Title="Description" />
-  </Columns>
-</RadzenGrid>
+<RadzenCard>
+  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+              AllowSorting="true" Data="@inventory" ColumnWidth="200px">
+    <Columns>
+      <RadzenGridColumn TItem="Product" Property="ProductCode" Title="Product Code" />
+      <RadzenGridColumn TItem="Product" Property="ProductName" Title="Name" />
+      <RadzenGridColumn TItem="Product" Property="Description" Title="Description" />
+      <RadzenGridColumn TItem="Product" Property="UnitPrice" Title="Unit Price">
+        <Template Context="data">@($"{data.UnitPrice:C}")</Template>
+      </RadzenGridColumn>
+    </Columns>
+  </RadzenGrid>
+</RadzenCard>
 
 @code
 {
@@ -23,5 +28,5 @@
     inventory = await InventoryService.GetInventory().ToList().ToTask();
   }
 
-  private IList<CatalogObject> inventory = new List<CatalogObject>();
+  private IList<Product> inventory = new List<Product>();
 }

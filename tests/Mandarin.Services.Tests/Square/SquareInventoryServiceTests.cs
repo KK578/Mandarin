@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
+using Mandarin.Models.Inventory;
 using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -40,8 +41,8 @@ namespace Mandarin.Services.Tests.Square
             this.GivenSquareClientCatalogApiReturnsData();
             var catalogObjects = await WhenListingInventory();
             Assert.That(catalogObjects.Count, Is.EqualTo(2));
-            Assert.That(catalogObjects[0].Id, Is.EqualTo("ID-1"));
-            Assert.That(catalogObjects[1].Id, Is.EqualTo("ID-2"));
+            Assert.That(catalogObjects[0].ProductCode, Is.EqualTo("ID-1"));
+            Assert.That(catalogObjects[1].ProductCode, Is.EqualTo("ID-2"));
         }
 
         private void GivenSquareClientCatalogApiReturnsData()
@@ -68,7 +69,7 @@ namespace Mandarin.Services.Tests.Square
             return waitHandle;
         }
 
-        private Task<IList<CatalogObject>> WhenListingInventory(CancellationToken ct = default)
+        private Task<IList<Product>> WhenListingInventory(CancellationToken ct = default)
         {
             var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object);
             return subject.GetInventory().ToList().ToTask(ct);

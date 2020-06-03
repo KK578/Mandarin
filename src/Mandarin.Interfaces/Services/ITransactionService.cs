@@ -1,10 +1,10 @@
 ﻿using System;
-using Square.Models;
+using Mandarin.Models.Transactions;
 
 namespace Mandarin.Services
 {
     public interface ITransactionService
     {
-        IObservable<Order> GetAllTransactions(DateTime start, DateTime end);
+        IObservable<Transaction> GetAllTransactions(DateTime start, DateTime end);
     }
 }

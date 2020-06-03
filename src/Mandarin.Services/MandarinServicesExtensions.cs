@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Fruity;
 using Mandarin.Services.SendGrid;
@@ -18,7 +19,8 @@ namespace Mandarin.Services
     {
         public static IServiceCollection AddMandarinServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMemoryCache();
+            services.AddLazyCache();
+            services.AddMandarinDomainServices();
             services.AddSendGridServices(configuration);
             services.AddFruityServices(configuration);
             services.AddSquareServices(configuration);
@@ -26,12 +28,18 @@ namespace Mandarin.Services
             return services;
         }
 
+        private static void AddMandarinDomainServices(this IServiceCollection services)
+        {
+            services.AddTransient<ITransactionMapper, TransactionMapper>();
+            services.AddTransient<ICommissionService, CommissionService>();
+        }
+
         private static void AddSendGridServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<SendGridClientOptions>(configuration.GetSection("SendGrid"));
             services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
-            services.AddSingleton(ConfigureSendGridClient);
-            services.AddSingleton<IEmailService, SendGridEmailService>();
+            services.AddTransient(ConfigureSendGridClient);
+            services.AddTransient<IEmailService, SendGridEmailService>();
             services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
 
             static ISendGridClient ConfigureSendGridClient(IServiceProvider provider)
@@ -62,6 +70,7 @@ namespace Mandarin.Services
             services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
             services.AddTransient<IInventoryService, SquareInventoryService>();
             services.Decorate<IInventoryService, CachingInventoryServiceDecorator>();
+            services.AddTransient(s => (IQueryableInventoryService)s.GetRequiredService<IInventoryService>());
 
             ISquareClient ConfigureSquareClient(IServiceProvider provider)
             {

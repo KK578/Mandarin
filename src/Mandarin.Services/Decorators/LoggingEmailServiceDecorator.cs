@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,11 @@ namespace Mandarin.Services.Decorators
         public Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
         {
             return this.emailService.BuildEmailAsync(model);
+        }
+
+        public SendGridMessage BuildRecordOfSalesEmail(SendRecordOfSalesModel recordOfSalesModel)
+        {
+            return this.emailService.BuildRecordOfSalesEmail(recordOfSalesModel);
         }
 
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
