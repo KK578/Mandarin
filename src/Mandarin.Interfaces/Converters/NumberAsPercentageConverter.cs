@@ -24,7 +24,7 @@ namespace Mandarin.Converters
             writer.WriteValue(stringValue);
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var s = (string)reader.Value;
             var numberValue = double.Parse(s.TrimEnd('%'), NumberAsPercentageConverter.CultureInfo) / 100;

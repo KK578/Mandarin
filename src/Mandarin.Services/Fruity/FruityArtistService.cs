@@ -22,7 +22,7 @@ namespace Mandarin.Services.Fruity
 
         public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
-            // TODO: Allow config-based additions whilst the database does not handle some usecases.
+            // TODO: Additional artists may be required for commission.
             var response = await this.httpClient.GetAsync("/api/stockist");
             var results = await this.Deserialize<List<ArtistDto>>(response);
             var models = results.Where(x => string.Equals(x.Status, "ACTIVE", StringComparison.OrdinalIgnoreCase))

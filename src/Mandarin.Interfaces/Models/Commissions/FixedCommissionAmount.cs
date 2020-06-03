@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Mandarin.Models.Commissions
+﻿namespace Mandarin.Models.Commissions
 {
     public class FixedCommissionAmount
     {
