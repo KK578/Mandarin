@@ -26,7 +26,7 @@ namespace Mandarin.Converters
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var s = reader.ReadAsString();
+            var s = (string)reader.Value;
             var numberValue = double.Parse(s, NumberStyles.Currency, NumberAsCurrencyConverter.CultureInfo);
             return Convert.ChangeType(numberValue, objectType);
         }
