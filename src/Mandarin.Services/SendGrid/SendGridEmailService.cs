@@ -53,7 +53,7 @@ namespace Mandarin.Services.SendGrid
             return email;
         }
 
-        public SendGridMessage BuildRecordOfSalesEmail(SendRecordOfSalesModel recordOfSalesModel)
+        public SendGridMessage BuildRecordOfSalesEmail(ArtistRecordOfSalesModel recordOfSalesModel)
         {
             var email = new SendGridMessage();
             var configuration = this.sendGridConfigurationOption.Value;

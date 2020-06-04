@@ -130,7 +130,7 @@ namespace Mandarin.Services.Tests.SendGrid
         [Test]
         public void BuildRecordOfSalesEmail_GivenValidModel_ShouldCopyValuesCorrectly()
         {
-            var model = TestData.Create<SendRecordOfSalesModel>();
+            var model = TestData.Create<ArtistRecordOfSalesModel>();
             var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
             var result = subject.BuildRecordOfSalesEmail(model);
 

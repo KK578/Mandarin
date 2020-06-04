@@ -31,7 +31,7 @@ namespace Mandarin.Services.Tests.Decorators
         [Test]
         public void BuildRecordOfSalesEmail_IsFallthrough()
         {
-            var model = TestData.Create<SendRecordOfSalesModel>();
+            var model = TestData.Create<ArtistRecordOfSalesModel>();
             var expected = new SendGridMessage();
             var service = Mock.Of<IEmailService>(x => x.BuildRecordOfSalesEmail(model) == expected);
             var subject = new LoggingEmailServiceDecorator(service, NullLogger<IEmailService>.Instance);

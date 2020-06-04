@@ -84,13 +84,18 @@
         <RadzenLabel class="self-center" Text="Custom Message:" />
         <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" @bind-Value="@RecordOfSalesModel.CustomMessage" />
 
-        <div class="col-span-2">
+        <div>
+          <RadzenButton Click="args => ToggleSentFlag()" ButtonStyle="ButtonStyle.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</RadzenButton>
+        </div>
+        <div class="col-span">
           @if (RecordOfSalesModel.StatusMessage != null)
           {
             <span>@(RecordOfSalesModel.StatusMessage)</span>
           }
         </div>
-        <RadzenButton ButtonType="ButtonType.Submit" Disabled="@IsLoading">Submit</RadzenButton>
+        <div>
+          <RadzenButton ButtonType="ButtonType.Submit" Disabled="@(IsLoading || RecordOfSalesModel.SendSuccessful)">Submit</RadzenButton>
+        </div>
       </div>
     </EditForm>
   </RadzenCard>
@@ -139,6 +144,20 @@
     return Task.CompletedTask;
   }
 
+  private void ToggleSentFlag()
+  {
+    if (RecordOfSalesModel.SendSuccessful)
+    {
+      RecordOfSalesModel.SendSuccessful = false;
+      RecordOfSalesModel.StatusMessage = null;
+    }
+    else
+    {
+      RecordOfSalesModel.SendSuccessful = true;
+      RecordOfSalesModel.StatusMessage = "Ignored.";
+    }
+  }
+
   public async Task SendEmailAsync()
   {
     try
@@ -149,7 +168,7 @@
       var email = EmailService.BuildRecordOfSalesEmail(RecordOfSalesModel);
       await EmailService.SendEmailAsync(email);
       RecordOfSalesModel.SendSuccessful = true;
-      RecordOfSalesModel.StatusMessage = $"Successfully sent to {RecordOfSalesModel.EmailAddress ?? RecordOfSalesModel.Commission.EmailAddress}";
+      RecordOfSalesModel.StatusMessage = $"Successfully sent to {RecordOfSalesModel.EmailAddress ?? RecordOfSalesModel.Commission.EmailAddress}.";
     }
     catch (Exception ex)
     {

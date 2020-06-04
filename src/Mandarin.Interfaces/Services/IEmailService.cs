@@ -9,7 +9,7 @@ namespace Mandarin.Services
     public interface IEmailService
     {
         Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model);
-        SendGridMessage BuildRecordOfSalesEmail(SendRecordOfSalesModel recordOfSalesModel);
+        SendGridMessage BuildRecordOfSalesEmail(ArtistRecordOfSalesModel recordOfSalesModel);
         Task<EmailResponse> SendEmailAsync(SendGridMessage email);
     }
 }

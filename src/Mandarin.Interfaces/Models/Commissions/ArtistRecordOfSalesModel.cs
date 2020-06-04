@@ -1,13 +1,15 @@
 ﻿namespace Mandarin.Models.Commissions
 {
-    public class SendRecordOfSalesModel
+    public class ArtistRecordOfSalesModel
     {
-        public SendRecordOfSalesModel(ArtistSales commission)
+        public ArtistRecordOfSalesModel(ArtistSales commission)
         {
             this.Commission = commission;
         }
 
         public ArtistSales Commission { get; }
+        public bool SendSuccessful { get; set; }
+        public string StatusMessage { get; set; }
         public string EmailAddress { get; set; }
         public string CustomMessage { get; set; }
 
