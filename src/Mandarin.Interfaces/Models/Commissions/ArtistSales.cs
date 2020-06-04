@@ -42,7 +42,7 @@ namespace Mandarin.Models.Commissions
                                    this.StartDate,
                                    this.EndDate,
                                    this.Rate,
-                                   this.Sales.ToList(),
+                                   this.Sales?.ToList(),
                                    this.Subtotal,
                                    this.CommissionTotal,
                                    this.Total);

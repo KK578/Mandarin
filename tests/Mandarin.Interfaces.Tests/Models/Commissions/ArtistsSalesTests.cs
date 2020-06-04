@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Commissions;
 using Mandarin.Tests.Data;
@@ -13,6 +14,25 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
     [TestFixture]
     public class ArtistsSalesTests
     {
+        [Test]
+        public void WithMessageCustomisations_MaintainsNullSalesList()
+        {
+            var artistSales = new ArtistSales(TestData.NextString(),
+                                              TestData.NextString(),
+                                              TestData.NextString(),
+                                              TestData.NextString(),
+                                              TestData.Create<DateTime>(),
+                                              TestData.Create<DateTime>(),
+                                              TestData.Create<decimal>(),
+                                              null,
+                                              TestData.Create<decimal>(),
+                                              TestData.Create<decimal>(),
+                                              TestData.Create<decimal>());
+
+            var copy = artistSales.WithMessageCustomisations(null, null);
+            Assert.That(copy.Sales, Is.Null);
+        }
+
         [Test]
         public void WithMessageCustomisations_EmailAndMessageShouldUpdateWhenNotNull()
         {
