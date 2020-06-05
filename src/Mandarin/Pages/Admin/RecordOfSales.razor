@@ -31,6 +31,7 @@
           <RadzenIcon Icon="@(data.SendSuccessful ? "check" : "close")" />
         </Template>
       </RadzenGridColumn>
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="StatusMessage" Title="Email Status" />
       <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.StockistCode" Title="Artist Code" />
       <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.Name" Title="Name" />
       <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.Rate" Title="Commission Rate" FormatString="{0:P}" />
@@ -74,10 +75,10 @@
     <EditForm class="flex flex-col" Model="@RecordOfSalesModel" OnValidSubmit="RecordOfSalesModel.SendEmailAsync">
       <div class="mt-5 grid grid-cols-3 gap-4">
         <RadzenLabel class="self-center" Text="Email Address:" />
-        <RadzenTextBox class="col-span-2" Placeholder="@SelectedCommission.EmailAddress" @bind-Value="@RecordOfSalesModel.EmailAddress" />
+        <RadzenTextBox class="col-span-2" Placeholder="@SelectedCommission.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Value="@RecordOfSalesModel.EmailAddress" />
 
         <RadzenLabel class="self-center" Text="Custom Message:" />
-        <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" @bind-Value="@RecordOfSalesModel.CustomMessage" />
+        <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Value="@RecordOfSalesModel.CustomMessage" />
 
         <div>
           <RadzenButton Click="args => RecordOfSalesModel.ToggleSentFlag()" ButtonStyle="ButtonStyle.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</RadzenButton>
@@ -102,14 +103,16 @@
   private IList<IArtistRecordOfSalesViewModel> Commissions { get; set; } = new List<IArtistRecordOfSalesViewModel>();
 
   private EditContext DatePickerEditContext { get; set; }
-  private DateTime SelectedDate { get; set; } = DateTime.Today;
+  private DateTime SelectedDate { get; set; } = DateTime.Today.AddMonths(-1);
 
-  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1).AddMonths(-1);
+  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
   private DateTime StartDate => SelectedMonth.AddDays(-15);
   private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
 
   private IArtistRecordOfSalesViewModel RecordOfSalesModel { get; set; }
   private ArtistSales SelectedCommission => RecordOfSalesModel?.Commission;
+
+  private IDisposable subscription;
 
   protected override void OnInitialized()
   {
@@ -135,7 +138,9 @@
 
   private Task OnSelect(IArtistRecordOfSalesViewModel model)
   {
+    this.subscription?.Dispose();
     this.RecordOfSalesModel = model;
+    this.subscription = this.RecordOfSalesModel.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
     return Task.CompletedTask;
   }
 
