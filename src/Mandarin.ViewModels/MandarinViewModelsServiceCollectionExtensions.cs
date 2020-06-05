@@ -14,6 +14,8 @@ namespace Mandarin.ViewModels
     {
         public static void AddMandarinViewModels(this IServiceCollection services)
         {
+            services.AddTransient<IViewModelFactory, ViewModelFactory>();
+
             services.AddTransient<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
 
             services.AddTransient<IIndexPageViewModel, IndexPageViewModel>();
