@@ -130,7 +130,7 @@ namespace Mandarin.Services.Tests.SendGrid
         [Test]
         public void BuildRecordOfSalesEmail_GivenValidModel_ShouldCopyValuesCorrectly()
         {
-            var model = TestData.Create<ArtistRecordOfSalesModel>();
+            var model = TestData.Create<ArtistSales>();
             var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
             var result = subject.BuildRecordOfSalesEmail(model);
 
@@ -139,8 +139,7 @@ namespace Mandarin.Services.Tests.SendGrid
             Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
             Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
             result.Personalizations[0].TemplateData
-                  .Should().BeEquivalentTo(model.Commission,
-                                           o => o.Excluding(a => a.EmailAddress).Excluding(sales => sales.CustomMessage));
+                  .Should().BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress).Excluding(sales => sales.CustomMessage));
         }
 
         [Test]

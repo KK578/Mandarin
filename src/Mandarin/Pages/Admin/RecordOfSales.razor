@@ -3,8 +3,10 @@
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
 @using Mandarin.Models.Commissions
+@using Mandarin.ViewModels
+@using Mandarin.ViewModels.Commissions
 @inject ICommissionService CommissionService;
-@inject IEmailService EmailService;
+@inject IViewModelFactory ViewModelFactory;
 
 <RadzenCard>
   <EditForm EditContext="@DatePickerEditContext">
@@ -22,26 +24,19 @@
 
 <RadzenCard>
   <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
-              AllowSorting="true" Data="@Commissions" ColumnWidth="200px" Value="@RecordOfSalesModel" RowSelect="@((ArtistRecordOfSalesModel model) => OnSelect(model))">
+              AllowSorting="true" Data="@Commissions" ColumnWidth="200px" Value="@RecordOfSalesModel" RowSelect="@((IArtistRecordOfSalesViewModel model) => OnSelect(model))">
     <Columns>
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="SendSuccessful" Title="Sent">
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="SendSuccessful" Title="Sent">
         <Template Context="data">
-          @if (data.SendSuccessful == true)
-          {
-            <RadzenIcon Icon="check" />
-          }
-          else
-          {
-            <RadzenIcon Icon="close" />
-          }
+          <RadzenIcon Icon="@(data.SendSuccessful ? "check" : "close")" />
         </Template>
       </RadzenGridColumn>
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="Commission.StockistCode" Title="Artist Code" />
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="Commission.Name" Title="Name" />
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="Commission.Rate" Title="Commission Rate" FormatString="{0:P}" />
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="Commission.Subtotal" Title="Subtotal" FormatString="{0:C}" />
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="Commission.CommissionTotal" Title="Commission" FormatString="{0:C}" />
-      <RadzenGridColumn TItem="ArtistRecordOfSalesModel" Property="Commission.Total" Title="Total" FormatString="{0:C}" />
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.StockistCode" Title="Artist Code" />
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.Name" Title="Name" />
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.Rate" Title="Commission Rate" FormatString="{0:P}" />
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.Subtotal" Title="Subtotal" FormatString="{0:C}" />
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.CommissionTotal" Title="Commission" FormatString="{0:C}" />
+      <RadzenGridColumn TItem="IArtistRecordOfSalesViewModel" Property="Commission.Total" Title="Total" FormatString="{0:C}" />
     </Columns>
   </RadzenGrid>
 </RadzenCard>
@@ -76,7 +71,7 @@
       <div>No sales occurred in this period.</div>
     }
 
-    <EditForm class="flex flex-col" Model="@RecordOfSalesModel" OnValidSubmit="SendEmailAsync">
+    <EditForm class="flex flex-col" Model="@RecordOfSalesModel" OnValidSubmit="RecordOfSalesModel.SendEmailAsync">
       <div class="mt-5 grid grid-cols-3 gap-4">
         <RadzenLabel class="self-center" Text="Email Address:" />
         <RadzenTextBox class="col-span-2" Placeholder="@SelectedCommission.EmailAddress" @bind-Value="@RecordOfSalesModel.EmailAddress" />
@@ -85,7 +80,7 @@
         <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" @bind-Value="@RecordOfSalesModel.CustomMessage" />
 
         <div>
-          <RadzenButton Click="args => ToggleSentFlag()" ButtonStyle="ButtonStyle.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</RadzenButton>
+          <RadzenButton Click="args => RecordOfSalesModel.ToggleSentFlag()" ButtonStyle="ButtonStyle.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</RadzenButton>
         </div>
         <div class="col-span">
           @if (RecordOfSalesModel.StatusMessage != null)
@@ -94,7 +89,7 @@
           }
         </div>
         <div>
-          <RadzenButton ButtonType="ButtonType.Submit" Disabled="@(IsLoading || RecordOfSalesModel.SendSuccessful)">Submit</RadzenButton>
+          <RadzenButton ButtonType="ButtonType.Submit" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)">Submit</RadzenButton>
         </div>
       </div>
     </EditForm>
@@ -104,16 +99,16 @@
 @code
 {
   private bool IsLoading { get; set; } = false;
-  private IList<ArtistRecordOfSalesModel> Commissions { get; set; } = new List<ArtistRecordOfSalesModel>();
+  private IList<IArtistRecordOfSalesViewModel> Commissions { get; set; } = new List<IArtistRecordOfSalesViewModel>();
 
   private EditContext DatePickerEditContext { get; set; }
   private DateTime SelectedDate { get; set; } = DateTime.Today;
 
-  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1).AddMonths(-1);
   private DateTime StartDate => SelectedMonth.AddDays(-15);
   private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
 
-  private ArtistRecordOfSalesModel RecordOfSalesModel { get; set; }
+  private IArtistRecordOfSalesViewModel RecordOfSalesModel { get; set; }
   private ArtistSales SelectedCommission => RecordOfSalesModel?.Commission;
 
   protected override void OnInitialized()
@@ -127,7 +122,7 @@
     {
       IsLoading = true;
       Commissions = await CommissionService.GetSalesByArtistForPeriod(StartDate, EndDate)
-                                           .Select(x => new ArtistRecordOfSalesModel(x))
+                                           .Select(x => ViewModelFactory.CreateArtistRecordOfSalesViewModel(x))
                                            .ToList()
                                            .ToTask();
     }
@@ -138,47 +133,10 @@
     }
   }
 
-  private Task OnSelect(ArtistRecordOfSalesModel model)
+  private Task OnSelect(IArtistRecordOfSalesViewModel model)
   {
     this.RecordOfSalesModel = model;
     return Task.CompletedTask;
-  }
-
-  private void ToggleSentFlag()
-  {
-    if (RecordOfSalesModel.SendSuccessful)
-    {
-      RecordOfSalesModel.SendSuccessful = false;
-      RecordOfSalesModel.StatusMessage = null;
-    }
-    else
-    {
-      RecordOfSalesModel.SendSuccessful = true;
-      RecordOfSalesModel.StatusMessage = "Ignored.";
-    }
-  }
-
-  public async Task SendEmailAsync()
-  {
-    try
-    {
-      IsLoading = true;
-      RecordOfSalesModel.SendSuccessful = false;
-      RecordOfSalesModel.StatusMessage = null;
-      var email = EmailService.BuildRecordOfSalesEmail(RecordOfSalesModel);
-      await EmailService.SendEmailAsync(email);
-      RecordOfSalesModel.SendSuccessful = true;
-      RecordOfSalesModel.StatusMessage = $"Successfully sent to {RecordOfSalesModel.EmailAddress ?? RecordOfSalesModel.Commission.EmailAddress}.";
-    }
-    catch (Exception ex)
-    {
-      RecordOfSalesModel.SendSuccessful = false;
-      RecordOfSalesModel.StatusMessage = ex.Message;
-    }
-    finally
-    {
-      IsLoading = false;
-    }
   }
 
 }

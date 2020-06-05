@@ -53,16 +53,16 @@ namespace Mandarin.Services.SendGrid
             return email;
         }
 
-        public SendGridMessage BuildRecordOfSalesEmail(ArtistRecordOfSalesModel recordOfSalesModel)
+        public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
         {
             var email = new SendGridMessage();
             var configuration = this.sendGridConfigurationOption.Value;
             email.From = new EmailAddress(configuration.ServiceEmail);
             email.ReplyTo = new EmailAddress(configuration.RealContactEmail);
-            email.AddTo(new EmailAddress(recordOfSalesModel.EmailAddress ?? recordOfSalesModel.Commission.EmailAddress));
+            email.AddTo(new EmailAddress(artistSales.EmailAddress));
             email.AddBcc(configuration.RealContactEmail);
             email.TemplateId = configuration.RecordOfSalesTemplateId;
-            email.SetTemplateData(recordOfSalesModel.Commission.WithMessageCustomisations(recordOfSalesModel.EmailAddress, recordOfSalesModel.CustomMessage));
+            email.SetTemplateData(artistSales);
 
             return email;
         }

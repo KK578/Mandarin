@@ -24,9 +24,9 @@ namespace Mandarin.Services.Decorators
             return this.emailService.BuildEmailAsync(model);
         }
 
-        public SendGridMessage BuildRecordOfSalesEmail(ArtistRecordOfSalesModel recordOfSalesModel)
+        public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
         {
-            return this.emailService.BuildRecordOfSalesEmail(recordOfSalesModel);
+            return this.emailService.BuildRecordOfSalesEmail(artistSales);
         }
 
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)

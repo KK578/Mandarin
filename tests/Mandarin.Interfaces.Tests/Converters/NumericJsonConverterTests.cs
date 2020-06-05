@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Bashi.Tests.Framework.Data;
+﻿using System;
+using System.Collections.Generic;
 using Mandarin.Converters;
 using NUnit.Framework;
 
@@ -26,16 +26,17 @@ namespace Mandarin.Interfaces.Tests.Converters
             JsonConverterTestHelper.AssertRoundTripOfValue(subject, o);
         }
 
-        private static IEnumerable<object> NumericValues
+        public static IEnumerable<object> NumericValues
         {
             get
             {
-                yield return TestData.Create<int>();
-                yield return TestData.Create<short>();
-                yield return TestData.Create<long>();
-                yield return TestData.Create<float>();
-                yield return TestData.Create<double>();
-                yield return TestData.Create<decimal>();
+                var random = new Random();
+                yield return (int)1234;
+                yield return (short)1234;
+                yield return (long)1234;
+                yield return (float)1234.5;
+                yield return (double)1234.5;
+                yield return (decimal)1234.5;
             }
         }
     }
