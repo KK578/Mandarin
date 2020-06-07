@@ -4,10 +4,14 @@ using Newtonsoft.Json;
 
 namespace Mandarin.Converters
 {
+    /// <summary>
+    /// Implementation of <see cref="JsonConverter"/> that formats a number as a GBP currency string.
+    /// </summary>
     public class NumberAsCurrencyConverter : JsonConverter
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.GetCultureInfo("en-GB");
 
+        /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var stringValue = value switch
@@ -24,6 +28,7 @@ namespace Mandarin.Converters
             writer.WriteValue(stringValue);
         }
 
+        /// <inheritdoc />
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var s = (string)reader.Value;
@@ -31,6 +36,7 @@ namespace Mandarin.Converters
             return Convert.ChangeType(numberValue, objectType);
         }
 
+        /// <inheritdoc />
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(short)

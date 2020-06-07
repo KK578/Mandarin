@@ -7,6 +7,7 @@
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1116" Action="None" /> <!-- Split parameters should start on on line after declaration -->
     <Rule Id="SA1633" Action="None" /> <!-- The file header is missing or not located at the top of the file. -->
   </Rules>
 </RuleSet>
