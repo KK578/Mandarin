@@ -45,7 +45,6 @@ namespace Mandarin.Converters
                    || objectType == typeof(float)
                    || objectType == typeof(double)
                    || objectType == typeof(decimal);
-
         }
     }
 }

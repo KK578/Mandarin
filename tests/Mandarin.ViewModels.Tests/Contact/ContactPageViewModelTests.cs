@@ -44,7 +44,7 @@ namespace Mandarin.ViewModels.Tests.Contact
         public void OnFileChange_SetsModelAttachments()
         {
             var attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>() };
-            this.subject.OnFileChange(attachments);
+            this.subject.UpdateAttachments(attachments);
             Assert.That(this.subject.Model.Attachments, Is.EqualTo(attachments).AsCollection);
         }
 
@@ -102,7 +102,7 @@ namespace Mandarin.ViewModels.Tests.Contact
 
         private Task WhenContactPageSubmitIsCalled()
         {
-            return this.subject.SubmitAsync();
+            return this.subject.SendEmailAsync();
         }
 
     }

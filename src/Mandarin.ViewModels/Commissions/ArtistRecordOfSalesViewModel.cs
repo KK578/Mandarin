@@ -14,6 +14,11 @@ namespace Mandarin.ViewModels.Commissions
         private string emailAddress;
         private string customMessage;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtistRecordOfSalesViewModel"/> class.
+        /// </summary>
+        /// <param name="emailService"></param>
+        /// <param name="commission"></param>
         public ArtistRecordOfSalesViewModel(IEmailService emailService, ArtistSales commission)
         {
             this.emailService = emailService;

@@ -98,7 +98,8 @@ namespace Mandarin.Models.Commissions
         /// <summary>
         /// Gets the list of all sales in this summary.
         /// </summary>
-        [JsonProperty("sales")] public IReadOnlyList<Sale> Sales { get; }
+        [JsonProperty("sales")]
+        public IReadOnlyList<Sale> Sales { get; }
 
         /// <summary>
         /// Gets the total amount of money made in sales (before commission).

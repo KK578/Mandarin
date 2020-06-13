@@ -15,9 +15,9 @@ namespace Mandarin.ViewModels.Contact
         private readonly IEmailService emailService;
         private readonly IOptions<MandarinConfiguration> configuration;
 
-        public bool EnableAttachmentsUpload => this.configuration.Value.EnableAttachments;
         public ContactDetailsModel Model { get; }
 
+        public bool EnableAttachmentsUpload => this.configuration.Value.EnableAttachments;
         public bool LastSubmitSuccessful { get; private set; }
         public Exception SubmitException { get; private set; }
 
@@ -28,12 +28,12 @@ namespace Mandarin.ViewModels.Contact
             this.Model = new ContactDetailsModel();
         }
 
-        public void OnFileChange(IEnumerable<IFileListEntry> files)
+        public void UpdateAttachments(IEnumerable<IFileListEntry> files)
         {
             this.Model.Attachments = files.ToList();
         }
 
-        public async Task SubmitAsync()
+        public async Task SendEmailAsync()
         {
             try
             {
