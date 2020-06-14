@@ -16,9 +16,16 @@
 
 @code
 {
+  /// <summary>
+  /// Gets the colour this icon should be rendered in.
+  /// Defaults to Instagram's blue if not set.
+  /// </summary>
   [Parameter]
   public string ColorHexCode { get; set; } = "#3F729B";
 
+  /// <summary>
+  /// Gets the url this logo should link to on clicking.
+  /// </summary>
   [Parameter]
   public Uri Href { get; set; }
 }

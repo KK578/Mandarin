@@ -1,17 +1,24 @@
-﻿<p class="@FullClass">@ChildContent</p>
+﻿<p class="font-body text-grey-normal text-center @MarginClass @Class">@ChildContent</p>
 
 @code
 {
-  private string FullClass => string.Join(" ", "font-body text-grey-normal text-center", MarginClass, Class ?? string.Empty);
-
   private string MarginClass => $"mt-{Margin} mb-{Margin}";
 
+  /// <summary>
+  /// Gets or sets the additional child content inside the text element.
+  /// </summary>
   [Parameter]
   public RenderFragment ChildContent { get; set; }
 
+  /// <summary>
+  /// Gets or sets the additional classes to attach to the containing html element.
+  /// </summary>
   [Parameter]
   public string Class { get; set; }
 
+  /// <summary>
+  /// Gets or sets the top/bottom margin class  element.
+  /// </summary>
   [Parameter]
   public int Margin { get; set; } = 3;
 }

@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Mandarin.Extensions
 {
+    /// <summary>
+    /// Extensions to <see cref="IApplicationBuilder"/> to register Elastic services.
+    /// </summary>
     internal static class MandarinElasticApm
     {
         /// <summary>

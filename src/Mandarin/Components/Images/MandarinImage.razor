@@ -1,12 +1,18 @@
 ﻿@using Mandarin.ViewModels.Components.Images
 
-<img class="@Class" src="@ViewModel.SourceUrl" alt="@ViewModel.Description"/>
+<img class="@Class" src="@ViewModel.SourceUrl" alt="@ViewModel.Description" />
 
 @code
 {
-    [Parameter]
-    public string Class { get; set; }
+  /// <summary>
+  /// Gets or sets the class attribute for the image tag.
+  /// </summary>
+  [Parameter]
+  public string Class { get; set; }
 
-    [Parameter]
-    public IMandarinImageViewModel ViewModel { get; set; }
+  /// <summary>
+  /// Gets or sets the backing data model for the image.
+  /// </summary>
+  [Parameter]
+  public IMandarinImageViewModel ViewModel { get; set; }
 }

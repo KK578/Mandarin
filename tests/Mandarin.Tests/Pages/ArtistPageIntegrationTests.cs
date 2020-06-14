@@ -18,10 +18,11 @@ namespace Mandarin.Tests.Pages
     [TestFixture]
     public class ArtistPageIntegrationTests
     {
+        private const string ArtistName = "Artist Name";
+
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private HttpClient client;
         private Mock<IArtistService> artistService;
-        private const string ArtistName = "Artist Name";
 
         public ArtistPageIntegrationTests()
         {
@@ -43,7 +44,7 @@ namespace Mandarin.Tests.Pages
         [Test]
         public async Task GetArtists_WhenDataIsLoading_ShouldRenderLoadingText()
         {
-            var tcs = GivenArtistServiceWaitsForReturn();
+            var tcs = this.GivenArtistServiceWaitsForReturn();
             var artistPage = await this.WhenGetArtistPage();
             Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring("Just a moment..."));
             tcs.SetCanceled();
@@ -52,7 +53,7 @@ namespace Mandarin.Tests.Pages
         [Test]
         public async Task GetArtists_WhenDataIsAvailable_ShouldRenderRegisteredArtistViewModels()
         {
-            GivenArtistServiceReturnsDataImmediately();
+            this.GivenArtistServiceReturnsDataImmediately();
             var artistPage = await this.WhenGetArtistPage();
             Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(ArtistPageIntegrationTests.ArtistName));
             Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(TestData.WellKnownString));

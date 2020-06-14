@@ -21,6 +21,7 @@ else
 
 @code {
 
+  /// <inheritdoc />
   protected override void OnInitialized()
   {
     ViewModel.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
