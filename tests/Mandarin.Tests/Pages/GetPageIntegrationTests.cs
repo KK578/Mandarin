@@ -5,8 +5,8 @@ using AngleSharp;
 using AngleSharp.Dom;
 using Mandarin.Services;
 using Mandarin.Services.Decorators;
-using Mandarin.Tests.Mocks;
 using Mandarin.Tests.Factory;
+using Mandarin.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -107,7 +107,7 @@ namespace Mandarin.Tests.Pages
         {
             await this.WhenPageResponseIsRequested();
             var content = await this.response.Content.ReadAsStringAsync();
-            AssertResponseIsSuccessfulAndHtml();
+            this.AssertResponseIsSuccessfulAndHtml();
             var document = await BrowsingContext.New().OpenAsync(req => req.Content(content));
             return document;
         }

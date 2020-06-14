@@ -75,7 +75,7 @@ namespace Mandarin.Services.Tests.Square
                 new OrderLineItem("2",
                                   catalogObjectId: product.SquareId,
                                   name: product.ProductName,
-                                  totalMoney: new Money(1000, "GBP"))
+                                  totalMoney: new Money(1000, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,
@@ -90,7 +90,7 @@ namespace Mandarin.Services.Tests.Square
             {
                 new OrderLineItemDiscount(catalogObjectId: product.SquareId,
                                           name: product.ProductName,
-                                          amountMoney: new Money(2000, "GBP"))
+                                          amountMoney: new Money(2000, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,
@@ -106,7 +106,7 @@ namespace Mandarin.Services.Tests.Square
                 new OrderReturnLineItem("3",
                                         catalogObjectId: product.SquareId,
                                         name: product.ProductName,
-                                        totalMoney: new Money(-1500, "GBP"))
+                                        totalMoney: new Money(-1500, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,

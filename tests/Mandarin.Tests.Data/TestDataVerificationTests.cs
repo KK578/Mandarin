@@ -8,13 +8,6 @@ namespace Mandarin.Tests.Data
     [TestFixture]
     public class TestDataVerificationTests
     {
-        [Test]
-        [TestCaseSource(nameof(TestDataVerificationTests.ListAllFileNames))]
-        public void VerifyFileExists(string filename)
-        {
-            FileAssert.Exists(filename);
-        }
-
         public static IEnumerable<string> ListAllFileNames()
         {
             var assemblyTypes = typeof(TestDataVerificationTests).Assembly.GetTypes();
@@ -28,6 +21,13 @@ namespace Mandarin.Tests.Data
                     yield return s;
                 }
             }
+        }
+
+        [Test]
+        [TestCaseSource(nameof(TestDataVerificationTests.ListAllFileNames))]
+        public void VerifyFileExists(string filename)
+        {
+            FileAssert.Exists(filename);
         }
     }
 }

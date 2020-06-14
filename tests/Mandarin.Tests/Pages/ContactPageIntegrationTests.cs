@@ -47,15 +47,15 @@ namespace Mandarin.Tests.Pages
             ContactReasonType reason,
             int expectedInputs)
         {
-            GivenContactPageViewModelReason(reason);
-            var contactPage = await WhenGetContactPage();
+            this.GivenContactPageViewModelReason(reason);
+            var contactPage = await this.WhenGetContactPage();
             Assert.That(contactPage.DocumentElement.QuerySelectorAll("input"), Has.Length.EqualTo(expectedInputs));
         }
 
         [Test]
         public async Task GivenEnableAttachmentsIsTrue_ThenAdditionalInputIsRendered()
         {
-            GivenAttachmentUploadsAreEnabled();
+            this.GivenAttachmentUploadsAreEnabled();
             var contactPage = await this.WhenGetContactPage();
             Assert.That(contactPage.DocumentElement.QuerySelectorAll("input"), Has.Length.EqualTo(3));
         }
@@ -63,8 +63,8 @@ namespace Mandarin.Tests.Pages
         [Test]
         public async Task GivenSubmissionIsComplete_ThenFormIsNotRendered()
         {
-            GivenContactPageViewModelSubmissionComplete();
-            var contactPage = await WhenGetContactPage();
+            this.GivenContactPageViewModelSubmissionComplete();
+            var contactPage = await this.WhenGetContactPage();
             Assert.That(contactPage.DocumentElement.QuerySelectorAll("input"), Has.Length.Zero);
             Assert.That(contactPage.DocumentElement.TextContent, Contains.Substring("Thank you for your message!"));
         }
@@ -73,8 +73,8 @@ namespace Mandarin.Tests.Pages
         public async Task GivenSubmissionFailedWithException_ThenFormShouldShowAnErrorMessage()
         {
             var exception = new Exception("Failed to send.");
-            GivenContactPageViewModelSubmissionError(exception);
-            var contactPage = await WhenGetContactPage();
+            this.GivenContactPageViewModelSubmissionError(exception);
+            var contactPage = await this.WhenGetContactPage();
             Assert.That(contactPage.DocumentElement.TextContent,
                         Contains.Substring("Sorry something went wrong... Try again in a moment."));
         }

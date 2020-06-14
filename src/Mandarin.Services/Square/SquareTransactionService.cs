@@ -11,12 +11,19 @@ using Transaction = Mandarin.Models.Transactions.Transaction;
 
 namespace Mandarin.Services.Square
 {
+    /// <inheritdoc />
     internal sealed class SquareTransactionService : ITransactionService
     {
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
         private readonly ITransactionMapper transactionMapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareTransactionService"/> class.
+        /// </summary>
+        /// <param name="logger">The application logger.</param>
+        /// <param name="squareClient">The Square API Client.</param>
+        /// <param name="transactionMapper">The transaction object mapper.</param>
         public SquareTransactionService(ILogger<SquareTransactionService> logger,
                                         ISquareClient squareClient,
                                         ITransactionMapper transactionMapper)
@@ -26,6 +33,7 @@ namespace Mandarin.Services.Square
             this.transactionMapper = transactionMapper;
         }
 
+        /// <inheritdoc/>
         public IObservable<Transaction> GetAllTransactions(DateTime start, DateTime end)
         {
             this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
@@ -61,7 +69,8 @@ namespace Mandarin.Services.Square
                     {
                         o.OnNext(order);
                     }
-                } while (response.Cursor != null);
+                }
+                while (response.Cursor != null);
 
                 o.OnCompleted();
             }

@@ -58,6 +58,7 @@
   private DateTime StartDate { get; set; } = DateTime.Today.AddDays(-1);
   private DateTime EndDate { get; set; } = DateTime.Today;
 
+  /// <inheritdoc />
   protected override void OnInitialized()
   {
     EditContext = new EditContext(this);

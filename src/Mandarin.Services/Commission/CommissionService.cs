@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Reactive.Linq;
 using Mandarin.Models.Artists;
@@ -9,17 +10,24 @@ using Mandarin.Services.Square;
 
 namespace Mandarin.Services.Commission
 {
+    /// <inheritdoc />
     public class CommissionService : ICommissionService
     {
         private readonly IArtistService artistService;
         private readonly ITransactionService transactionService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommissionService"/> class.
+        /// </summary>
+        /// <param name="artistService">The Artist service.</param>
+        /// <param name="transactionService">The transaction service.</param>
         public CommissionService(IArtistService artistService, ITransactionService transactionService)
         {
             this.artistService = artistService;
             this.transactionService = transactionService;
         }
 
+        /// <inheritdoc />
         public IObservable<ArtistSales> GetSalesByArtistForPeriod(DateTime start, DateTime end)
         {
             return this.transactionService.GetAllTransactions(start, end)

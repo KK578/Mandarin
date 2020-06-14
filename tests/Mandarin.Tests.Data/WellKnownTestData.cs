@@ -1,7 +1,20 @@
-﻿namespace Mandarin.Tests.Data
+﻿using System.IO;
+using Newtonsoft.Json;
+
+namespace Mandarin.Tests.Data
 {
     public static class WellKnownTestData
     {
+        private static readonly JsonSerializer Serializer = new JsonSerializer();
+
+        public static T DeserializeFromFile<T>(string path)
+        {
+            using var fs = File.OpenRead(path);
+            using var reader = new StreamReader(fs);
+            using var jsonReader = new JsonTextReader(reader);
+            return WellKnownTestData.Serializer.Deserialize<T>(jsonReader);
+        }
+
         public static class Commissions
         {
             public const string ArtistSalesTLM = "TestData/Commissions/ArtistSales.TLM.json";

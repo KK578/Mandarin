@@ -10,18 +10,27 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Mandarin.Services.Decorators
 {
+    /// <summary>
+    /// Decorated implementation of <see cref="IInventoryService"/> that caches results to speed up subsequent requests.
+    /// </summary>
     internal sealed class CachingInventoryServiceDecorator : IQueryableInventoryService
     {
         private const string CacheKey = nameof(IInventoryService) + "." + nameof(CachingInventoryServiceDecorator.GetInventory);
         private readonly IInventoryService inventoryService;
         private readonly IAppCache appCache;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CachingInventoryServiceDecorator"/> class.
+        /// </summary>
+        /// <param name="inventoryService">The inventory service to be decorated.</param>
+        /// <param name="appCache">The application memory cache.</param>
         public CachingInventoryServiceDecorator(IInventoryService inventoryService, IAppCache appCache)
         {
             this.inventoryService = inventoryService;
             this.appCache = appCache;
         }
 
+        /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
             return Observable.FromAsync(() => this.appCache.GetOrAddAsync(CachingInventoryServiceDecorator.CacheKey, CreateEntry))
@@ -43,11 +52,13 @@ namespace Mandarin.Services.Decorators
             }
         }
 
+        /// <inheritdoc/>
         public Task<Product> GetProductByIdAsync(string squareId)
         {
             return this.GetInventory().FirstOrDefaultAsync(x => x.SquareId == squareId).ToTask();
         }
 
+        /// <inheritdoc/>
         public Task<Product> GetProductByNameAsync(string productName)
         {
             // TODO: Move this to a config-based lookup. And move it out of the decorator!

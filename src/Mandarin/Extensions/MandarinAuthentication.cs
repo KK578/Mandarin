@@ -10,13 +10,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.Extensions
 {
+    /// <summary>
+    /// Extensions to <see cref="IServiceCollection"/> to register authentication services.
+    /// </summary>
     public static class MandarinAuthentication
     {
-        public static void AddMandarinAuthentication(this IServiceCollection services, IConfiguration configuration)
+        /// <summary>
+        /// Adds cookie based authentication and OpenId via Auth0.
+        /// </summary>
+        /// <param name="services">Service container to add registrations to.</param>
+        /// <param name="configuration">Application configuration for configuring services.</param>
+        /// <returns>The service container returned as is, for chaining calls.</returns>
+        public static IServiceCollection AddMandarinAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(MandarinAuthentication.ConfigureAuthentication)
                     .AddCookie()
                     .AddOpenIdConnect("Auth0", o => MandarinAuthentication.ConfigureOpenId(o, configuration));
+
+            return services;
         }
 
         private static void ConfigureAuthentication(AuthenticationOptions options)
@@ -39,7 +50,7 @@ namespace Mandarin.Extensions
 
             options.Events = new OpenIdConnectEvents
             {
-                OnRedirectToIdentityProviderForSignOut = OnRedirectToIdentityProviderForSignOut
+                OnRedirectToIdentityProviderForSignOut = OnRedirectToIdentityProviderForSignOut,
             };
 
             static Task OnRedirectToIdentityProviderForSignOut(RedirectContext context)

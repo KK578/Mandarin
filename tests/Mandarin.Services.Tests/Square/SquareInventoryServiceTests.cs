@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
@@ -10,7 +8,6 @@ using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using Square;
 using Square.Models;
@@ -20,8 +17,6 @@ namespace Mandarin.Services.Tests.Square
     [TestFixture]
     public class SquareInventoryServiceTests
     {
-        private static readonly JsonSerializer Serializer = new JsonSerializer();
-
         private Mock<ISquareClient> squareClient;
 
         [Test]
@@ -39,7 +34,7 @@ namespace Mandarin.Services.Tests.Square
         public async Task GetInventory_WhenServiceListsMultiplePages_ShouldContainAllObjects()
         {
             this.GivenSquareClientCatalogApiReturnsData();
-            var catalogObjects = await WhenListingInventory();
+            var catalogObjects = await this.WhenListingInventory();
             Assert.That(catalogObjects.Count, Is.EqualTo(2));
             Assert.That(catalogObjects[0].ProductCode, Is.EqualTo("ID-1"));
             Assert.That(catalogObjects[1].ProductCode, Is.EqualTo("ID-2"));
@@ -49,9 +44,9 @@ namespace Mandarin.Services.Tests.Square
         {
             this.squareClient = new Mock<ISquareClient>();
             this.squareClient.Setup(x => x.CatalogApi.ListCatalogAsync(null, "ITEM", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => SquareInventoryServiceTests.DeserializeFromFile<ListCatalogResponse>(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage1));
+                .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<ListCatalogResponse>(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage1));
             this.squareClient.Setup(x => x.CatalogApi.ListCatalogAsync(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage2, "ITEM", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => SquareInventoryServiceTests.DeserializeFromFile<ListCatalogResponse>(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage2));
+                .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<ListCatalogResponse>(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage2));
         }
 
         private ManualResetEvent GivenSquareClientCatalogApiWaitsToContinue()
@@ -73,14 +68,6 @@ namespace Mandarin.Services.Tests.Square
         {
             var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object);
             return subject.GetInventory().ToList().ToTask(ct);
-        }
-
-        private static T DeserializeFromFile<T>(string path)
-        {
-            using var fs = File.OpenRead(path);
-            using var reader = new StreamReader(fs);
-            using var jsonReader = new JsonTextReader(reader);
-            return SquareInventoryServiceTests.Serializer.Deserialize<T>(jsonReader);
         }
     }
 }

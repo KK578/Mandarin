@@ -3,13 +3,17 @@ using Mandarin.ViewModels.Components.Images;
 
 namespace Mandarin.ViewModels.MiniMandarin
 {
+    /// <inheritdoc />
     internal sealed class MiniMandarinPageViewModel : IMiniMandarinPageViewModel
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MiniMandarinPageViewModel"/> class.
+        /// </summary>
         public MiniMandarinPageViewModel()
         {
             this.Paragraphs = new List<string>
             {
-                "The Mini Mandarin is the younger sister of The Little Mandarin and is run by the baker of yummy treats in the family. Come drop by for handmade and hand finished ‘bearcarons’ – bear shaped macarons! Choose from three delightful flavours, chocolate, strawberry and matcha! Other special flavours pop up all year round and JUMBO sized macarons too, so come back to see what's new! The Mini Mandarin also offers a range of sweets and chocolates suitable for vegetarians and vegans - there's a treat for everyone!"
+                "The Mini Mandarin is the younger sister of The Little Mandarin and is run by the baker of yummy treats in the family. Come drop by for handmade and hand finished ‘bearcarons’ – bear shaped macarons! Choose from three delightful flavours, chocolate, strawberry and matcha! Other special flavours pop up all year round and JUMBO sized macarons too, so come back to see what's new! The Mini Mandarin also offers a range of sweets and chocolates suitable for vegetarians and vegans - there's a treat for everyone!",
             }.AsReadOnly();
 
             this.BannerImageViewModel = new MandarinImageViewModel("/static/images/the-mini-mandarin/TheMiniMandarin-Banner.jpg", "The Mini Mandarin - Bearcarons");
@@ -21,8 +25,13 @@ namespace Mandarin.ViewModels.MiniMandarin
             }.AsReadOnly();
         }
 
+        /// <inheritdoc/>
         public IReadOnlyList<string> Paragraphs { get; }
+
+        /// <inheritdoc/>
         public IMandarinImageViewModel BannerImageViewModel { get; }
+
+        /// <inheritdoc/>
         public IReadOnlyList<IMandarinImageViewModel> MacaronImageViewModels { get; }
     }
 }

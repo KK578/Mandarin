@@ -25,7 +25,7 @@ namespace Mandarin.Tests.Factory
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var header = Context.Request.Headers["Authorization"];
+            var header = this.Context.Request.Headers["Authorization"];
             if (header.Any(x => TestAuthHandler.AuthorizedToken.Equals(AuthenticationHeaderValue.Parse(x))))
             {
                 var claims = new[] { new Claim(ClaimTypes.Name, "MandarinTest") };

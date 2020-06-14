@@ -30,7 +30,7 @@ namespace Mandarin.Tests.Factory
                             options.DefaultSignInScheme = TestAuthHandler.AuthenticationScheme;
                             options.DefaultChallengeScheme = TestAuthHandler.AuthenticationScheme;
                         })
-                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => {});
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
             });
         }
 

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
@@ -11,7 +9,6 @@ using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using Square;
 using Square.Models;
@@ -22,8 +19,6 @@ namespace Mandarin.Services.Tests.Square
     [TestFixture]
     public class SquareTransactionServiceTests
     {
-        private static readonly JsonSerializer Serializer = new JsonSerializer();
-
         private Mock<ISquareClient> squareClient;
         private Mock<ITransactionMapper> transactionMapper;
 
@@ -70,9 +65,9 @@ namespace Mandarin.Services.Tests.Square
         {
             this.squareClient ??= new Mock<ISquareClient>();
             this.squareClient.Setup(x => x.OrdersApi.SearchOrdersAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => SquareTransactionServiceTests.DeserializeFromFile<SearchOrdersResponse>(WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage1));
+                .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<SearchOrdersResponse>(WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage1));
             this.squareClient.Setup(x => x.OrdersApi.SearchOrdersAsync(It.Is<SearchOrdersRequest>(x => x.Cursor == WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage2), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => SquareTransactionServiceTests.DeserializeFromFile<SearchOrdersResponse>(WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage2));
+                .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<SearchOrdersResponse>(WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage2));
         }
 
         private ManualResetEvent GivenSquareClientOrderApiWaitsToContinue()
@@ -106,14 +101,6 @@ namespace Mandarin.Services.Tests.Square
         {
             var subject = new SquareTransactionService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object, this.transactionMapper.Object);
             return subject.GetAllTransactions(DateTime.Now, DateTime.Now).ToList().ToTask(ct);
-        }
-
-        private static T DeserializeFromFile<T>(string path)
-        {
-            using var fs = File.OpenRead(path);
-            using var reader = new StreamReader(fs);
-            using var jsonReader = new JsonTextReader(reader);
-            return SquareTransactionServiceTests.Serializer.Deserialize<T>(jsonReader);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Mandarin.ViewModels.Tests.Contact
         public void OnFileChange_SetsModelAttachments()
         {
             var attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>() };
-            this.subject.OnFileChange(attachments);
+            this.subject.UpdateAttachments(attachments);
             Assert.That(this.subject.Model.Attachments, Is.EqualTo(attachments).AsCollection);
         }
 
@@ -52,16 +52,16 @@ namespace Mandarin.ViewModels.Tests.Contact
         public async Task SubmitAsync_GivenEmailServiceThrowsException_ThenSubmitExceptionIsSet()
         {
             var exception = new ValidationException("Failed to build email.");
-            GivenEmailServiceThrowsOnBuild(exception);
-            await WhenContactPageSubmitIsCalled();
+            this.GivenEmailServiceThrowsOnBuild(exception);
+            await this.WhenContactPageSubmitIsCalled();
             Assert.That(this.subject.SubmitException, Is.EqualTo(exception));
         }
 
         [Test]
         public async Task SubmitAsync_GivenEmailServiceReturnsInternalServerErrorResponse_ThenLastSubmissionSuccessfulIsFalse()
         {
-            GivenEmailServiceReturnsEmailOnBuild();
-            GivenEmailServiceReturnsInternalServerErrorOnSend();
+            this.GivenEmailServiceReturnsEmailOnBuild();
+            this.GivenEmailServiceReturnsInternalServerErrorOnSend();
             await this.WhenContactPageSubmitIsCalled();
             Assert.That(this.subject.LastSubmitSuccessful, Is.False);
         }
@@ -69,8 +69,8 @@ namespace Mandarin.ViewModels.Tests.Contact
         [Test]
         public async Task SubmitAsync_GivenEmailServiceReturnsOkResponse_ThenLastSubmissionSuccessfulIsTrue()
         {
-            GivenEmailServiceReturnsEmailOnBuild();
-            GivenEmailServiceReturnsOkOnSend();
+            this.GivenEmailServiceReturnsEmailOnBuild();
+            this.GivenEmailServiceReturnsOkOnSend();
             await this.WhenContactPageSubmitIsCalled();
             Assert.That(this.subject.LastSubmitSuccessful, Is.True);
         }
@@ -102,8 +102,7 @@ namespace Mandarin.ViewModels.Tests.Contact
 
         private Task WhenContactPageSubmitIsCalled()
         {
-            return this.subject.SubmitAsync();
+            return this.subject.SendEmailAsync();
         }
-
     }
 }

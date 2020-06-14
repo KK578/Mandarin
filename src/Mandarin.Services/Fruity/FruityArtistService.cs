@@ -9,17 +9,23 @@ using Newtonsoft.Json;
 
 namespace Mandarin.Services.Fruity
 {
+    /// <inheritdoc />
     internal sealed class FruityArtistService : IArtistService
     {
         private readonly HttpClient httpClient;
         private readonly JsonSerializer serializer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FruityArtistService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client configured for communicating with Fruity service.</param>
         public FruityArtistService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
             this.serializer = new JsonSerializer();
         }
 
+        /// <inheritdoc/>
         public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
             // TODO: Additional artists may be required for commission.

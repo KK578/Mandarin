@@ -11,27 +11,28 @@ using Square.Models;
 
 namespace Mandarin.Services.Square
 {
+    /// <inheritdoc />
     internal sealed class SquareInventoryService : IInventoryService
     {
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareInventoryService"/> class.
+        /// </summary>
+        /// <param name="logger">The application logger.</param>
+        /// <param name="squareClient">The Square API client.</param>
         public SquareInventoryService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
         {
             this.logger = logger;
             this.squareClient = squareClient;
         }
 
+        /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
             return Observable.Create<CatalogObject>(SubscribeToListCatalog)
-                             .SelectMany(catalogObject =>
-                             {
-                                 if (catalogObject.ItemData != null)
-                                     return SquareInventoryService.MapToProduct(catalogObject.ItemData);
-
-                                 return Enumerable.Empty<Product>();
-                             })
+                             .SelectMany(MapToProducts)
                              .Where(x => x != null);
 
             async Task SubscribeToListCatalog(IObserver<CatalogObject> o, CancellationToken ct)
@@ -46,9 +47,17 @@ namespace Mandarin.Services.Square
                     {
                         o.OnNext(item);
                     }
-                } while (response.Cursor != null);
+                }
+                while (response.Cursor != null);
 
                 o.OnCompleted();
+            }
+
+            static IEnumerable<Product> MapToProducts(CatalogObject catalogObject)
+            {
+                return catalogObject.ItemData != null
+                    ? SquareInventoryService.MapToProduct(catalogObject.ItemData)
+                    : Enumerable.Empty<Product>();
             }
         }
 

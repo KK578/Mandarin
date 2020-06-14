@@ -18,6 +18,10 @@ namespace Mandarin
     {
         private readonly IConfiguration configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MandarinStartup"/> class.
+        /// </summary>
+        /// <param name="configuration">The master Application configuration.</param>
         public MandarinStartup(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -77,7 +81,6 @@ namespace Mandarin
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
