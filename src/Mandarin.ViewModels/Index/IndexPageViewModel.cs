@@ -3,11 +3,12 @@ using Mandarin.ViewModels.Components.Images;
 
 namespace Mandarin.ViewModels.Index
 {
+    /// <inheritdoc />
     internal sealed class IndexPageViewModel : IIndexPageViewModel
     {
-        public IReadOnlyList<string> Paragraphs { get; }
-        public IMandarinImageViewModel GiftCardImageViewModel { get; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IndexPageViewModel"/> class.
+        /// </summary>
         public IndexPageViewModel()
         {
             this.Paragraphs = new List<string>
@@ -19,5 +20,11 @@ namespace Mandarin.ViewModels.Index
             }.AsReadOnly();
             this.GiftCardImageViewModel = new MandarinImageViewModel("/static/images/about/GiftCards.gif", "The Little Mandarin - Gift Card Designs");
         }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<string> Paragraphs { get; }
+
+        /// <inheritdoc/>
+        public IMandarinImageViewModel GiftCardImageViewModel { get; }
     }
 }

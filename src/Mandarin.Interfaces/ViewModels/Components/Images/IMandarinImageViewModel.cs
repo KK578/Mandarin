@@ -8,7 +8,7 @@ namespace Mandarin.ViewModels.Components.Images
     public interface IMandarinImageViewModel
     {
         /// <summary>
-        /// Gets the uri to the image.
+        /// Gets the url to the image.
         /// </summary>
         Uri SourceUrl { get; }
 

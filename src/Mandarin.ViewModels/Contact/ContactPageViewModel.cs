@@ -10,17 +10,17 @@ using Microsoft.Extensions.Options;
 
 namespace Mandarin.ViewModels.Contact
 {
+    /// <inheritdoc />
     internal sealed class ContactPageViewModel : IContactPageViewModel
     {
         private readonly IEmailService emailService;
         private readonly IOptions<MandarinConfiguration> configuration;
 
-        public ContactDetailsModel Model { get; }
-
-        public bool EnableAttachmentsUpload => this.configuration.Value.EnableAttachments;
-        public bool LastSubmitSuccessful { get; private set; }
-        public Exception SubmitException { get; private set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContactPageViewModel"/> class.
+        /// </summary>
+        /// <param name="emailService">The email service.</param>
+        /// <param name="configuration">The application configuration.</param>
         public ContactPageViewModel(IEmailService emailService, IOptions<MandarinConfiguration> configuration)
         {
             this.emailService = emailService;
@@ -28,11 +28,25 @@ namespace Mandarin.ViewModels.Contact
             this.Model = new ContactDetailsModel();
         }
 
+        /// <inheritdoc/>
+        public ContactDetailsModel Model { get; }
+
+        /// <inheritdoc/>
+        public bool EnableAttachmentsUpload => this.configuration.Value.EnableAttachments;
+
+        /// <inheritdoc/>
+        public bool LastSubmitSuccessful { get; private set; }
+
+        /// <inheritdoc/>
+        public Exception SubmitException { get; private set; }
+
+        /// <inheritdoc/>
         public void UpdateAttachments(IEnumerable<IFileListEntry> files)
         {
             this.Model.Attachments = files.ToList();
         }
 
+        /// <inheritdoc/>
         public async Task SendEmailAsync()
         {
             try

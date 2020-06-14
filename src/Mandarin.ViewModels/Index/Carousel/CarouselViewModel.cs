@@ -3,8 +3,12 @@ using Mandarin.ViewModels.Components.Images;
 
 namespace Mandarin.ViewModels.Index.Carousel
 {
+    /// <inheritdoc />
     internal sealed class CarouselViewModel : ICarouselViewModel
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CarouselViewModel"/> class.
+        /// </summary>
         public CarouselViewModel()
         {
             this.Images = new List<IMandarinImageViewModel>
@@ -16,6 +20,7 @@ namespace Mandarin.ViewModels.Index.Carousel
             }.AsReadOnly();
         }
 
+        /// <inheritdoc/>
         public IReadOnlyList<IMandarinImageViewModel> Images { get; }
     }
 }
