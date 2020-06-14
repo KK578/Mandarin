@@ -8,8 +8,9 @@
     <Rule Id="CS1591" Action="None" /> <!-- Missing XML comment for publicly visible type or member. -->
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-    <Rule Id="SA1116" Action="None" /> <!-- Split parameters should start on on line after declaration -->
-    <Rule Id="SA1600" Action="None" /> <!-- Elements should be documented -->
+    <Rule Id="SA1116" Action="None" /> <!-- Split parameters should start on on line after declaration. -->
+    <Rule Id="SA1507" Action="None" /> <!-- Code should not contain multiple blank lines in a row. -->
+    <Rule Id="SA1600" Action="None" /> <!-- Elements should be documented. -->
     <Rule Id="SA1633" Action="None" /> <!-- The file header is missing or not located at the top of the file. -->
   </Rules>
 </RuleSet>

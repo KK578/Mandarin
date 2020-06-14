@@ -8,6 +8,19 @@ namespace Mandarin.Interfaces.Tests.Converters
     [TestFixture]
     public class NumericJsonConverterTests
     {
+        public static IEnumerable<object> NumericValues
+        {
+            get
+            {
+                yield return (int)1234;
+                yield return (short)1234;
+                yield return 1234L;
+                yield return 1234.5F;
+                yield return 1234.5D;
+                yield return 1234.5M;
+            }
+        }
+
         [Test]
         [TestCaseSource(nameof(NumericJsonConverterTests.NumericValues))]
         public void ConvertToPercentage_ValueShouldSuccessfullyRoundTrip(object o)
@@ -24,20 +37,6 @@ namespace Mandarin.Interfaces.Tests.Converters
             var subject = new NumberAsCurrencyConverter();
             JsonConverterTestHelper.AssertCanConvert(subject, o);
             JsonConverterTestHelper.AssertRoundTripOfValue(subject, o);
-        }
-
-        public static IEnumerable<object> NumericValues
-        {
-            get
-            {
-                var random = new Random();
-                yield return (int)1234;
-                yield return (short)1234;
-                yield return (long)1234;
-                yield return (float)1234.5;
-                yield return (double)1234.5;
-                yield return (decimal)1234.5;
-            }
         }
     }
 }

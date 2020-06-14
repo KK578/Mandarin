@@ -36,7 +36,7 @@ namespace Mandarin.Interfaces.Tests.Models.Contact
         public void OnValidate_CommentCannotBeLongerThan2500Characters()
         {
             var model = ContactDetailsModelTests.CreateValidModel();
-            model.Comment = string.Join("", Enumerable.Range(0, 1000).Select(x => "Hello"));
+            model.Comment = string.Join(string.Empty, Enumerable.Range(0, 1000).Select(x => "Hello"));
             this.AssertErrorMessages(model, "The Comment field must not be longer than 2500 characters.");
             model.Comment = "Hello World";
             this.AssertNoErrors(model);
@@ -66,9 +66,9 @@ namespace Mandarin.Interfaces.Tests.Models.Contact
         public void OnValidate_AttachmentsCannotSumToLargerThan10Megabytes()
         {
             var model = ContactDetailsModelTests.CreateValidModel();
-            model.Attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>(x => x.Size == 15_000_000 ) };
+            model.Attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>(x => x.Size == 15_000_000) };
             this.AssertErrorMessages(model, "Maximum size of all attachments is 10MB.");
-            model.Attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>(x => x.Size == 5_000_000 ) };
+            model.Attachments = new List<IFileListEntry> { Mock.Of<IFileListEntry>(x => x.Size == 5_000_000) };
             this.AssertNoErrors(model);
         }
 

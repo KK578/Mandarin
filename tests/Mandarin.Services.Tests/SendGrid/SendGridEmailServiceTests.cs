@@ -39,7 +39,7 @@ namespace Mandarin.Services.Tests.SendGrid
             {
                 ServiceEmail = SendGridEmailServiceTests.ServiceEmail,
                 RealContactEmail = SendGridEmailServiceTests.RealContactEmail,
-                RecordOfSalesTemplateId = SendGridEmailServiceTests.TemplateId
+                RecordOfSalesTemplateId = SendGridEmailServiceTests.TemplateId,
             });
         }
 
@@ -67,7 +67,7 @@ namespace Mandarin.Services.Tests.SendGrid
                 Name = "My Name",
                 Email = "MyValid@Email.com",
                 Reason = ContactReasonType.General,
-                Comment = "My extra long comment."
+                Comment = "My extra long comment.",
             };
 
             var subject =
@@ -91,7 +91,7 @@ namespace Mandarin.Services.Tests.SendGrid
                 Email = "MyValid@Email.com",
                 Reason = ContactReasonType.Other,
                 AdditionalReason = "My Special Reason",
-                Comment = "My extra long comment."
+                Comment = "My extra long comment.",
             };
 
             var subject =
@@ -115,8 +115,8 @@ namespace Mandarin.Services.Tests.SendGrid
                 Attachments = new List<IFileListEntry>
                 {
                     Mock.Of<IFileListEntry>(x => x.Name == "File.zip" && x.Size == 1024 && x.Data == data &&
-                                                 x.Type == "zip")
-                }
+                                                 x.Type == "zip"),
+                },
             };
 
             var subject =
@@ -177,7 +177,7 @@ namespace Mandarin.Services.Tests.SendGrid
             var email = new SendGridMessage();
             var sendGridClient = new Mock<ISendGridClient>();
             sendGridClient.Setup(x => x.SendEmailAsync(email, It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(new Response(HttpStatusCode.Accepted, new StringContent(""), null));
+                          .ReturnsAsync(new Response(HttpStatusCode.Accepted, new StringContent(string.Empty), null));
             var subject = new SendGridEmailService(sendGridClient.Object, this.configuration, NullLogger<SendGridEmailService>.Instance);
             var result = await subject.SendEmailAsync(email);
 

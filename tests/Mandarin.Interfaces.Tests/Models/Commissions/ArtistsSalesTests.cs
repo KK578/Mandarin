@@ -77,7 +77,7 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
 
         private static string SanitizeWhitespace(string input)
         {
-            var trimmed = input.Replace("\r", "").Replace("\n", "").Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            var trimmed = input.Replace("\r", string.Empty).Replace("\n", string.Empty).Split(" ", StringSplitOptions.RemoveEmptyEntries);
             return string.Join(" ", trimmed);
         }
     }
