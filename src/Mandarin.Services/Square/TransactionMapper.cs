@@ -10,15 +10,21 @@ using Transaction = Mandarin.Models.Transactions.Transaction;
 
 namespace Mandarin.Services.Square
 {
+    /// <inheritdoc />
     internal sealed class TransactionMapper : ITransactionMapper
     {
         private readonly IQueryableInventoryService inventoryService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
+        /// </summary>
+        /// <param name="inventoryService">The inventory service.</param>
         public TransactionMapper(IQueryableInventoryService inventoryService)
         {
             this.inventoryService = inventoryService;
         }
 
+        /// <inheritdoc/>
         public IObservable<Transaction> MapToTransaction(Order order)
         {
             return this.CreateSubtransactions(order)

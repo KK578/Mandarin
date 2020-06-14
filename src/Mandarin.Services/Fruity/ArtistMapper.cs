@@ -3,6 +3,9 @@ using Mandarin.Models.Artists;
 
 namespace Mandarin.Services.Fruity
 {
+    /// <summary>
+    /// Represents the converter between Artist related DTOs to Domain models.
+    /// </summary>
     internal static class ArtistMapper
     {
         private const string FacebookFormat = "https://facebook.com/{0}";
@@ -10,6 +13,11 @@ namespace Mandarin.Services.Fruity
         private const string InstagramFormat = "https://instagram.com/{0}";
         private const string TumblrFormat = "https://{0}.tumblr.com/";
 
+        /// <summary>
+        /// Converts the provided <see cref="ArtistDto"/> to an <see cref="ArtistDetailsModel"/>.
+        /// </summary>
+        /// <param name="dto">The artist DTO to convert.</param>
+        /// <returns>A newly created <see cref="ArtistDetailsModel"/>.</returns>
         public static ArtistDetailsModel ConvertToModel(ArtistDto dto)
         {
             return new ArtistDetailsModel(dto.StockistCode,

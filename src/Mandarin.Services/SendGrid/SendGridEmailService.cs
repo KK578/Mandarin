@@ -12,12 +12,19 @@ using SendGrid.Helpers.Mail;
 
 namespace Mandarin.Services.SendGrid
 {
+    /// <inheritdoc />
     internal sealed class SendGridEmailService : IEmailService
     {
         private readonly ILogger<SendGridEmailService> logger;
         private readonly ISendGridClient sendGridClient;
         private readonly IOptions<SendGridConfiguration> sendGridConfigurationOption;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SendGridEmailService"/> class.
+        /// </summary>
+        /// <param name="sendGridClient">The SendGrid API Client.</param>
+        /// <param name="sendGridConfigurationOption">The application configuration for Email customisations.</param>
+        /// <param name="logger">The application logger.</param>
         public SendGridEmailService(ISendGridClient sendGridClient,
                                     IOptions<SendGridConfiguration> sendGridConfigurationOption,
                                     ILogger<SendGridEmailService> logger)
@@ -27,6 +34,7 @@ namespace Mandarin.Services.SendGrid
             this.sendGridConfigurationOption = sendGridConfigurationOption;
         }
 
+        /// <inheritdoc/>
         public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
         {
             Validator.ValidateObject(model, new ValidationContext(model), true);
@@ -53,6 +61,7 @@ namespace Mandarin.Services.SendGrid
             return email;
         }
 
+        /// <inheritdoc/>
         public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
         {
             var email = new SendGridMessage();
@@ -67,6 +76,7 @@ namespace Mandarin.Services.SendGrid
             return email;
         }
 
+        /// <inheritdoc/>
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
         {
             var response = await this.sendGridClient.SendEmailAsync(email);
@@ -78,7 +88,9 @@ namespace Mandarin.Services.SendGrid
         private static async Task<string> GetBodyContent(Response response)
         {
             if (response.Body == null)
+            {
                 return null;
+            }
 
             var bodyContent = await response.Body.ReadAsStringAsync();
             return bodyContent;

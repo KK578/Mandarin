@@ -15,8 +15,17 @@ using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Mandarin.Services
 {
+    /// <summary>
+    /// Extensions to <see cref="IServiceCollection"/> to register all services in this assembly.
+    /// </summary>
     public static class MandarinServicesExtensions
     {
+        /// <summary>
+        /// Registers the Mandarin.Services assembly implementations into the provided service container.
+        /// </summary>
+        /// <param name="services">Service container to add registrations to.</param>
+        /// <param name="configuration">Application configuration for configuring services.</param>
+        /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddLazyCache();
