@@ -1,4 +1,7 @@
 ﻿using Mandarin.ViewModels.Components.Images;
+using Mandarin.ViewModels.Index.Carousel;
+using Mandarin.ViewModels.Index.MandarinMap;
+using Mandarin.ViewModels.Index.OpeningTimes;
 using Markdig;
 using Microsoft.AspNetCore.Components;
 
@@ -15,10 +18,16 @@ namespace Mandarin.ViewModels.Index
         {
             var mainContent = IndexPageViewModel.CreateMainContent();
             var giftCardContent = IndexPageViewModel.CreateGiftCardContent();
+            this.CarouselViewModel = new CarouselViewModel();
             this.MainContent = new MarkupString(Markdown.ToHtml(mainContent, markdownPipeline));
             this.GiftCardContent = new MarkupString(Markdown.ToHtml(giftCardContent, markdownPipeline));
             this.GiftCardImageViewModel = new MandarinImageViewModel("/static/images/about/GiftCards.gif", "The Little Mandarin - Gift Card Designs");
+            this.MapViewModel = new MandarinMapViewModel();
+            this.OpeningTimesViewModel = new OpeningTimesViewModel();
         }
+
+        /// <inheritdoc/>
+        public ICarouselViewModel CarouselViewModel { get; }
 
         /// <inheritdoc/>
         public MarkupString MainContent { get; }
@@ -28,6 +37,12 @@ namespace Mandarin.ViewModels.Index
 
         /// <inheritdoc/>
         public IMandarinImageViewModel GiftCardImageViewModel { get; }
+
+        /// <inheritdoc/>
+        public IMandarinMapViewModel MapViewModel { get; }
+
+        /// <inheritdoc/>
+        public IOpeningTimesViewModel OpeningTimesViewModel { get; }
 
         private static string CreateMainContent()
         {

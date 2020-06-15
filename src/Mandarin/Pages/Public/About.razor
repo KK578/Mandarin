@@ -2,7 +2,7 @@
 @using Mandarin.ViewModels.Index;
 @inject IIndexPageViewModel ViewModel;
 
-<MandarinCarousel />
+<MandarinCarousel ViewModel="@ViewModel.CarouselViewModel" />
 
 @ViewModel.MainContent
 
@@ -25,6 +25,6 @@
 <hr class="mt-6" />
 
 <div class="container flex flex-col justify-around md:flex-row mt-3 mx-auto self-center">
-  <MandarinOpeningTimes class="mb-5 self-center" />
-  <MandarinMap />
+  <MandarinOpeningTimes ViewModel="@ViewModel.OpeningTimesViewModel" class="mb-5 self-center" />
+  <MandarinMap ViewModel="@ViewModel.MapViewModel" />
 </div>
