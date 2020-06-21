@@ -3,21 +3,9 @@
 @inject IMiniMandarinPageViewModel ViewModel;
 
 <MandarinImage ViewModel="@ViewModel.BannerImageViewModel" />
-<MandarinBar Class="mt-6" />
+<hr Class="mt-6" />
 
-@foreach (var paragraph in ViewModel.Paragraphs)
-{
-  <MandarinText>@paragraph</MandarinText>
-}
-
-<MandarinText>
-  You can follow The Mini Mandarin on Instagram
-  <a class="duration-200 ease-in-out hover:opacity-75 text-gold transition-opacity"
-     href="https://instagram.com/theminimandarin_e17"
-     target="_blank">
-    @@theminimandarin_e17
-  </a> to make sure you don't miss out!
-</MandarinText>
+@ViewModel.TextContent
 
 <div class="flex flex-1 flex-row flex-wrap justify-center">
   @foreach (var macaronViewModel in ViewModel.MacaronImageViewModels)

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Mandarin.ViewModels.Index.OpeningTimes
 {
@@ -9,18 +9,13 @@ namespace Mandarin.ViewModels.Index.OpeningTimes
         /// <summary>
         /// Initializes a new instance of the <see cref="OpeningTimesViewModel"/> class.
         /// </summary>
-        public OpeningTimesViewModel()
+        /// <param name="pageContentModel">The public website content model.</param>
+        public OpeningTimesViewModel(PageContentModel pageContentModel)
         {
-            this.OpeningTimes = new List<OpeningTimeRowViewModel>
-            {
-                new OpeningTimeRowViewModel("Monday", "Closed"),
-                new OpeningTimeRowViewModel("Tuesday", "Closed"),
-                new OpeningTimeRowViewModel("Wednesday", "Closed"),
-                new OpeningTimeRowViewModel("Thursday", "Temporarily Closed"),
-                new OpeningTimeRowViewModel("Friday", "Temporarily Closed"),
-                new OpeningTimeRowViewModel("Saturday", "Temporarily Closed"),
-                new OpeningTimeRowViewModel("Sunday", "Temporarily Closed"),
-            };
+            this.OpeningTimes = pageContentModel.GetAll<OpeningTimeModel>("About", "OpeningTimes")
+                                                .Select(x => new OpeningTimeRowViewModel(x))
+                                                .ToList()
+                                                .AsReadOnly();
         }
 
         /// <inheritdoc/>

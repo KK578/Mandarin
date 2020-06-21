@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Mandarin.ViewModels.Components.Images;
 
 namespace Mandarin.ViewModels.Index.Carousel
@@ -9,15 +10,10 @@ namespace Mandarin.ViewModels.Index.Carousel
         /// <summary>
         /// Initializes a new instance of the <see cref="CarouselViewModel"/> class.
         /// </summary>
-        public CarouselViewModel()
+        /// <param name="pageContentModel">The public website content model.</param>
+        public CarouselViewModel(PageContentModel pageContentModel)
         {
-            this.Images = new List<IMandarinImageViewModel>
-            {
-                new MandarinImageViewModel("/static/images/about/ShopFront.jpg", "The Little Mandarin - Shop Front"),
-                new MandarinImageViewModel("/static/images/about/ShopWallDisplay.jpg", "The Little Mandarin - Display"),
-                new MandarinImageViewModel("/static/images/about/ShopDisplay.jpg", "The Little Mandarin - Interior"),
-                new MandarinImageViewModel("/static/images/about/Macarons.jpg", "The Mini Mandarin - Macarons"),
-            }.AsReadOnly();
+            this.Images = pageContentModel.GetAll<ImageUrlModel>("About", "Carousel").Select(x => new MandarinImageViewModel(x)).ToList().AsReadOnly();
         }
 
         /// <inheritdoc/>

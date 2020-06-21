@@ -17,6 +17,15 @@ namespace Mandarin.ViewModels.Components.Images
             this.Description = description;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MandarinImageViewModel"/> class.
+        /// </summary>
+        /// <param name="model">The image url model to populate from.</param>
+        public MandarinImageViewModel(ImageUrlModel model)
+            : this(model.Url, model.Description)
+        {
+        }
+
         /// <inheritdoc/>
         public Uri SourceUrl { get; }
 

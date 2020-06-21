@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
-using Mandarin.ViewModels.Components.Images;
+﻿using Mandarin.ViewModels.Components.Images;
+using Mandarin.ViewModels.Index.Carousel;
+using Mandarin.ViewModels.Index.MandarinMap;
+using Mandarin.ViewModels.Index.OpeningTimes;
+using Microsoft.AspNetCore.Components;
 
 namespace Mandarin.ViewModels.Index
 {
@@ -9,22 +12,33 @@ namespace Mandarin.ViewModels.Index
         /// <summary>
         /// Initializes a new instance of the <see cref="IndexPageViewModel"/> class.
         /// </summary>
-        public IndexPageViewModel()
+        /// <param name="pageContentModel">The public website content model.</param>
+        public IndexPageViewModel(PageContentModel pageContentModel)
         {
-            this.Paragraphs = new List<string>
-            {
-                "The Little Mandarin is an independent Art and Sweets Shop based in East London, found in the heart of Walthamstow Village, E17. The owner, Eileen Kai Hing Kwan is a local Illustrator who has lived in Walthamstow for most of her life and after taking over from her parents, the previous owners, this makes The Little Mandarin the third chapter of the family’s shop.",
-                "The Little Mandarin believes in welcoming and supporting all types of artists and styles of art, bringing a range of art prints, framed art, greetings cards, gifts and more, from our little space in the village into the thriving creative community of Walthamstow and further.",
-                "We are also the proud hosts of, The Mini Mandarin, selling handmade and hand finished 'bearcarons' (bear shaped macarons!) alongside a variety of sweets and chocolates suitable for vegetarians and vegans!",
-                "We hope to see you soon!",
-            }.AsReadOnly();
-            this.GiftCardImageViewModel = new MandarinImageViewModel("/static/images/about/GiftCards.gif", "The Little Mandarin - Gift Card Designs");
+            this.CarouselViewModel = new CarouselViewModel(pageContentModel);
+            this.MainContent = pageContentModel.GetMarkupString("About", "MainText");
+            this.GiftCardContent = pageContentModel.GetMarkupString("About", "GiftCards", "Text");
+            this.GiftCardImageViewModel = new MandarinImageViewModel(pageContentModel.Get<ImageUrlModel>("About", "GiftCards", "AnimationImage"));
+            this.MapViewModel = new MandarinMapViewModel(pageContentModel);
+            this.OpeningTimesViewModel = new OpeningTimesViewModel(pageContentModel);
         }
 
         /// <inheritdoc/>
-        public IReadOnlyList<string> Paragraphs { get; }
+        public ICarouselViewModel CarouselViewModel { get; }
+
+        /// <inheritdoc/>
+        public MarkupString MainContent { get; }
+
+        /// <inheritdoc/>
+        public MarkupString GiftCardContent { get; }
 
         /// <inheritdoc/>
         public IMandarinImageViewModel GiftCardImageViewModel { get; }
+
+        /// <inheritdoc/>
+        public IMandarinMapViewModel MapViewModel { get; }
+
+        /// <inheritdoc/>
+        public IOpeningTimesViewModel OpeningTimesViewModel { get; }
     }
 }

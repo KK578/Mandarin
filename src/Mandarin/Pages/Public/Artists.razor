@@ -4,7 +4,7 @@
 
 @if (ViewModel.IsLoading)
 {
-  <MandarinText>Just a moment...</MandarinText>
+  <p>Just a moment...</p>
 }
 else
 {
@@ -12,7 +12,7 @@ else
   {
     if (i != 0)
     {
-      <MandarinBar class="my-8" />
+      <hr class="my-8" />
     }
 
     <MandarinArtist ViewModel="@ViewModel.ViewModels[i]" />
