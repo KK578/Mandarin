@@ -29,6 +29,18 @@ namespace Mandarin.ViewModels.Index.OpeningTimes
             this.Message = message;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpeningTimeRowViewModel"/> class.
+        /// </summary>
+        /// <param name="model">The opening time model to get data from.</param>
+        public OpeningTimeRowViewModel(OpeningTimeModel model)
+        {
+            this.NameOfDay = model.Name;
+            this.Message = model.Open.HasValue && model.Close.HasValue
+                ? $"{OpeningTimeRowViewModel.FormatDateTime(model.Open.Value)} - {OpeningTimeRowViewModel.FormatDateTime(model.Close.Value)}"
+                : model.Message;
+        }
+
         /// <inheritdoc/>
         public string NameOfDay { get; }
 

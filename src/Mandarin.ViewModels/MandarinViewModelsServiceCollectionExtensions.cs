@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Mandarin.Configuration;
 using Mandarin.ViewModels.Artists;
 using Mandarin.ViewModels.Components.Navigation;
 using Mandarin.ViewModels.Contact;
@@ -9,6 +11,9 @@ using Mandarin.ViewModels.Index.OpeningTimes;
 using Mandarin.ViewModels.MiniMandarin;
 using Markdig;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Mandarin.ViewModels
 {
@@ -27,6 +32,7 @@ namespace Mandarin.ViewModels
             services.AddSingleton(MandarinViewModelsServiceCollectionExtensions.CreateMarkdownPipeline);
             services.AddTransient<IViewModelFactory, ViewModelFactory>();
 
+            services.AddTransient(CreatePageContentModel);
             services.AddTransient<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
 
             services.AddTransient<IIndexPageViewModel, IndexPageViewModel>();
@@ -43,9 +49,19 @@ namespace Mandarin.ViewModels
             return services;
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline(IServiceProvider arg)
+        private static MarkdownPipeline CreateMarkdownPipeline(IServiceProvider provider)
         {
             return new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+        }
+
+        private static PageContentModel CreatePageContentModel(IServiceProvider provider)
+        {
+            var configuration = provider.GetService<IOptions<MandarinConfiguration>>();
+            using var fileStream = File.OpenRead(configuration.Value.PageContentFilePath);
+            using var streamReader = new StreamReader(fileStream);
+            using var jsonReader = new JsonTextReader(streamReader);
+            var token = JToken.Load(jsonReader);
+            return new PageContentModel(provider.GetService<MarkdownPipeline>(), token);
         }
     }
 }

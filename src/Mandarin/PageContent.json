@@ -1,0 +1,44 @@
+﻿{
+  "About": {
+    "Carousel": [
+      {
+        "Url": "/static/images/about/ShopFront.jpg",
+        "Description": "The Little Mandarin - Shop Front"
+      },
+      {
+        "Url": "/static/images/about/ShopWallDisplay.jpg",
+        "Description": "The Little Mandarin - Display"
+      },
+      {
+        "Url": "/static/images/about/ShopDisplay.jpg",
+        "Description": "The Little Mandarin - Interior"
+      },
+      {
+        "Url": "/static/images/about/Macarons.jpg",
+        "Description": "The Mini Mandarin - Macarons"
+      }
+    ],
+    "MainText": "----\n\nThe Little Mandarin is an independent Art and Sweets Shop based in East London, found in the heart of Walthamstow Village, E17. The owner, Eileen Kai Hing Kwan is a local Illustrator who has lived in Walthamstow for most of her life and after taking over from her parents, the previous owners, this makes The Little Mandarin the third chapter of the family’s shop.\n\nThe Little Mandarin believes in welcoming and supporting all types of artists and styles of art, bringing a range of art prints, framed art, greetings cards, gifts and more, from our little space in the village into the thriving creative community of Walthamstow and further.\n\nWe are also the proud hosts of, The Mini Mandarin, selling handmade and hand finished 'bearcarons' (bear shaped macarons!) alongside a variety of sweets and chocolates suitable for vegetarians and vegans!\n\nWe hope to see you soon!\n\n----",
+    "GiftCards": {
+      "Text": "### eGift Cards\n\nThe Little Mandarin is temporarily closed due to COVID-19, and we unfortunately do not have the means to move online. The kindness and support we've received has been overwhelming and humbling, and we are happy to say that you can now support our independent and family-run shop by purchasing one of our eGift Cards online!\n\nThere are several cute designs to choose from and the eGift Card is emailed directly to you or your giftee and can be redeemed in-store after we reopen. Our eGift Cards are non refundable and can only be redeemed in store but they do not expire, so there’s no rush to use them! Your eGift Card(s) can be redeemed in-store to make full or partial payments, and checking any remaining balance can be easily done and at any time via our website.\n\nWe want to sincerely thank everyone for their amazing support and kindness during this time and we look forward to seeing you all again for art and sweets when it is safe for us to reopen.\n\nUntil then, please take care and stay safe!",
+      "AnimationImage": {
+        "Url": "/static/images/about/GiftCards.gif",
+        "Description": "The Little Mandarin - Gift Card Designs"
+      }
+    },
+    "Map": {
+      "Url": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d619.8081400436498!2d-0.013219!3d51.582301!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x541a94670a2a54e2!2sThe%20Little%20Mandarin!5e0!3m2!1sen!2suk!4v1583077967669!5m2!1sen!2suk",
+      "Width": 400,
+      "Height": 300
+    },
+    "OpeningTimes": [
+      { "Name": "Monday", "Message": "Closed" },
+      { "Name": "Tuesday", "Message": "Closed" },
+      { "Name": "Wednesday", "Message": "Closed" },
+      { "Name": "Thursday", "Message": "Temporarily Closed" },
+      { "Name": "Friday", "Message": "Temporarily Closed" },
+      { "Name": "Saturday", "Message": "Temporarily Closed" },
+      { "Name": "Sunday", "Message": "Temporarily Closed" }
+    ]
+  }
+}

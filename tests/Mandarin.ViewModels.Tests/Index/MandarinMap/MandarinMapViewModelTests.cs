@@ -1,4 +1,7 @@
+using System;
+using Bashi.Tests.Framework.Data;
 using Mandarin.ViewModels.Index.MandarinMap;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Mandarin.ViewModels.Tests.Index.MandarinMap
@@ -7,10 +10,27 @@ namespace Mandarin.ViewModels.Tests.Index.MandarinMap
     public class MandarinMapViewModelTests
     {
         [Test]
-        public void MapUri_ShouldFormGoogleMapEmbedUri()
+        public void MapUri_ShouldGetDataFromModel()
         {
-            var subject = new MandarinMapViewModel();
-            Assert.That(subject.MapUri.ToString(), Contains.Substring("https://www.google.com/maps/embed"));
+            var data = new
+            {
+                About = new
+                {
+                    Map = new
+                    {
+                        Url = TestData.Create<Uri>().ToString(),
+                        Width = TestData.Create<int>(),
+                        Height = TestData.Create<int>(),
+                    },
+                },
+            };
+
+            var pageContentModel = new PageContentModel(null, JToken.FromObject(data));
+            var subject = new MandarinMapViewModel(pageContentModel);
+
+            Assert.That(subject.MapUri.ToString(), Is.EqualTo(data.About.Map.Url));
+            Assert.That(subject.Width, Is.EqualTo(data.About.Map.Width));
+            Assert.That(subject.Height, Is.EqualTo(data.About.Map.Height));
         }
     }
 }
