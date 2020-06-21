@@ -32,7 +32,9 @@ namespace Mandarin.ViewModels
             services.AddSingleton(MandarinViewModelsServiceCollectionExtensions.CreateMarkdownPipeline);
             services.AddTransient<IViewModelFactory, ViewModelFactory>();
 
-            services.AddTransient(CreatePageContentModel);
+            // TODO: Singleton due to file read on construction.
+            //       Should be Transient with a cache? Allows live updating of website.
+            services.AddSingleton(MandarinViewModelsServiceCollectionExtensions.CreatePageContentModel);
             services.AddTransient<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
 
             services.AddTransient<IIndexPageViewModel, IndexPageViewModel>();
