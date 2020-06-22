@@ -47,7 +47,7 @@ namespace Mandarin.Services.Commission
 
             ArtistSales ToArtistSales(ArtistDetailsModel artist, IList<Subtransaction> subtransactions)
             {
-                var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.Contains(artist.StockistCode)).ToList();
+                var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(artist.StockistCode)).ToList();
 
                 if (artistSubtransactions.Count == 0)
                 {

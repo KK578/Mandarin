@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 using Square.Models;
@@ -48,13 +50,39 @@ namespace Mandarin.Services.Square
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem)
         {
-            return this.GetProductAsync(orderLineItem.CatalogObjectId, orderLineItem.Name).ToObservable()
-                       .Select(product =>
+            return this.GetProductAsync(orderLineItem.CatalogObjectId, orderLineItem.Name)
+                       .ToObservable()
+                       .SelectMany(product =>
                        {
-                           var quantity = int.Parse(orderLineItem.Quantity);
-                           var subTotal = decimal.Divide(orderLineItem.TotalMoney?.Amount ?? 0, 100);
-                           return new Subtransaction(product, quantity, subTotal);
+                           return this.inventoryService.GetFixedCommissionAmount(product)
+                                      .ToObservable()
+                                      .SelectMany(fixedCommissionAmount => Create(product, fixedCommissionAmount));
                        });
+
+            IEnumerable<Subtransaction> Create(Product product, FixedCommissionAmount fixedCommissionAmount)
+            {
+                if (fixedCommissionAmount != null)
+                {
+                    var quantity = int.Parse(orderLineItem.Quantity);
+                    var commissionSubtotal = quantity * fixedCommissionAmount.Amount;
+                    var subTotal = decimal.Divide(orderLineItem.TotalMoney?.Amount ?? 0, 100) - commissionSubtotal;
+
+                    yield return new Subtransaction(product, quantity, subTotal);
+                    yield return new Subtransaction(new Product("TLM-" + fixedCommissionAmount.ProductCode,
+                                                                "TLM-" + fixedCommissionAmount.ProductCode,
+                                                                $"Frame for {fixedCommissionAmount.ProductCode}",
+                                                                null,
+                                                                fixedCommissionAmount.Amount),
+                                                    quantity,
+                                                    commissionSubtotal);
+                }
+                else
+                {
+                    var quantity = int.Parse(orderLineItem.Quantity);
+                    var subTotal = decimal.Divide(orderLineItem.TotalMoney?.Amount ?? 0, 100);
+                    yield return new Subtransaction(product, quantity, subTotal);
+                }
+            }
         }
 
         private IObservable<Subtransaction> CreateSubtransactionFromDiscount(OrderLineItemDiscount orderLineItemDiscount)

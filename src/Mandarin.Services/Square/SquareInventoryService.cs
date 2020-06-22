@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Mandarin.Configuration;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Square;
 using Square.Models;
 
@@ -16,16 +21,26 @@ namespace Mandarin.Services.Square
     {
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
+        private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareInventoryService"/> class.
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
-        public SquareInventoryService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
+        /// <param name="mandarinConfiguration">The application configuration wrapped in an <see cref="IOptions{TOptions}"/>.</param>
+        public SquareInventoryService(ILogger<SquareTransactionService> logger, ISquareClient squareClient, IOptions<MandarinConfiguration> mandarinConfiguration)
         {
             this.logger = logger;
             this.squareClient = squareClient;
+            this.mandarinConfiguration = mandarinConfiguration;
+        }
+
+        /// <inheritdoc />
+        public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
+        {
+            return Observable.FromAsync(() => File.ReadAllTextAsync(this.mandarinConfiguration.Value.FixedCommissionAmountFilePath))
+                             .SelectMany(JsonConvert.DeserializeObject<List<FixedCommissionAmount>>);
         }
 
         /// <inheritdoc/>
