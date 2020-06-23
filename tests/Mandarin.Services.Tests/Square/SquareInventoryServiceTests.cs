@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
+using Bashi.Tests.Framework.Data;
+using FluentAssertions;
+using Mandarin.Configuration;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Square;
 using Square.Models;
@@ -18,6 +25,33 @@ namespace Mandarin.Services.Tests.Square
     public class SquareInventoryServiceTests
     {
         private Mock<ISquareClient> squareClient;
+
+        [Test]
+        public async Task GetFixedCommissionAmounts_GivenEmptyFileName_ShouldReturnEmpty()
+        {
+            this.squareClient = new Mock<ISquareClient>();
+            var actual = await this.WhenListingFixedCommissionAmounts(string.Empty);
+            Assert.That(actual, Is.Empty);
+        }
+
+        [Test]
+        public async Task GetFixedCommissionAmounts_GivenNonExistingFile_ShouldReturnEmpty()
+        {
+            this.squareClient = new Mock<ISquareClient>();
+            var actual = await this.WhenListingFixedCommissionAmounts("NonExistantFile.json");
+            Assert.That(actual, Is.Empty);
+        }
+
+        [Test]
+        public async Task GetFixedCommissionAmounts_GivenFileExists_ShouldContainAllObjects()
+        {
+            this.squareClient = new Mock<ISquareClient>();
+            var data = TestData.Create<List<FixedCommissionAmount>>();
+            var filename = await this.GivenTemporaryFileExists(data);
+            var actual = await this.WhenListingFixedCommissionAmounts(filename);
+
+            actual.Should().BeEquivalentTo(data);
+        }
 
         [Test]
         public void GetInventory_WhenRequestIsCancelled_ShouldThrowException()
@@ -38,6 +72,14 @@ namespace Mandarin.Services.Tests.Square
             Assert.That(catalogObjects.Count, Is.EqualTo(2));
             Assert.That(catalogObjects[0].ProductCode, Is.EqualTo("ID-1"));
             Assert.That(catalogObjects[1].ProductCode, Is.EqualTo("ID-2"));
+        }
+
+        private async Task<string> GivenTemporaryFileExists(List<FixedCommissionAmount> data)
+        {
+            var filename = Path.GetTempFileName();
+            var json = JsonConvert.SerializeObject(data);
+            await File.WriteAllTextAsync(filename, json);
+            return filename;
         }
 
         private void GivenSquareClientCatalogApiReturnsData()
@@ -64,9 +106,16 @@ namespace Mandarin.Services.Tests.Square
             return waitHandle;
         }
 
+        private Task<IList<FixedCommissionAmount>> WhenListingFixedCommissionAmounts(string filename)
+        {
+            var configuration = new MandarinConfiguration { FixedCommissionAmountFilePath = filename, };
+            var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object, Options.Create(configuration));
+            return subject.GetFixedCommissionAmounts().ToList().ToTask();
+        }
+
         private Task<IList<Product>> WhenListingInventory(CancellationToken ct = default)
         {
-            var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object);
+            var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, this.squareClient.Object, Options.Create(new MandarinConfiguration()));
             return subject.GetInventory().ToList().ToTask(ct);
         }
     }

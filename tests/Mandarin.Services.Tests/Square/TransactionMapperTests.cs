@@ -4,10 +4,12 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Services.Square;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Square.Models;
 using Transaction = Mandarin.Models.Transactions.Transaction;
 
@@ -31,6 +33,28 @@ namespace Mandarin.Services.Tests.Square
             Assert.That(transactions[0].Subtransactions[0].Quantity, Is.EqualTo(2));
             Assert.That(transactions[0].Subtransactions[0].TransactionUnitPrice, Is.EqualTo(5.00m));
             Assert.That(transactions[0].Subtransactions[0].Subtotal, Is.EqualTo(10.00m));
+        }
+
+        [Test]
+        public async Task MapToTransaction_GivenOrderWithFixedCommission_ShouldMapCorrectly()
+        {
+            var product = TestData.Create<Product>();
+            var fixedCommission = new FixedCommissionAmount(product.ProductCode, 1.00m);
+            this.GivenInventoryServiceSetUpWithProduct(product);
+            this.GivenInventoryServiceSetUpWithFixedCommission(product, fixedCommission);
+            var order = this.GivenOrderProductAsLineItem(product);
+            var transactions = await this.WhenMappingTransactions(order);
+            Assert.That(transactions.Count, Is.EqualTo(1));
+            Assert.That(transactions[0].TotalAmount, Is.EqualTo(10.00m));
+            Assert.That(transactions[0].Subtransactions.Count, Is.EqualTo(2));
+            Assert.That(transactions[0].Subtransactions[0].Product, Is.EqualTo(product));
+            Assert.That(transactions[0].Subtransactions[0].Quantity, Is.EqualTo(2));
+            Assert.That(transactions[0].Subtransactions[0].TransactionUnitPrice, Is.EqualTo(4.00m));
+            Assert.That(transactions[0].Subtransactions[0].Subtotal, Is.EqualTo(8.00m));
+            Assert.That(transactions[0].Subtransactions[1].Product.ProductCode, Does.StartWith("TLM"));
+            Assert.That(transactions[0].Subtransactions[1].Quantity, Is.EqualTo(2));
+            Assert.That(transactions[0].Subtransactions[1].TransactionUnitPrice, Is.EqualTo(1.00m));
+            Assert.That(transactions[0].Subtransactions[1].Subtotal, Is.EqualTo(2.00m));
         }
 
         [Test]
@@ -67,6 +91,13 @@ namespace Mandarin.Services.Tests.Square
             this.inventoryService.Setup(x => x.GetProductByIdAsync(product.SquareId)).ReturnsAsync(product);
             this.inventoryService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
         }
+
+        private void GivenInventoryServiceSetUpWithFixedCommission(Product product, FixedCommissionAmount fixedCommissionAmount)
+        {
+            this.inventoryService ??= new Mock<IQueryableInventoryService>();
+            this.inventoryService.Setup(x => x.GetFixedCommissionAmount(product)).ReturnsAsync(fixedCommissionAmount);
+        }
+
 
         private Order GivenOrderProductAsLineItem(Product product)
         {

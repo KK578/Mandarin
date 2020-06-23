@@ -12,9 +12,7 @@
       <RadzenGridColumn TItem="Product" Property="ProductCode" Title="Product Code" />
       <RadzenGridColumn TItem="Product" Property="ProductName" Title="Name" />
       <RadzenGridColumn TItem="Product" Property="Description" Title="Description" />
-      <RadzenGridColumn TItem="Product" Property="UnitPrice" Title="Unit Price">
-        <Template Context="data">@($"{data.UnitPrice:C}")</Template>
-      </RadzenGridColumn>
+      <RadzenGridColumn TItem="Product" Property="UnitPrice" Title="Unit Price" FormatString="{0:C}" />
     </Columns>
   </RadzenGrid>
 </RadzenCard>

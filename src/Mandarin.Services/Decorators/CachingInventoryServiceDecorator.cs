@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LazyCache;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -15,7 +17,6 @@ namespace Mandarin.Services.Decorators
     /// </summary>
     internal sealed class CachingInventoryServiceDecorator : IQueryableInventoryService
     {
-        private const string CacheKey = nameof(IInventoryService) + "." + nameof(CachingInventoryServiceDecorator.GetInventory);
         private readonly IInventoryService inventoryService;
         private readonly IAppCache appCache;
 
@@ -31,9 +32,37 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
+        public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
+        {
+            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
+                             .SelectMany(x => x);
+
+            async Task<IReadOnlyList<FixedCommissionAmount>> CreateEntry(ICacheEntry e)
+            {
+                try
+                {
+                    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                    var result = await this.inventoryService.GetFixedCommissionAmounts().ToList().ToTask();
+                    return result.ToList().AsReadOnly();
+                }
+                catch (Exception)
+                {
+                    e.AbsoluteExpiration = DateTimeOffset.MinValue;
+                    return new List<FixedCommissionAmount>().AsReadOnly();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public Task<FixedCommissionAmount> GetFixedCommissionAmount(Product product)
+        {
+            return this.GetFixedCommissionAmounts().FirstOrDefaultAsync(x => x.ProductCode == product.ProductCode).ToTask();
+        }
+
+        /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
-            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(CachingInventoryServiceDecorator.CacheKey, CreateEntry))
+            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
                              .SelectMany(x => x);
 
             async Task<IReadOnlyList<Product>> CreateEntry(ICacheEntry e)
@@ -70,6 +99,11 @@ namespace Mandarin.Services.Decorators
             {
                 return this.GetInventory().FirstOrDefaultAsync(x => x.ProductName.Contains(productName, StringComparison.OrdinalIgnoreCase)).ToTask();
             }
+        }
+
+        private string CreateCacheKey([CallerMemberName] string caller = null)
+        {
+            return nameof(IInventoryService) + "." + caller;
         }
     }
 }

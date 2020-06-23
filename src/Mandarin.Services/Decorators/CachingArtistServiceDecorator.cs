@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LazyCache;
 using Mandarin.Models.Artists;
@@ -12,7 +13,6 @@ namespace Mandarin.Services.Decorators
     /// </summary>
     internal sealed class CachingArtistServiceDecorator : IArtistService
     {
-        private const string CacheKey = nameof(IArtistService) + "." + nameof(CachingArtistServiceDecorator.GetArtistDetailsAsync);
         private readonly IArtistService artistService;
         private readonly IAppCache appCache;
 
@@ -30,7 +30,7 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
-            return this.appCache.GetOrAddAsync(CachingArtistServiceDecorator.CacheKey, CreateEntry);
+            return this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry);
 
             async Task<IReadOnlyList<ArtistDetailsModel>> CreateEntry(ICacheEntry e)
             {
@@ -50,7 +50,7 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync()
         {
-            return this.appCache.GetOrAddAsync(CachingArtistServiceDecorator.CacheKey, CreateEntry);
+            return this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry);
 
             async Task<IReadOnlyList<ArtistDetailsModel>> CreateEntry(ICacheEntry e)
             {
@@ -65,6 +65,11 @@ namespace Mandarin.Services.Decorators
                     return new List<ArtistDetailsModel>().AsReadOnly();
                 }
             }
+        }
+
+        private string CreateCacheKey([CallerMemberName] string caller = null)
+        {
+            return nameof(IArtistService) + "." + caller;
         }
     }
 }

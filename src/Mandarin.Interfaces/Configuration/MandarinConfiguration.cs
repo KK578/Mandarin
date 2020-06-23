@@ -21,5 +21,10 @@ namespace Mandarin.Configuration
         /// Gets or sets the directory path to the page content JSON file.
         /// </summary>
         public string PageContentFilePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the directory path to the fixed commission amount JSON file.
+        /// </summary>
+        public string FixedCommissionAmountFilePath { get; set; }
     }
 }

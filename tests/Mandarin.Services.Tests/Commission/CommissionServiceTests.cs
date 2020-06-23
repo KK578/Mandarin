@@ -5,6 +5,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Commission;
@@ -20,7 +21,7 @@ namespace Mandarin.Services.Tests.Commission
         private Mock<ITransactionService> transactionService;
 
         [Test]
-        public async Task GetSalesByArtistForPeriod()
+        public async Task GetSalesByArtistForPeriod_ShouldCalculateCommissionCorrectly()
         {
             this.GivenArtistServiceReturnsData();
             this.GivenTransactionServiceReturnsData();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 
 namespace Mandarin.Services
@@ -9,6 +10,12 @@ namespace Mandarin.Services
     /// </summary>
     public interface IInventoryService
     {
+        /// <summary>
+        /// Gets an observable sequence for all known fixed commission amounts.
+        /// </summary>
+        /// <returns>An observable sequence containing all known fixed commissions.</returns>
+        IObservable<FixedCommissionAmount> GetFixedCommissionAmounts();
+
         /// <summary>
         /// Gets an observable sequence of all known products.
         /// </summary>
@@ -21,6 +28,14 @@ namespace Mandarin.Services
     /// </summary>
     public interface IQueryableInventoryService : IInventoryService
     {
+        /// <summary>
+        /// Gets the fixed commission amount for the requested product.
+        /// If a fixed commission amount does not exist, then the result will be null.
+        /// </summary>
+        /// <param name="product">The product to a fixed commission amount for.</param>
+        /// <returns>A task representing the asynchronous retrieval of the fixed commission amount.</returns>
+        Task<FixedCommissionAmount> GetFixedCommissionAmount(Product product);
+
         /// <summary>
         /// Finds the singular product that matches the provided Square product ID.
         /// If no match is found, returns null.
