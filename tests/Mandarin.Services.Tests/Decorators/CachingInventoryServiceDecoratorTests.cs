@@ -5,8 +5,8 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using LazyCache;
-using LazyCache.Mocks;
 using LazyCache.Providers;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Services.Decorators;
 using Microsoft.Extensions.Caching.Memory;
@@ -19,59 +19,74 @@ namespace Mandarin.Services.Tests.Decorators
     [TestFixture]
     public class CachingInventoryServiceDecoratorTests
     {
-        private Mock<IInventoryService> service;
-        private IAppCache appCache;
-
-        [SetUp]
-        public void SetUp()
+        [Test]
+        public async Task GetFixedCommissionAmounts_GivenMultipleCalls_WhenServiceThrowsException_ThenServiceIsCalledEachTime()
         {
-            this.service = new Mock<IInventoryService>();
+            var service = this.GivenServiceThrowsException();
+            var appCache = this.GivenRealMemoryCache();
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetFixedCommissionAmounts());
+            service.Verify(x => x.GetFixedCommissionAmounts(), Times.Exactly(5));
+        }
+
+        [Test]
+        public async Task GetFixedCommissionAmounts_GivenMultipleCalls_WhenServiceReturnsDataSuccessfullyFirstTime_ThenServiceIsOnlyCalledOnce()
+        {
+            var service = this.GivenServiceReturnsData();
+            var appCache = this.GivenRealMemoryCache();
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetFixedCommissionAmounts());
+            service.Verify(x => x.GetFixedCommissionAmounts(), Times.Once());
         }
 
         [Test]
         public async Task GetInventory_GivenMultipleCalls_WhenServiceThrowsException_ThenServiceIsCalledEachTime()
         {
-            this.GivenServiceThrowsException();
-            this.GivenRealMemoryCache();
-            await this.WhenServiceIsCalledMultipleTimes(5);
-            this.service.Verify(x => x.GetInventory(), Times.Exactly(5));
+            var service = this.GivenServiceThrowsException();
+            var appCache = this.GivenRealMemoryCache();
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetInventory());
+            service.Verify(x => x.GetInventory(), Times.Exactly(5));
         }
 
         [Test]
         public async Task GetInventory_GivenMultipleCalls_WhenServiceReturnsDataSuccessfullyFirstTime_ThenServiceIsOnlyCalledOnce()
         {
-            this.GivenServiceReturnsData();
-            this.GivenRealMemoryCache();
-            await this.WhenServiceIsCalledMultipleTimes(5);
-            this.service.Verify(x => x.GetInventory(), Times.Once());
+            var service = this.GivenServiceReturnsData();
+            var appCache = this.GivenRealMemoryCache();
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetInventory());
+            service.Verify(x => x.GetInventory(), Times.Once());
         }
 
-        private void GivenServiceReturnsData()
+        private Mock<IInventoryService> GivenServiceReturnsData()
         {
-            var data = TestData.Create<List<Product>>();
-            this.service.Setup(x => x.GetInventory())
-                .Returns(data.ToObservable())
-                .Verifiable();
+            var service = new Mock<IInventoryService>();
+            service.Setup(x => x.GetInventory()).Returns(TestData.Create<List<Product>>().ToObservable()).Verifiable();
+            service.Setup(x => x.GetFixedCommissionAmounts()).Returns(TestData.Create<List<FixedCommissionAmount>>().ToObservable()).Verifiable();
+
+            return service;
         }
 
-        private void GivenRealMemoryCache()
+        private Mock<IInventoryService> GivenServiceThrowsException()
         {
-            this.appCache = new CachingService(new MemoryCacheProvider(new MemoryCache(Options.Create(new MemoryCacheOptions()))));
+            var service = new Mock<IInventoryService>();
+            service.Setup(x => x.GetInventory()).Throws(new Exception("Service failure.")).Verifiable();
+            service.Setup(x => x.GetFixedCommissionAmounts()).Throws(new Exception("Service failure.")).Verifiable();
+
+            return service;
         }
 
-        private void GivenServiceThrowsException()
+        private IAppCache GivenRealMemoryCache()
         {
-            this.service.Setup(x => x.GetInventory())
-                .Throws(new Exception("Service failure."))
-                .Verifiable();
+            return new CachingService(new MemoryCacheProvider(new MemoryCache(Options.Create(new MemoryCacheOptions()))));
         }
 
-        private async Task WhenServiceIsCalledMultipleTimes(int times)
+        private async Task WhenServiceIsCalledMultipleTimes<T>(int times, Func<IObservable<T>> action)
         {
-            var subject = new CachingInventoryServiceDecorator(this.service.Object, this.appCache);
             for (var i = 0; i < times; i++)
             {
-                await subject.GetInventory().ToList().ToTask();
+                await action().ToList().ToTask();
             }
         }
     }
