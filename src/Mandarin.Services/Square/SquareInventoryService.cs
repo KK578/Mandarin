@@ -39,8 +39,20 @@ namespace Mandarin.Services.Square
         /// <inheritdoc />
         public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
         {
-            return Observable.FromAsync(() => File.ReadAllTextAsync(this.mandarinConfiguration.Value.FixedCommissionAmountFilePath))
+            return Observable.FromAsync(ReadDataFromFile)
                              .SelectMany(JsonConvert.DeserializeObject<List<FixedCommissionAmount>>);
+
+            Task<string> ReadDataFromFile()
+            {
+                var file = this.mandarinConfiguration.Value.FixedCommissionAmountFilePath;
+                if (string.IsNullOrWhiteSpace(file) || !File.Exists(file))
+                {
+                    this.logger.LogWarning("Cannot read Fixed Commission Amounts from file: '{FileName}", file);
+                    return Task.FromResult("[]");
+                }
+
+                return File.ReadAllTextAsync(file);
+            }
         }
 
         /// <inheritdoc/>

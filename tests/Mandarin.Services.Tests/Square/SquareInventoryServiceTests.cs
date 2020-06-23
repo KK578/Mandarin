@@ -27,6 +27,22 @@ namespace Mandarin.Services.Tests.Square
         private Mock<ISquareClient> squareClient;
 
         [Test]
+        public async Task GetFixedCommissionAmounts_GivenEmptyFileName_ShouldReturnEmpty()
+        {
+            this.squareClient = new Mock<ISquareClient>();
+            var actual = await this.WhenListingFixedCommissionAmounts(string.Empty);
+            Assert.That(actual, Is.Empty);
+        }
+
+        [Test]
+        public async Task GetFixedCommissionAmounts_GivenNonExistingFile_ShouldReturnEmpty()
+        {
+            this.squareClient = new Mock<ISquareClient>();
+            var actual = await this.WhenListingFixedCommissionAmounts("NonExistantFile.json");
+            Assert.That(actual, Is.Empty);
+        }
+
+        [Test]
         public async Task GetFixedCommissionAmounts_GivenFileExists_ShouldContainAllObjects()
         {
             this.squareClient = new Mock<ISquareClient>();
