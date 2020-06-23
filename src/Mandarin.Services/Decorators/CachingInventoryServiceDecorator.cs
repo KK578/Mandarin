@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LazyCache;
 using Mandarin.Models.Commissions;
@@ -16,7 +17,6 @@ namespace Mandarin.Services.Decorators
     /// </summary>
     internal sealed class CachingInventoryServiceDecorator : IQueryableInventoryService
     {
-        private const string CacheKey = nameof(IInventoryService) + "." + nameof(CachingInventoryServiceDecorator.GetInventory);
         private readonly IInventoryService inventoryService;
         private readonly IAppCache appCache;
 
@@ -34,7 +34,7 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
         {
-            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(CachingInventoryServiceDecorator.CacheKey, CreateEntry))
+            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
                              .SelectMany(x => x);
 
             async Task<IReadOnlyList<FixedCommissionAmount>> CreateEntry(ICacheEntry e)
@@ -62,7 +62,7 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
-            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(CachingInventoryServiceDecorator.CacheKey, CreateEntry))
+            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
                              .SelectMany(x => x);
 
             async Task<IReadOnlyList<Product>> CreateEntry(ICacheEntry e)
@@ -99,6 +99,11 @@ namespace Mandarin.Services.Decorators
             {
                 return this.GetInventory().FirstOrDefaultAsync(x => x.ProductName.Contains(productName, StringComparison.OrdinalIgnoreCase)).ToTask();
             }
+        }
+
+        private string CreateCacheKey([CallerMemberName] string caller = null)
+        {
+            return nameof(IInventoryService) + "." + caller;
         }
     }
 }
