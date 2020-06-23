@@ -1,0 +1,29 @@
+﻿@page "/admin/inventory/fixed-commission-amounts"
+@using Mandarin.Services
+@using System.Reactive.Linq
+@using System.Reactive.Threading.Tasks
+@using Mandarin.Models.Commissions
+@inject IInventoryService InventoryService;
+
+<RadzenCard>
+  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
+              AllowSorting="true" Data="@fixedCommissionAmounts" ColumnWidth="200px">
+    <Columns>
+      <RadzenGridColumn TItem="FixedCommissionAmount" Property="ProductCode" Title="Code" Width="75px"/>
+      <RadzenGridColumn TItem="FixedCommissionAmount" Property="Amount" Title="Amount" FormatString="{0:C}" />
+    </Columns>
+  </RadzenGrid>
+</RadzenCard>
+
+@code
+{
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    fixedCommissionAmounts = await InventoryService.GetFixedCommissionAmounts().ToList().ToTask();
+  }
+
+  private IList<FixedCommissionAmount> fixedCommissionAmounts = new List<FixedCommissionAmount>();
+}
