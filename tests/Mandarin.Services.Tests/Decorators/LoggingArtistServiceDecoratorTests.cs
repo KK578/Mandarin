@@ -24,42 +24,56 @@ namespace Mandarin.Services.Tests.Decorators
         }
 
         [Test]
-        public void GetArtistDetailsAsync_GivenMultipleCalls_WhenServiceThrowsException_ThenServiceIsCalledEachTime()
+        public void GetArtistDetailsAsync_WhenServiceThrowsException_ThenItShouldBeLogged()
         {
             var exception = new Exception("Service failure.");
             this.GivenServiceThrowsException(exception);
-            Assert.That(this.WhenServiceIsCalled, Throws.Exception);
+            var subject = new LoggingArtistServiceDecorator(this.service.Object, this.logger);
+            Assert.That(() => subject.GetArtistDetailsAsync(), Throws.Exception);
             Assert.That(this.logger.LogEntries, Has.Count.EqualTo(1));
             Assert.That(this.logger.LogEntries[0].Exception, Is.EqualTo(exception));
         }
 
         [Test]
-        public async Task GetArtistsDetailsAsync_GivenMultipleCalls_WhenServiceReturnsDataSuccessfullyFirstTime_ThenServiceIsOnlyCalledOnce()
+        public async Task GetArtistDetailsAsync_WhenServiceReturnsDataSuccessfully_ThenThereAreNoLogs()
         {
             this.GivenServiceReturnsData();
-            await this.WhenServiceIsCalled();
-            this.service.Verify(x => x.GetArtistDetailsAsync(), Times.Once());
+            var subject = new LoggingArtistServiceDecorator(this.service.Object, this.logger);
+            await subject.GetArtistDetailsAsync();
+            Assert.That(this.logger.LogEntries, Has.Count.Zero);
         }
 
-        private void GivenServiceThrowsException(Exception ex)
+        [Test]
+        public void GetArtistDetailsForCommissionAsync_WhenServiceThrowsException_ThenItShouldBeLogged()
         {
-            this.service.Setup(x => x.GetArtistDetailsAsync())
-                .ThrowsAsync(ex)
-                .Verifiable();
+            var exception = new Exception("Service failure.");
+            this.GivenServiceThrowsException(exception);
+            var subject = new LoggingArtistServiceDecorator(this.service.Object, this.logger);
+            Assert.That(() => subject.GetArtistDetailsForCommissionAsync(), Throws.Exception);
+            Assert.That(this.logger.LogEntries, Has.Count.EqualTo(1));
+            Assert.That(this.logger.LogEntries[0].Exception, Is.EqualTo(exception));
+        }
+
+        [Test]
+        public async Task GetArtistDetailsForCommissionAsync_WhenServiceReturnsDataSuccessfully_ThenThereAreNoLogs()
+        {
+            this.GivenServiceReturnsData();
+            var subject = new LoggingArtistServiceDecorator(this.service.Object, this.logger);
+            await subject.GetArtistDetailsForCommissionAsync();
+            Assert.That(this.logger.LogEntries, Has.Count.Zero);
         }
 
         private void GivenServiceReturnsData()
         {
             var data = TestData.Create<List<ArtistDetailsModel>>();
-            this.service.Setup(x => x.GetArtistDetailsAsync())
-                .ReturnsAsync(data)
-                .Verifiable();
+            this.service.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data).Verifiable();
+            this.service.Setup(x => x.GetArtistDetailsForCommissionAsync()).ReturnsAsync(data).Verifiable();
         }
 
-        private Task WhenServiceIsCalled()
+        private void GivenServiceThrowsException(Exception ex)
         {
-            var subject = new LoggingArtistServiceDecorator(this.service.Object, this.logger);
-            return subject.GetArtistDetailsAsync();
+            this.service.Setup(x => x.GetArtistDetailsAsync()).ThrowsAsync(ex).Verifiable();
+            this.service.Setup(x => x.GetArtistDetailsForCommissionAsync()).ThrowsAsync(ex).Verifiable();
         }
     }
 }

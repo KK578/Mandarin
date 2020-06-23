@@ -25,7 +25,7 @@ namespace Mandarin.Services.Fruity
                                           dto.Description,
                                           decimal.Divide(dto.Rate, 100),
                                           dto.EmailAddress,
-                                          new Uri(dto.ImageUrl),
+                                          ArtistMapper.MapUri(dto.ImageUrl),
                                           ArtistMapper.MapUri(dto.TwitterHandle, ArtistMapper.TwitterFormat),
                                           ArtistMapper.MapUri(dto.InstagramHandle, ArtistMapper.InstagramFormat),
                                           ArtistMapper.MapUri(dto.FacebookHandle, ArtistMapper.FacebookFormat),

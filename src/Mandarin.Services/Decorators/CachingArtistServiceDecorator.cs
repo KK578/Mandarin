@@ -46,5 +46,25 @@ namespace Mandarin.Services.Decorators
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync()
+        {
+            return this.appCache.GetOrAddAsync(CachingArtistServiceDecorator.CacheKey, CreateEntry);
+
+            async Task<IReadOnlyList<ArtistDetailsModel>> CreateEntry(ICacheEntry e)
+            {
+                try
+                {
+                    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                    return await this.artistService.GetArtistDetailsForCommissionAsync();
+                }
+                catch (Exception)
+                {
+                    e.AbsoluteExpiration = DateTimeOffset.MinValue;
+                    return new List<ArtistDetailsModel>().AsReadOnly();
+                }
+            }
+        }
     }
 }
