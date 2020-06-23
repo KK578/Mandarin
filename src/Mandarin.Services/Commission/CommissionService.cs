@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Reactive.Linq;
 using Mandarin.Models.Artists;
@@ -35,7 +34,7 @@ namespace Mandarin.Services.Commission
                        .GroupBy(subtransaction => subtransaction.Product?.ProductCode ?? "TLM-Unknown")
                        .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
                        .ToList()
-                       .Zip(Observable.FromAsync(this.artistService.GetArtistDetailsAsync), (s, a) => (Subtransactions: s, Artists: a))
+                       .Zip(Observable.FromAsync(this.artistService.GetArtistDetailsForCommissionAsync), (s, a) => (Subtransactions: s, Artists: a))
                        .SelectMany(tuple => tuple.Artists.ToObservable().Select(artist => ToArtistSales(artist, tuple.Subtransactions)));
 
             Subtransaction ToAggregateSubtransaction(IList<Subtransaction> s)

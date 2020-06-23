@@ -46,7 +46,7 @@ namespace Mandarin.Services.Tests.Commission
         private void GivenArtistServiceReturnsData()
         {
             this.artistService ??= new Mock<IArtistService>();
-            this.artistService.Setup(x => x.GetArtistDetailsAsync())
+            this.artistService.Setup(x => x.GetArtistDetailsForCommissionAsync())
                 .ReturnsAsync(new List<ArtistDetailsModel>
                 {
                     TestData.Create<ArtistDetailsModel>().WithTlmStockistCode().WithTenPercentCommision(),

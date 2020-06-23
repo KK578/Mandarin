@@ -14,5 +14,12 @@ namespace Mandarin.Services
         /// </summary>
         /// <returns>A <see cref="Task{TResult}"/> containing all artists.</returns>
         public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync();
+
+        /// <summary>
+        /// Gets a list of all artists that should be considered for commission.
+        /// TODO: This list should return a time sensitive list of artists.
+        /// </summary>
+        /// <returns>A <see cref="Task{TResult}"/> containing all artists for commissioning purposes.</returns>
+        public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync();
     }
 }

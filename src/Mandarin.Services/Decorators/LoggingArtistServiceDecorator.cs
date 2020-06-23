@@ -36,5 +36,19 @@ namespace Mandarin.Services.Decorators
                 throw;
             }
         }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync()
+        {
+            try
+            {
+                return await this.artistService.GetArtistDetailsForCommissionAsync();
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "An error occurred whilst fetching Artist Details.");
+                throw;
+            }
+        }
     }
 }

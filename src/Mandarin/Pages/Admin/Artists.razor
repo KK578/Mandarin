@@ -7,6 +7,7 @@
   <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
               AllowSorting="true" Data="@artists" ColumnWidth="200px">
     <Columns>
+      <RadzenGridColumn TItem="ArtistDetailsModel" Property="StockistCode" Title="Code" Width="75px"/>
       <RadzenGridColumn TItem="ArtistDetailsModel" Property="Name" Title="Name" />
       <RadzenGridColumn TItem="ArtistDetailsModel" Property="Description" Title="Description" />
       <RadzenGridColumn TItem="ArtistDetailsModel" Property="ImageUrl" Title="Public Image Url" />
@@ -26,7 +27,7 @@
   {
     await base.OnInitializedAsync();
 
-    artists = await ArtistService.GetArtistDetailsAsync();
+    artists = await ArtistService.GetArtistDetailsForCommissionAsync();
   }
 
   private IReadOnlyList<ArtistDetailsModel> artists = new List<ArtistDetailsModel>();
