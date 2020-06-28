@@ -1,8 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="align-middle bg-white flex flex-col min-h-full px-3 text-center">
   <RadzenMenu Style="z-index: 1000">
-    <RadzenMenuItem Text="Home" Path="/admin" Icon="home" />
+    <RadzenMenuItem Text="@($"Hello, {Name}!")" Icon="home">
+      <RadzenMenuItem Text="Home" Path="/admin" />
+      <RadzenMenuItem Text="Logout" Path="/logout" />
+    </RadzenMenuItem>
     <RadzenMenuItem Text="Artists" Path="/admin/artists" Icon="person" />
     <RadzenMenuItem Text="Inventory" Icon="storefront">
       <RadzenMenuItem Text="Stock" Path="/admin/inventory" Icon="fact_check" />
@@ -16,3 +20,18 @@
 
   @Body
 </div>
+
+@code
+{
+  /// <summary>
+  /// Gets the logged in user's name.
+  /// </summary>
+  public string Name { get; set; }
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    this.Name = state.User.Identity.Name;
+  }
+}

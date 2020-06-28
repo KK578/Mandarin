@@ -49,6 +49,7 @@ namespace Mandarin
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
