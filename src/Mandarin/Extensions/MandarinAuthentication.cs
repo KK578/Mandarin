@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Mandarin.Extensions
 {
@@ -47,6 +48,10 @@ namespace Mandarin.Extensions
 
             options.ResponseType = "code";
             options.CallbackPath = new PathString("/callback");
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                NameClaimType = "name",
+            };
 
             options.Events = new OpenIdConnectEvents
             {

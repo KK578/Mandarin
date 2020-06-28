@@ -2,6 +2,7 @@
 @using Mandarin.Services
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
+@using Bashi.Core.Enums
 @using Mandarin.Models.Commissions
 @using Mandarin.ViewModels
 @using Mandarin.ViewModels.Commissions
@@ -78,7 +79,12 @@
         <RadzenTextBox class="col-span-2" Placeholder="@SelectedCommission.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Value="@RecordOfSalesModel.EmailAddress" />
 
         <RadzenLabel class="self-center" Text="Custom Message:" />
-        <RadzenTextArea class="col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Value="@RecordOfSalesModel.CustomMessage" />
+        <RadzenTextArea class="row-span-2 col-span-2" Placeholder="Custom Message" Cols="30" Rows="7" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Value="@RecordOfSalesModel.CustomMessage" />
+        <div>
+          <RadzenDropDown class="w-3/4" TValue="RecordOfSalesTemplateKey" Placeholder="Select template..." Data="@Options" Change="@(args => RecordOfSalesModel.SetMessageFromTemplate((RecordOfSalesTemplateKey)args))">
+            <Template Context="key">@(((RecordOfSalesTemplateKey)key).GetDescription())</Template>
+          </RadzenDropDown>
+        </div>
 
         <div>
           <RadzenButton Click="args => RecordOfSalesModel.ToggleSentFlag()" ButtonStyle="ButtonStyle.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</RadzenButton>
@@ -101,6 +107,8 @@
 {
   private bool IsLoading { get; set; } = false;
   private IList<IArtistRecordOfSalesViewModel> Commissions { get; set; } = new List<IArtistRecordOfSalesViewModel>();
+
+  private readonly IEnumerable<RecordOfSalesTemplateKey> Options = EnumUtil.GetValues<RecordOfSalesTemplateKey>();
 
   private EditContext DatePickerEditContext { get; set; }
   private DateTime SelectedDate { get; set; } = DateTime.Today.AddMonths(-1);

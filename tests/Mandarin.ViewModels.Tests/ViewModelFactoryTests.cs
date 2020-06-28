@@ -1,7 +1,9 @@
 ﻿using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Commissions;
 using Mandarin.Services;
+using Microsoft.AspNetCore.Http;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Mandarin.ViewModels.Tests
@@ -12,9 +14,9 @@ namespace Mandarin.ViewModels.Tests
         [Test]
         public void CreateArtistRecordOfSalesViewModel_CanCreate()
         {
-            var subject = new ViewModelFactory(Mock.Of<IEmailService>());
-            Assert.That(() => subject.CreateArtistRecordOfSalesViewModel(TestData.Create<ArtistSales>()),
-                        Throws.Nothing);
+            var pageContentModel = new PageContentModel(null, JToken.FromObject(new object()));
+            var subject = new ViewModelFactory(Mock.Of<IEmailService>(), pageContentModel, Mock.Of<IHttpContextAccessor>());
+            Assert.That(() => subject.CreateArtistRecordOfSalesViewModel(TestData.Create<ArtistSales>()), Throws.Nothing);
         }
     }
 }

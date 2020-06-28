@@ -2,13 +2,17 @@
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
 using Mandarin.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Mandarin.ViewModels.Commissions
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="Mandarin.ViewModels.Commissions.IArtistRecordOfSalesViewModel" />
     internal class ArtistRecordOfSalesViewModel : ViewModelBase, IArtistRecordOfSalesViewModel
     {
         private readonly IEmailService emailService;
+        private readonly PageContentModel pageContentModel;
+        private readonly IHttpContextAccessor httpContextAccessor;
+
         private bool sendInProgress;
         private bool sendSuccessful;
         private string statusMessage;
@@ -19,10 +23,14 @@ namespace Mandarin.ViewModels.Commissions
         /// Initializes a new instance of the <see cref="ArtistRecordOfSalesViewModel"/> class.
         /// </summary>
         /// <param name="emailService">The email service.</param>
+        /// <param name="pageContentModel">The website content model.</param>
+        /// <param name="httpContextAccessor">The http context accessor.</param>
         /// <param name="commission">The artist commission breakdown.</param>
-        public ArtistRecordOfSalesViewModel(IEmailService emailService, ArtistSales commission)
+        public ArtistRecordOfSalesViewModel(IEmailService emailService, PageContentModel pageContentModel, IHttpContextAccessor httpContextAccessor, ArtistSales commission)
         {
             this.emailService = emailService;
+            this.pageContentModel = pageContentModel;
+            this.httpContextAccessor = httpContextAccessor;
             this.Commission = commission;
         }
 
@@ -43,6 +51,14 @@ namespace Mandarin.ViewModels.Commissions
 
         /// <inheritdoc/>
         public string CustomMessage { get => this.customMessage; set => this.RaiseAndSetPropertyChanged(ref this.customMessage, value); }
+
+        /// <inheritdoc/>
+        public void SetMessageFromTemplate(RecordOfSalesTemplateKey templateKey)
+        {
+            var name = this.httpContextAccessor.HttpContext.User.Identity.Name;
+            var templateFormat = this.pageContentModel.Get<string>("Admin", "RecordOfSales", "Templates", templateKey.ToString());
+            this.CustomMessage = string.Format(templateFormat, this.Commission.Name, name);
+        }
 
         /// <inheritdoc/>
         public void ToggleSentFlag()

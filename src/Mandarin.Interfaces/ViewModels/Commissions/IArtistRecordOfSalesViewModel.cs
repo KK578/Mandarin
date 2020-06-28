@@ -39,6 +39,12 @@ namespace Mandarin.ViewModels.Commissions
         string CustomMessage { get; set; }
 
         /// <summary>
+        /// Updates <see cref="CustomMessage"/> from a well known templated message, populated with the current record of sales information.
+        /// </summary>
+        /// <param name="templateKey">The name of the template to be used.</param>
+        void SetMessageFromTemplate(RecordOfSalesTemplateKey templateKey);
+
+        /// <summary>
         /// Forces the state of the <see cref="SendSuccessful"/> flag to be toggled.
         /// This is used to allow the Record of Sales to be locked and not accept inputs.
         /// </summary>
