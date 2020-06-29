@@ -1,4 +1,6 @@
-﻿namespace Mandarin.Models.Commissions
+﻿using Newtonsoft.Json;
+
+namespace Mandarin.Models.Commissions
 {
     /// <summary>
     /// Represents a partial amount on a sales that has a fixed portion of the sale as a separate fixed commission amount.
@@ -19,6 +21,7 @@
         /// <summary>
         /// Gets the product's unique item code.
         /// </summary>
+        [JsonProperty("product_code")]
         public string ProductCode { get; }
 
         /// <summary>

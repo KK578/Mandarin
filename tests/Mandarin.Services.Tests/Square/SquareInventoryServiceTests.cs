@@ -14,7 +14,6 @@ using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using Square;
 using Square.Models;
@@ -46,11 +45,12 @@ namespace Mandarin.Services.Tests.Square
         public async Task GetFixedCommissionAmounts_GivenFileExists_ShouldContainAllObjects()
         {
             this.squareClient = new Mock<ISquareClient>();
-            var data = TestData.Create<List<FixedCommissionAmount>>();
+            var data = TestData.Create<FixedCommissionAmount>();
             var filename = await this.GivenTemporaryFileExists(data);
             var actual = await this.WhenListingFixedCommissionAmounts(filename);
 
-            actual.Should().BeEquivalentTo(data);
+            Assert.That(actual, Has.Exactly(1).Items);
+            actual[0].Should().BeEquivalentTo(data);
         }
 
         [Test]
@@ -74,10 +74,10 @@ namespace Mandarin.Services.Tests.Square
             Assert.That(catalogObjects[1].ProductCode, Is.EqualTo("ID-2"));
         }
 
-        private async Task<string> GivenTemporaryFileExists(List<FixedCommissionAmount> data)
+        private async Task<string> GivenTemporaryFileExists(FixedCommissionAmount data)
         {
             var filename = Path.GetTempFileName();
-            var json = JsonConvert.SerializeObject(data);
+            var json = $"[{{ \"product_code\": \"{data.ProductCode}\", \"amount\": \"{data.Amount}\"}}]";
             await File.WriteAllTextAsync(filename, json);
             return filename;
         }
