@@ -88,7 +88,7 @@ namespace Mandarin.Services.Tests.Square
         private void GivenInventoryServiceSetUpWithProduct(Product product)
         {
             this.inventoryService ??= new Mock<IQueryableInventoryService>();
-            this.inventoryService.Setup(x => x.GetProductByIdAsync(product.SquareId)).ReturnsAsync(product);
+            this.inventoryService.Setup(x => x.GetProductBySquareIdAsync(product.SquareId)).ReturnsAsync(product);
             this.inventoryService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
         }
 

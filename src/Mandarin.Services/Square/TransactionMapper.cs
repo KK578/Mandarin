@@ -124,7 +124,7 @@ namespace Mandarin.Services.Square
         {
             if (squareId != null)
             {
-                return this.inventoryService.GetProductByIdAsync(squareId);
+                return this.inventoryService.GetProductBySquareIdAsync(squareId);
             }
             else if (name != null)
             {

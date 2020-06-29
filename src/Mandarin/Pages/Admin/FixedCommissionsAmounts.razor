@@ -2,30 +2,58 @@
 @using Mandarin.Services
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
+@using Mandarin.ViewModels
+@using Mandarin.ViewModels.Commissions
+@using System.Reactive.Disposables
 @using Mandarin.Models.Commissions
+@using Mandarin.Models.Inventory
 @inject IInventoryService InventoryService;
+@inject IViewModelFactory ViewModelFactory;
 
 <Card>
   <CardHeader>
     <CardTitle>Show Fixed Commission Amounts</CardTitle>
   </CardHeader>
   <CardBody>
-    <DataGrid Data="@fixedCommissionAmounts" Filterable="true" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
-      <DataGridColumn TItem="FixedCommissionAmount" Field="ProductCode" Caption="Product Code" Width="150px" />
-      <DataGridNumericColumn TItem="FixedCommissionAmount" Field="Amount" Caption="Amount" DisplayFormat="{0:C}" />
+    <DataGrid TItem="FixedCommissionRowModel" Data="@fixedCommissionAmountViewModels" Filterable="true" ShowPager="true" PageSize="15" Striped="true"
+              Editable="true" EditMode="DataGridEditMode.Inline"
+              RowInserted="@OnRowInserted">
+      <DataGridCommandColumn TItem="FixedCommissionRowModel" />
+      <DataGridColumn TItem="FixedCommissionRowModel" Field="ProductCode" Caption="Product Code" Width="150px" Editable="true">
+        <EditTemplate>
+          <Autocomplete Data="products" TextField="@((Product item) => item.ToString())" ValueField="@((item) => item.ProductCode)" MinLength="2"
+                        @bind-SelectedValue="@(context.CellValue)" />
+        </EditTemplate>
+      </DataGridColumn>
+      <DataGridNumericColumn TItem="FixedCommissionRowModel" Field="Amount" Caption="Amount" DisplayFormat="{0:C}" Editable="true" />
     </DataGrid>
   </CardBody>
 </Card>
 
 @code
 {
+  private class FixedCommissionRowModel
+  {
+    public string ProductCode { get; set; }
+    public decimal Amount { get; set; }
+  }
+
+  private IList<FixedCommissionRowModel> fixedCommissionAmountViewModels = new List<FixedCommissionRowModel>();
+  private IList<Product> products = new List<Product>();
+
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
 
-    fixedCommissionAmounts = await InventoryService.GetFixedCommissionAmounts().ToList().ToTask();
+    fixedCommissionAmountViewModels = await InventoryService.GetFixedCommissionAmounts()
+                                                            .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
+                                                            .ToList()
+                                                            .ToTask();
+    products = await InventoryService.GetInventory().ToList().ToTask();
   }
 
-  private IList<FixedCommissionAmount> fixedCommissionAmounts = new List<FixedCommissionAmount>();
+  void OnRowInserted(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> s)
+  {
+  }
 }

@@ -82,9 +82,15 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public Task<Product> GetProductByIdAsync(string squareId)
+        public Task<Product> GetProductBySquareIdAsync(string squareId)
         {
             return this.GetInventory().FirstOrDefaultAsync(x => x.SquareId == squareId).ToTask();
+        }
+
+        /// <inheritdoc/>
+        public Task<Product> GetProductByProductCodeAsync(string productCode)
+        {
+            return this.GetInventory().FirstOrDefaultAsync(x => x.ProductCode == productCode).ToTask();
         }
 
         /// <inheritdoc/>

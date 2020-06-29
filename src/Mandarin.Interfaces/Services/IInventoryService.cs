@@ -42,7 +42,15 @@ namespace Mandarin.Services
         /// </summary>
         /// <param name="squareId">The unique product ID assigned by Square to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductByIdAsync(string squareId);
+        Task<Product> GetProductBySquareIdAsync(string squareId);
+
+        /// <summary>
+        /// Finds the singular product that matches the provided Mandarin product code.
+        /// If no match is found, returns null.
+        /// </summary>
+        /// <param name="productCode">The unique Mandarin product code to be searched for.</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
+        Task<Product> GetProductByProductCodeAsync(string productCode);
 
         /// <summary>
         /// Finds the singular product that matches the provided product name.
