@@ -5,53 +5,67 @@
 @using Mandarin.Models.Transactions
 @inject ITransactionService TransactionService;
 
-<RadzenCard>
-  <EditForm EditContext="@EditContext">
-    <RadzenDatePicker @bind-Value="StartDate" DateFormat="d" />
-    <RadzenDatePicker @bind-Value="EndDate" DateFormat="d" />
+<EditForm EditContext="@EditContext">
+  <Card Class="mb-4">
+    <CardHeader>
+      <CardTitle>Show Transactions - Select Date Range</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <Fields>
+        <Field ColumnSize="ColumnSize.Is6">
+          <FieldLabel>Start Date</FieldLabel>
+          <DateEdit TValue="DateTime" @bind-Date="StartDate" />
+        </Field>
+        <Field ColumnSize="ColumnSize.Is6">
+          <FieldLabel>End Date</FieldLabel>
+          <DateEdit TValue="DateTime" @bind-Date="EndDate" />
+        </Field>
+      </Fields>
 
-    <RadzenButton Click="UpdateTransactionsAsync" disabled="@IsLoading">Update</RadzenButton>
-  </EditForm>
-</RadzenCard>
+      <CardActions>
+        <Button Color="Color.Primary" Clicked="@OnUpdateTransactions" Disabled="@IsLoading">Update</Button>
+      </CardActions>
+    </CardBody>
+  </Card>
+</EditForm>
 
-<RadzenCard>
-  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@AllTransactions" ColumnWidth="200px" Value="@SelectedTransaction" RowSelect="@((Transaction transaction) => OnSelect(transaction))">
-    <Columns>
-      <RadzenGridColumn TItem="Transaction" Property="Timestamp" Title="Transaction Time">
-        <Template Context="data">@($"{data.Timestamp:F}")</Template>
-      </RadzenGridColumn>
-      <RadzenGridColumn TItem="Transaction" Property="TotalMoney" Title="Total Amount">
-        <Template Context="data">@($"{data.TotalAmount:C}")</Template>
-      </RadzenGridColumn>
-    </Columns>
-  </RadzenGrid>
-</RadzenCard>
+@if (AllTransactions != null)
+{
+  <Card Class="mb-4">
+    <CardHeader>
+      <CardTitle>Found @(AllTransactions.Count) transactions.</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <DataGrid Data="@AllTransactions" @bind-SelectedRow="@SelectedTransaction" Striped="true">
+        <DataGridColumn TItem="Transaction" Field="Timestamp" Caption="Transaction Time" DisplayFormat="{0:F}" />
+        <DataGridNumericColumn TItem="Transaction" Field="TotalAmount" Caption="Total Amount" DisplayFormat="{0:C}" />
+      </DataGrid>
+    </CardBody>
+  </Card>
+}
 
 @if (SelectedTransaction?.Subtransactions != null)
 {
-  <RadzenCard>
-    <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-                AllowSorting="true" Data="@SelectedTransaction.Subtransactions" ColumnWidth="200px">
-      <Columns>
-        <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductCode" Title="Product Code" />
-        <RadzenGridColumn TItem="Subtransaction" Property="Product.ProductName" Title="Name" />
-        <RadzenGridColumn TItem="Subtransaction" Property="TransactionUnitPrice" Title="Unit Price">
-          <Template Context="data">@($"{data.TransactionUnitPrice:C}")</Template>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="Subtransaction" Property="Quantity" Title="Quantity" />
-        <RadzenGridColumn TItem="Subtransaction" Property="Subtotal" Title="Subtotal">
-          <Template Context="data">@($"{data.Subtotal:C}")</Template>
-        </RadzenGridColumn>
-      </Columns>
-    </RadzenGrid>
-  </RadzenCard>
+  <Card Class="mb-4">
+    <CardHeader>
+      <CardTitle>Items sold in sale at @(SelectedTransaction.Timestamp).</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <DataGrid Data="@SelectedTransaction.Subtransactions" Striped="true">
+        <DataGridColumn TItem="Subtransaction" Field="Product.ProductCode" Caption="Product Code" TextAlignment="TextAlignment.Left" />
+        <DataGridColumn TItem="Subtransaction" Field="Product.ProductName" Caption="Name" TextAlignment="TextAlignment.Left" />
+        <DataGridColumn TItem="Subtransaction" Field="TransactionUnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="Subtransaction" Field="Quantity" Caption="Quantity" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="Subtransaction" Field="Subtotal" Caption="Subtotal" DisplayFormat="{0:C}" TextAlignment="TextAlignment.Right" />
+      </DataGrid>
+    </CardBody>
+  </Card>
 }
 
 @code
 {
   private bool IsLoading { get; set; } = false;
-  private IList<Transaction> AllTransactions { get; set; } = new List<Transaction>();
+  private IList<Transaction> AllTransactions { get; set; }
   private Transaction SelectedTransaction { get; set; } = null;
 
   private EditContext EditContext { get; set; }
@@ -64,7 +78,7 @@
     EditContext = new EditContext(this);
   }
 
-  private async Task UpdateTransactionsAsync()
+  private async Task OnUpdateTransactions()
   {
     try
     {

@@ -1,25 +1,58 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="align-middle bg-white flex flex-col min-h-full px-3 text-center">
-  <RadzenMenu Style="z-index: 1000">
-    <RadzenMenuItem Text="@($"Hello, {Name}!")" Icon="home">
-      <RadzenMenuItem Text="Home" Path="/admin" />
-      <RadzenMenuItem Text="Logout" Path="/logout" />
-    </RadzenMenuItem>
-    <RadzenMenuItem Text="Artists" Path="/admin/artists" Icon="person" />
-    <RadzenMenuItem Text="Inventory" Icon="storefront">
-      <RadzenMenuItem Text="Stock" Path="/admin/inventory" Icon="fact_check" />
-      <RadzenMenuItem Text="Fixed Commission Amounts" Path="/admin/inventory/fixed-commission-amounts" Icon="anchor" />
-    </RadzenMenuItem>
-    <RadzenMenuItem Text="Sales" Icon="attach_money">
-      <RadzenMenuItem Text="Transactions" Path="/admin/transactions" Icon="attach_money" />
-      <RadzenMenuItem Text="Records of Sale" Path="/admin/record-of-sales" Icon="point_of_sale" />
-    </RadzenMenuItem>
-  </RadzenMenu>
+<Layout Sider="true">
+  <LayoutSider>
+    <LayoutSiderContent>
+      <Bar Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" ThemeContrast="ThemeContrast.Dark">
+        <BarBrand>
+          <BarItem>
+            <BarLink To="/admin"><BarIcon IconName="IconName.Home" />Hello, @Name!</BarLink>
+          </BarItem>
+        </BarBrand>
 
-  @Body
-</div>
+        <BarMenu>
+          <BarStart>
+            <BarItem>
+              <BarLink To="/admin/artists"><BarIcon IconName="IconName.PaintBrush" />Artists</BarLink>
+            </BarItem>
+
+            <BarItem>
+              <BarDropdown>
+                <BarDropdownToggle><BarIcon IconName="IconName.Store" />Inventory</BarDropdownToggle>
+                <BarDropdownMenu>
+                  <BarDropdownItem To="/admin/inventory">Stock</BarDropdownItem>
+                  <BarDropdownItem To="/admin/inventory/fixed-commission-amounts">Fixed Commissions</BarDropdownItem>
+                </BarDropdownMenu>
+              </BarDropdown>
+            </BarItem>
+
+            <BarItem>
+              <BarDropdown>
+                <BarDropdownToggle><BarIcon IconName="IconName.DollarSign" />Payments</BarDropdownToggle>
+                <BarDropdownMenu>
+                  <BarDropdownItem To="/admin/transactions">Transactions</BarDropdownItem>
+                  <BarDropdownItem To="/admin/record-of-sales">Records of Sales</BarDropdownItem>
+                </BarDropdownMenu>
+              </BarDropdown>
+            </BarItem>
+          </BarStart>
+
+          <BarEnd>
+            <BarItem>
+              <BarLink To="/logout"><BarIcon IconName="IconName.Unlock" />Logout</BarLink>
+            </BarItem>
+          </BarEnd>
+        </BarMenu>
+      </Bar>
+    </LayoutSiderContent>
+  </LayoutSider>
+  <Layout>
+    <LayoutContent>
+      <Container Padding="new FluentPadding().Is3">@Body</Container>
+    </LayoutContent>
+  </Layout>
+</Layout>
 
 @code
 {

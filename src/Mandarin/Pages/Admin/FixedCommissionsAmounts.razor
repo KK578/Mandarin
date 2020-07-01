@@ -5,15 +5,17 @@
 @using Mandarin.Models.Commissions
 @inject IInventoryService InventoryService;
 
-<RadzenCard>
-  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@fixedCommissionAmounts" ColumnWidth="200px">
-    <Columns>
-      <RadzenGridColumn TItem="FixedCommissionAmount" Property="ProductCode" Title="Code" Width="75px"/>
-      <RadzenGridColumn TItem="FixedCommissionAmount" Property="Amount" Title="Amount" FormatString="{0:C}" />
-    </Columns>
-  </RadzenGrid>
-</RadzenCard>
+<Card>
+  <CardHeader>
+    <CardTitle>Show Fixed Commission Amounts</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <DataGrid Data="@fixedCommissionAmounts" Filterable="true" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
+      <DataGridColumn TItem="FixedCommissionAmount" Field="ProductCode" Caption="Product Code" Width="150px" />
+      <DataGridNumericColumn TItem="FixedCommissionAmount" Field="Amount" Caption="Amount" DisplayFormat="{0:C}" />
+    </DataGrid>
+  </CardBody>
+</Card>
 
 @code
 {
