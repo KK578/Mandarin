@@ -33,7 +33,7 @@
 {
   <Card Class="mb-4">
     <CardHeader>
-      <CardTitle>Found @(AllTransactions.Count) transactions.</CardTitle>
+      <CardTitle>Found @(AllTransactions.Count) transactions</CardTitle>
     </CardHeader>
     <CardBody>
       <DataGrid Data="@AllTransactions" @bind-SelectedRow="@SelectedTransaction" Striped="true">
@@ -48,7 +48,7 @@
 {
   <Card Class="mb-4">
     <CardHeader>
-      <CardTitle>Items sold in sale at @(SelectedTransaction.Timestamp).</CardTitle>
+      <CardTitle>Items sold in sale at @(SelectedTransaction.Timestamp)</CardTitle>
     </CardHeader>
     <CardBody>
       <DataGrid Data="@SelectedTransaction.Subtransactions" Striped="true">
