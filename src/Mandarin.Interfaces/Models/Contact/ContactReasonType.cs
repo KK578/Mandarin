@@ -26,10 +26,10 @@ namespace Mandarin.Models.Contact
         ApplyForStocking,
 
         /// <summary>
-        /// Contact request for The Mini Mandarin.
+        /// Contact request for Macarons.
         /// </summary>
-        [Description("Query for The Mini Mandarin")]
-        MiniMandarin,
+        [Description("Query for Macarons")]
+        Macarons,
 
         /// <summary>
         /// Custom reason for contacting.

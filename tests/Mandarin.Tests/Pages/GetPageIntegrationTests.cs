@@ -37,7 +37,7 @@ namespace Mandarin.Tests.Pages
 
         [Test]
         [TestCase("/about", "We hope to see you soon!")]
-        [TestCase("/the-mini-mandarin", "The Mini Mandarin also offers a range of sweets and chocolates")]
+        [TestCase("/macarons", "The Mini Mandarin also offers a range of sweets and chocolates")]
         [TestCase("/artists", "The Little Mandarin in-house art team!")]
         [TestCase("/contact", "Feel free to contact us through this form and we will get back to you as soon as we can.")]
         public async Task BasicRenderTest_ShouldBeAbleToRenderRoute_AndFindSimpleStaticContentOnPage(

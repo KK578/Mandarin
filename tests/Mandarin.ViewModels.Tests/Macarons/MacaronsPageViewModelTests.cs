@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using Bashi.Tests.Framework.Data;
-using Mandarin.ViewModels.MiniMandarin;
+using Mandarin.ViewModels.Macarons;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
-namespace Mandarin.ViewModels.Tests.MiniMandarin
+namespace Mandarin.ViewModels.Tests.Macarons
 {
     [TestFixture]
-    public class MiniMandarinPageViewModelTests
+    public class MacaronsPageViewModelTests
     {
         [Test]
         public void TextContent_ShouldBeHtmlContent()
         {
             var data = new
             {
-                MiniMandarin = new
+                Macarons = new
                 {
                     MainText = "This *is* markdown!.",
                     BannerImage = TestData.Create<ImageUrlModel>(),
@@ -23,7 +23,7 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
             };
 
             var pageContentModel = new PageContentModel(null, JToken.FromObject(data));
-            var subject = new MiniMandarinPageViewModel(pageContentModel);
+            var subject = new MacaronsPageViewModel(pageContentModel);
             Assert.That(subject.TextContent.Value, Is.EqualTo("<p>This <em>is</em> markdown!.</p>\n"));
         }
 
@@ -32,7 +32,7 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
         {
             var data = new
             {
-                MiniMandarin = new
+                Macarons = new
                 {
                     MainText = TestData.NextString(),
                     BannerImage = TestData.Create<ImageUrlModel>(),
@@ -41,9 +41,9 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
             };
 
             var pageContentModel = new PageContentModel(null, JToken.FromObject(data));
-            var subject = new MiniMandarinPageViewModel(pageContentModel);
-            Assert.That(subject.BannerImageViewModel.SourceUrl.ToString(), Is.EqualTo(data.MiniMandarin.BannerImage.Url));
-            Assert.That(subject.BannerImageViewModel.Description, Is.EqualTo(data.MiniMandarin.BannerImage.Description));
+            var subject = new MacaronsPageViewModel(pageContentModel);
+            Assert.That(subject.BannerImageViewModel.SourceUrl.ToString(), Is.EqualTo(data.Macarons.BannerImage.Url));
+            Assert.That(subject.BannerImageViewModel.Description, Is.EqualTo(data.Macarons.BannerImage.Description));
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
         {
             var data = new
             {
-                MiniMandarin = new
+                Macarons = new
                 {
                     MainText = TestData.NextString(),
                     BannerImage = TestData.Create<ImageUrlModel>(),
@@ -60,8 +60,8 @@ namespace Mandarin.ViewModels.Tests.MiniMandarin
             };
 
             var pageContentModel = new PageContentModel(null, JToken.FromObject(data));
-            var subject = new MiniMandarinPageViewModel(pageContentModel);
-            Assert.That(subject.MacaronImageViewModels, Has.Count.EqualTo(data.MiniMandarin.MacaronImages.Count));
+            var subject = new MacaronsPageViewModel(pageContentModel);
+            Assert.That(subject.MacaronImageViewModels, Has.Count.EqualTo(data.Macarons.MacaronImages.Count));
         }
     }
 }
