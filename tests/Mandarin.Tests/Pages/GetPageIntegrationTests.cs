@@ -55,11 +55,9 @@ namespace Mandarin.Tests.Pages
         }
 
         [Test]
-        [TestCase("/")]
-        [TestCase("/admin")]
-        public async Task AuthenticationTest_WhenNotAuthenticated_ShouldRedirectToAboutPage(string path)
+        public async Task AuthenticationTest_WhenNotAuthenticated_ShouldRedirectToAboutPage()
         {
-            this.GivenUnauthenticatedRequestFor(path);
+            this.GivenUnauthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
             this.AssertResponseIsRedirectedTo("/about");
         }
@@ -70,14 +68,6 @@ namespace Mandarin.Tests.Pages
             this.GivenAuthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
             this.AssertResponseIsRedirectedTo("/admin");
-        }
-
-        [Test]
-        public async Task AuthenticationTest_WhenAuthenticated_ShouldShowAdminPage()
-        {
-            this.GivenAuthenticatedRequestFor("/admin");
-            var document = await this.WhenPageContentIsRequested();
-            Assert.That(document.DocumentElement.TextContent, Contains.Substring("This is the admin page."));
         }
 
         private Task GivenArtistServiceHasPreCached()

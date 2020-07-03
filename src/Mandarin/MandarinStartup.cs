@@ -1,3 +1,6 @@
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
 using Mandarin.Extensions;
 using Mandarin.Services;
@@ -49,6 +52,7 @@ namespace Mandarin
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
             services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -96,6 +100,8 @@ namespace Mandarin
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.ApplicationServices.UseBootstrapProviders().UseBootstrapProviders();
 
             app.UseEndpoints(endpoints =>
             {

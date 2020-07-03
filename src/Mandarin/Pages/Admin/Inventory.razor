@@ -5,17 +5,30 @@
 @using Mandarin.Models.Inventory
 @inject IInventoryService InventoryService;
 
-<RadzenCard>
-  <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
-              AllowSorting="true" Data="@inventory" ColumnWidth="200px">
-    <Columns>
-      <RadzenGridColumn TItem="Product" Property="ProductCode" Title="Product Code" />
-      <RadzenGridColumn TItem="Product" Property="ProductName" Title="Name" />
-      <RadzenGridColumn TItem="Product" Property="Description" Title="Description" />
-      <RadzenGridColumn TItem="Product" Property="UnitPrice" Title="Unit Price" FormatString="{0:C}" />
-    </Columns>
-  </RadzenGrid>
-</RadzenCard>
+<Card>
+  <CardHeader>
+    <CardTitle>Show Square Inventory</CardTitle>
+  </CardHeader>
+  <CardBody>
+    @if (Data == null || Data.Count == 0)
+    {
+      <Progress Size="Size.Medium">
+        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(Data == null ? Background.Primary : Background.Danger)">
+          @(Data == null ? "Fetching inventory..." : "No inventory data received.")
+        </ProgressBar>
+      </Progress>
+    }
+    else
+    {
+      <DataGrid Data="@Data" Filterable="true" ShowPager="true" PageSize="10" Striped="true" RowSelectable="@(_ => false)">
+        <DataGridColumn TItem="Product" Field="ProductCode" Caption="Product Code" Width="150px" />
+        <DataGridColumn TItem="Product" Field="ProductName" Caption="Name" Width="400px" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="Product" Field="Description" Caption="Description" TextAlignment="TextAlignment.Right" />
+        <DataGridNumericColumn TItem="Product" Field="UnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" Width="150px" TextAlignment="TextAlignment.Right" />
+      </DataGrid>
+    }
+  </CardBody>
+</Card>
 
 @code
 {
@@ -24,8 +37,8 @@
   {
     await base.OnInitializedAsync();
 
-    inventory = await InventoryService.GetInventory().ToList().ToTask();
+    Data = await InventoryService.GetInventory().Catch((Exception ex) => Observable.Empty<Product>()).ToList().ToTask();
   }
 
-  private IList<Product> inventory = new List<Product>();
+  private IList<Product> Data { get; set; }
 }
