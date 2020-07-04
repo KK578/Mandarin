@@ -8,7 +8,7 @@ using Mandarin.ViewModels.Index;
 using Mandarin.ViewModels.Index.Carousel;
 using Mandarin.ViewModels.Index.MandarinMap;
 using Mandarin.ViewModels.Index.OpeningTimes;
-using Mandarin.ViewModels.MiniMandarin;
+using Mandarin.ViewModels.Macarons;
 using Markdig;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -44,7 +44,7 @@ namespace Mandarin.ViewModels
 
             services.AddTransient<IArtistsPageViewModel, ArtistsPageViewModel>();
 
-            services.AddTransient<IMiniMandarinPageViewModel, MiniMandarinPageViewModel>();
+            services.AddTransient<IMacaronsPageViewModel, MacaronsPageViewModel>();
 
             services.AddTransient<IContactPageViewModel, ContactPageViewModel>();
 

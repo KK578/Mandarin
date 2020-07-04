@@ -94,6 +94,7 @@ namespace Mandarin
 
             app.AddLegacyRedirect("/static/logo-300.png", "/static/images/logo.png");
             app.AddLegacyRedirect("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf");
+            app.AddLegacyRedirect("/the-mini-mandarin", "/macarons");
 
             app.UseRouting();
 

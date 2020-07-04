@@ -1,22 +1,22 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mandarin.ViewModels.Components.Images;
 using Microsoft.AspNetCore.Components;
 
-namespace Mandarin.ViewModels.MiniMandarin
+namespace Mandarin.ViewModels.Macarons
 {
     /// <inheritdoc />
-    internal sealed class MiniMandarinPageViewModel : IMiniMandarinPageViewModel
+    internal sealed class MacaronsPageViewModel : IMacaronsPageViewModel
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MiniMandarinPageViewModel"/> class.
+        /// Initializes a new instance of the <see cref="MacaronsPageViewModel"/> class.
         /// </summary>
         /// <param name="pageContentModel">The public website content model.</param>
-        public MiniMandarinPageViewModel(PageContentModel pageContentModel)
+        public MacaronsPageViewModel(PageContentModel pageContentModel)
         {
-            this.TextContent = pageContentModel.GetMarkupString("MiniMandarin", "MainText");
-            this.BannerImageViewModel = new MandarinImageViewModel(pageContentModel.Get<ImageUrlModel>("MiniMandarin", "BannerImage"));
-            this.MacaronImageViewModels = pageContentModel.GetAll<ImageUrlModel>("MiniMandarin", "MacaronImages")
+            this.TextContent = pageContentModel.GetMarkupString("Macarons", "MainText");
+            this.BannerImageViewModel = new MandarinImageViewModel(pageContentModel.Get<ImageUrlModel>("Macarons", "BannerImage"));
+            this.MacaronImageViewModels = pageContentModel.GetAll<ImageUrlModel>("Macarons", "MacaronImages")
                                                           .Select(x => new MandarinImageViewModel(x))
                                                           .ToList()
                                                           .AsReadOnly();
