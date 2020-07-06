@@ -3,8 +3,6 @@
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
 @using Mandarin.ViewModels
-@using Mandarin.ViewModels.Commissions
-@using System.Reactive.Disposables
 @using Mandarin.Models.Commissions
 @using Mandarin.Models.Inventory
 @inject IInventoryService InventoryService;
@@ -138,6 +136,7 @@
 
   private void HideModal()
   {
+    modalConfirm = EventCallback.Empty;
     modalRef.Hide();
   }
 
