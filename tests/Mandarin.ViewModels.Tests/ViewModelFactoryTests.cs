@@ -15,7 +15,7 @@ namespace Mandarin.ViewModels.Tests
         public void CreateArtistRecordOfSalesViewModel_CanCreate()
         {
             var pageContentModel = new PageContentModel(null, JToken.FromObject(new object()));
-            var subject = new ViewModelFactory(Mock.Of<IEmailService>(), pageContentModel, Mock.Of<IHttpContextAccessor>(), Mock.Of<IQueryableInventoryService>());
+            var subject = new ViewModelFactory(Mock.Of<IEmailService>(), pageContentModel, Mock.Of<IHttpContextAccessor>());
             Assert.That(() => subject.CreateArtistRecordOfSalesViewModel(TestData.Create<ArtistSales>()), Throws.Nothing);
         }
     }
