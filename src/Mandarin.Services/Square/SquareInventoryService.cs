@@ -48,8 +48,7 @@ namespace Mandarin.Services.Square
         /// <inheritdoc/>
         public Task UpdateFixedCommissionAmount(FixedCommissionAmount commission)
         {
-            return this.CommitData(this.GetFixedCommissionAmounts()
-                                       .Select(x => x.ProductCode == commission.ProductCode ? commission : x));
+            return this.CommitData(this.GetFixedCommissionAmounts().Select(x => x.ProductCode == commission.ProductCode ? commission : x));
         }
 
         /// <inheritdoc/>

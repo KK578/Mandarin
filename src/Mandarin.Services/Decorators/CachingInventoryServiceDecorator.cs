@@ -35,21 +35,21 @@ namespace Mandarin.Services.Decorators
         public async Task AddFixedCommissionAmount(FixedCommissionAmount commission)
         {
             await this.inventoryService.AddFixedCommissionAmount(commission);
-            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
+            this.ClearFixedCommissionCache();
         }
 
         /// <inheritdoc/>
         public async Task UpdateFixedCommissionAmount(FixedCommissionAmount commission)
         {
             await this.inventoryService.UpdateFixedCommissionAmount(commission);
-            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
+            this.ClearFixedCommissionCache();
         }
 
         /// <inheritdoc/>
         public async Task DeleteFixedCommissionAmount(string productCode)
         {
             await this.inventoryService.DeleteFixedCommissionAmount(productCode);
-            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
+            this.ClearFixedCommissionCache();
         }
 
         /// <inheritdoc/>
@@ -131,6 +131,11 @@ namespace Mandarin.Services.Decorators
         private string CreateCacheKey([CallerMemberName] string caller = null)
         {
             return nameof(IInventoryService) + "." + caller;
+        }
+
+        private void ClearFixedCommissionCache()
+        {
+            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
         }
     }
 }
