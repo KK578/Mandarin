@@ -16,16 +16,45 @@
   </CardHeader>
   <CardBody>
     <DataGrid TItem="FixedCommissionRowModel" Data="@fixedCommissionAmountViewModels" Filterable="true" ShowPager="true" PageSize="15" Striped="true"
-              Editable="true" EditMode="DataGridEditMode.Inline"
-              RowInserted="@OnRowInserted">
-      <DataGridCommandColumn TItem="FixedCommissionRowModel" />
-      <DataGridColumn TItem="FixedCommissionRowModel" Field="ProductCode" Caption="Product Code" Width="150px" Editable="true">
+              Editable="true" EditMode="DataGridEditMode.Inline" RowSelectable="@(_ => false)"
+              RowInserted="@AddNewCommission"
+              RowUpdated="@UpdateFixedCommission"
+              RowRemoved="DeleteCommission">
+      <DataGridColumn TItem="FixedCommissionRowModel" Field="ProductCode" Caption="Product Code" Editable="true" TextAlignment="TextAlignment.Left">
         <EditTemplate>
-          <Autocomplete Data="products" TextField="@((Product item) => item.ToString())" ValueField="@((item) => item.ProductCode)" MinLength="2"
-                        @bind-SelectedValue="@(context.CellValue)" />
+          @if (fixedCommissionAmountViewModels.Any(x => !string.Equals(x.ProductCode, context.CellValue)))
+          {
+            <Autocomplete Data="products" TextField="@((Product item) => item.ToString())" ValueField="@((item) => item.ProductCode)" MinLength="2"
+                          Filter="AutocompleteFilter.Contains"
+                          @bind-SelectedValue="@(context.CellValue)" />
+          }
+          else
+          {
+            @(context.CellValue)
+          }
         </EditTemplate>
       </DataGridColumn>
-      <DataGridNumericColumn TItem="FixedCommissionRowModel" Field="Amount" Caption="Amount" DisplayFormat="{0:C}" Editable="true" />
+      <DataGridNumericColumn TItem="FixedCommissionRowModel" Field="Amount" Caption="Amount" DisplayFormat="{0:C}" Width="150px" Editable="true" TextAlignment="TextAlignment.Right"/>
+      <DataGridCommandColumn TItem="FixedCommissionRowModel" Width="125px" TextAlignment="TextAlignment.Right">
+        <DeleteCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Delete" /></Button>
+        </DeleteCommandTemplate>
+        <ClearFilterCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Clear" /></Button>
+        </ClearFilterCommandTemplate>
+        <NewCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Add" /></Button>
+        </NewCommandTemplate>
+        <EditCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Edit" /></Button>
+        </EditCommandTemplate>
+        <SaveCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Save" /></Button>
+        </SaveCommandTemplate>
+        <CancelCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.TimesCircle" /></Button>
+        </CancelCommandTemplate>
+      </DataGridCommandColumn>
     </DataGrid>
   </CardBody>
 </Card>
@@ -53,7 +82,21 @@
     products = await InventoryService.GetInventory().ToList().ToTask();
   }
 
-  void OnRowInserted(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> s)
+  private Task AddNewCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
+    var insert = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
+    return InventoryService.AddFixedCommissionAmount(insert);
+  }
+
+  private Task UpdateFixedCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
+  {
+    var update = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
+    return InventoryService.UpdateFixedCommissionAmount(update);
+  }
+
+  private Task DeleteCommission(FixedCommissionRowModel arg)
+  {
+    return InventoryService.DeleteFixedCommissionAmount(arg.ProductCode);
+    throw new NotImplementedException();
   }
 }

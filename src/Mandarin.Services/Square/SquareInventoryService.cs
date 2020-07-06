@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Configuration;
@@ -29,11 +30,32 @@ namespace Mandarin.Services.Square
         /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
         /// <param name="mandarinConfiguration">The application configuration wrapped in an <see cref="IOptions{TOptions}"/>.</param>
-        public SquareInventoryService(ILogger<SquareTransactionService> logger, ISquareClient squareClient, IOptions<MandarinConfiguration> mandarinConfiguration)
+        public SquareInventoryService(ILogger<SquareTransactionService> logger,
+                                      ISquareClient squareClient,
+                                      IOptions<MandarinConfiguration> mandarinConfiguration)
         {
             this.logger = logger;
             this.squareClient = squareClient;
             this.mandarinConfiguration = mandarinConfiguration;
+        }
+
+        /// <inheritdoc />
+        public Task AddFixedCommissionAmount(FixedCommissionAmount commission)
+        {
+            return this.CommitData(this.GetFixedCommissionAmounts().Append(commission));
+        }
+
+        /// <inheritdoc/>
+        public Task UpdateFixedCommissionAmount(FixedCommissionAmount commission)
+        {
+            return this.CommitData(this.GetFixedCommissionAmounts()
+                                       .Select(x => x.ProductCode == commission.ProductCode ? commission : x));
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteFixedCommissionAmount(string productCode)
+        {
+            return this.CommitData(this.GetFixedCommissionAmounts().Where(x => x.ProductCode != productCode));
         }
 
         /// <inheritdoc />
@@ -102,6 +124,16 @@ namespace Mandarin.Services.Square
                 var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
                 yield return new Product(squareId, productCode, variationName, description, unitPrice);
             }
+        }
+
+        private async Task CommitData(IObservable<FixedCommissionAmount> dataObservable)
+        {
+            var data = await dataObservable.ToList().ToTask();
+            var fs = File.Create(this.mandarinConfiguration.Value.FixedCommissionAmountFilePath);
+            await using var writer = new StreamWriter(fs);
+            using var jsonWriter = new JsonTextWriter(writer);
+
+            JsonSerializer.CreateDefault().Serialize(jsonWriter, data);
         }
     }
 }

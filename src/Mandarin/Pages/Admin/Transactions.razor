@@ -36,7 +36,7 @@
       <CardTitle>Found @(AllTransactions.Count) transactions</CardTitle>
     </CardHeader>
     <CardBody>
-      <DataGrid Data="@AllTransactions" @bind-SelectedRow="@SelectedTransaction" Striped="true">
+      <DataGrid Data="@AllTransactions" @bind-SelectedRow="@SelectedTransaction" ShowPager="true" Striped="true">
         <DataGridColumn TItem="Transaction" Field="Timestamp" Caption="Transaction Time" DisplayFormat="{0:F}" />
         <DataGridNumericColumn TItem="Transaction" Field="TotalAmount" Caption="Total Amount" DisplayFormat="{0:C}" />
       </DataGrid>
@@ -51,7 +51,7 @@
       <CardTitle>Items sold in sale at @(SelectedTransaction.Timestamp)</CardTitle>
     </CardHeader>
     <CardBody>
-      <DataGrid Data="@SelectedTransaction.Subtransactions" Striped="true">
+      <DataGrid Data="@SelectedTransaction.Subtransactions" ShowPager="true" Striped="true">
         <DataGridColumn TItem="Subtransaction" Field="Product.ProductCode" Caption="Product Code" TextAlignment="TextAlignment.Left" />
         <DataGridColumn TItem="Subtransaction" Field="Product.ProductName" Caption="Name" TextAlignment="TextAlignment.Left" />
         <DataGridColumn TItem="Subtransaction" Field="TransactionUnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" TextAlignment="TextAlignment.Right" />
