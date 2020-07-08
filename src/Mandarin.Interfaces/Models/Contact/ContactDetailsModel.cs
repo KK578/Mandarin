@@ -37,6 +37,7 @@ namespace Mandarin.Models.Contact
         /// <summary>
         /// Gets or sets the submitting user's contact message.
         /// </summary>
+        [MinLength(10, ErrorMessage = "The Comment field must be at least 10 characters.")]
         [MaxLength(2500, ErrorMessage = "The Comment field must not be longer than 2500 characters.")]
         public string Comment { get; set; }
 

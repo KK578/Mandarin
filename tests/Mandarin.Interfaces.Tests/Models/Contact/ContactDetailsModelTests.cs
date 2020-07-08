@@ -33,6 +33,16 @@ namespace Mandarin.Interfaces.Tests.Models.Contact
         }
 
         [Test]
+        public void OnValidate_CommentMustBeAtLeast10Characters()
+        {
+            var model = ContactDetailsModelTests.CreateValidModel();
+            model.Comment = "Hello";
+            this.AssertErrorMessages(model, "The Comment field must be at least 10 characters.");
+            model.Comment = "Hello World";
+            this.AssertNoErrors(model);
+        }
+
+        [Test]
         public void OnValidate_CommentCannotBeLongerThan2500Characters()
         {
             var model = ContactDetailsModelTests.CreateValidModel();
