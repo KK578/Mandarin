@@ -45,10 +45,10 @@ namespace Mandarin.Services.Decorators
             {
                 try
                 {
-                    await CachingDecoratorBase.Semaphore.WaitAsync();
                     var result = (await addItemFactory()).NullToEmpty().ToList().AsReadOnly();
                     this.logger.LogInformation("Adding Cache Entry '{Key}' with {Count} Items", key, result.Count);
 
+                    await CachingDecoratorBase.Semaphore.WaitAsync();
                     var existingKeys = await this.appCache.GetAsync<List<string>>("Cache.Keys");
                     var keys = existingKeys.NullToEmpty().Append(key).Distinct().ToList();
                     this.appCache.Add("Cache.Keys", keys, DateTimeOffset.MaxValue);
