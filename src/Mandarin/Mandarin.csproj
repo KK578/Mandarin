@@ -15,7 +15,7 @@
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.1" />
     <PackageReference Include="Blazorise.Components" Version="0.9.1" />
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.1" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.1" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.1.1" />
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.5.1" />
     <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.1" />
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.1" />
