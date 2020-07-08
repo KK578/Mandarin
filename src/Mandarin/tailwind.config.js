@@ -11,7 +11,8 @@
         },
         fontFamily: {
             title: ["Century Schoolbook", "serif"],
-            body: ["Calibri", "sans-serif"]
+            body: ["Calibri", "sans-serif"],
+            mono: ["Consolas", "Liberation Mono", "monospace"]
         }
     }
 }

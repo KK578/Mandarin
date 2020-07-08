@@ -9,6 +9,7 @@ using LazyCache.Providers;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Decorators;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -54,7 +55,7 @@ namespace Mandarin.Services.Tests.Decorators
             this.GivenServiceReturnsData();
             this.GivenRealMemoryCache();
 
-            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache);
+            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache, NullLogger<CachingTransactionServiceDecorator>.Instance);
             var startDate = CachingTransactionServiceDecoratorTests.StartDate;
             var midDate = CachingTransactionServiceDecoratorTests.StartDate.AddDays(1);
             var endDate = CachingTransactionServiceDecoratorTests.EndDate;
@@ -90,7 +91,7 @@ namespace Mandarin.Services.Tests.Decorators
 
         private async Task WhenServiceIsCalledMultipleTimes(int times)
         {
-            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache);
+            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache, NullLogger<CachingTransactionServiceDecorator>.Instance);
             for (var i = 0; i < times; i++)
             {
                 await subject.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate).ToList().ToTask();
