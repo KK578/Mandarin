@@ -66,5 +66,14 @@ namespace Mandarin.Services.Decorators
                 }
             }
         }
+
+        /// <summary>
+        /// Removes a cached value from the application cache.
+        /// </summary>
+        /// <param name="key">The key to identify the value in the cache.</param>
+        protected void Remove(string key)
+        {
+            this.appCache.Remove(key);
+        }
     }
 }

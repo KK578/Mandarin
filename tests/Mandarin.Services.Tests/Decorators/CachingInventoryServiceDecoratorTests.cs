@@ -25,7 +25,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = Mock.Of<IInventoryService>(x => x.AddFixedCommissionAmount(It.IsAny<FixedCommissionAmount>()) == Task.CompletedTask);
             var appCache = this.GivenRealMemoryCacheContainsData();
-            var subject = new CachingInventoryServiceDecorator(service, appCache);
+            var subject = new CachingInventoryServiceDecorator(service, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await subject.AddFixedCommissionAmount(TestData.Create<FixedCommissionAmount>());
             Assert.That(appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts"), Is.Null);
         }
@@ -35,7 +35,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = Mock.Of<IInventoryService>(x => x.UpdateFixedCommissionAmount(It.IsAny<FixedCommissionAmount>()) == Task.CompletedTask);
             var appCache = this.GivenRealMemoryCacheContainsData();
-            var subject = new CachingInventoryServiceDecorator(service, appCache);
+            var subject = new CachingInventoryServiceDecorator(service, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await subject.UpdateFixedCommissionAmount(TestData.Create<FixedCommissionAmount>());
             Assert.That(appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts"), Is.Null);
         }
@@ -45,7 +45,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = Mock.Of<IInventoryService>(x => x.DeleteFixedCommissionAmount(It.IsAny<string>()) == Task.CompletedTask);
             var appCache = this.GivenRealMemoryCacheContainsData();
-            var subject = new CachingInventoryServiceDecorator(service, appCache);
+            var subject = new CachingInventoryServiceDecorator(service, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await subject.DeleteFixedCommissionAmount(It.IsAny<string>());
             Assert.That(appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts"), Is.Null);
         }

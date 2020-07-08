@@ -110,7 +110,7 @@ namespace Mandarin.Services.Decorators
 
         private void ClearFixedCommissionCache()
         {
-            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
+            this.Remove(CachingInventoryServiceDecorator.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
         }
     }
 }
