@@ -1,31 +1,35 @@
 ﻿@using Mandarin.ViewModels.Artists
 
-<div class="text-center mx-auto">
-  <img src="@ViewModel.ImageUrl" alt="@ViewModel.FullDisplayName" />
-  <p class="text-2xl mt-2 mb-0">@ViewModel.FullDisplayName</p>
-  @if (@ViewModel.WebsiteUrl != null)
-  {
-    <a class="hover:text-gold text-grey-medium transition transition-colors duration-200 ease-in-out" href="@ViewModel.WebsiteUrl" target="_blank">@ViewModel.WebsiteUrl.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped)</a>
-  }
-  <div class="content-center flex justify-center mt-2 mx-auto">
-    @if (@ViewModel.TwitterUrl != null)
+<div class="col-span-3 sm:col-span-5 @(IsVisible ? "h-auto": "hidden")">
+  <div class="">
+    <hr class="my-5"/>
+    <img src="@ViewModel.ImageUrl" alt="@ViewModel.FullDisplayName" />
+    <p class="text-2xl mt-2 mb-0">@ViewModel.FullDisplayName</p>
+    @if (@ViewModel.WebsiteUrl != null)
     {
-      <TwitterIcon Href="@ViewModel.TwitterUrl" />
+      <a class="hover:text-gold text-grey-medium transition transition-colors duration-200 ease-in-out" href="@ViewModel.WebsiteUrl" target="_blank">@ViewModel.WebsiteUrl.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped)</a>
     }
-    @if (@ViewModel.InstagramUrl != null)
-    {
-      <InstagramIcon Href="@ViewModel.InstagramUrl" />
-    }
-    @if (@ViewModel.FacebookUrl != null)
-    {
-      <FacebookIcon Href="@ViewModel.FacebookUrl" />
-    }
-    @if (@ViewModel.TumblrUrl != null)
-    {
-      <TumblrIcon Href="@ViewModel.TumblrUrl" />
-    }
+    <div class="content-center flex justify-center mt-2 mx-auto">
+      @if (@ViewModel.TwitterUrl != null)
+      {
+        <TwitterIcon Href="@ViewModel.TwitterUrl" />
+      }
+      @if (@ViewModel.InstagramUrl != null)
+      {
+        <InstagramIcon Href="@ViewModel.InstagramUrl" />
+      }
+      @if (@ViewModel.FacebookUrl != null)
+      {
+        <FacebookIcon Href="@ViewModel.FacebookUrl" />
+      }
+      @if (@ViewModel.TumblrUrl != null)
+      {
+        <TumblrIcon Href="@ViewModel.TumblrUrl" />
+      }
+    </div>
+    <p>@ViewModel.Description</p>
+    <hr class="my-5" />
   </div>
-  <p>@ViewModel.Description</p>
 </div>
 
 @code
@@ -35,4 +39,10 @@
   /// </summary>
   [Parameter]
   public IArtistViewModel ViewModel { get; set; }
+
+  /// <summary>
+  /// Gets or sets a value that determines whether this component should render itself.
+  /// </summary>
+  [Parameter]
+  public bool IsVisible { get; set; }
 }

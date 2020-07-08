@@ -8,23 +8,28 @@
 }
 else
 {
-  @for (var i = 0; i < @ViewModel.ViewModels.Count; i++)
-  {
-    if (i != 0)
+  <div class="grid grid-flow-row-dense grid-cols-3 sm:grid-cols-5 gap-4">
+    @foreach (var viewModel in @ViewModel.ViewModels)
     {
-      <hr class="my-8" />
+      <MandarinArtistThumbnail ViewModel="@viewModel" Clicked="@(() => OnSelected(viewModel))" />
+      <MandarinArtist ViewModel="viewModel" IsVisible="@(SelectedViewModel == viewModel)" />
     }
-
-    <MandarinArtist ViewModel="@ViewModel.ViewModels[i]" />
-  }
+  </div>
 }
 
 @code {
+
+  private IArtistViewModel SelectedViewModel { get; set; }
 
   /// <inheritdoc />
   protected override void OnInitialized()
   {
     ViewModel.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
+  }
+
+  private void OnSelected(IArtistViewModel viewModel)
+  {
+    this.SelectedViewModel = this.SelectedViewModel == viewModel ? null : viewModel;
   }
 
 }
