@@ -10,6 +10,7 @@ using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Services.Decorators;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -54,7 +55,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = this.GivenServiceThrowsException();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetFixedCommissionAmounts());
             service.Verify(x => x.GetFixedCommissionAmounts(), Times.Exactly(5));
         }
@@ -64,7 +65,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = this.GivenServiceReturnsData();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetFixedCommissionAmounts());
             service.Verify(x => x.GetFixedCommissionAmounts(), Times.Once());
         }
@@ -74,7 +75,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = this.GivenServiceThrowsException();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetInventory());
             service.Verify(x => x.GetInventory(), Times.Exactly(5));
         }
@@ -84,7 +85,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var service = this.GivenServiceReturnsData();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingInventoryServiceDecorator(service.Object, appCache);
+            var subject = new CachingInventoryServiceDecorator(service.Object, appCache, NullLogger<CachingInventoryServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetInventory());
             service.Verify(x => x.GetInventory(), Times.Once());
         }
