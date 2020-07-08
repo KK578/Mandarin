@@ -7,6 +7,7 @@ using LazyCache.Providers;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Decorators;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var artistService = this.GivenServiceThrowsException();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache);
+            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache, NullLogger<CachingArtistServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetArtistDetailsAsync());
             artistService.Verify(x => x.GetArtistDetailsAsync(), Times.Exactly(5));
         }
@@ -31,7 +32,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var artistService = this.GivenServiceReturnsData();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache);
+            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache, NullLogger<CachingArtistServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetArtistDetailsAsync());
             artistService.Verify(x => x.GetArtistDetailsAsync(), Times.Once());
         }
@@ -41,7 +42,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var artistService = this.GivenServiceThrowsException();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache);
+            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache, NullLogger<CachingArtistServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetArtistDetailsForCommissionAsync());
             artistService.Verify(x => x.GetArtistDetailsForCommissionAsync(), Times.Exactly(5));
         }
@@ -51,7 +52,7 @@ namespace Mandarin.Services.Tests.Decorators
         {
             var artistService = this.GivenServiceReturnsData();
             var appCache = this.GivenRealMemoryCache();
-            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache);
+            var subject = new CachingArtistServiceDecorator(artistService.Object, appCache, NullLogger<CachingArtistServiceDecorator>.Instance);
             await this.WhenServiceIsCalledMultipleTimes(5, () => subject.GetArtistDetailsForCommissionAsync());
             artistService.Verify(x => x.GetArtistDetailsForCommissionAsync(), Times.Once());
         }

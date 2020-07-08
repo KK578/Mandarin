@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
@@ -8,27 +7,27 @@ using System.Threading.Tasks;
 using LazyCache;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Services.Decorators
 {
     /// <summary>
     /// Decorated implementation of <see cref="IInventoryService"/> that caches results to speed up subsequent requests.
     /// </summary>
-    internal sealed class CachingInventoryServiceDecorator : IQueryableInventoryService
+    internal sealed class CachingInventoryServiceDecorator : CachingDecoratorBase, IQueryableInventoryService
     {
         private readonly IInventoryService inventoryService;
-        private readonly IAppCache appCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CachingInventoryServiceDecorator"/> class.
         /// </summary>
         /// <param name="inventoryService">The inventory service to be decorated.</param>
         /// <param name="appCache">The application memory cache.</param>
-        public CachingInventoryServiceDecorator(IInventoryService inventoryService, IAppCache appCache)
+        /// <param name="logger">The application logger.</param>
+        public CachingInventoryServiceDecorator(IInventoryService inventoryService, IAppCache appCache, ILogger<CachingInventoryServiceDecorator> logger)
+            : base(appCache, logger)
         {
             this.inventoryService = inventoryService;
-            this.appCache = appCache;
         }
 
         /// <inheritdoc/>
@@ -55,23 +54,11 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
         {
-            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
-                             .SelectMany(x => x);
-
-            async Task<IReadOnlyList<FixedCommissionAmount>> CreateEntry(ICacheEntry e)
-            {
-                try
-                {
-                    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                    var result = await this.inventoryService.GetFixedCommissionAmounts().ToList().ToTask();
-                    return result.ToList().AsReadOnly();
-                }
-                catch (Exception)
-                {
-                    e.AbsoluteExpiration = DateTimeOffset.MinValue;
-                    return new List<FixedCommissionAmount>().AsReadOnly();
-                }
-            }
+            var key = CachingInventoryServiceDecorator.CreateCacheKey();
+            return this.GetOrAddAsync(key, () => this.inventoryService.GetFixedCommissionAmounts().ToList().ToTask<IEnumerable<FixedCommissionAmount>>())
+                       .ToObservable()
+                       .Catch((Exception ex) => Observable.Empty<IEnumerable<FixedCommissionAmount>>())
+                       .SelectMany(x => x);
         }
 
         /// <inheritdoc/>
@@ -83,23 +70,11 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
-            return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
-                             .SelectMany(x => x);
-
-            async Task<IReadOnlyList<Product>> CreateEntry(ICacheEntry e)
-            {
-                try
-                {
-                    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                    var result = await this.inventoryService.GetInventory().ToList().ToTask();
-                    return result.ToList().AsReadOnly();
-                }
-                catch (Exception)
-                {
-                    e.AbsoluteExpiration = DateTimeOffset.MinValue;
-                    return new List<Product>().AsReadOnly();
-                }
-            }
+            var key = CachingInventoryServiceDecorator.CreateCacheKey();
+            return this.GetOrAddAsync(key, () => this.inventoryService.GetInventory().ToList().ToTask<IEnumerable<Product>>())
+                       .ToObservable()
+                       .Catch((Exception ex) => Observable.Empty<IEnumerable<Product>>())
+                       .SelectMany(x => x);
         }
 
         /// <inheritdoc/>
@@ -128,14 +103,14 @@ namespace Mandarin.Services.Decorators
             }
         }
 
-        private string CreateCacheKey([CallerMemberName] string caller = null)
+        private static string CreateCacheKey([CallerMemberName] string caller = null)
         {
             return nameof(IInventoryService) + "." + caller;
         }
 
         private void ClearFixedCommissionCache()
         {
-            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
+            this.Remove(CachingInventoryServiceDecorator.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
         }
     }
 }
