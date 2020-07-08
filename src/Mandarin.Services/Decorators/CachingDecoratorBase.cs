@@ -14,9 +14,10 @@ namespace Mandarin.Services.Decorators
     /// </summary>
     internal abstract class CachingDecoratorBase
     {
+        private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+
         private readonly IAppCache appCache;
         private readonly ILogger<CachingDecoratorBase> logger;
-        private readonly SemaphoreSlim semaphore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CachingDecoratorBase"/> class.
@@ -27,7 +28,6 @@ namespace Mandarin.Services.Decorators
         {
             this.appCache = appCache;
             this.logger = logger;
-            this.semaphore = new SemaphoreSlim(1);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Mandarin.Services.Decorators
             {
                 try
                 {
-                    await this.semaphore.WaitAsync();
+                    await CachingDecoratorBase.Semaphore.WaitAsync();
                     var result = (await addItemFactory()).NullToEmpty().ToList().AsReadOnly();
                     this.logger.LogInformation("Adding Cache Entry '{Key}' with {Count} Items", key, result.Count);
 
@@ -62,7 +62,7 @@ namespace Mandarin.Services.Decorators
                 }
                 finally
                 {
-                    this.semaphore.Release();
+                    CachingDecoratorBase.Semaphore.Release();
                 }
             }
         }
