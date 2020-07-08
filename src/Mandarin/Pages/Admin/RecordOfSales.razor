@@ -88,7 +88,7 @@
           <Validation>
             <Field>
               <FieldLabel>Email Address:</FieldLabel>
-              <TextEdit Placeholder="@SelectedCommission.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Value="@RecordOfSalesModel.EmailAddress" />
+              <TextEdit Placeholder="@SelectedCommission.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.EmailAddress" />
             </Field>
           </Validation>
 
