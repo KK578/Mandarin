@@ -20,6 +20,36 @@ namespace Mandarin.Services.Tests.Decorators
     public class CachingInventoryServiceDecoratorTests
     {
         [Test]
+        public async Task AddFixedCommissionAmount_GivenServiceCompletes_ThenMemoryCacheIsCleared()
+        {
+            var service = Mock.Of<IInventoryService>(x => x.AddFixedCommissionAmount(It.IsAny<FixedCommissionAmount>()) == Task.CompletedTask);
+            var appCache = this.GivenRealMemoryCacheContainsData();
+            var subject = new CachingInventoryServiceDecorator(service, appCache);
+            await subject.AddFixedCommissionAmount(TestData.Create<FixedCommissionAmount>());
+            Assert.That(appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts"), Is.Null);
+        }
+
+        [Test]
+        public async Task UpdateFixedCommissionAmount_GivenServiceCompletes_ThenMemoryCacheIsCleared()
+        {
+            var service = Mock.Of<IInventoryService>(x => x.UpdateFixedCommissionAmount(It.IsAny<FixedCommissionAmount>()) == Task.CompletedTask);
+            var appCache = this.GivenRealMemoryCacheContainsData();
+            var subject = new CachingInventoryServiceDecorator(service, appCache);
+            await subject.UpdateFixedCommissionAmount(TestData.Create<FixedCommissionAmount>());
+            Assert.That(appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts"), Is.Null);
+        }
+
+        [Test]
+        public async Task DeleteFixedCommissionAmount_GivenServiceCompletes_ThenMemoryCacheIsCleared()
+        {
+            var service = Mock.Of<IInventoryService>(x => x.DeleteFixedCommissionAmount(It.IsAny<string>()) == Task.CompletedTask);
+            var appCache = this.GivenRealMemoryCacheContainsData();
+            var subject = new CachingInventoryServiceDecorator(service, appCache);
+            await subject.DeleteFixedCommissionAmount(It.IsAny<string>());
+            Assert.That(appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts"), Is.Null);
+        }
+
+        [Test]
         public async Task GetFixedCommissionAmounts_GivenMultipleCalls_WhenServiceThrowsException_ThenServiceIsCalledEachTime()
         {
             var service = this.GivenServiceThrowsException();
@@ -80,6 +110,13 @@ namespace Mandarin.Services.Tests.Decorators
         private IAppCache GivenRealMemoryCache()
         {
             return new CachingService(new MemoryCacheProvider(new MemoryCache(Options.Create(new MemoryCacheOptions()))));
+        }
+
+        private IAppCache GivenRealMemoryCacheContainsData()
+        {
+            var appCache = this.GivenRealMemoryCache();
+            appCache.Add("IInventoryService.GetFixedCommissionAmounts", TestData.Create<List<FixedCommissionAmount>>());
+            return appCache;
         }
 
         private async Task WhenServiceIsCalledMultipleTimes<T>(int times, Func<IObservable<T>> action)

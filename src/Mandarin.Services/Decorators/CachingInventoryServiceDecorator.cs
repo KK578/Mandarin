@@ -32,6 +32,27 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
+        public async Task AddFixedCommissionAmount(FixedCommissionAmount commission)
+        {
+            await this.inventoryService.AddFixedCommissionAmount(commission);
+            this.ClearFixedCommissionCache();
+        }
+
+        /// <inheritdoc/>
+        public async Task UpdateFixedCommissionAmount(FixedCommissionAmount commission)
+        {
+            await this.inventoryService.UpdateFixedCommissionAmount(commission);
+            this.ClearFixedCommissionCache();
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteFixedCommissionAmount(string productCode)
+        {
+            await this.inventoryService.DeleteFixedCommissionAmount(productCode);
+            this.ClearFixedCommissionCache();
+        }
+
+        /// <inheritdoc/>
         public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
         {
             return Observable.FromAsync(() => this.appCache.GetOrAddAsync(this.CreateCacheKey(), CreateEntry))
@@ -82,9 +103,15 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public Task<Product> GetProductByIdAsync(string squareId)
+        public Task<Product> GetProductBySquareIdAsync(string squareId)
         {
             return this.GetInventory().FirstOrDefaultAsync(x => x.SquareId == squareId).ToTask();
+        }
+
+        /// <inheritdoc/>
+        public Task<Product> GetProductByProductCodeAsync(string productCode)
+        {
+            return this.GetInventory().FirstOrDefaultAsync(x => x.ProductCode == productCode).ToTask();
         }
 
         /// <inheritdoc/>
@@ -104,6 +131,11 @@ namespace Mandarin.Services.Decorators
         private string CreateCacheKey([CallerMemberName] string caller = null)
         {
             return nameof(IInventoryService) + "." + caller;
+        }
+
+        private void ClearFixedCommissionCache()
+        {
+            this.appCache.Remove(this.CreateCacheKey(nameof(this.GetFixedCommissionAmounts)));
         }
     }
 }

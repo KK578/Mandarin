@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Mandarin.Converters;
+using Newtonsoft.Json;
 
 namespace Mandarin.Models.Commissions
 {
@@ -27,6 +28,7 @@ namespace Mandarin.Models.Commissions
         /// <summary>
         /// Gets the product's fixed commission amount.
         /// </summary>
+        [JsonProperty("amount")]
         public decimal Amount { get; }
     }
 }
