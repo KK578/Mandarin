@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -28,15 +29,29 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
+        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
         {
-            return this.GetOrAddAsync(this.CreateCacheKey(), async () => (await this.artistService.GetArtistDetailsAsync()).AsEnumerable());
+            try
+            {
+                return await this.GetOrAddAsync(this.CreateCacheKey(), async () => (await this.artistService.GetArtistDetailsAsync()).AsEnumerable());
+            }
+            catch (Exception)
+            {
+                return new List<ArtistDetailsModel>().AsReadOnly();
+            }
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync()
+        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync()
         {
-            return this.GetOrAddAsync(this.CreateCacheKey(), async () => (await this.artistService.GetArtistDetailsForCommissionAsync()).AsEnumerable());
+            try
+            {
+                return await this.GetOrAddAsync(this.CreateCacheKey(), async () => (await this.artistService.GetArtistDetailsForCommissionAsync()).AsEnumerable());
+            }
+            catch (Exception)
+            {
+                return new List<ArtistDetailsModel>().AsReadOnly();
+            }
         }
 
         private string CreateCacheKey([CallerMemberName] string caller = null)

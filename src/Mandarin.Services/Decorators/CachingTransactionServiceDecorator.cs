@@ -31,9 +31,10 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<Transaction> GetAllTransactions(DateTime start, DateTime end)
         {
-            return this.GetOrAddAsync(CachingTransactionServiceDecorator.CreateCacheKey(start, end),
-                                      () => this.transactionService.GetAllTransactions(start, end).ToList().ToTask<IEnumerable<Transaction>>())
+            var key = CachingTransactionServiceDecorator.CreateCacheKey(start, end);
+            return this.GetOrAddAsync(key, () => this.transactionService.GetAllTransactions(start, end).ToList().ToTask<IEnumerable<Transaction>>())
                        .ToObservable()
+                       .Catch((Exception ex) => Observable.Empty<IEnumerable<Transaction>>())
                        .SelectMany(x => x);
         }
 

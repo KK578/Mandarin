@@ -58,7 +58,7 @@ namespace Mandarin.Services.Decorators
                 catch (Exception ex)
                 {
                     this.logger.LogError(ex, "Adding Cache Entry '{Key}' failed.", key);
-                    return Enumerable.Empty<T>().NullToEmpty().ToList().AsReadOnly();
+                    throw;
                 }
                 finally
                 {

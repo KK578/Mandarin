@@ -54,8 +54,10 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
         {
-            return this.GetOrAddAsync(this.CreateCacheKey(), () => this.inventoryService.GetFixedCommissionAmounts().ToList().ToTask<IEnumerable<FixedCommissionAmount>>())
+            var key = CachingInventoryServiceDecorator.CreateCacheKey();
+            return this.GetOrAddAsync(key, () => this.inventoryService.GetFixedCommissionAmounts().ToList().ToTask<IEnumerable<FixedCommissionAmount>>())
                        .ToObservable()
+                       .Catch((Exception ex) => Observable.Empty<IEnumerable<FixedCommissionAmount>>())
                        .SelectMany(x => x);
         }
 
@@ -68,8 +70,10 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
-            return this.GetOrAddAsync(this.CreateCacheKey(), () => this.inventoryService.GetInventory().ToList().ToTask<IEnumerable<Product>>())
+            var key = CachingInventoryServiceDecorator.CreateCacheKey();
+            return this.GetOrAddAsync(key, () => this.inventoryService.GetInventory().ToList().ToTask<IEnumerable<Product>>())
                        .ToObservable()
+                       .Catch((Exception ex) => Observable.Empty<IEnumerable<Product>>())
                        .SelectMany(x => x);
         }
 
@@ -99,7 +103,7 @@ namespace Mandarin.Services.Decorators
             }
         }
 
-        private string CreateCacheKey([CallerMemberName] string caller = null)
+        private static string CreateCacheKey([CallerMemberName] string caller = null)
         {
             return nameof(IInventoryService) + "." + caller;
         }
