@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Objects;
+using Mandarin.Services.Square;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 
@@ -42,11 +44,14 @@ namespace Mandarin.Services.Decorators
         /// <inheritdoc/>
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
         {
-            this.logger.LogInformation("Sending Email: From={From}, Subject={Subject}, Content={Content}, Attachments={Attachments}",
-                                       email.From.Email,
-                                       email.Subject,
-                                       email.PlainTextContent,
-                                       email.Attachments?.Count ?? 0);
+            try
+            {
+                this.WriteLog(email);
+            }
+            catch
+            {
+                // Ignore errors while trying to log.
+            }
 
             try
             {
@@ -54,10 +59,30 @@ namespace Mandarin.Services.Decorators
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex,
-                                     "Exception whilst attempting to send email on behalf of {From}.",
-                                     email.From.Email);
+                this.logger.LogError(ex, "Exception whilst attempting to send email on behalf of {From}.", email.From.Email);
                 throw;
+            }
+        }
+
+        private void WriteLog(SendGridMessage email)
+        {
+            if (string.IsNullOrEmpty(email.Subject))
+            {
+                foreach (var personalization in email.Personalizations.NullToEmpty())
+                {
+                    this.logger.LogInformation("Sending Record of Sales Email: From={From}, To={To}, Data={Data}",
+                                               email.From.Email,
+                                               string.Join(" & ", personalization.Tos.NullToEmpty().Select(x => x.Email)),
+                                               personalization.TemplateData);
+                }
+            }
+            else
+            {
+                this.logger.LogInformation("Sending Contact Form Email: From={From}, Subject={Subject}, Content={Content}, Attachments={Attachments}",
+                                           email.From.Email,
+                                           email.Subject,
+                                           email.PlainTextContent,
+                                           email.Attachments?.Count ?? 0);
             }
         }
     }
