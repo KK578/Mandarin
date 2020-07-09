@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 
 namespace Mandarin.Models.Artists
@@ -43,7 +45,7 @@ namespace Mandarin.Models.Artists
         /// Gets or sets the reference to the stockist's current active status.
         /// </summary>
         [Column("stockist_status")]
-        public string StockistStatus { get; set; }
+        public string StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets a description about the stockist.
@@ -55,20 +57,20 @@ namespace Mandarin.Models.Artists
         /// <summary>
         /// Gets or sets the current status of stockist.
         /// </summary>
-        [ForeignKey("StockistStatus")]
+        [ForeignKey(nameof(Stockist.StatusCode))]
         [MaxLength(25)]
-        public Status CurrentStatus { get; set; }
+        public Status Status { get; set; }
 
         /// <summary>
         /// Gets or sets the stockist's personal details.
         /// </summary>
-        [InverseProperty(nameof(Artists.StockistDetail.Stockist))]
-        public StockistDetail StockistDetail { get; set; }
+        [InverseProperty(nameof(StockistDetail.Stockist))]
+        public StockistDetail Details { get; set; }
 
-        // /// <summary>
-        // /// Gets or sets the history of all commissions related to this stockist.
-        // /// </summary>
-        // [InverseProperty("StockistId")]
-        // public ICollection<Commission> Commission { get; set; }
+        /// <summary>
+        /// Gets or sets the history of all commissions related to this stockist.
+        /// </summary>
+        [InverseProperty(nameof(Commission.Stockist))]
+        public ICollection<Commission> Commissions { get; set; }
     }
 }

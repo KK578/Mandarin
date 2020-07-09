@@ -115,10 +115,10 @@ namespace Mandarin.Entities
             {
                 entity.HasIndex(e => e.StockistCode).HasName("stockist_stockist_code_key").IsUnique();
 
-                entity.HasOne(d => d.CurrentStatus)
+                entity.HasOne(d => d.Status)
                 .WithMany(p => p.Stockists)
                 .HasPrincipalKey(p => p.StatusCode)
-                .HasForeignKey(d => d.StockistStatus)
+                .HasForeignKey(d => d.StatusCode)
                 .HasConstraintName("stockist_stockist_status_fkey");
             });
 
