@@ -29,7 +29,8 @@ namespace Mandarin.Models.Commissions
         /// Gets or sets the commission rate as an integer percentage.
         /// </summary>
         [Column("rate")]
-        public int? Rate { get; set; }
+        [Range(0, 100)]
+        public int Rate { get; set; }
 
         /// <summary>
         /// Gets or sets a set of commission periods that use this commission rate.

@@ -1,4 +1,5 @@
 ﻿using Mandarin.Models.Artists;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,6 +43,16 @@ namespace Mandarin.Entities
         /// Gets or sets the Database Set related to stockist's personal details.
         /// </summary>
         public virtual DbSet<StockistDetail> StockistDetail { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Database Set related to stockist commission periods.
+        /// </summary>
+        public virtual DbSet<Commission> Commission { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Database Set related to commission rates.
+        /// </summary>
+        public virtual DbSet<CommissionRateGroup> CommissionRateGroup { get; set; }
 
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)

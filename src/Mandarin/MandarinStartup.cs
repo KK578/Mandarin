@@ -52,8 +52,7 @@ namespace Mandarin
         /// <param name="services">Service collection to be modified.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkNpgsql()
-                    .AddDbContext<MandarinDbContext>(o => o.UseNpgsql(this.configuration.GetConnectionString("MandarinConnection")));
+            services.AddDbContext<MandarinDbContext>(o => o.UseNpgsql(this.configuration.GetConnectionString("MandarinConnection")));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();

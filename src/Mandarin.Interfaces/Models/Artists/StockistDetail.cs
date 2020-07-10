@@ -42,6 +42,7 @@ namespace Mandarin.Models.Artists
         /// Gets or sets the stockist's personal website url.
         /// </summary>
         [Column("website_url")]
+        [Url]
         [MaxLength(150)]
         public string WebsiteUrl { get; set; }
 
@@ -63,6 +64,7 @@ namespace Mandarin.Models.Artists
         /// Gets or sets the stockist's email address.
         /// </summary>
         [Column("email_address")]
+        [EmailAddress]
         [MaxLength(100)]
         public string EmailAddress { get; set; }
 
