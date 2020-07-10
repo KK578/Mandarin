@@ -247,11 +247,7 @@ else
     {
       this.isNew = false;
       this.isEditing = false;
-      this.Stockist = await MandarinDbContext.Stockist
-                                             .Include(x => x.Details)
-                                             .Include(x => x.Commissions)
-                                             .ThenInclude(x => x.RateGroup)
-                                             .FirstOrDefaultAsync(x => x.StockistCode == StockistCode);
+      this.Stockist = await ArtistService.GetArtistByCodeAsync(StockistCode);
     }
   }
 
@@ -269,21 +265,7 @@ else
       return;
     }
 
-    var entry = this.MandarinDbContext.Entry(this.Stockist);
-    switch (entry.State)
-    {
-      case EntityState.Added:
-      case EntityState.Detached:
-        await this.MandarinDbContext.Stockist.AddAsync(this.Stockist);
-        break;
-
-      case EntityState.Modified:
-        this.MandarinDbContext.Stockist.Update(this.Stockist);
-        break;
-    }
-
-    await this.MandarinDbContext.SaveChangesAsync();
-
+    await ArtistService.SaveArtistAsync(this.Stockist);
     validations.ClearAll();
     isNew = false;
     isEditing = false;
@@ -295,16 +277,12 @@ else
 
     if (isNew)
     {
-      this.Stockist = null;
+      OnCloseClicked();
     }
     else
     {
-      var entry = this.MandarinDbContext.Entry(this.Stockist);
-      await entry.ReloadAsync();
+      this.Stockist = await ArtistService.GetArtistByCodeAsync(this.StockistCode);
     }
-
-    validations.ClearAll();
-    StateHasChanged();
   }
 
   private void OnCloseClicked()

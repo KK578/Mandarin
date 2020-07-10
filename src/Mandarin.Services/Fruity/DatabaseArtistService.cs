@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Mandarin.Configuration;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Entity;
@@ -51,6 +52,35 @@ namespace Mandarin.Services.Fruity
                           .ToList()
                           .Select(x => x.OrderBy(y => y.StockistCode).ToList().AsReadOnly())
                           .SelectMany(x => x);
+        }
+
+        /// <inheritdoc/>
+        public async Task SaveArtistAsync(Stockist stockist)
+        {
+            var entry = this.mandarinDbContext.Entry(stockist);
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                case EntityState.Detached:
+                    await this.mandarinDbContext.Stockist.AddAsync(stockist);
+                    break;
+
+                case EntityState.Modified:
+                    this.mandarinDbContext.Stockist.Update(stockist);
+                    break;
+            }
+
+            await this.mandarinDbContext.SaveChangesAsync();
+        }
+
+        /// <inheritdoc/>
+        public Task<Stockist> GetArtistByCodeAsync(string stockistCode)
+        {
+            return this.mandarinDbContext.Stockist
+                       .Include(x => x.Details)
+                       .Include(x => x.Commissions)
+                       .ThenInclude(x => x.RateGroup)
+                       .FirstOrDefaultAsync(x => x.StockistCode == stockistCode);
         }
 
         private IObservable<Stockist> GetAdditionalArtistDetails()

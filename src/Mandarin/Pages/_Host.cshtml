@@ -28,7 +28,7 @@
 </head>
 <body class="h-screen">
 <app class="block h-full overflow-y-scroll bg-grey-light">
-    <component type="typeof(App)" render-mode="@(Request.Path.Value.StartsWith("/admin") ? RenderMode.Server : RenderMode.ServerPrerendered)" />
+    <component type="typeof(App)" render-mode="@(Request.Path.Value.StartsWith("/admin") ? RenderMode.ServerPrerendered : RenderMode.ServerPrerendered)" />
 </app>
 
 <div id="blazor-error-ui">
