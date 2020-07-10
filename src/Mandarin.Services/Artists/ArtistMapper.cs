@@ -2,7 +2,7 @@
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 
-namespace Mandarin.Services.Fruity
+namespace Mandarin.Services.Artists
 {
     /// <summary>
     /// Represents the converter between Artist related DTOs to Domain models.

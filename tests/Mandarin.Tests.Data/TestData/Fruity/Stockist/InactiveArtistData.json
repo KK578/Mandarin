@@ -1,8 +1,0 @@
-﻿[
-  {
-    "stockist_name": "Artist Name",
-    "status": "INACTIVE",
-    "description": "Artist's Description.",
-    "image_url": "https://localhost/static/images/artist1.jpg"
-  }
-]

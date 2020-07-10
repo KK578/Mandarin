@@ -10,6 +10,8 @@ using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Tests.Entity;
+using Mandarin.Tests.Data;
+using Mandarin.Tests.Data.Extensions;
 using Moq;
 using NUnit.Framework;
 
@@ -52,14 +54,14 @@ namespace Mandarin.Services.Tests.Commission
                 .Setup(x => x.GetArtistsForCommissionAsync())
                 .Returns(new List<Stockist>
                 {
-                    MandarinFixture.Instance.Create<Stockist>().WithTlmStockistCode().WithTenPercentCommission(),
+                    MandarinModelExtensions.WithTenPercentCommission(MandarinModelExtensions.WithTlmStockistCode(MandarinFixture.Instance.Create<Stockist>())),
                 }.ToObservable());
         }
 
         private void GivenTransactionServiceReturnsData()
         {
-            var product1 = TestData.Create<Product>().WithTlmProductCode().WithUnitPrice(1.00m);
-            var product2 = TestData.Create<Product>().WithTlmProductCode().WithUnitPrice(5.00m);
+            var product1 = MandarinModelExtensions.WithUnitPrice(MandarinModelExtensions.WithTlmProductCode(TestData.Create<Product>()), 1.00m);
+            var product2 = MandarinModelExtensions.WithUnitPrice(MandarinModelExtensions.WithTlmProductCode(TestData.Create<Product>()), 5.00m);
 
             var transactions = new List<Transaction>
             {

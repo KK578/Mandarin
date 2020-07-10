@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
-namespace Mandarin.Services.Fruity
+namespace Mandarin.Services.Artists
 {
     /// <inheritdoc />
     internal sealed class DatabaseArtistService : IArtistService

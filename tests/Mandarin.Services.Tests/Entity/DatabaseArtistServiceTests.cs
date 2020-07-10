@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Bashi.Tests.Framework.Data;
+using AutoFixture;
 using Mandarin.Configuration;
 using Mandarin.Models.Artists;
+using Mandarin.Services.Artists;
 using Mandarin.Services.Entity;
-using Mandarin.Services.Fruity;
 using Mandarin.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -26,7 +26,7 @@ namespace Mandarin.Services.Tests.Entity
         public async Task GetArtistDetailsAsync_GivenInactiveArtistDataFromService_ReturnsEmptyList()
         {
             this.GivenMandarinConfigurationIsEmpty();
-            this.GivenDbContextReturns(WellKnownTestData.Fruity.Stockist.InactiveArtist);
+            this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist);
             var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
             var artistDetails = await subject.GetArtistsForDisplayAsync().ToList();
             Assert.That(artistDetails, Has.Count.Zero);
@@ -36,7 +36,7 @@ namespace Mandarin.Services.Tests.Entity
         public async Task GetArtistDetailsAsync_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
         {
             this.GivenMandarinConfigurationIsEmpty();
-            this.GivenDbContextReturns(WellKnownTestData.Fruity.Stockist.MinimalArtist);
+            this.GivenDbContextReturns(WellKnownTestData.Stockists.MinimalArtist);
             var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
             var artistDetails = await subject.GetArtistsForDisplayAsync().ToList();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
@@ -54,7 +54,7 @@ namespace Mandarin.Services.Tests.Entity
         public async Task GetArtistDetailsAsync_GivenJsonDataFromService_ShouldDeserializeCorrectly()
         {
             this.GivenMandarinConfigurationIsEmpty();
-            this.GivenDbContextReturns(WellKnownTestData.Fruity.Stockist.FullArtist);
+            this.GivenDbContextReturns(WellKnownTestData.Stockists.FullArtist);
             var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
             var artistDetails = await subject.GetArtistsForDisplayAsync().ToList();
             Assert.That(artistDetails, Has.Count.EqualTo(1));
@@ -71,13 +71,13 @@ namespace Mandarin.Services.Tests.Entity
         [Test]
         public async Task GetArtistDetailsForCommissionAsync_GivenConfigurationContainsAdditionalValues_ShouldContainAllValues()
         {
-            var artist = TestData.Create<ArtistDetailsModel>();
-            this.GivenMandarinConfigurationHasValue(artist);
-            this.GivenDbContextReturns(WellKnownTestData.Fruity.Stockist.FullArtist);
+            var stockist = MandarinFixture.Instance.Create<Stockist>();
+            this.GivenMandarinConfigurationHasValue(stockist);
+            this.GivenDbContextReturns(WellKnownTestData.Stockists.FullArtist);
             var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
             var artistDetails = await subject.GetArtistsForCommissionAsync().ToList();
             Assert.That(artistDetails, Has.Exactly(2).Items);
-            Assert.That(artistDetails.Last().StockistCode, Is.EqualTo(artist.StockistCode));
+            Assert.That(artistDetails.Last().StockistCode, Is.EqualTo(stockist.StockistCode));
         }
 
         private void GivenMandarinConfigurationIsEmpty()
@@ -88,7 +88,7 @@ namespace Mandarin.Services.Tests.Entity
             };
         }
 
-        private void GivenMandarinConfigurationHasValue(ArtistDetailsModel artist)
+        private void GivenMandarinConfigurationHasValue(Stockist stockist)
         {
             this.mandarinConfiguration = new MandarinConfiguration
             {
@@ -96,13 +96,13 @@ namespace Mandarin.Services.Tests.Entity
                 {
                     new Dictionary<string, object>
                     {
-                        { nameof(ArtistDetailsModel.StockistCode), artist.StockistCode },
+                        { nameof(Stockist.StockistCode), stockist.StockistCode },
                     },
                 },
             };
         }
 
-        private void GivenDbContextReturns(Stockist artist)
+        private IQueryable<Stockist> GivenDbContextReturns(Stockist artist)
         {
             var data = new List<Stockist> { artist }.AsQueryable();
             var mock = new Mock<DbSet<Stockist>>();
@@ -112,6 +112,7 @@ namespace Mandarin.Services.Tests.Entity
             mock.As<IQueryable<Stockist>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
 
             this.dbContext = Mock.Of<MandarinDbContext>(x => x.Stockist == mock.Object);
+            return data;
         }
     }
 }

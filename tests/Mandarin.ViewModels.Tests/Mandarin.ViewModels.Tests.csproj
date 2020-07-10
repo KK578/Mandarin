@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
-    <ProjectReference Include="..\Mandarin.Services.Tests\Mandarin.Services.Tests.csproj" />
+    <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
   </ItemGroup>
 
 </Project>

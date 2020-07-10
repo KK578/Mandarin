@@ -8,17 +8,15 @@
     <PackageReference Include="Bashi.Core" Version="2.1.0" />
     <PackageReference Include="LazyCache" Version="2.0.4" />
     <PackageReference Include="LazyCache.AspNetCore" Version="2.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.5" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
     <PackageReference Include="Scrutor" Version="3.2.1" />
     <PackageReference Include="Square" Version="5.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Mandarin.Database\Mandarin.Database.csproj" />
     <ProjectReference Include="..\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
   </ItemGroup>
 

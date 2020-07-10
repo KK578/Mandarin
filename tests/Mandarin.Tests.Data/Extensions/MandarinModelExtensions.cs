@@ -5,9 +5,9 @@ using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 
-namespace Mandarin.Services.Tests.Commission
+namespace Mandarin.Tests.Data.Extensions
 {
-    internal static class MandarinModelExtensions
+    public static class MandarinModelExtensions
     {
         public static Stockist WithTenPercentCommission(this Stockist model)
         {

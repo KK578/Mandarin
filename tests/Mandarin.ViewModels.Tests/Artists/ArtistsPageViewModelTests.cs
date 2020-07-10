@@ -2,7 +2,7 @@
 using AutoFixture;
 using Mandarin.Models.Artists;
 using Mandarin.Services;
-using Mandarin.Services.Tests.Entity;
+using Mandarin.Tests.Data;
 using Mandarin.ViewModels.Artists;
 using Moq;
 using NUnit.Framework;

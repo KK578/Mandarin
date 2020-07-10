@@ -1,12 +1,16 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
+using Mandarin.Services.Entity;
+using Mandarin.Tests.Data;
 using Mandarin.Tests.Factory;
-using Mandarin.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
@@ -17,6 +21,8 @@ namespace Mandarin.Tests.Pages
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private readonly HttpClient client;
+
+        private IServiceScope scope;
         private HttpRequestMessage request;
         private HttpResponseMessage response;
 
@@ -27,9 +33,19 @@ namespace Mandarin.Tests.Pages
         }
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public async Task OneTimeSetUp()
         {
-            FruityMock.EnsureStarted();
+            this.scope = this.factory.Services.CreateScope();
+            var mandarinDbContext = this.scope.ServiceProvider.GetService<MandarinDbContext>();
+            await mandarinDbContext.Database.MigrateAsync();
+            await WellKnownTestData.SeedDatabaseAsync(mandarinDbContext);
+            await mandarinDbContext.SaveChangesAsync();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+           this.scope.Dispose();
         }
 
         [Test]

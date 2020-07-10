@@ -1,8 +1,8 @@
 ﻿using System;
+using Mandarin.Services.Artists;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Entity;
-using Mandarin.Services.Fruity;
 using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ namespace Mandarin.Services
             services.AddLazyCache();
             services.AddMandarinDomainServices();
             services.AddSendGridServices(configuration);
-            services.AddEntityServices(configuration);
+            services.AddArtistServices(configuration);
             services.AddSquareServices(configuration);
 
             return services;
@@ -59,11 +59,8 @@ namespace Mandarin.Services
             }
         }
 
-        private static void AddEntityServices(this IServiceCollection services, IConfiguration configuration)
+        private static void AddArtistServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<FruityClientOptions>(configuration.GetSection("Fruity"));
-            services.AddEntityFrameworkNpgsql();
-            services.AddDbContext<MandarinDbContext>((s, o) => o.UseNpgsql(configuration.GetConnectionString("MandarinConnection")).UseInternalServiceProvider(s));
             services.AddScoped<IArtistService, DatabaseArtistService>();
         }
 

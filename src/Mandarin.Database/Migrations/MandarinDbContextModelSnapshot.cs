@@ -3,21 +3,20 @@ using System;
 using Mandarin.Services.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
 #pragma warning disable 1413
 #pragma warning disable 1591
 #pragma warning disable 1600
 #pragma warning disable 1601
 
-namespace Mandarin.Migrations
+namespace Mandarin.Database.Migrations
 {
     [DbContext(typeof(MandarinDbContext))]
-    [Migration("20200709162424_InitialCreate")]
-    partial class InitialCreate
+    internal partial class MandarinDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +153,7 @@ namespace Mandarin.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int?>("Rate")
+                    b.Property<int>("Rate")
                         .HasColumnName("rate")
                         .HasColumnType("integer");
 

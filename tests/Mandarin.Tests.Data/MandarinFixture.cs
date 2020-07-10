@@ -3,11 +3,11 @@ using LazyEntityGraph.AutoFixture;
 using LazyEntityGraph.EntityFrameworkCore;
 using Mandarin.Services.Entity;
 
-namespace Mandarin.Services.Tests.Entity
+namespace Mandarin.Tests.Data
 {
     public class MandarinFixture : Fixture
     {
-        /// <inheritdoc cref="Fixture"/>
+        /// <inheritdoc cref="AutoFixture.Fixture"/>
         private MandarinFixture()
         {
             var modelMetadata = ModelMetadataGenerator.LoadFromContext<MandarinDbContext>(o => new MandarinDbContext(o));

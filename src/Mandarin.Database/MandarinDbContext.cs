@@ -26,9 +26,6 @@ namespace Mandarin.Services.Entity
         {
         }
 
-        // public virtual DbSet<Commission> Commission { get; set; }
-        // public virtual DbSet<CommissionRateGroup> CommissionRateGroup { get; set; }
-
         /// <summary>
         /// Gets or sets the Database Set related to Available statuses.
         /// </summary>
@@ -47,7 +44,7 @@ namespace Mandarin.Services.Entity
         /// <summary>
         /// Gets or sets the Database Set related to stockist commission periods.
         /// </summary>
-        public virtual DbSet<Models.Commissions.Commission> Commission { get; set; }
+        public virtual DbSet<Commission> Commission { get; set; }
 
         /// <summary>
         /// Gets or sets the Database Set related to commission rates.

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Mandarin.Services.Fruity
+namespace Mandarin.Services.Artists
 {
     /// <summary>
     /// Represents the Artist as a JSON object received by Fruity.

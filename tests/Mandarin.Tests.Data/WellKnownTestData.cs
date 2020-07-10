@@ -1,5 +1,9 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Mandarin.Models.Artists;
+using Mandarin.Models.Common;
+using Mandarin.Services.Entity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Mandarin.Tests.Data
@@ -7,6 +11,26 @@ namespace Mandarin.Tests.Data
     public static class WellKnownTestData
     {
         private static readonly JsonSerializer Serializer = new JsonSerializer();
+
+        public static async Task SeedDatabaseAsync(MandarinDbContext mandarinDbContext)
+        {
+            var status = await mandarinDbContext.Status.FirstOrDefaultAsync(x => x.StatusCode == "ACTIVE");
+            if (status == null)
+            {
+                await mandarinDbContext.Status.AddAsync(new Status
+                {
+                    StatusId = 1,
+                    StatusCode = "ACTIVE",
+                    Description = "Currently active.",
+                });
+            }
+
+            var tlmStockist = await mandarinDbContext.Stockist.FirstOrDefaultAsync(x => x.StockistCode == WellKnownTestData.Stockists.TheLittleMandarin.StockistCode);
+            if (tlmStockist == null)
+            {
+                await mandarinDbContext.Stockist.AddAsync(WellKnownTestData.Stockists.TheLittleMandarin);
+            }
+        }
 
         public static T DeserializeFromFile<T>(string path)
         {
@@ -21,50 +45,59 @@ namespace Mandarin.Tests.Data
             public const string ArtistSalesTLM = "TestData/Commissions/ArtistSales.TLM.json";
         }
 
-        public static class Fruity
+        public static class Stockists
         {
-            public static class Stockist
+            public static readonly Stockist FullArtist = new Stockist
             {
-                public const string TheLittleMandarin = "TestData/Fruity/Stockist/TheLittleMandarin.json";
-
-                public static readonly Mandarin.Models.Artists.Stockist FullArtist = new Models.Artists.Stockist
+                StockistName = "Artist Name",
+                StatusCode = "ACTIVE",
+                Description = "Artist's Description.",
+                Details = new StockistDetail
                 {
-                    StockistName = "Artist Name",
-                    StatusCode = "ACTIVE",
-                    Description = "Artist's Description.",
-                    Details = new StockistDetail
-                    {
-                        ImageUrl = "https://localhost/static/images/artist1.jpg",
-                        TwitterHandle = "ArtistTwitter",
-                        InstagramHandle = "ArtistInstagram",
-                        FacebookHandle = "ArtistFacebook",
-                        TumblrHandle = "ArtistTumblr",
-                        WebsiteUrl = "https://localhost/artist/website",
-                    },
-                };
+                    ImageUrl = "https://localhost/static/images/artist1.jpg",
+                    TwitterHandle = "ArtistTwitter",
+                    InstagramHandle = "ArtistInstagram",
+                    FacebookHandle = "ArtistFacebook",
+                    TumblrHandle = "ArtistTumblr",
+                    WebsiteUrl = "https://localhost/artist/website",
+                },
+            };
 
-                public static readonly Mandarin.Models.Artists.Stockist InactiveArtist = new Models.Artists.Stockist
+            public static readonly Stockist InactiveArtist = new Stockist
+            {
+                StockistName = "Artist Name",
+                StatusCode = "INACTIVE",
+                Description = "Artist's Description.",
+                Details = new StockistDetail
                 {
-                    StockistName = "Artist Name",
-                    StatusCode = "INACTIVE",
-                    Description = "Artist's Description.",
-                    Details = new StockistDetail
-                    {
-                        ImageUrl = "https://localhost/static/images/artist1.jpg",
-                    },
-                };
+                    ImageUrl = "https://localhost/static/images/artist1.jpg",
+                },
+            };
 
-                public static readonly Mandarin.Models.Artists.Stockist MinimalArtist = new Models.Artists.Stockist
+            public static readonly Stockist MinimalArtist = new Stockist
+            {
+                StockistName = "Artist Name",
+                StatusCode = "ACTIVE",
+                Description = "Artist's Description.",
+                Details = new StockistDetail
                 {
-                    StockistName = "Artist Name",
-                    StatusCode = "ACTIVE",
-                    Description = "Artist's Description.",
-                    Details = new StockistDetail
-                    {
-                        ImageUrl = "https://localhost/static/images/artist1.jpg",
-                    },
-                };
-            }
+                    ImageUrl = "https://localhost/static/images/artist1.jpg",
+                },
+            };
+
+            public static readonly Stockist TheLittleMandarin = new Stockist
+            {
+                StockistCode = "TLM",
+                StockistName = "The Little Mandarin",
+                StatusCode = "ACTIVE",
+                Description = "The Little Mandarin in-house art team!",
+                Details = new StockistDetail
+                {
+                    InstagramHandle = "thelittlemandarin_e17",
+                    WebsiteUrl = "https://thelittlemandarin.co.uk/",
+                    ImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",
+                },
+            };
         }
 
         public static class Square
