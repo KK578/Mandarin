@@ -44,11 +44,6 @@ namespace Mandarin.Tests.Pages
             string path,
             string expected)
         {
-            if (path == "/artists")
-            {
-                await this.GivenArtistServiceHasPreCached();
-            }
-
             this.GivenUnauthenticatedRequestFor(path);
             var document = await this.WhenPageContentIsRequested();
             Assert.That(document.DocumentElement.TextContent, Contains.Substring(expected));
@@ -68,13 +63,6 @@ namespace Mandarin.Tests.Pages
             this.GivenAuthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
             this.AssertResponseIsRedirectedTo("/admin");
-        }
-
-        private Task GivenArtistServiceHasPreCached()
-        {
-            var artistService = this.factory.Services.GetService<IArtistService>();
-            Assert.That(artistService, Is.InstanceOf<CachingArtistServiceDecorator>());
-            return artistService.GetArtistDetailsAsync();
         }
 
         private void GivenUnauthenticatedRequestFor(string path)

@@ -1,11 +1,10 @@
 ﻿@page "/admin/artists/edit/{stockistCode}"
 @page "/admin/artists/new"
 @using Mandarin.Services
+@using Mandarin.Services.Entity
 @using Mandarin.Models.Artists
-@using Mandarin.Entities
 @using Microsoft.EntityFrameworkCore
 @using System.IO
-@using System.ComponentModel.DataAnnotations
 @using Mandarin.Models.Commissions
 @inject IArtistService ArtistService;
 @inject MandarinDbContext MandarinDbContext;
@@ -19,7 +18,7 @@
     </CardHeader>
     <CardBody>
       <Progress Size="Size.Medium">
-        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(Background.Primary)">"Fetching Artist..."</ProgressBar>
+        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@Background.Primary">Fetching Artist...</ProgressBar>
       </Progress>
     </CardBody>
   </Card>
@@ -177,7 +176,7 @@ else
                 <AddonLabel Class="w-12">%</AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <Select TValue="CommissionRateGroup" @bind-SelectedValue="@Commission.RateGroup">
+                <Select TValue="CommissionRateGroup" @bind-SelectedValue="@Commission.RateGroup" Disabled="@(!isEditing)">
                   @foreach (var group in rateGroups)
                   {
                     <SelectItem Value="@group">@(group.Rate)%</SelectItem>
@@ -191,11 +190,11 @@ else
           <Fields>
             <Field ColumnSize="ColumnSize.Is6">
               <FieldLabel>Start Date</FieldLabel>
-              <DateEdit TValue="DateTime" @bind-Date="@Commission.StartDate" />
+              <DateEdit TValue="DateTime" @bind-Date="@Commission.StartDate" Disabled="@(!isEditing)" />
             </Field>
             <Field ColumnSize="ColumnSize.Is6">
               <FieldLabel>End Date</FieldLabel>
-              <DateEdit TValue="DateTime" @bind-Date="@Commission.EndDate" />
+              <DateEdit TValue="DateTime" @bind-Date="@Commission.EndDate" Disabled="@(!isEditing)" />
             </Field>
           </Fields>
         </Validation>

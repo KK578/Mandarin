@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Services;
 
@@ -33,7 +34,7 @@ namespace Mandarin.ViewModels.Artists
             try
             {
                 this.IsLoading = true;
-                var details = await this.artistService.GetArtistDetailsAsync();
+                var details = await this.artistService.GetArtistsForDisplayAsync().ToList();
                 this.ViewModels = details.Select(x => new ArtistViewModel(x)).ToList().AsReadOnly();
             }
             finally

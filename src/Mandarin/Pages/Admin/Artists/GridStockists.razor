@@ -1,10 +1,8 @@
 ﻿@page "/admin/artists"
 @using Mandarin.Services
 @using Mandarin.Models.Artists
-@using Mandarin.Entities
-@using Microsoft.EntityFrameworkCore
+@using System.Reactive.Linq
 @inject IArtistService ArtistService;
-@inject MandarinDbContext MandarinDbContext;
 @inject NavigationManager NavigationManager;
 
 <Card>
@@ -39,14 +37,14 @@
 
 @code
 {
-  private List<Stockist> data;
+  private IList<Stockist> data;
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
 
-    data = await MandarinDbContext.Stockist.Include(x => x.Details).ToListAsync();
+    data = await ArtistService.GetArtistsForCommissionAsync().ToList();
   }
 
   private void OnNewClicked()

@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Mandarin.Models.Artists;
+using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 
@@ -7,34 +9,45 @@ namespace Mandarin.Services.Tests.Commission
 {
     internal static class MandarinModelExtensions
     {
-        public static ArtistDetailsModel WithTenPercentCommision(this ArtistDetailsModel model)
+        public static Stockist WithTenPercentCommission(this Stockist model)
         {
-            return new ArtistDetailsModel(model.StockistCode,
-                                          model.Name,
-                                          model.Description,
-                                          0.10m,
-                                          model.EmailAddress,
-                                          model.ImageUrl,
-                                          model.TwitterUrl,
-                                          model.InstagramUrl,
-                                          model.FacebookUrl,
-                                          model.TumblrUrl,
-                                          model.WebsiteUrl);
+            return new Stockist
+            {
+                StockistId = model.StockistId,
+                StockistCode = "TLM",
+                StockistName = model.StockistName,
+                Description = model.Description,
+                Details = model.Details,
+                Commissions = new List<Models.Commissions.Commission>
+                {
+                    new Models.Commissions.Commission
+                    {
+                        StartDate = model.Commissions.First().StartDate,
+                        EndDate = model.Commissions.First().EndDate,
+                        RateGroup = new CommissionRateGroup
+                        {
+                            Rate = 10,
+                        },
+                    },
+                },
+                Status = model.Status,
+                StatusCode = model.StatusCode,
+            };
         }
 
-        public static ArtistDetailsModel WithTlmStockistCode(this ArtistDetailsModel model)
+        public static Stockist WithTlmStockistCode(this Stockist model)
         {
-            return new ArtistDetailsModel("TLM",
-                                          model.Name,
-                                          model.Description,
-                                          model.Rate,
-                                          model.EmailAddress,
-                                          model.ImageUrl,
-                                          model.TwitterUrl,
-                                          model.InstagramUrl,
-                                          model.FacebookUrl,
-                                          model.TumblrUrl,
-                                          model.WebsiteUrl);
+            return new Stockist
+            {
+                StockistId = model.StockistId,
+                StockistCode = "TLM",
+                StockistName = model.StockistName,
+                Description = model.Description,
+                Details = model.Details,
+                Commissions = model.Commissions,
+                Status = model.Status,
+                StatusCode = model.StatusCode,
+            };
         }
 
         public static Transaction WithTlmProducts(this Transaction transaction)

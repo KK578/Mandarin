@@ -10,14 +10,14 @@ namespace Mandarin.Models.Artists
     /// Represents a stockist who is a person provides stock/products with The Little Mandarin.
     /// </summary>
     [Table("stockist", Schema = "inventory")]
-    public sealed class Stockist
+    public class Stockist
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Stockist"/> class.
         /// </summary>
         public Stockist()
         {
-            // this.Commission = new HashSet<Commission>();
+            this.Commissions = new HashSet<Commission>();
         }
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace Mandarin.Models.Artists
         /// Gets or sets the stockist's personal details.
         /// </summary>
         [InverseProperty(nameof(StockistDetail.Stockist))]
-        public StockistDetail Details { get; set; }
+        public virtual StockistDetail Details { get; set; }
 
         /// <summary>
         /// Gets or sets the history of all commissions related to this stockist.
         /// </summary>
         [InverseProperty(nameof(Commission.Stockist))]
-        public ICollection<Commission> Commissions { get; set; }
+        public virtual ICollection<Commission> Commissions { get; set; }
     }
 }

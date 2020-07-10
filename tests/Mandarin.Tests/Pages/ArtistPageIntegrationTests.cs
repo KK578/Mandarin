@@ -1,14 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
 using Mandarin.Services;
+using Mandarin.Services.Entity;
 using Mandarin.Tests.Factory;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
@@ -59,21 +65,24 @@ namespace Mandarin.Tests.Pages
             Assert.That(artistPage.DocumentElement.TextContent, Contains.Substring(TestData.WellKnownString));
         }
 
-        private TaskCompletionSource<IReadOnlyList<ArtistDetailsModel>> GivenArtistServiceWaitsForReturn()
+        private TaskCompletionSource<Stockist> GivenArtistServiceWaitsForReturn()
         {
-            var tcs = new TaskCompletionSource<IReadOnlyList<ArtistDetailsModel>>();
-            this.artistService.Setup(x => x.GetArtistDetailsAsync()).Returns(tcs.Task);
+            var tcs = new TaskCompletionSource<Stockist>();
+            this.artistService.Setup(x => x.GetArtistsForDisplayAsync()).Returns(tcs.Task.ToObservable());
             return tcs;
         }
 
 
         private void GivenArtistServiceReturnsDataImmediately()
         {
-            var data = TestData.Create<List<ArtistDetailsModel>>()
-                               .Append(new ArtistDetailsModel(null, ArtistPageIntegrationTests.ArtistName, TestData.WellKnownString, 0, null, null, null, null, null, null, null))
-                               .ToList()
-                               .AsReadOnly();
-            this.artistService.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data);
+            var data = new Stockist
+            {
+                StockistName = ArtistPageIntegrationTests.ArtistName,
+                Description = TestData.WellKnownString,
+                Details = new StockistDetail(),
+            };
+
+            this.artistService.Setup(x => x.GetArtistsForDisplayAsync()).Returns(Observable.Return(data));
         }
 
         private async Task<IDocument> WhenGetArtistPage()

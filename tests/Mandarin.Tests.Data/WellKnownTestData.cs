@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Mandarin.Models.Artists;
 using Newtonsoft.Json;
 
 namespace Mandarin.Tests.Data
@@ -24,10 +25,45 @@ namespace Mandarin.Tests.Data
         {
             public static class Stockist
             {
-                public const string FullArtistData = "TestData/Fruity/Stockist/FullArtistData.json";
-                public const string InactiveArtistData = "TestData/Fruity/Stockist/InactiveArtistData.json";
-                public const string MinimalArtistData = "TestData/Fruity/Stockist/MinimalArtistData.json";
                 public const string TheLittleMandarin = "TestData/Fruity/Stockist/TheLittleMandarin.json";
+
+                public static readonly Mandarin.Models.Artists.Stockist FullArtist = new Models.Artists.Stockist
+                {
+                    StockistName = "Artist Name",
+                    StatusCode = "ACTIVE",
+                    Description = "Artist's Description.",
+                    Details = new StockistDetail
+                    {
+                        ImageUrl = "https://localhost/static/images/artist1.jpg",
+                        TwitterHandle = "ArtistTwitter",
+                        InstagramHandle = "ArtistInstagram",
+                        FacebookHandle = "ArtistFacebook",
+                        TumblrHandle = "ArtistTumblr",
+                        WebsiteUrl = "https://localhost/artist/website",
+                    },
+                };
+
+                public static readonly Mandarin.Models.Artists.Stockist InactiveArtist = new Models.Artists.Stockist
+                {
+                    StockistName = "Artist Name",
+                    StatusCode = "INACTIVE",
+                    Description = "Artist's Description.",
+                    Details = new StockistDetail
+                    {
+                        ImageUrl = "https://localhost/static/images/artist1.jpg",
+                    },
+                };
+
+                public static readonly Mandarin.Models.Artists.Stockist MinimalArtist = new Models.Artists.Stockist
+                {
+                    StockistName = "Artist Name",
+                    StatusCode = "ACTIVE",
+                    Description = "Artist's Description.",
+                    Details = new StockistDetail
+                    {
+                        ImageUrl = "https://localhost/static/images/artist1.jpg",
+                    },
+                };
             }
         }
 

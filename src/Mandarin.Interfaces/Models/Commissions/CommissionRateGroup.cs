@@ -8,7 +8,7 @@ namespace Mandarin.Models.Commissions
     /// Represents a specific commission rate shared by a group of commission periods.
     /// </summary>
     [Table("commission_rate_group", Schema = "billing")]
-    public sealed class CommissionRateGroup
+    public class CommissionRateGroup
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionRateGroup"/> class.
@@ -36,6 +36,6 @@ namespace Mandarin.Models.Commissions
         /// Gets or sets a set of commission periods that use this commission rate.
         /// </summary>
         [InverseProperty(nameof(Mandarin.Models.Commissions.Commission.RateGroup))]
-        public ICollection<Commission> Commission { get; set; }
+        public virtual ICollection<Commission> Commission { get; set; }
     }
 }

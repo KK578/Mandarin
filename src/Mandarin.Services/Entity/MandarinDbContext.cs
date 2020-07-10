@@ -3,7 +3,7 @@ using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mandarin.Entities
+namespace Mandarin.Services.Entity
 {
     /// <summary>
     /// Represents a Database Context for accessing The Little Mandarin data.
@@ -47,7 +47,7 @@ namespace Mandarin.Entities
         /// <summary>
         /// Gets or sets the Database Set related to stockist commission periods.
         /// </summary>
-        public virtual DbSet<Commission> Commission { get; set; }
+        public virtual DbSet<Models.Commissions.Commission> Commission { get; set; }
 
         /// <summary>
         /// Gets or sets the Database Set related to commission rates.

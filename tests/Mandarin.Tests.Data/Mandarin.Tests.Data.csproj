@@ -8,4 +8,8 @@
     <None Update="TestData/**/*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

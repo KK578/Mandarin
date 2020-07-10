@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
-using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Commission;
+using Mandarin.Services.Tests.Entity;
 using Moq;
 using NUnit.Framework;
 
@@ -47,11 +48,12 @@ namespace Mandarin.Services.Tests.Commission
         private void GivenArtistServiceReturnsData()
         {
             this.artistService ??= new Mock<IArtistService>();
-            this.artistService.Setup(x => x.GetArtistDetailsForCommissionAsync())
-                .ReturnsAsync(new List<ArtistDetailsModel>
+            this.artistService
+                .Setup(x => x.GetArtistsForCommissionAsync())
+                .Returns(new List<Stockist>
                 {
-                    TestData.Create<ArtistDetailsModel>().WithTlmStockistCode().WithTenPercentCommision(),
-                });
+                    MandarinFixture.Instance.Create<Stockist>().WithTlmStockistCode().WithTenPercentCommission(),
+                }.ToObservable());
         }
 
         private void GivenTransactionServiceReturnsData()

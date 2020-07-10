@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using Bashi.Tests.Framework.Data;
+﻿using System.Reactive.Linq;
+using AutoFixture;
 using Mandarin.Models.Artists;
 using Mandarin.Services;
+using Mandarin.Services.Tests.Entity;
 using Mandarin.ViewModels.Artists;
 using Moq;
 using NUnit.Framework;
@@ -15,9 +16,9 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void ViewModels_Given1ViewModel_ShouldHaveCountOf1()
         {
             // Arrange
-            var data = new List<ArtistDetailsModel> { TestData.Create<ArtistDetailsModel>() }.AsReadOnly();
+            var data = MandarinFixture.Instance.Create<Stockist>();
             var artistsService = new Mock<IArtistService>();
-            artistsService.Setup(x => x.GetArtistDetailsAsync()).ReturnsAsync(data);
+            artistsService.Setup(x => x.GetArtistsForDisplayAsync()).Returns(Observable.Return(data));
 
             // Act
             var subject = new ArtistsPageViewModel(artistsService.Object);

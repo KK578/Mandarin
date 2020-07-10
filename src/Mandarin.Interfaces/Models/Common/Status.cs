@@ -43,6 +43,6 @@ namespace Mandarin.Models.Common
         /// <summary>
         /// Gets or sets the set of all stockist's that share this status.
         /// </summary>
-        public ICollection<Stockist> Stockists { get; set; }
+        public virtual ICollection<Stockist> Stockists { get; set; }
     }
 }

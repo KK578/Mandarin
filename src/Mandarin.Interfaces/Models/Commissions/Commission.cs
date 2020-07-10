@@ -9,7 +9,7 @@ namespace Mandarin.Models.Commissions
     /// Represents an agreed commission period with a stockist.
     /// </summary>
     [Table("commission", Schema = "billing")]
-    public sealed class Commission
+    public class Commission
     {
         /// <summary>
         /// Gets or sets the commission's Database ID.
@@ -52,12 +52,12 @@ namespace Mandarin.Models.Commissions
         /// Gets or sets the related commission rate group for this commission.
         /// </summary>
         [ForeignKey(nameof(Commission.RateGroupId))]
-        public CommissionRateGroup RateGroup { get; set; }
+        public virtual CommissionRateGroup RateGroup { get; set; }
 
         /// <summary>
         /// Gets or sets the related stockist for this commission.
         /// </summary>
         [ForeignKey(nameof(Commission.StockistId))]
-        public Stockist Stockist { get; set; }
+        public virtual Stockist Stockist { get; set; }
     }
 }

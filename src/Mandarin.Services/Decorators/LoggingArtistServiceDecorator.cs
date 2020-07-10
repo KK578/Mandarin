@@ -24,11 +24,12 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsAsync()
+        public IObservable<Stockist> GetArtistsForDisplayAsync()
         {
             try
             {
-                return await this.artistService.GetArtistDetailsAsync();
+                // TODO: Seems redundant.
+                return this.artistService.GetArtistsForDisplayAsync();
             }
             catch (Exception ex)
             {
@@ -38,11 +39,11 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyList<ArtistDetailsModel>> GetArtistDetailsForCommissionAsync()
+        public IObservable<Stockist> GetArtistsForCommissionAsync()
         {
             try
             {
-                return await this.artistService.GetArtistDetailsForCommissionAsync();
+                return this.artistService.GetArtistsForCommissionAsync();
             }
             catch (Exception ex)
             {

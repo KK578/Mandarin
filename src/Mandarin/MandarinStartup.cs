@@ -2,7 +2,6 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
-using Mandarin.Entities;
 using Mandarin.Extensions;
 using Mandarin.Services;
 using Mandarin.ViewModels;
@@ -52,7 +51,6 @@ namespace Mandarin
         /// <param name="services">Service collection to be modified.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MandarinDbContext>(o => o.UseNpgsql(this.configuration.GetConnectionString("MandarinConnection")));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();

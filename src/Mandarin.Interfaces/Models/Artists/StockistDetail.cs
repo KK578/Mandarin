@@ -72,6 +72,6 @@ namespace Mandarin.Models.Artists
         /// Gets or sets the stockist related to these details.
         /// </summary>
         [ForeignKey(nameof(StockistDetail.StockistId))]
-        public Stockist Stockist { get; set; }
+        public virtual Stockist Stockist { get; set; }
     }
 }

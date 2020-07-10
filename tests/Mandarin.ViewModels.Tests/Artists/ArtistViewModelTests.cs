@@ -13,7 +13,7 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenNoArguments_CreatesEmptyObject()
         {
             // Act
-            var subject = new ArtistViewModel(new ArtistDetailsModel(null, null, null, 0, null, null, null, null, null, null, null));
+            var subject = new ArtistViewModel(new Stockist { Details = new StockistDetail() });
 
             // Assert
             Assert.That(subject.Name, Is.Null);
@@ -34,7 +34,12 @@ namespace Mandarin.ViewModels.Tests.Artists
             var description = TestData.WellKnownString;
 
             // Act
-            var model = new ArtistDetailsModel(null, name, description, 0, null, null, null, null, null, null, null);
+            var model = new Stockist
+            {
+                StockistCode = null,
+                StockistName = name,
+                Description = description,
+            };
             var subject = new ArtistViewModel(model);
 
             // Assert
@@ -46,26 +51,31 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenUri_CreatesValueCorrectly()
         {
             // Act
-            var model = new ArtistDetailsModel(null,
-                                               null,
-                                               null,
-                                               0,
-                                               null,
-                                               new Uri("https://localhost/image"),
-                                               new Uri("https://localhost/twitter"),
-                                               new Uri("https://localhost/instagram"),
-                                               new Uri("https://localhost/facebook"),
-                                               new Uri("https://localhost/tumblr"),
-                                               new Uri("https://localhost/website"));
+            var model = new Stockist
+            {
+                StockistCode = null,
+                StockistName = null,
+                Description = null,
+                Details = new StockistDetail
+                {
+                    EmailAddress = null,
+                    ImageUrl = "https://localhost/image",
+                    TwitterHandle = "MyTwitterHandle",
+                    InstagramHandle = "MyInstagramHandle",
+                    FacebookHandle = "MyFacebookHandle",
+                    TumblrHandle = "MyTumblrHandle",
+                    WebsiteUrl = "https://localhost/website",
+                },
+            };
             var subject = new ArtistViewModel(model);
 
             // Assert
-            Assert.That(subject.TwitterUrl.ToString(), Contains.Substring("twitter"));
-            Assert.That(subject.FacebookUrl.ToString(), Contains.Substring("facebook"));
-            Assert.That(subject.ImageUrl.ToString(), Contains.Substring("image"));
-            Assert.That(subject.InstagramUrl.ToString(), Contains.Substring("instagram"));
-            Assert.That(subject.TumblrUrl.ToString(), Contains.Substring("tumblr"));
-            Assert.That(subject.WebsiteUrl.ToString(), Contains.Substring("website"));
+            Assert.That(subject.TwitterUrl.ToString(), Is.EqualTo("https://twitter.com/MyTwitterHandle"));
+            Assert.That(subject.FacebookUrl.ToString(), Is.EqualTo("https://facebook.com/MyFacebookHandle"));
+            Assert.That(subject.ImageUrl.ToString(), Is.EqualTo("https://localhost/image"));
+            Assert.That(subject.InstagramUrl.ToString(), Is.EqualTo("https://instagram.com/MyInstagramHandle"));
+            Assert.That(subject.TumblrUrl.ToString(), Is.EqualTo("https://MyTumblrHandle.tumblr.com/").IgnoreCase);
+            Assert.That(subject.WebsiteUrl.ToString(), Is.EqualTo("https://localhost/website"));
         }
     }
 }
