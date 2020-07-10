@@ -15,6 +15,8 @@ jobs:
         image: postgres
         env:
           POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -88,8 +90,6 @@ jobs:
             /p:RepositoryCommit=$GITHUB_SHA
 
       - name: "[Test] Run Tests"
-        env:
-          ConnectionStrings__MandarinConnection: "Host=postgres;Database=postgres;Username=postgres;Password=password"
         run: dotnet test --configuration Release
 
       - name: "[Deploy] Publish build"
