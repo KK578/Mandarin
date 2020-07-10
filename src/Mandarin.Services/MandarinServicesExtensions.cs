@@ -2,10 +2,8 @@
 using Mandarin.Services.Artists;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
-using Mandarin.Services.Entity;
 using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -3,20 +3,13 @@ using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mandarin.Services.Entity
+namespace Mandarin.Database
 {
     /// <summary>
     /// Represents a Database Context for accessing The Little Mandarin data.
     /// </summary>
     public class MandarinDbContext : DbContext
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MandarinDbContext"/> class.
-        /// </summary>
-        public MandarinDbContext()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MandarinDbContext"/> class.
         /// </summary>

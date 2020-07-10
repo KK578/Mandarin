@@ -10,10 +10,11 @@ namespace Mandarin.Services.Artists
     internal static class ArtistMapper
     {
         /// <summary>
-        /// Converts the provided <see cref="ArtistDto"/> to an <see cref="ArtistDetailsModel"/>.
+        /// Converts the provided <see cref="ArtistDto"/> to a <see cref="Stockist"/>.
+        /// This is temporary pending BASHI-62.
         /// </summary>
         /// <param name="dto">The artist DTO to convert.</param>
-        /// <returns>A newly created <see cref="ArtistDetailsModel"/>.</returns>
+        /// <returns>A newly created <see cref="Stockist"/>.</returns>
         public static Stockist ConvertToModel(ArtistDto dto)
         {
             return new Stockist

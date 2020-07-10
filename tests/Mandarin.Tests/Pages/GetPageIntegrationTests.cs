@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using Mandarin.Services.Entity;
+using Mandarin.Database;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Factory;
 using Microsoft.AspNetCore.Hosting;

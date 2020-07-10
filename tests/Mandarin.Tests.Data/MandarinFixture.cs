@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using LazyEntityGraph.AutoFixture;
 using LazyEntityGraph.EntityFrameworkCore;
-using Mandarin.Services.Entity;
+using Mandarin.Database;
 
 namespace Mandarin.Tests.Data
 {

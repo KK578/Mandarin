@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Mandarin.Database;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Common;
-using Mandarin.Services.Entity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
