@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
 #pragma warning disable 1413
 #pragma warning disable 1591
 #pragma warning disable 1600
@@ -121,16 +120,20 @@ namespace Mandarin.Database.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("InsertedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnName("inserted_at")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("RateGroupId")
                         .HasColumnName("rate_group")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
+                        .ValueGeneratedOnAdd()
                         .HasColumnName("start_date")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("CURRENT_DATE");
 
                     b.Property<int?>("StockistId")
                         .HasColumnName("stockist_id")

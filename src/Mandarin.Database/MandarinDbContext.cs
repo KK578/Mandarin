@@ -54,71 +54,12 @@ namespace Mandarin.Services.Entity
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // modelBuilder.Entity<Commission>(entity =>
-            // {
-            //     entity.ToTable("commission", "billing");
-            //
-            //     entity.Property(e => e.CommissionId).HasColumnName("commission_id");
-            //
-            //     entity.Property(e => e.EndDate)
-            //         .HasColumnName("end_date")
-            //         .HasColumnType("date");
-            //
-            //     entity.Property(e => e.InsertedAt)
-            //         .HasColumnName("inserted_at")
-            //         .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            //
-            //     entity.Property(e => e.RateGroup).HasColumnName("rate_group");
-            //
-            //     entity.Property(e => e.StartDate)
-            //         .HasColumnName("start_date")
-            //         .HasColumnType("date")
-            //         .HasDefaultValueSql("CURRENT_DATE");
-            //
-            //     entity.Property(e => e.StockistId).HasColumnName("stockist_id");
-            //
-            //     entity.HasOne(d => d.RateGroupNavigation)
-            //         .WithMany(p => p.Commission)
-            //         .HasForeignKey(d => d.RateGroup)
-            //         .HasConstraintName("commission_rate_group_fkey");
-            //
-            //     entity.HasOne(d => d.Stockist)
-            //         .WithMany(p => p.Commission)
-            //         .HasForeignKey(d => d.StockistId)
-            //         .HasConstraintName("commission_stockist_id_fkey");
-            // });
-            //
-            // modelBuilder.Entity<CommissionRateGroup>(entity =>
-            // {
-            //     entity.HasKey(e => e.GroupId)
-            //         .HasName("commission_rate_group_pkey");
-            //
-            //     entity.ToTable("commission_rate_group", "billing");
-            //
-            //     entity.Property(e => e.GroupId).HasColumnName("group_id");
-            //
-            //     entity.Property(e => e.Rate).HasColumnName("rate");
-            // });
-            //
-            // modelBuilder.Entity<Status>(entity =>
-            // {
-            //     entity.ToTable("status", "static");
-            //
-            //     entity.HasIndex(e => e.StatusCode)
-            //         .HasName("status_status_code_key")
-            //         .IsUnique();
-            //
-            //     entity.Property(e => e.StatusId).HasColumnName("status_id");
-            //
-            //     entity.Property(e => e.Description)
-            //         .HasColumnName("description")
-            //         .HasMaxLength(100);
-            //
-            //     entity.Property(e => e.StatusCode)
-            //         .IsRequired()
-            //         .HasColumnName("status_code")
-            //         .HasMaxLength(25);
-            // });
+            modelBuilder.Entity<Commission>(entity =>
+            {
+                entity.Property(e => e.InsertedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(e => e.StartDate).HasDefaultValueSql("CURRENT_DATE");
+            });
+
             modelBuilder.Entity<Stockist>(entity =>
             {
                 entity.HasIndex(e => e.StockistCode).HasName("stockist_stockist_code_key").IsUnique();
