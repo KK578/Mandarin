@@ -13,6 +13,13 @@ namespace Mandarin.Database
         /// <summary>
         /// Initializes a new instance of the <see cref="MandarinDbContext"/> class.
         /// </summary>
+        public MandarinDbContext()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MandarinDbContext"/> class.
+        /// </summary>
         /// <param name="options">The options for this context.</param>
         public MandarinDbContext(DbContextOptions<MandarinDbContext> options)
             : base(options)
