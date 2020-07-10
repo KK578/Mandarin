@@ -1,5 +1,4 @@
-﻿using System;
-using Bashi.Tests.Framework.Data;
+﻿using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
 using Mandarin.ViewModels.Artists;
 using NUnit.Framework;

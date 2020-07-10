@@ -3,7 +3,6 @@ using System;
 using Mandarin.Services.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 #pragma warning disable 1413
 #pragma warning disable 1591

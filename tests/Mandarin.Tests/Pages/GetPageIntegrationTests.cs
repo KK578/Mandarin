@@ -3,13 +3,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using Mandarin.Services;
-using Mandarin.Services.Decorators;
 using Mandarin.Tests.Factory;
 using Mandarin.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
