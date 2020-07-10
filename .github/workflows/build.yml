@@ -9,6 +9,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: "[Setup] Checkout Repository"
         uses: actions/checkout@v1
@@ -76,6 +88,8 @@ jobs:
             /p:RepositoryCommit=$GITHUB_SHA
 
       - name: "[Test] Run Tests"
+        env:
+          ConnectionStrings__MandarinConnection: "Host=postgres;Database=postgres;Username=postgres;Password=password"
         run: dotnet test --configuration Release
 
       - name: "[Deploy] Publish build"
