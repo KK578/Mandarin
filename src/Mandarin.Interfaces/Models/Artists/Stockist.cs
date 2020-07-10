@@ -30,21 +30,24 @@ namespace Mandarin.Models.Artists
         /// <summary>
         /// Gets or sets the Stockist's name.
         /// </summary>
-        [Column("stockist_name")]
         [Required]
+        [Column("stockist_name")]
+        [StringLength(250)]
         public string StockistName { get; set; }
 
         /// <summary>
         /// Gets or sets the Stockist's user-friendly code.
         /// </summary>
-        [Column("stockist_code")]
         [Required]
+        [Column("stockist_code")]
+        [StringLength(6)]
         public string StockistCode { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the stockist's current active status.
         /// </summary>
         [Column("stockist_status")]
+        [StringLength(25)]
         public string StatusCode { get; set; }
 
         /// <summary>
@@ -57,8 +60,6 @@ namespace Mandarin.Models.Artists
         /// <summary>
         /// Gets or sets the current status of stockist.
         /// </summary>
-        [ForeignKey(nameof(Stockist.StatusCode))]
-        [MaxLength(25)]
         public Status Status { get; set; }
 
         /// <summary>

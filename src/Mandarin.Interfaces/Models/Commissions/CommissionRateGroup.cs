@@ -15,7 +15,7 @@ namespace Mandarin.Models.Commissions
         /// </summary>
         public CommissionRateGroup()
         {
-            this.Commission = new HashSet<Commission>();
+            this.Commissions = new HashSet<Commission>();
         }
 
         /// <summary>
@@ -30,12 +30,12 @@ namespace Mandarin.Models.Commissions
         /// </summary>
         [Column("rate")]
         [Range(0, 100)]
-        public int Rate { get; set; }
+        public int? Rate { get; set; }
 
         /// <summary>
         /// Gets or sets a set of commission periods that use this commission rate.
         /// </summary>
-        [InverseProperty(nameof(Mandarin.Models.Commissions.Commission.RateGroup))]
-        public virtual ICollection<Commission> Commission { get; set; }
+        [InverseProperty(nameof(Commission.RateGroup))]
+        public virtual ICollection<Commission> Commissions { get; set; }
     }
 }

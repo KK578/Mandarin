@@ -29,15 +29,16 @@ namespace Mandarin.Models.Common
         /// <summary>
         /// Gets or sets the code for this status.
         /// </summary>
+        [Required]
         [Column("status_code")]
-        [MaxLength(25)]
+        [StringLength(25)]
         public string StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the description of this status.
         /// </summary>
         [Column("description")]
-        [MaxLength(100)]
+        [StringLength(100)]
         public string Description { get; set; }
 
         /// <summary>

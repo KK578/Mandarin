@@ -27,13 +27,13 @@ namespace Mandarin.Models.Commissions
         /// <summary>
         /// Gets or sets the start date for this commission.
         /// </summary>
-        [Column("start_date")]
+        [Column("start_date", TypeName = "date")]
         public DateTime StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets the end date for this commission.
         /// </summary>
-        [Column("end_date")]
+        [Column("end_date", TypeName = "date")]
         public DateTime EndDate { get; set; }
 
         /// <summary>
@@ -52,12 +52,14 @@ namespace Mandarin.Models.Commissions
         /// Gets or sets the related commission rate group for this commission.
         /// </summary>
         [ForeignKey(nameof(Commission.RateGroupId))]
+        [InverseProperty(nameof(CommissionRateGroup.Commissions))]
         public virtual CommissionRateGroup RateGroup { get; set; }
 
         /// <summary>
         /// Gets or sets the related stockist for this commission.
         /// </summary>
         [ForeignKey(nameof(Commission.StockistId))]
+        [InverseProperty(nameof(Artists.Stockist.Commissions))]
         public virtual Stockist Stockist { get; set; }
     }
 }

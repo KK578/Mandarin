@@ -48,7 +48,7 @@ namespace Mandarin.Services.Commission
             ArtistSales ToArtistSales(Stockist artist, IList<Subtransaction> subtransactions)
             {
                 var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(artist.StockistCode)).ToList();
-                var rate = decimal.Divide(artist.Commissions.Last().RateGroup.Rate, 100);
+                var rate = decimal.Divide(artist.Commissions.Last().RateGroup.Rate ?? 0, 100);
 
                 if (artistSubtransactions.Count == 0)
                 {
