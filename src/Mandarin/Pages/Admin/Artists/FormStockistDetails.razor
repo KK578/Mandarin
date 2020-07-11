@@ -45,7 +45,7 @@ else
       <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false">
         <Validation>
           <Field>
-            <FieldLabel>Stockist Code</FieldLabel>
+            <FieldLabel>Artist Code</FieldLabel>
             <TextEdit @bind-Text="@Stockist.StockistCode" Disabled="@(!isNew)">
               <Feedback><ValidationError /></Feedback>
             </TextEdit>
@@ -54,7 +54,7 @@ else
 
         <Validation>
           <Field>
-            <FieldLabel>Stockist Name</FieldLabel>
+            <FieldLabel>Full Name</FieldLabel>
             <TextEdit @bind-Text="@Stockist.StockistName" Disabled="@(!isEditing)">
               <Feedback><ValidationError /></Feedback>
             </TextEdit>
@@ -63,8 +63,33 @@ else
 
         <Validation>
           <Field>
+            <FieldLabel>Email Address</FieldLabel>
+            <TextEdit Role="@TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress" Disabled="@(!isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Divider />
+
+        <FieldLabel>Public Website</FieldLabel>
+        <Validation>
+          <Field>
+            @if (Stockist.StatusCode == "ACTIVE")
+            {
+              <Check TValue="bool?" @bind-Checked="@Stockist.Details.Visible" Disabled="@(!isEditing)">Show on Artist Page</Check>
+            }
+            else
+            {
+              <Check TValue="bool?" @Checked="@false" Disabled="true">Artist must be active to Show on Artist Page</Check>
+            }
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
             <FieldLabel>Description</FieldLabel>
-            <MemoEdit @bind-Text="@Stockist.Description" Rows="5" Disabled="@(!isEditing)">
+            <MemoEdit @bind-Text="@Stockist.Description" Rows="5" Disabled="@(!StockistIsVisible || !isEditing)">
               <Feedback><ValidationError /></Feedback>
             </MemoEdit>
           </Field>
@@ -73,28 +98,13 @@ else
         <Validation>
           <Field>
             <FieldLabel>Image</FieldLabel>
-            <FileEdit Filter="image/*" Disabled="@(!isEditing)" Changed="OnImageChanged">
+            <FileEdit Filter="image/*" Disabled="@(!StockistIsVisible || !isEditing)" Changed="OnImageChanged">
               <Feedback><ValidationError /></Feedback>
             </FileEdit>
             <img class="mt-6" src="@Stockist.Details.ImageUrl" />
           </Field>
         </Validation>
 
-        <FieldLabel>Contact Details & Social Media</FieldLabel>
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12"><Icon Name="IconName.Mail" /></AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <TextEdit Role="TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress" Placeholder="Email Address" Disabled="@(!isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </TextEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
         <Validation>
           <Field>
             <Addons>
@@ -102,7 +112,7 @@ else
                 <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!isEditing)">
+                <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!StockistIsVisible || !isEditing)">
                   <Feedback><ValidationError /></Feedback>
                 </TextEdit>
               </Addon>
@@ -116,7 +126,7 @@ else
                 <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!isEditing)">
+                <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!StockistIsVisible || !isEditing)">
                   <Feedback><ValidationError /></Feedback>
                 </TextEdit>
               </Addon>
@@ -130,7 +140,7 @@ else
                 <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!isEditing)">
+                <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!StockistIsVisible || !isEditing)">
                   <Feedback><ValidationError /></Feedback>
                 </TextEdit>
               </Addon>
@@ -144,7 +154,7 @@ else
                 <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!isEditing)">
+                <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!StockistIsVisible || !isEditing)">
                   <Feedback><ValidationError /></Feedback>
                 </TextEdit>
               </Addon>
@@ -158,7 +168,7 @@ else
                 <AddonLabel Class="w-12"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!isEditing)">
+                <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!StockistIsVisible || !isEditing)">
                   <Feedback><ValidationError /></Feedback>
                 </TextEdit>
               </Addon>
@@ -213,6 +223,7 @@ else
 
   private Stockist Stockist { get; set; }
   private Commission Commission => Stockist.Commissions.Last();
+  private bool StockistIsVisible => Stockist.Details.Visible != false;
 
   private IReadOnlyList<CommissionRateGroup> rateGroups;
 
@@ -233,8 +244,12 @@ else
       this.isEditing = true;
       this.Stockist = new Stockist
       {
-        Details = new StockistDetail(),
+        StatusCode = "ACTIVE",
         Status = await MandarinDbContext.Status.FirstAsync(x => x.StatusCode == "ACTIVE"),
+        Details = new StockistDetail
+        {
+          Visible = true,
+        },
       };
       Stockist.Commissions.Add(new Commission
       {

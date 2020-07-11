@@ -34,7 +34,7 @@ namespace Mandarin.Services.Commission
                        .GroupBy(subtransaction => subtransaction.Product?.ProductCode ?? "TLM-Unknown")
                        .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
                        .ToList()
-                       .Zip(this.artistService.GetArtistsForCommissionAsync().ToList(), (s, a) => (Subtransactions: s, Artists: a))
+                       .Zip(this.artistService.GetArtistsForCommissionAsync().Where(x => x.StatusCode == "ACTIVE").ToList(), (s, a) => (Subtransactions: s, Artists: a))
                        .SelectMany(tuple => tuple.Artists.Select(artist => ToArtistSales(artist, tuple.Subtransactions)));
 
             Subtransaction ToAggregateSubtransaction(IList<Subtransaction> s)

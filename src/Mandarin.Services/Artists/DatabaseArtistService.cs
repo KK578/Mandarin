@@ -36,6 +36,7 @@ namespace Mandarin.Services.Artists
                        .Include(x => x.Details)
                        .OrderBy(x => x.StockistCode)
                        .Where(x => x.StatusCode == "ACTIVE")
+                       .Where(x => x.Details.Visible == true)
                        .ToObservable();
         }
 
@@ -44,8 +45,8 @@ namespace Mandarin.Services.Artists
         {
             var artists = this.mandarinDbContext.Stockist
                               .Include(x => x.Details)
+                              .Include(x => x.Status)
                               .Include(x => x.Commissions).ThenInclude(x => x.RateGroup)
-                              .Where(x => x.StatusCode == "ACTIVE")
                               .ToObservable();
             var additionalArtists = this.GetAdditionalArtistDetails();
             return artists.Merge(additionalArtists)
