@@ -30,15 +30,19 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
+        public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
         {
-            return this.emailService.BuildEmailAsync(model);
+            var email = await this.emailService.BuildEmailAsync(model);
+            this.logger.LogInformation("Sending Contact Form Email: {@Email}", email);
+            return email;
         }
 
         /// <inheritdoc/>
         public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
         {
-            return this.emailService.BuildRecordOfSalesEmail(artistSales);
+            var email = this.emailService.BuildRecordOfSalesEmail(artistSales);
+            this.logger.LogInformation("Sending Record of Sales Email: {@Email}", email);
+            return email;
         }
 
         /// <inheritdoc/>
@@ -46,43 +50,23 @@ namespace Mandarin.Services.Decorators
         {
             try
             {
-                this.WriteLog(email);
-            }
-            catch
-            {
-                // Ignore errors while trying to log.
-            }
+                var response = await this.emailService.SendEmailAsync(email);
 
-            try
-            {
-                return await this.emailService.SendEmailAsync(email);
+                if (response.IsSuccess)
+                {
+                    this.logger.LogInformation("Sent email successfully: {@Email}", email);
+                }
+                else
+                {
+                    this.logger.LogWarning("Email sent with errors: {@Response} {@Email}", response, email);
+                }
+
+                return response;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Exception whilst attempting to send email on behalf of {From}.", email.From.Email);
+                this.logger.LogError(ex, "Exception whilst attempting to send email: {@Email}.", email);
                 throw;
-            }
-        }
-
-        private void WriteLog(SendGridMessage email)
-        {
-            if (string.IsNullOrEmpty(email.Subject))
-            {
-                foreach (var personalization in email.Personalizations.NullToEmpty())
-                {
-                    this.logger.LogInformation("Sending Record of Sales Email: From={From}, To={To}, Data={Data}",
-                                               email.From.Email,
-                                               string.Join(" & ", personalization.Tos.NullToEmpty().Select(x => x.Email)),
-                                               personalization.TemplateData);
-                }
-            }
-            else
-            {
-                this.logger.LogInformation("Sending Contact Form Email: From={From}, Subject={Subject}, Content={Content}, Attachments={Attachments}",
-                                           email.From.Email,
-                                           email.Subject,
-                                           email.PlainTextContent,
-                                           email.Attachments?.Count ?? 0);
             }
         }
     }

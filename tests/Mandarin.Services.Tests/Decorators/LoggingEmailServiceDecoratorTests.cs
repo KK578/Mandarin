@@ -6,7 +6,6 @@ using Mandarin.Models.Commissions;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Objects;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using SendGrid.Helpers.Mail;
@@ -17,79 +16,81 @@ namespace Mandarin.Services.Tests.Decorators
     public class LoggingEmailServiceDecoratorTests
     {
         [Test]
-        public async Task BuildEmailAsync_IsFallthrough()
+        public async Task BuildEmailAsync_LogsEmailDetailsOnCreation()
         {
             var model = new ContactDetailsModel();
-            var expected = new SendGridMessage();
-            var service = Mock.Of<IEmailService>(x => x.BuildEmailAsync(model) == Task.FromResult(expected));
-            var subject = new LoggingEmailServiceDecorator(service, NullLogger<IEmailService>.Instance);
+            var logger = new TestableLogger<IEmailService>();
+            var email = new SendGridMessage();
+            email.SetFrom("SomeEmail@address.com");
+            email.Subject = "Hello";
+            email.PlainTextContent = "Content";
+            var service = Mock.Of<IEmailService>(x => x.BuildEmailAsync(model) == Task.FromResult(email));
+            var subject = new LoggingEmailServiceDecorator(service, logger);
             var result = await subject.BuildEmailAsync(model);
 
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result, Is.EqualTo(email));
+            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
         }
 
         [Test]
         public void BuildRecordOfSalesEmail_IsFallthrough()
         {
             var model = TestData.Create<ArtistSales>();
-            var expected = new SendGridMessage();
-            var service = Mock.Of<IEmailService>(x => x.BuildRecordOfSalesEmail(model) == expected);
-            var subject = new LoggingEmailServiceDecorator(service, NullLogger<IEmailService>.Instance);
+            var logger = new TestableLogger<IEmailService>();
+            var email = new SendGridMessage();
+            email.SetFrom("SomeEmail@address.com");
+            email.SetSubject("Hello");
+            email.AddAttachment("FileName", "Content");
+            var service = Mock.Of<IEmailService>(x => x.BuildRecordOfSalesEmail(model) == email);
+            var subject = new LoggingEmailServiceDecorator(service, logger);
             var result = subject.BuildRecordOfSalesEmail(model);
 
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result, Is.EqualTo(email));
+            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
         }
 
         [Test]
-        public void SendEmailAsync_WhenSuccessful_WritesLogCorrectly()
+        public void SendEmailAsync_WhenResponseCodeUnsuccessful_WritesLogCorrectly()
         {
             var email = new SendGridMessage();
-            email.SetFrom("SomeEmail@address.com");
-            email.Subject = "Hello";
-            email.PlainTextContent = "Content";
-
-            var service = Mock.Of<IEmailService>();
+            var response = new EmailResponse(500);
+            var service = Mock.Of<IEmailService>(x => x.SendEmailAsync(email) == Task.FromResult(response));
             var logger = new TestableLogger<IEmailService>();
+
             var subject = new LoggingEmailServiceDecorator(service, logger);
             subject.SendEmailAsync(email);
 
             Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
-            Assert.That(logger.LogEntries[0].Message, Contains.Substring("From=SomeEmail@address.com"));
-            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Subject=Hello"));
-            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Content=Content"));
-            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Attachments=0"));
-        }
-
-        [Test]
-        public void SendEmailAsync_WhenSuccessfulWithAttachment_WritesLogCorrectly()
-        {
-            var email = new SendGridMessage();
-            email.SetFrom("SomeEmail@address.com");
-            email.AddAttachment("FileName", "Content");
-
-            var service = Mock.Of<IEmailService>();
-            var logger = new TestableLogger<IEmailService>();
-            var subject = new LoggingEmailServiceDecorator(service, logger);
-            subject.SendEmailAsync(email);
-
-            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
-            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Attachments=1"));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Email sent with errors"));
         }
 
         [Test]
         public void SendEmailAsync_WhenUnderlyingThrows_ExceptionIsLogged()
         {
             var email = new SendGridMessage();
-            email.SetFrom("SomeEmail@address.com");
-            email.SetSubject("Hello");
             var ex = new Exception("Service didn't work.");
             var service = Mock.Of<IEmailService>(x => x.SendEmailAsync(It.IsAny<SendGridMessage>()) == Task.FromException<EmailResponse>(ex));
+            var logger = new TestableLogger<IEmailService>();
+
+            var subject = new LoggingEmailServiceDecorator(service, logger);
+            subject.SendEmailAsync(email);
+
+            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
+            Assert.That(logger.LogEntries[0].Exception, Is.EqualTo(ex));
+        }
+
+        [Test]
+        public void SendEmailAsync_WhenSuccessful_WritesLogCorrectly()
+        {
+            var email = new SendGridMessage();
+            var response = new EmailResponse(200);
+            var service = Mock.Of<IEmailService>(x => x.SendEmailAsync(email) == Task.FromResult(response));
             var logger = new TestableLogger<IEmailService>();
             var subject = new LoggingEmailServiceDecorator(service, logger);
             subject.SendEmailAsync(email);
 
-            Assert.That(logger.LogEntries.Count, Is.EqualTo(2));
-            Assert.That(logger.LogEntries[1].Exception, Is.EqualTo(ex));
+            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
+            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Sent email successfully"));
         }
     }
 }
