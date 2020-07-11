@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System.Linq;
+using Bashi.Core.Enums;
+using Mandarin.Models.Common;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Mandarin.Database.Migrations
@@ -71,14 +74,14 @@ namespace Mandarin.Database.Migrations
                     table.UniqueConstraint("AK_status_status_code", x => x.status_code);
                 });
 
-            migrationBuilder.InsertData(table: "status",
-                                        schema: "static",
-                                        columns: new[] { "status_id", "description", "status_code" },
-                                        values: new object[] { 1, "Active", "Active" });
-            migrationBuilder.InsertData(table: "status",
-                                        schema: "static",
-                                        columns: new[] { "status_id", "description", "status_code" },
-                                        values: new object[] { 2, "Inactive", "Inactive" });
+            var statuses = EnumUtil.GetValues<StatusMode>().ToList();
+            foreach (var status in statuses)
+            {
+                migrationBuilder.InsertData(table: "status",
+                                            schema: "static",
+                                            columns: new[] { "status_code", "description" },
+                                            values: new object[] { status.ToString(), status.GetDescription() });
+            }
 
             migrationBuilder.CreateIndex(
                 name: "IX_stockist_stockist_status",
