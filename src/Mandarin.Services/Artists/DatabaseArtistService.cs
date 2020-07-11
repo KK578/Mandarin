@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Models.Artists;
+using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -35,7 +36,7 @@ namespace Mandarin.Services.Artists
             return this.mandarinDbContext.Stockist
                        .Include(x => x.Details)
                        .OrderBy(x => x.StockistCode)
-                       .Where(x => x.StatusCode == "ACTIVE")
+                       .Where(x => x.StatusCode == StatusMode.Active)
                        .ToObservable();
         }
 
@@ -45,7 +46,6 @@ namespace Mandarin.Services.Artists
             var artists = this.mandarinDbContext.Stockist
                               .Include(x => x.Details)
                               .Include(x => x.Commissions).ThenInclude(x => x.RateGroup)
-                              .Where(x => x.StatusCode == "ACTIVE")
                               .ToObservable();
             var additionalArtists = this.GetAdditionalArtistDetails();
             return artists.Merge(additionalArtists)

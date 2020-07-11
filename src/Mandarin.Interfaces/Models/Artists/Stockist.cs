@@ -46,9 +46,8 @@ namespace Mandarin.Models.Artists
         /// <summary>
         /// Gets or sets the reference to the stockist's current active status.
         /// </summary>
-        [Column("stockist_status")]
-        [StringLength(25)]
-        public string StatusCode { get; set; }
+        [Column("stockist_status", TypeName = "character varying(25)")]
+        public StatusMode StatusCode { get; set; }
 
         /// <summary>
         /// Gets or sets a description about the stockist.
@@ -56,11 +55,6 @@ namespace Mandarin.Models.Artists
         [Column("description")]
         [MaxLength(500)]
         public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current status of stockist.
-        /// </summary>
-        public Status Status { get; set; }
 
         /// <summary>
         /// Gets or sets the stockist's personal details.

@@ -2,13 +2,27 @@
 using System.Linq;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
+using Mandarin.Models.Common;
 using Mandarin.Models.Inventory;
-using Mandarin.Models.Transactions;
 
 namespace Mandarin.Tests.Data.Extensions
 {
     public static class MandarinModelExtensions
     {
+        public static Stockist WithStatus(this Stockist model, StatusMode statusMode)
+        {
+            return new Stockist
+            {
+                StockistId = model.StockistId,
+                StockistCode = model.StockistCode,
+                StockistName = model.StockistName,
+                Description = model.Description,
+                Details = model.Details,
+                Commissions = model.Commissions,
+                StatusCode = statusMode,
+            };
+        }
+
         public static Stockist WithTenPercentCommission(this Stockist model)
         {
             return new Stockist
@@ -18,9 +32,9 @@ namespace Mandarin.Tests.Data.Extensions
                 StockistName = model.StockistName,
                 Description = model.Description,
                 Details = model.Details,
-                Commissions = new List<Models.Commissions.Commission>
+                Commissions = new List<Commission>
                 {
-                    new Models.Commissions.Commission
+                    new Commission
                     {
                         StartDate = model.Commissions.First().StartDate,
                         EndDate = model.Commissions.First().EndDate,
@@ -30,7 +44,6 @@ namespace Mandarin.Tests.Data.Extensions
                         },
                     },
                 },
-                Status = model.Status,
                 StatusCode = model.StatusCode,
             };
         }
@@ -45,25 +58,8 @@ namespace Mandarin.Tests.Data.Extensions
                 Description = model.Description,
                 Details = model.Details,
                 Commissions = model.Commissions,
-                Status = model.Status,
                 StatusCode = model.StatusCode,
             };
-        }
-
-        public static Transaction WithTlmProducts(this Transaction transaction)
-        {
-            return new Transaction(transaction.SquareId,
-                                   transaction.TotalAmount,
-                                   transaction.Timestamp,
-                                   transaction.InsertedBy,
-                                   transaction.Subtransactions.Select(x => MandarinModelExtensions.WithTlmProducts((Subtransaction)x)));
-        }
-
-        public static Subtransaction WithTlmProducts(this Subtransaction subtransaction)
-        {
-            return new Subtransaction(subtransaction.Product.WithTlmProductCode(),
-                                      subtransaction.Quantity,
-                                      subtransaction.Subtotal);
         }
 
         public static Product WithTlmProductCode(this Product product)

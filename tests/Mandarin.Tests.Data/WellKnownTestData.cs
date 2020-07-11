@@ -14,17 +14,6 @@ namespace Mandarin.Tests.Data
 
         public static async Task SeedDatabaseAsync(MandarinDbContext mandarinDbContext)
         {
-            var status = await mandarinDbContext.Status.FirstOrDefaultAsync(x => x.StatusCode == "ACTIVE");
-            if (status == null)
-            {
-                await mandarinDbContext.Status.AddAsync(new Status
-                {
-                    StatusId = 1,
-                    StatusCode = "ACTIVE",
-                    Description = "Currently active.",
-                });
-            }
-
             var tlmStockist = await mandarinDbContext.Stockist.FirstOrDefaultAsync(x => x.StockistCode == WellKnownTestData.Stockists.TheLittleMandarin.StockistCode);
             if (tlmStockist == null)
             {
@@ -50,7 +39,7 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist FullArtist = new Stockist
             {
                 StockistName = "Artist Name",
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.Active,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
@@ -66,7 +55,7 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist InactiveArtist = new Stockist
             {
                 StockistName = "Artist Name",
-                StatusCode = "INACTIVE",
+                StatusCode = StatusMode.Inactive,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
@@ -77,7 +66,7 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist MinimalArtist = new Stockist
             {
                 StockistName = "Artist Name",
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.Active,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
@@ -89,7 +78,7 @@ namespace Mandarin.Tests.Data
             {
                 StockistCode = "TLM",
                 StockistName = "The Little Mandarin",
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.Active,
                 Description = "The Little Mandarin in-house art team!",
                 Details = new StockistDetail
                 {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
+using Mandarin.Models.Common;
 
 namespace Mandarin.Services.Artists
 {
@@ -45,7 +46,7 @@ namespace Mandarin.Services.Artists
                         },
                     },
                 },
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.ActiveHidden,
             };
         }
     }
