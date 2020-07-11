@@ -45,7 +45,8 @@ namespace Mandarin.Services.Decorators
             {
                 try
                 {
-                    var result = (await addItemFactory()).NullToEmpty().ToList().AsReadOnly();
+                    var task = await addItemFactory();
+                    var result = task.NullToEmpty().ToList().AsReadOnly();
                     this.logger.LogInformation("Adding Cache Entry '{Key}' with {Count} Items", key, result.Count);
 
                     await CachingDecoratorBase.Semaphore.WaitAsync();
