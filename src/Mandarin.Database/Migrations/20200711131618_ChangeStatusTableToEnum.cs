@@ -40,6 +40,9 @@ namespace Mandarin.Database.Migrations
                 oldType: "character varying(25)",
                 oldMaxLength: 25,
                 oldNullable: true);
+
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'Active' WHERE stockist_status = 'ACTIVE';");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'Inactive' WHERE stockist_status = 'INACTIVE';");
         }
 
         /// <inheritdoc />
@@ -74,13 +77,16 @@ namespace Mandarin.Database.Migrations
                     table.UniqueConstraint("AK_status_status_code", x => x.status_code);
                 });
 
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'ACTIVE' WHERE stockist_status = 'Active';");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'INACTIVE' WHERE stockist_status = 'Inactive';");
+
             var statuses = EnumUtil.GetValues<StatusMode>().ToList();
             foreach (var status in statuses)
             {
                 migrationBuilder.InsertData(table: "status",
                                             schema: "static",
                                             columns: new[] { "status_code", "description" },
-                                            values: new object[] { status.ToString(), status.GetDescription() });
+                                            values: new object[] { status.ToString().ToUpper(), status.GetDescription() });
             }
 
             migrationBuilder.CreateIndex(

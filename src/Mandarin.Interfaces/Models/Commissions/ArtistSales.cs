@@ -15,7 +15,8 @@ namespace Mandarin.Models.Commissions
         /// Initializes a new instance of the <see cref="ArtistSales"/> class.
         /// </summary>
         /// <param name="stockistCode">The artist's unique stockist code.</param>
-        /// <param name="name">The artist's full name.</param>
+        /// <param name="firstName">The artist's first name.</param>
+        /// <param name="artistName">The artist's displayed name.</param>
         /// <param name="emailAddress">Email address to send the Record of Sales to.</param>
         /// <param name="customMessage">Additional message to send in the Record of Sales to.</param>
         /// <param name="startDate">Start date of the sales summary.</param>
@@ -26,7 +27,8 @@ namespace Mandarin.Models.Commissions
         /// <param name="commissionTotal">Total amount of money that is commissioned.</param>
         /// <param name="total">Total amount of money made in sales (after commission).</param>
         public ArtistSales(string stockistCode,
-                           string name,
+                           string firstName,
+                           string artistName,
                            string emailAddress,
                            string customMessage,
                            DateTime startDate,
@@ -38,7 +40,8 @@ namespace Mandarin.Models.Commissions
                            decimal total)
         {
             this.StockistCode = stockistCode;
-            this.Name = name;
+            this.FirstName = firstName;
+            this.Name = artistName;
             this.EmailAddress = emailAddress;
             this.CustomMessage = customMessage;
             this.StartDate = startDate;
@@ -55,6 +58,12 @@ namespace Mandarin.Models.Commissions
         /// </summary>
         [JsonProperty("stockistCode")]
         public string StockistCode { get; }
+
+        /// <summary>
+        /// Gets the artist's first name.
+        /// </summary>
+        [JsonIgnore]
+        public string FirstName { get; }
 
         /// <summary>
         /// Gets the artist's name.
@@ -131,6 +140,7 @@ namespace Mandarin.Models.Commissions
         public ArtistSales WithMessageCustomisations(string emailAddress, string customMessage)
         {
             return new ArtistSales(this.StockistCode,
+                                   this.FirstName,
                                    this.Name,
                                    emailAddress ?? this.EmailAddress,
                                    customMessage ?? this.CustomMessage,

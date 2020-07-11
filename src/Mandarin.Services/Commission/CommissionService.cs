@@ -54,7 +54,8 @@ namespace Mandarin.Services.Commission
                 if (artistSubtransactions.Count == 0)
                 {
                     return new ArtistSales(artist.StockistCode,
-                                           artist.StockistName,
+                                           artist.FirstName,
+                                           artist.Details.ShortDisplayName,
                                            artist.Details.EmailAddress,
                                            string.Empty,
                                            start,
@@ -72,7 +73,8 @@ namespace Mandarin.Services.Commission
                     var commission = sales.Sum(x => x.Commission);
 
                     return new ArtistSales(artist.StockistCode,
-                                           artist.StockistName,
+                                           artist.FirstName,
+                                           artist.Details.ShortDisplayName,
                                            artist.Details.EmailAddress,
                                            string.Empty,
                                            start,

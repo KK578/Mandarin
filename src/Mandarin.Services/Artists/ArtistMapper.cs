@@ -18,17 +18,21 @@ namespace Mandarin.Services.Artists
         /// <returns>A newly created <see cref="Stockist"/>.</returns>
         public static Stockist ConvertToModel(ArtistDto dto)
         {
+            // NOTE: This has to be removed before merging.
             return new Stockist
             {
                 StockistId = -1,
                 StockistCode = dto.StockistCode,
-                StockistName = dto.StockistName,
-                Description = dto.Description,
+                FirstName = dto.StockistName,
+                LastName = dto.StockistName,
                 Details = new StockistDetail
                 {
+                    ShortDisplayName = dto.StockistName,
+                    FullDisplayName = dto.StockistName,
+                    Description = dto.Description,
                     EmailAddress = dto.EmailAddress,
                     FacebookHandle = dto.FacebookHandle,
-                    ImageUrl = dto.ImageUrl,
+                    BannerImageUrl = dto.ImageUrl,
                     InstagramHandle = dto.InstagramHandle,
                     TumblrHandle = dto.TumblrHandle,
                     TwitterHandle = dto.TwitterHandle,

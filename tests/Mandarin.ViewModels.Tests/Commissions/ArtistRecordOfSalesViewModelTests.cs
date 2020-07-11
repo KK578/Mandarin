@@ -115,7 +115,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
 
             subject.SetMessageFromTemplate(RecordOfSalesTemplateKey.Sales);
 
-            Assert.That(subject.CustomMessage, Is.EqualTo($"For {sales.Name} there are sales. {name}"));
+            Assert.That(subject.CustomMessage, Is.EqualTo($"For {sales.FirstName} there are sales. {name}"));
         }
     }
 }

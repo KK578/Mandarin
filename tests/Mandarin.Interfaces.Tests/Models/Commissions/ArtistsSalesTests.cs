@@ -20,6 +20,7 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
                                               TestData.NextString(),
                                               TestData.NextString(),
                                               TestData.NextString(),
+                                              TestData.NextString(),
                                               TestData.Create<DateTime>(),
                                               TestData.Create<DateTime>(),
                                               TestData.Create<decimal>(),
@@ -52,6 +53,7 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
         public async Task AsJson_ShouldMatchSnapshot()
         {
             var data = new ArtistSales("TLM",
+                                       "Owner",
                                        "The Little Mandarin",
                                        "email@address.com",
                                        "My Message",

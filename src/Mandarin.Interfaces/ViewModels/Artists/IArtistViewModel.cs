@@ -8,9 +8,14 @@ namespace Mandarin.ViewModels.Artists
     public interface IArtistViewModel
     {
         /// <summary>
-        /// Gets the artist's full name.
+        /// Gets the artist's thumbnail display name.
         /// </summary>
-        string Name { get; }
+        string ShortDisplayName { get; }
+
+        /// <summary>
+        /// Gets the artist's banner display name.
+        /// </summary>
+        string FullDisplayName { get; }
 
         /// <summary>
         /// Gets the artist's biography.

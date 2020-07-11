@@ -98,7 +98,7 @@
                 <FieldLabel>Custom Message:</FieldLabel>
                 <span class="flex-grow"></span>
                 <FieldLabel>
-                  <Dropdown RightAligned="true" Visible="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)">
+                  <Dropdown RightAligned="true">
                     <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
                     <DropdownMenu>
                       @foreach (var option in EnumUtil.GetValues<RecordOfSalesTemplateKey>())

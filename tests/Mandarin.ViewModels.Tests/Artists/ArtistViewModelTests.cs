@@ -15,7 +15,7 @@ namespace Mandarin.ViewModels.Tests.Artists
             var subject = new ArtistViewModel(new Stockist { Details = new StockistDetail() });
 
             // Assert
-            Assert.That(subject.Name, Is.Null);
+            Assert.That(subject.ShortDisplayName, Is.Null);
             Assert.That(subject.Description, Is.Null);
             Assert.That(subject.FacebookUrl, Is.Null);
             Assert.That(subject.ImageUrl, Is.Null);
@@ -29,20 +29,26 @@ namespace Mandarin.ViewModels.Tests.Artists
         public void Builder_GivenNameAndDescription_CreatesValueCorrectly()
         {
             // Arrange
-            var name = TestData.NextString();
+            var shortName = TestData.NextString();
+            var fullName = TestData.NextString();
             var description = TestData.WellKnownString;
 
             // Act
             var model = new Stockist
             {
                 StockistCode = null,
-                StockistName = name,
-                Description = description,
+                Details = new StockistDetail
+                {
+                    ShortDisplayName = shortName,
+                    FullDisplayName = fullName,
+                    Description = description,
+                },
             };
             var subject = new ArtistViewModel(model);
 
             // Assert
-            Assert.That(subject.Name, Is.EqualTo(name));
+            Assert.That(subject.ShortDisplayName, Is.EqualTo(shortName));
+            Assert.That(subject.FullDisplayName, Is.EqualTo(fullName));
             Assert.That(subject.Description, Is.EqualTo(description));
         }
 
@@ -53,12 +59,10 @@ namespace Mandarin.ViewModels.Tests.Artists
             var model = new Stockist
             {
                 StockistCode = null,
-                StockistName = null,
-                Description = null,
                 Details = new StockistDetail
                 {
                     EmailAddress = null,
-                    ImageUrl = "https://localhost/image",
+                    BannerImageUrl = "https://localhost/image",
                     TwitterHandle = "MyTwitterHandle",
                     InstagramHandle = "MyInstagramHandle",
                     FacebookHandle = "MyFacebookHandle",
