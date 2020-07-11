@@ -15,7 +15,10 @@ namespace Mandarin.Tests.Data.Extensions
             {
                 StockistId = model.StockistId,
                 StockistCode = model.StockistCode,
-                StockistName = model.StockistName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                ShortDisplayName = model.ShortDisplayName,
+                FullDisplayName = model.FullDisplayName,
                 Description = model.Description,
                 Details = model.Details,
                 Commissions = model.Commissions,
@@ -29,7 +32,10 @@ namespace Mandarin.Tests.Data.Extensions
             {
                 StockistId = model.StockistId,
                 StockistCode = "TLM",
-                StockistName = model.StockistName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                ShortDisplayName = model.ShortDisplayName,
+                FullDisplayName = model.FullDisplayName,
                 Description = model.Description,
                 Details = model.Details,
                 Commissions = new List<Commission>
@@ -54,7 +60,10 @@ namespace Mandarin.Tests.Data.Extensions
             {
                 StockistId = model.StockistId,
                 StockistCode = "TLM",
-                StockistName = model.StockistName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                ShortDisplayName = model.ShortDisplayName,
+                FullDisplayName = model.FullDisplayName,
                 Description = model.Description,
                 Details = model.Details,
                 Commissions = model.Commissions,

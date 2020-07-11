@@ -38,12 +38,15 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Stockist FullArtist = new Stockist
             {
-                StockistName = "Artist Name",
+                FirstName = "Artist",
+                LastName = "Name",
+                ShortDisplayName = "Artist Name",
+                FullDisplayName = "Artist Name",
                 StatusCode = StatusMode.Active,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
-                    ImageUrl = "https://localhost/static/images/artist1.jpg",
+                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                     TwitterHandle = "ArtistTwitter",
                     InstagramHandle = "ArtistInstagram",
                     FacebookHandle = "ArtistFacebook",
@@ -54,37 +57,46 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist InactiveArtist = new Stockist
             {
-                StockistName = "Artist Name",
+                FirstName = "Artist",
+                LastName = "Name",
+                ShortDisplayName = "Artist Name",
+                FullDisplayName = "Artist Name",
                 StatusCode = StatusMode.Inactive,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
-                    ImageUrl = "https://localhost/static/images/artist1.jpg",
+                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
 
             public static readonly Stockist MinimalArtist = new Stockist
             {
-                StockistName = "Artist Name",
+                FirstName = "Artist",
+                LastName = "Name",
+                ShortDisplayName = "Artist Name",
+                FullDisplayName = "Artist Name",
                 StatusCode = StatusMode.Active,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
-                    ImageUrl = "https://localhost/static/images/artist1.jpg",
+                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
 
             public static readonly Stockist TheLittleMandarin = new Stockist
             {
                 StockistCode = "TLM",
-                StockistName = "The Little Mandarin",
+                FirstName = "Little",
+                LastName = "Mandarin",
+                ShortDisplayName = "The Little Mandarin",
+                FullDisplayName = "The Little Mandarin",
                 StatusCode = StatusMode.Active,
                 Description = "The Little Mandarin in-house art team!",
                 Details = new StockistDetail
                 {
                     InstagramHandle = "thelittlemandarin_e17",
                     WebsiteUrl = "https://thelittlemandarin.co.uk/",
-                    ImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",
+                    BannerImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",
                 },
             };
         }

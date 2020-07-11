@@ -46,11 +46,18 @@ namespace Mandarin.Models.Artists
         public string WebsiteUrl { get; set; }
 
         /// <summary>
+        /// Gets or sets the stockist's thumbnail image url.
+        /// </summary>
+        [Column("thumbnail_image_url")]
+        [MaxLength(150)]
+        public string ThumbnailImageUrl { get; set; }
+
+        /// <summary>
         /// Gets or sets the stockist's banner image url.
         /// </summary>
-        [Column("image_url")]
+        [Column("banner_image_url")]
         [MaxLength(150)]
-        public string ImageUrl { get; set; }
+        public string BannerImageUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the stockist's tumblr handle.

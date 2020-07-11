@@ -1,8 +1,8 @@
 ﻿@using Mandarin.ViewModels.Artists
 
 <div class="text-center mx-auto">
-  <img src="@ViewModel.ImageUrl" alt="@ViewModel.Name" />
-  <p class="text-2xl mt-2 mb-0">@ViewModel.Name</p>
+  <img src="@ViewModel.ImageUrl" alt="@ViewModel.FullName" />
+  <p class="text-2xl mt-2 mb-0">@ViewModel.FullName</p>
   @if (@ViewModel.WebsiteUrl != null)
   {
     <a class="hover:text-gold text-grey-medium transition transition-colors duration-200 ease-in-out" href="@ViewModel.WebsiteUrl" target="_blank">@ViewModel.WebsiteUrl.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped)</a>

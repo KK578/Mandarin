@@ -30,10 +30,32 @@ namespace Mandarin.Models.Artists
         /// <summary>
         /// Gets or sets the Stockist's name.
         /// </summary>
+        [Column("first_name")]
+        [StringLength(100)]
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Stockist's name.
+        /// </summary>
+        [Column("last_name")]
+        [StringLength(100)]
+        public string LastName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Stockist's name.
+        /// </summary>
+        [Required]
+        [Column("short_stockist_name")]
+        [StringLength(250)]
+        public string ShortDisplayName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Stockist's name.
+        /// </summary>
         [Required]
         [Column("stockist_name")]
         [StringLength(250)]
-        public string StockistName { get; set; }
+        public string FullDisplayName { get; set; }
 
         /// <summary>
         /// Gets or sets the Stockist's user-friendly code.

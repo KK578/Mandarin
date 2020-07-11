@@ -23,13 +23,16 @@ namespace Mandarin.ViewModels.Artists
         }
 
         /// <inheritdoc/>
-        public string Name => this.model.StockistName;
+        public string ShortName => this.model.ShortDisplayName;
+
+        /// <inheritdoc/>
+        public string FullName => this.model.FullDisplayName;
 
         /// <inheritdoc/>
         public string Description => this.model.Description;
 
         /// <inheritdoc/>
-        public Uri ImageUrl => ArtistViewModel.ParseUri(this.model.Details.ImageUrl);
+        public Uri ImageUrl => ArtistViewModel.ParseUri(this.model.Details.BannerImageUrl);
 
         /// <inheritdoc/>
         public Uri WebsiteUrl => ArtistViewModel.ParseUri(this.model.Details.WebsiteUrl);

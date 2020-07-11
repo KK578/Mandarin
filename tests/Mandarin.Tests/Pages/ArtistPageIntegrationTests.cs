@@ -71,7 +71,7 @@ namespace Mandarin.Tests.Pages
         {
             var data = new Stockist
             {
-                StockistName = ArtistPageIntegrationTests.ArtistName,
+                ShortDisplayName = ArtistPageIntegrationTests.ArtistName,
                 Description = TestData.WellKnownString,
                 Details = new StockistDetail(),
             };
