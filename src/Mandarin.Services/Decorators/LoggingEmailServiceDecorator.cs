@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Contact;
 using Mandarin.Services.Objects;
-using Mandarin.Services.Square;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 
