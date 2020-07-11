@@ -41,8 +41,8 @@ namespace Mandarin.Database.Migrations
                 oldMaxLength: 25,
                 oldNullable: true);
 
-            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'Active' WHERE stockist_status = 'ACTIVE'");
-            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'Inactive' WHERE stockist_status = 'INACTIVE'");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'Active' WHERE stockist_status = 'ACTIVE';");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'Inactive' WHERE stockist_status = 'INACTIVE';");
         }
 
         /// <inheritdoc />
@@ -77,8 +77,8 @@ namespace Mandarin.Database.Migrations
                     table.UniqueConstraint("AK_status_status_code", x => x.status_code);
                 });
 
-            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'ACTIVE' WHERE stockist_status = 'Active'");
-            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'INACTIVE' WHERE stockist_status = 'Inactive'");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'ACTIVE' WHERE stockist_status = 'Active';");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'INACTIVE' WHERE stockist_status = 'Inactive';");
 
             var statuses = EnumUtil.GetValues<StatusMode>().ToList();
             foreach (var status in statuses)

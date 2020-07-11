@@ -77,17 +77,19 @@ namespace Mandarin
         /// </remarks>
         /// </summary>
         /// <param name="app">The application to be configured.</param>
-        public void Configure(IApplicationBuilder app)
+        /// <param name="env">The application host environment.</param>
+        /// <param name="mandarinDbContext">The application database context.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
             app.SafeUseAllElasticApm(this.configuration);
 
-            var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                mandarinDbContext.Database.Migrate();
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
