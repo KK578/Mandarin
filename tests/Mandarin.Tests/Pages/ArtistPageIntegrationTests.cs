@@ -73,7 +73,7 @@ namespace Mandarin.Tests.Pages
             {
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = ArtistPageIntegrationTests.ArtistName,
+                    FullDisplayName = ArtistPageIntegrationTests.ArtistName,
                     Description = TestData.WellKnownString,
                 },
             };
