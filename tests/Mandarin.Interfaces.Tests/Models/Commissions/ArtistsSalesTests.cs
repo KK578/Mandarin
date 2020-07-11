@@ -53,8 +53,8 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
         public async Task AsJson_ShouldMatchSnapshot()
         {
             var data = new ArtistSales("TLM",
-                                       "The",
-                                       "Little Mandarin",
+                                       "Owner",
+                                       "The Little Mandarin",
                                        "email@address.com",
                                        "My Message",
                                        new DateTime(2020, 06, 01),

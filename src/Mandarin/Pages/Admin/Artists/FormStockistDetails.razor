@@ -29,7 +29,7 @@ else
 {
   <Card>
     <CardHeader>
-        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.FirstName} {Stockist.LastName}")</CardTitle>
+        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.ShortDisplayName}")</CardTitle>
       <CardActions Float="Float.Right">
         @if (isEditing)
         {

@@ -57,7 +57,7 @@ namespace Mandarin.ViewModels.Commissions
         {
             var name = this.httpContextAccessor.HttpContext.User.Identity.Name;
             var templateFormat = this.pageContentModel.Get<string>("Admin", "RecordOfSales", "Templates", templateKey.ToString());
-            this.CustomMessage = string.Format(templateFormat, this.Commission.FirstName, name);
+            this.CustomMessage = string.Format(templateFormat, this.Commission.FirstName ?? this.Commission.Name, name);
         }
 
         /// <inheritdoc/>

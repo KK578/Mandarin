@@ -16,7 +16,7 @@ namespace Mandarin.Models.Commissions
         /// </summary>
         /// <param name="stockistCode">The artist's unique stockist code.</param>
         /// <param name="firstName">The artist's first name.</param>
-        /// <param name="lastName">The artist's last name.</param>
+        /// <param name="artistName">The artist's displayed name.</param>
         /// <param name="emailAddress">Email address to send the Record of Sales to.</param>
         /// <param name="customMessage">Additional message to send in the Record of Sales to.</param>
         /// <param name="startDate">Start date of the sales summary.</param>
@@ -28,7 +28,7 @@ namespace Mandarin.Models.Commissions
         /// <param name="total">Total amount of money made in sales (after commission).</param>
         public ArtistSales(string stockistCode,
                            string firstName,
-                           string lastName,
+                           string artistName,
                            string emailAddress,
                            string customMessage,
                            DateTime startDate,
@@ -41,7 +41,7 @@ namespace Mandarin.Models.Commissions
         {
             this.StockistCode = stockistCode;
             this.FirstName = firstName;
-            this.LastName = lastName;
+            this.Name = artistName;
             this.EmailAddress = emailAddress;
             this.CustomMessage = customMessage;
             this.StartDate = startDate;
@@ -66,16 +66,10 @@ namespace Mandarin.Models.Commissions
         public string FirstName { get; }
 
         /// <summary>
-        /// Gets the artist's last name.
-        /// </summary>
-        [JsonIgnore]
-        public string LastName { get; }
-
-        /// <summary>
         /// Gets the artist's name.
         /// </summary>
         [JsonProperty("name")]
-        public string Name => $"{this.FirstName} {this.LastName}";
+        public string Name { get; }
 
         /// <summary>
         /// Gets the email address to send the Record of Sales to.
@@ -147,7 +141,7 @@ namespace Mandarin.Models.Commissions
         {
             return new ArtistSales(this.StockistCode,
                                    this.FirstName,
-                                   this.LastName,
+                                   this.Name,
                                    emailAddress ?? this.EmailAddress,
                                    customMessage ?? this.CustomMessage,
                                    this.StartDate,

@@ -55,7 +55,7 @@ namespace Mandarin.Services.Commission
                 {
                     return new ArtistSales(artist.StockistCode,
                                            artist.FirstName,
-                                           artist.LastName,
+                                           artist.Details.ShortDisplayName,
                                            artist.Details.EmailAddress,
                                            string.Empty,
                                            start,
@@ -74,7 +74,7 @@ namespace Mandarin.Services.Commission
 
                     return new ArtistSales(artist.StockistCode,
                                            artist.FirstName,
-                                           artist.LastName,
+                                           artist.Details.ShortDisplayName,
                                            artist.Details.EmailAddress,
                                            string.Empty,
                                            start,
