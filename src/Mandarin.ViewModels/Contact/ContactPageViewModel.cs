@@ -58,6 +58,11 @@ namespace Mandarin.ViewModels.Contact
                     this.LastSubmitSuccessful = true;
                     this.SubmitException = null;
                 }
+                else
+                {
+                    this.LastSubmitSuccessful = false;
+                    this.SubmitException = new Exception("Something went wrong.");
+                }
             }
             catch (Exception ex)
             {

@@ -28,35 +28,42 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
+        public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
         {
-            return this.emailService.BuildEmailAsync(model);
+            var email = await this.emailService.BuildEmailAsync(model);
+            this.logger.LogInformation("Sending Contact Form Email: {@Email}", email);
+            return email;
         }
 
         /// <inheritdoc/>
         public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
         {
-            return this.emailService.BuildRecordOfSalesEmail(artistSales);
+            var email = this.emailService.BuildRecordOfSalesEmail(artistSales);
+            this.logger.LogInformation("Sending Record of Sales Email: {@Email}", email);
+            return email;
         }
 
         /// <inheritdoc/>
         public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
         {
-            this.logger.LogInformation("Sending Email: From={From}, Subject={Subject}, Content={Content}, Attachments={Attachments}",
-                                       email.From.Email,
-                                       email.Subject,
-                                       email.PlainTextContent,
-                                       email.Attachments?.Count ?? 0);
-
             try
             {
-                return await this.emailService.SendEmailAsync(email);
+                var response = await this.emailService.SendEmailAsync(email);
+
+                if (response.IsSuccess)
+                {
+                    this.logger.LogInformation("Sent email successfully: {@Email}", email);
+                }
+                else
+                {
+                    this.logger.LogWarning("Email sent with errors: {@Response} {@Email}", response, email);
+                }
+
+                return response;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex,
-                                     "Exception whilst attempting to send email on behalf of {From}.",
-                                     email.From.Email);
+                this.logger.LogError(ex, "Exception whilst attempting to send email: {@Email}.", email);
                 throw;
             }
         }
