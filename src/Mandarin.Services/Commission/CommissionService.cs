@@ -34,8 +34,8 @@ namespace Mandarin.Services.Commission
                        .GroupBy(subtransaction => subtransaction.Product?.ProductCode ?? "TLM-Unknown")
                        .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
                        .ToList()
-                       .Zip(Observable.FromAsync(this.artistService.GetArtistDetailsForCommissionAsync), (s, a) => (Subtransactions: s, Artists: a))
-                       .SelectMany(tuple => tuple.Artists.ToObservable().Select(artist => ToArtistSales(artist, tuple.Subtransactions)));
+                       .Zip(this.artistService.GetArtistsForCommissionAsync().ToList(), (s, a) => (Subtransactions: s, Artists: a))
+                       .SelectMany(tuple => tuple.Artists.Select(artist => ToArtistSales(artist, tuple.Subtransactions)));
 
             Subtransaction ToAggregateSubtransaction(IList<Subtransaction> s)
             {
@@ -45,19 +45,20 @@ namespace Mandarin.Services.Commission
                 return new Subtransaction(product, quantity, subtotal);
             }
 
-            ArtistSales ToArtistSales(ArtistDetailsModel artist, IList<Subtransaction> subtransactions)
+            ArtistSales ToArtistSales(Stockist artist, IList<Subtransaction> subtransactions)
             {
                 var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(artist.StockistCode)).ToList();
+                var rate = decimal.Divide(artist.Commissions.Last().RateGroup.Rate ?? 0, 100);
 
                 if (artistSubtransactions.Count == 0)
                 {
                     return new ArtistSales(artist.StockistCode,
-                                           artist.Name,
-                                           artist.EmailAddress,
+                                           artist.StockistName,
+                                           artist.Details.EmailAddress,
                                            string.Empty,
                                            start,
                                            end,
-                                           artist.Rate,
+                                           rate,
                                            null,
                                            0,
                                            0,
@@ -65,17 +66,17 @@ namespace Mandarin.Services.Commission
                 }
                 else
                 {
-                    var sales = artistSubtransactions.Select(x => SaleMapper.FromTransaction(x, artist.Rate, null)).ToList();
+                    var sales = artistSubtransactions.Select(x => SaleMapper.FromTransaction(x, rate)).ToList();
                     var subtotal = sales.Sum(x => x.Subtotal);
                     var commission = sales.Sum(x => x.Commission);
 
                     return new ArtistSales(artist.StockistCode,
-                                           artist.Name,
-                                           artist.EmailAddress,
+                                           artist.StockistName,
+                                           artist.Details.EmailAddress,
                                            string.Empty,
                                            start,
                                            end,
-                                           artist.Rate,
+                                           rate,
                                            sales,
                                            subtotal,
                                            commission,

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Commissions;
 using Mandarin.Tests.Data;

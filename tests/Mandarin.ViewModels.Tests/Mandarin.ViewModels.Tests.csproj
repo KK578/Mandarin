@@ -8,11 +8,15 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="Bashi.Tests.Framework" Version="1.1.0" />
+    <PackageReference Include="LazyEntityGraph.AutoFixture" Version="2.3.4" />
+    <PackageReference Include="LazyEntityGraph.EntityFrameworkCore" Version="2.3.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
+    <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
   </ItemGroup>
 
 </Project>

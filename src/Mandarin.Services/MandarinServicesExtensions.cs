@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Net.Http;
+using Mandarin.Services.Artists;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
-using Mandarin.Services.Fruity;
 using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
 using Microsoft.Extensions.Configuration;
@@ -31,7 +30,7 @@ namespace Mandarin.Services
             services.AddLazyCache();
             services.AddMandarinDomainServices();
             services.AddSendGridServices(configuration);
-            services.AddFruityServices(configuration);
+            services.AddArtistServices(configuration);
             services.AddSquareServices(configuration);
 
             return services;
@@ -58,18 +57,9 @@ namespace Mandarin.Services
             }
         }
 
-        private static void AddFruityServices(this IServiceCollection services, IConfiguration configuration)
+        private static void AddArtistServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<FruityClientOptions>(configuration.GetSection("Fruity"));
-            services.AddHttpClient<IArtistService, FruityArtistService>(ConfigureFruityClient);
-            services.Decorate<IArtistService, LoggingArtistServiceDecorator>();
-            services.Decorate<IArtistService, CachingArtistServiceDecorator>();
-
-            void ConfigureFruityClient(IServiceProvider s, HttpClient client)
-            {
-                var options = s.GetRequiredService<IOptions<FruityClientOptions>>();
-                client.BaseAddress = new Uri(options.Value.Url);
-            }
+            services.AddScoped<IArtistService, DatabaseArtistService>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)

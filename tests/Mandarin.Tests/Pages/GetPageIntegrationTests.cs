@@ -1,14 +1,15 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using Mandarin.Services;
-using Mandarin.Services.Decorators;
+using Mandarin.Database;
+using Mandarin.Tests.Data;
 using Mandarin.Tests.Factory;
-using Mandarin.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
@@ -20,6 +21,8 @@ namespace Mandarin.Tests.Pages
     {
         private readonly WebApplicationFactory<MandarinStartup> factory;
         private readonly HttpClient client;
+
+        private IServiceScope scope;
         private HttpRequestMessage request;
         private HttpResponseMessage response;
 
@@ -30,9 +33,19 @@ namespace Mandarin.Tests.Pages
         }
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public async Task OneTimeSetUp()
         {
-            FruityMock.EnsureStarted();
+            this.scope = this.factory.Services.CreateScope();
+            var mandarinDbContext = this.scope.ServiceProvider.GetService<MandarinDbContext>();
+            await mandarinDbContext.Database.MigrateAsync();
+            await WellKnownTestData.SeedDatabaseAsync(mandarinDbContext);
+            await mandarinDbContext.SaveChangesAsync();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+           this.scope.Dispose();
         }
 
         [Test]
@@ -44,11 +57,6 @@ namespace Mandarin.Tests.Pages
             string path,
             string expected)
         {
-            if (path == "/artists")
-            {
-                await this.GivenArtistServiceHasPreCached();
-            }
-
             this.GivenUnauthenticatedRequestFor(path);
             var document = await this.WhenPageContentIsRequested();
             Assert.That(document.DocumentElement.TextContent, Contains.Substring(expected));
@@ -68,13 +76,6 @@ namespace Mandarin.Tests.Pages
             this.GivenAuthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
             this.AssertResponseIsRedirectedTo("/admin");
-        }
-
-        private Task GivenArtistServiceHasPreCached()
-        {
-            var artistService = this.factory.Services.GetService<IArtistService>();
-            Assert.That(artistService, Is.InstanceOf<CachingArtistServiceDecorator>());
-            return artistService.GetArtistDetailsAsync();
         }
 
         private void GivenUnauthenticatedRequestFor(string path)

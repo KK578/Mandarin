@@ -12,17 +12,15 @@ namespace Mandarin.Models.Commissions
         /// </summary>
         /// <param name="subtransaction">The subtransactions to be mapped.</param>
         /// <param name="rate">The commission rate to apply to the subtransactions.</param>
-        /// <param name="fixedCommission">Fixed commission amount to apply to the item.</param>
         /// <returns>Mapped <see cref="Sale"/> object.</returns>
-        public static Sale FromTransaction(Subtransaction subtransaction, decimal rate, FixedCommissionAmount fixedCommission)
+        public static Sale FromTransaction(Subtransaction subtransaction, decimal rate)
         {
-            var fixedAmount = fixedCommission?.Amount ?? 0;
-            var subTotal = subtransaction.Subtotal - (fixedAmount * subtransaction.Quantity);
+            var subTotal = subtransaction.Subtotal;
             var commission = subTotal * rate;
             var sale = new Sale(subtransaction.Product.ProductCode,
                                 subtransaction.Product.ProductName,
                                 subtransaction.Quantity,
-                                subtransaction.TransactionUnitPrice - fixedAmount,
+                                subtransaction.TransactionUnitPrice,
                                 subTotal,
                                 -commission,
                                 subTotal - commission);
