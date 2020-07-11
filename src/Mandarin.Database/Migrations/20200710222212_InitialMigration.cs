@@ -47,8 +47,8 @@ namespace Mandarin.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_status", x => x.status_id);
-                    table.UniqueConstraint("AK_status_status_code", x => x.status_code);
+                    table.PrimaryKey("status_pkey", x => x.status_id);
+                    table.UniqueConstraint("status_status_code_key", x => x.status_code);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,7 +65,7 @@ namespace Mandarin.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_stockist", x => x.stockist_id);
+                    table.PrimaryKey("stockist_pkey", x => x.stockist_id);
                     table.ForeignKey(
                         name: "stockist_stockist_status_fkey",
                         column: x => x.stockist_status,
@@ -90,7 +90,7 @@ namespace Mandarin.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_commission", x => x.commission_id);
+                    table.PrimaryKey("commission_pkey", x => x.commission_id);
                     table.ForeignKey(
                         name: "commission_rate_group_fkey",
                         column: x => x.rate_group,
@@ -132,24 +132,6 @@ namespace Mandarin.Database.Migrations
                         principalColumn: "stockist_id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_commission_rate_group",
-                schema: "billing",
-                table: "commission",
-                column: "rate_group");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_commission_stockist_id",
-                schema: "billing",
-                table: "commission",
-                column: "stockist_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_stockist_stockist_status",
-                schema: "inventory",
-                table: "stockist",
-                column: "stockist_status");
 
             migrationBuilder.CreateIndex(
                 name: "stockist_stockist_code_key",

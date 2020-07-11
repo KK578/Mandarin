@@ -21,11 +21,6 @@ namespace Mandarin.Database.Migrations
                 schema: "inventory",
                 table: "stockist");
 
-            migrationBuilder.DropIndex(
-                name: "IX_stockist_stockist_status",
-                schema: "inventory",
-                table: "stockist");
-
             migrationBuilder.DropTable(
                 name: "status",
                 schema: "static");
@@ -73,8 +68,8 @@ namespace Mandarin.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_status", x => x.status_id);
-                    table.UniqueConstraint("AK_status_status_code", x => x.status_code);
+                    table.PrimaryKey("status_pkey", x => x.status_id);
+                    table.UniqueConstraint("status_status_code_key", x => x.status_code);
                 });
 
             migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'ACTIVE' WHERE stockist_status = 'Active';");
@@ -88,12 +83,6 @@ namespace Mandarin.Database.Migrations
                                             columns: new[] { "status_code", "description" },
                                             values: new object[] { status.ToString().ToUpper(), status.GetDescription() });
             }
-
-            migrationBuilder.CreateIndex(
-                name: "IX_stockist_stockist_status",
-                schema: "inventory",
-                table: "stockist",
-                column: "stockist_status");
 
             migrationBuilder.CreateIndex(
                 name: "status_status_code_key",
