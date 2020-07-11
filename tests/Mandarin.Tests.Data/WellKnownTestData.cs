@@ -54,6 +54,7 @@ namespace Mandarin.Tests.Data
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
+                    Visible = true,
                     ImageUrl = "https://localhost/static/images/artist1.jpg",
                     TwitterHandle = "ArtistTwitter",
                     InstagramHandle = "ArtistInstagram",
@@ -70,6 +71,7 @@ namespace Mandarin.Tests.Data
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
+                    Visible = false,
                     ImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
@@ -81,6 +83,7 @@ namespace Mandarin.Tests.Data
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
+                    Visible = true,
                     ImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
@@ -93,6 +96,7 @@ namespace Mandarin.Tests.Data
                 Description = "The Little Mandarin in-house art team!",
                 Details = new StockistDetail
                 {
+                    Visible = true,
                     InstagramHandle = "thelittlemandarin_e17",
                     WebsiteUrl = "https://thelittlemandarin.co.uk/",
                     ImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",

@@ -2,6 +2,7 @@
 using System.Linq;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
+using Mandarin.Models.Common;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 
@@ -9,6 +10,25 @@ namespace Mandarin.Tests.Data.Extensions
 {
     public static class MandarinModelExtensions
     {
+        public static Stockist AsActive(this Stockist model)
+        {
+            return new Stockist
+            {
+                StockistId = model.StockistId,
+                StockistCode = model.StockistCode,
+                StockistName = model.StockistName,
+                Description = model.Description,
+                Details = model.Details,
+                Commissions = model.Commissions,
+                Status = new Status
+                {
+                    StatusCode = "ACTIVE",
+                    Description = "Active",
+                },
+                StatusCode = "ACTIVE",
+            };
+        }
+
         public static Stockist WithTenPercentCommission(this Stockist model)
         {
             return new Stockist
@@ -18,9 +38,9 @@ namespace Mandarin.Tests.Data.Extensions
                 StockistName = model.StockistName,
                 Description = model.Description,
                 Details = model.Details,
-                Commissions = new List<Models.Commissions.Commission>
+                Commissions = new List<Commission>
                 {
-                    new Models.Commissions.Commission
+                    new Commission
                     {
                         StartDate = model.Commissions.First().StartDate,
                         EndDate = model.Commissions.First().EndDate,
@@ -56,7 +76,7 @@ namespace Mandarin.Tests.Data.Extensions
                                    transaction.TotalAmount,
                                    transaction.Timestamp,
                                    transaction.InsertedBy,
-                                   transaction.Subtransactions.Select(x => MandarinModelExtensions.WithTlmProducts((Subtransaction)x)));
+                                   transaction.Subtransactions.Select(x => x.WithTlmProducts()));
         }
 
         public static Subtransaction WithTlmProducts(this Subtransaction subtransaction)
