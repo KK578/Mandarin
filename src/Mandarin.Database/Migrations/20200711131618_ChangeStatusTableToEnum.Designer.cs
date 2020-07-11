@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mandarin.Database.Migrations
 {
     [DbContext(typeof(MandarinDbContext))]
-    [Migration("20200711073333_StockistDetail_AddVisibleFlag")]
-    partial class StockistDetail_AddVisibleFlag
+    [Migration("20200711131618_ChangeStatusTableToEnum")]
+    partial class ChangeStatusTableToEnum
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,9 +36,9 @@ namespace Mandarin.Database.Migrations
                         .HasMaxLength(500);
 
                     b.Property<string>("StatusCode")
+                        .IsRequired()
                         .HasColumnName("stockist_status")
-                        .HasColumnType("character varying(25)")
-                        .HasMaxLength(25);
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("StockistCode")
                         .IsRequired()
@@ -53,8 +53,6 @@ namespace Mandarin.Database.Migrations
                         .HasMaxLength(250);
 
                     b.HasKey("StockistId");
-
-                    b.HasIndex("StatusCode");
 
                     b.HasIndex("StockistCode")
                         .IsUnique()
@@ -98,10 +96,6 @@ namespace Mandarin.Database.Migrations
                         .HasColumnName("twitter_handle")
                         .HasColumnType("character varying(30)")
                         .HasMaxLength(30);
-
-                    b.Property<bool?>("Visible")
-                        .HasColumnName("visible")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("WebsiteUrl")
                         .HasColumnName("website_url")
@@ -171,43 +165,6 @@ namespace Mandarin.Database.Migrations
                         .HasName("commission_rate_group_pkey");
 
                     b.ToTable("commission_rate_group","billing");
-                });
-
-            modelBuilder.Entity("Mandarin.Models.Common.Status", b =>
-                {
-                    b.Property<int>("StatusId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("status_id")
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Description")
-                        .HasColumnName("description")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<string>("StatusCode")
-                        .IsRequired()
-                        .HasColumnName("status_code")
-                        .HasColumnType("character varying(25)")
-                        .HasMaxLength(25);
-
-                    b.HasKey("StatusId");
-
-                    b.HasIndex("StatusCode")
-                        .IsUnique()
-                        .HasName("status_status_code_key");
-
-                    b.ToTable("status","static");
-                });
-
-            modelBuilder.Entity("Mandarin.Models.Artists.Stockist", b =>
-                {
-                    b.HasOne("Mandarin.Models.Common.Status", "Status")
-                        .WithMany("Stockists")
-                        .HasForeignKey("StatusCode")
-                        .HasConstraintName("stockist_stockist_status_fkey")
-                        .HasPrincipalKey("StatusCode");
                 });
 
             modelBuilder.Entity("Mandarin.Models.Artists.StockistDetail", b =>

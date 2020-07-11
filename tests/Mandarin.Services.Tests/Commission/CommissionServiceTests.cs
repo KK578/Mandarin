@@ -54,7 +54,7 @@ namespace Mandarin.Services.Tests.Commission
                 .Setup(x => x.GetArtistsForCommissionAsync())
                 .Returns(new List<Stockist>
                 {
-                    MandarinFixture.Instance.Create<Stockist>().AsActive().WithTlmStockistCode().WithTenPercentCommission(),
+                    MandarinFixture.Instance.Create<Stockist>().WithStatus().WithTlmStockistCode().WithTenPercentCommission(),
                 }.ToObservable());
         }
 

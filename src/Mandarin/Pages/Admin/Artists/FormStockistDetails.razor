@@ -4,8 +4,10 @@
 @using Mandarin.Models.Artists
 @using Microsoft.EntityFrameworkCore
 @using System.IO
+@using Bashi.Core.Enums
 @using Mandarin.Database
 @using Mandarin.Models.Commissions
+@using Mandarin.Models.Common
 @inject IArtistService ArtistService;
 @inject MandarinDbContext MandarinDbContext;
 @inject NavigationManager NavigationManager;
@@ -75,14 +77,13 @@ else
         <FieldLabel>Public Website</FieldLabel>
         <Validation>
           <Field>
-            @if (Stockist.StatusCode == "ACTIVE")
-            {
-              <Check TValue="bool?" @bind-Checked="@Stockist.Details.Visible" Disabled="@(!isEditing)">Show on Artist Page</Check>
-            }
-            else
-            {
-              <Check TValue="bool?" @Checked="@false" Disabled="true">Artist must be active to Show on Artist Page</Check>
-            }
+            <FieldLabel>Status</FieldLabel>
+            <Select TValue="StatusMode" @bind-SelectedValue="@Stockist.StatusCode" Disabled="@(!isEditing)">
+              @foreach (var status in EnumUtil.GetValues<StatusMode>().Except(new [] { StatusMode.Unknown }))
+              {
+                <SelectItem Value="@status">@(status.GetDescription())</SelectItem>
+              }
+            </Select>
           </Field>
         </Validation>
 
@@ -223,7 +224,7 @@ else
 
   private Stockist Stockist { get; set; }
   private Commission Commission => Stockist.Commissions.Last();
-  private bool StockistIsVisible => Stockist.Details.Visible != false;
+  private bool StockistIsVisible => Stockist.StatusCode == StatusMode.Active;
 
   private IReadOnlyList<CommissionRateGroup> rateGroups;
 
@@ -244,12 +245,7 @@ else
       this.isEditing = true;
       this.Stockist = new Stockist
       {
-        StatusCode = "ACTIVE",
-        Status = await MandarinDbContext.Status.FirstAsync(x => x.StatusCode == "ACTIVE"),
-        Details = new StockistDetail
-        {
-          Visible = true,
-        },
+        StatusCode = StatusMode.Active,
       };
       Stockist.Commissions.Add(new Commission
       {

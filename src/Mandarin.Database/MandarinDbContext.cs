@@ -37,11 +37,6 @@ namespace Mandarin.Database
         public virtual DbSet<CommissionRateGroup> CommissionRateGroup { get; set; }
 
         /// <summary>
-        /// Gets or sets the Database Set related to Available statuses.
-        /// </summary>
-        public virtual DbSet<Status> Status { get; set; }
-
-        /// <summary>
         /// Gets or sets the Database Set related to stockists.
         /// </summary>
         public virtual DbSet<Stockist> Stockist { get; set; }
@@ -77,24 +72,11 @@ namespace Mandarin.Database
                       .HasName("commission_rate_group_pkey");
             });
 
-            modelBuilder.Entity<Status>(entity =>
-            {
-                entity.HasIndex(e => e.StatusCode)
-                      .HasName("status_status_code_key")
-                      .IsUnique();
-            });
-
             modelBuilder.Entity<Stockist>(entity =>
             {
                 entity.HasIndex(e => e.StockistCode)
                       .HasName("stockist_stockist_code_key")
                       .IsUnique();
-
-                entity.HasOne(d => d.Status)
-                      .WithMany(p => p.Stockists)
-                      .HasPrincipalKey(p => p.StatusCode)
-                      .HasForeignKey(d => d.StatusCode)
-                      .HasConstraintName("stockist_stockist_status_fkey");
             });
 
             modelBuilder.Entity<StockistDetail>(entity =>

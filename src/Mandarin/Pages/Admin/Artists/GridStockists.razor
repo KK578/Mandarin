@@ -1,4 +1,5 @@
 ﻿@page "/admin/artists"
+@using Bashi.Core.Enums
 @using Mandarin.Services
 @using Mandarin.Models.Artists
 @using System.Reactive.Linq
@@ -28,7 +29,9 @@
                   SelectedRowChanged="@OnStockistSelected">
           <DataGridColumn TItem="Stockist" Field="StockistCode" Caption="Code" Width="75px" />
           <DataGridColumn TItem="Stockist" Field="StockistName" Caption="Name" TextAlignment="TextAlignment.Right" />
-          <DataGridColumn TItem="Stockist" Field="Status.Description" Caption="Status" TextAlignment="TextAlignment.Right" />
+          <DataGridColumn TItem="Stockist" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
+            <DisplayTemplate>@context.StatusCode.GetDescription()</DisplayTemplate>
+          </DataGridColumn>
         </DataGrid>
       </div>
     }

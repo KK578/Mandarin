@@ -17,12 +17,6 @@ namespace Mandarin.Models.Artists
         public int StockistId { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether gets or sets whether the Stockist is publicly visible.
-        /// </summary>
-        [Column("visible")]
-        public bool? Visible { get; set; }
-
-        /// <summary>
         /// Gets or sets the stockist's twitter handle.
         /// </summary>
         [Column("twitter_handle")]

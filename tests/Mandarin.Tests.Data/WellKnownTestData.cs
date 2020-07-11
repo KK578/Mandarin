@@ -14,17 +14,6 @@ namespace Mandarin.Tests.Data
 
         public static async Task SeedDatabaseAsync(MandarinDbContext mandarinDbContext)
         {
-            var status = await mandarinDbContext.Status.FirstOrDefaultAsync(x => x.StatusCode == "ACTIVE");
-            if (status == null)
-            {
-                await mandarinDbContext.Status.AddAsync(new Status
-                {
-                    StatusId = 1,
-                    StatusCode = "ACTIVE",
-                    Description = "Currently active.",
-                });
-            }
-
             var tlmStockist = await mandarinDbContext.Stockist.FirstOrDefaultAsync(x => x.StockistCode == WellKnownTestData.Stockists.TheLittleMandarin.StockistCode);
             if (tlmStockist == null)
             {
@@ -50,11 +39,10 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist FullArtist = new Stockist
             {
                 StockistName = "Artist Name",
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.Active,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
-                    Visible = true,
                     ImageUrl = "https://localhost/static/images/artist1.jpg",
                     TwitterHandle = "ArtistTwitter",
                     InstagramHandle = "ArtistInstagram",
@@ -67,11 +55,10 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist InactiveArtist = new Stockist
             {
                 StockistName = "Artist Name",
-                StatusCode = "INACTIVE",
+                StatusCode = StatusMode.Inactive,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
-                    Visible = false,
                     ImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
@@ -79,11 +66,10 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist MinimalArtist = new Stockist
             {
                 StockistName = "Artist Name",
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.Active,
                 Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
-                    Visible = true,
                     ImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
@@ -92,11 +78,10 @@ namespace Mandarin.Tests.Data
             {
                 StockistCode = "TLM",
                 StockistName = "The Little Mandarin",
-                StatusCode = "ACTIVE",
+                StatusCode = StatusMode.Active,
                 Description = "The Little Mandarin in-house art team!",
                 Details = new StockistDetail
                 {
-                    Visible = true,
                     InstagramHandle = "thelittlemandarin_e17",
                     WebsiteUrl = "https://thelittlemandarin.co.uk/",
                     ImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",
