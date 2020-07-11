@@ -42,22 +42,6 @@ namespace Mandarin.Models.Artists
         public string LastName { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's name.
-        /// </summary>
-        [Required]
-        [Column("short_stockist_name")]
-        [StringLength(250)]
-        public string ShortDisplayName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Stockist's name.
-        /// </summary>
-        [Required]
-        [Column("stockist_name")]
-        [StringLength(250)]
-        public string FullDisplayName { get; set; }
-
-        /// <summary>
         /// Gets or sets the Stockist's user-friendly code.
         /// </summary>
         [Required]
@@ -70,13 +54,6 @@ namespace Mandarin.Models.Artists
         /// </summary>
         [Column("stockist_status", TypeName = "character varying(25)")]
         public StatusMode StatusCode { get; set; }
-
-        /// <summary>
-        /// Gets or sets a description about the stockist.
-        /// </summary>
-        [Column("description")]
-        [MaxLength(500)]
-        public string Description { get; set; }
 
         /// <summary>
         /// Gets or sets the stockist's personal details.

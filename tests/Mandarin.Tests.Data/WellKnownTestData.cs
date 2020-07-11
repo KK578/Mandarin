@@ -40,12 +40,12 @@ namespace Mandarin.Tests.Data
             {
                 FirstName = "Artist",
                 LastName = "Name",
-                ShortDisplayName = "Artist Name",
-                FullDisplayName = "Artist Name",
                 StatusCode = StatusMode.Active,
-                Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
+                    ShortDisplayName = "Artist Name",
+                    FullDisplayName = "Artist Name",
+                    Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                     TwitterHandle = "ArtistTwitter",
                     InstagramHandle = "ArtistInstagram",
@@ -59,12 +59,12 @@ namespace Mandarin.Tests.Data
             {
                 FirstName = "Artist",
                 LastName = "Name",
-                ShortDisplayName = "Artist Name",
-                FullDisplayName = "Artist Name",
                 StatusCode = StatusMode.Inactive,
-                Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
+                    ShortDisplayName = "Artist Name",
+                    FullDisplayName = "Artist Name",
+                    Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
@@ -73,12 +73,12 @@ namespace Mandarin.Tests.Data
             {
                 FirstName = "Artist",
                 LastName = "Name",
-                ShortDisplayName = "Artist Name",
-                FullDisplayName = "Artist Name",
                 StatusCode = StatusMode.Active,
-                Description = "Artist's Description.",
                 Details = new StockistDetail
                 {
+                    ShortDisplayName = "Artist Name",
+                    FullDisplayName = "Artist Name",
+                    Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
@@ -88,12 +88,12 @@ namespace Mandarin.Tests.Data
                 StockistCode = "TLM",
                 FirstName = "Little",
                 LastName = "Mandarin",
-                ShortDisplayName = "The Little Mandarin",
-                FullDisplayName = "The Little Mandarin",
                 StatusCode = StatusMode.Active,
-                Description = "The Little Mandarin in-house art team!",
                 Details = new StockistDetail
                 {
+                    ShortDisplayName = "The Little Mandarin",
+                    FullDisplayName = "The Little Mandarin",
+                    Description = "The Little Mandarin in-house art team!",
                     InstagramHandle = "thelittlemandarin_e17",
                     WebsiteUrl = "https://thelittlemandarin.co.uk/",
                     BannerImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",

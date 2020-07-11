@@ -42,9 +42,9 @@ namespace Mandarin.Services.Tests.Entity
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].FirstName, Is.EqualTo("Artist"));
             Assert.That(artistDetails[0].LastName, Is.EqualTo("Name"));
-            Assert.That(artistDetails[0].ShortDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].FullDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].Description, Is.EqualTo("Artist's Description."));
+            Assert.That(artistDetails[0].Details.ShortDisplayName, Is.EqualTo("Artist Name"));
+            Assert.That(artistDetails[0].Details.FullDisplayName, Is.EqualTo("Artist Name"));
+            Assert.That(artistDetails[0].Details.Description, Is.EqualTo("Artist's Description."));
             Assert.That(artistDetails[0].Details.BannerImageUrl, Is.EqualTo(new Uri("https://localhost/static/images/artist1.jpg")));
             Assert.That(artistDetails[0].Details.TwitterHandle, Is.Null);
             Assert.That(artistDetails[0].Details.InstagramHandle, Is.Null);
@@ -63,9 +63,9 @@ namespace Mandarin.Services.Tests.Entity
             Assert.That(artistDetails, Has.Count.EqualTo(1));
             Assert.That(artistDetails[0].FirstName, Is.EqualTo("Artist"));
             Assert.That(artistDetails[0].LastName, Is.EqualTo("Name"));
-            Assert.That(artistDetails[0].ShortDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].FullDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].Description, Is.EqualTo("Artist's Description."));
+            Assert.That(artistDetails[0].Details.ShortDisplayName, Is.EqualTo("Artist Name"));
+            Assert.That(artistDetails[0].Details.FullDisplayName, Is.EqualTo("Artist Name"));
+            Assert.That(artistDetails[0].Details.Description, Is.EqualTo("Artist's Description."));
             Assert.That(artistDetails[0].Details.BannerImageUrl, Is.EqualTo("https://localhost/static/images/artist1.jpg"));
             Assert.That(artistDetails[0].Details.TwitterHandle, Is.EqualTo("ArtistTwitter"));
             Assert.That(artistDetails[0].Details.InstagramHandle, Is.EqualTo("ArtistInstagram"));

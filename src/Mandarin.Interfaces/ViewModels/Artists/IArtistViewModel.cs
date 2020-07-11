@@ -10,12 +10,12 @@ namespace Mandarin.ViewModels.Artists
         /// <summary>
         /// Gets the artist's thumbnail display name.
         /// </summary>
-        string ShortName { get; }
+        string ShortDisplayName { get; }
 
         /// <summary>
         /// Gets the artist's banner display name.
         /// </summary>
-        string FullName { get; }
+        string FullDisplayName { get; }
 
         /// <summary>
         /// Gets the artist's biography.

@@ -25,11 +25,11 @@ namespace Mandarin.Services.Artists
                 StockistCode = dto.StockistCode,
                 FirstName = dto.StockistName,
                 LastName = dto.StockistName,
-                ShortDisplayName = dto.StockistName,
-                FullDisplayName = dto.StockistName,
-                Description = dto.Description,
                 Details = new StockistDetail
                 {
+                    ShortDisplayName = dto.StockistName,
+                    FullDisplayName = dto.StockistName,
+                    Description = dto.Description,
                     EmailAddress = dto.EmailAddress,
                     FacebookHandle = dto.FacebookHandle,
                     BannerImageUrl = dto.ImageUrl,

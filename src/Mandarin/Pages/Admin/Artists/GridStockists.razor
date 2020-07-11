@@ -28,7 +28,7 @@
         <DataGrid TItem="Stockist" Data="@data" Filterable="true" ShowPager="true" PageSize="10" Striped="true" Responsive="true"
                   SelectedRowChanged="@OnStockistSelected">
           <DataGridColumn TItem="Stockist" Field="StockistCode" Caption="Code" Width="75px" />
-          <DataGridColumn TItem="Stockist" Field="ShortDisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
+          <DataGridColumn TItem="Stockist" Field="Details.ShortDisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
           <DataGridColumn TItem="Stockist" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
             <DisplayTemplate>@context.StatusCode.GetDescription()</DisplayTemplate>
           </DataGridColumn>

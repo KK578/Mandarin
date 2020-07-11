@@ -71,9 +71,11 @@ namespace Mandarin.Tests.Pages
         {
             var data = new Stockist
             {
-                ShortDisplayName = ArtistPageIntegrationTests.ArtistName,
-                Description = TestData.WellKnownString,
-                Details = new StockistDetail(),
+                Details = new StockistDetail
+                {
+                    ShortDisplayName = ArtistPageIntegrationTests.ArtistName,
+                    Description = TestData.WellKnownString,
+                },
             };
 
             this.artistService.Setup(x => x.GetArtistsForDisplayAsync()).Returns(Observable.Return(data));
