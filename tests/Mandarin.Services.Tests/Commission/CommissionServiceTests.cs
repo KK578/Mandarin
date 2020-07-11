@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Artists;
+using Mandarin.Models.Common;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Commission;
@@ -54,7 +55,7 @@ namespace Mandarin.Services.Tests.Commission
                 .Setup(x => x.GetArtistsForCommissionAsync())
                 .Returns(new List<Stockist>
                 {
-                    MandarinFixture.Instance.Create<Stockist>().WithStatus().WithTlmStockistCode().WithTenPercentCommission(),
+                    MandarinFixture.Instance.Create<Stockist>().WithStatus(StatusMode.Active).WithTlmStockistCode().WithTenPercentCommission(),
                 }.ToObservable());
         }
 

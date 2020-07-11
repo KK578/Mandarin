@@ -10,6 +10,8 @@ using Mandarin.Tests.Factory;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
@@ -32,8 +34,8 @@ namespace Mandarin.Tests.Pages
             this.client = this.factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         }
 
-        [OneTimeSetUp]
-        public async Task OneTimeSetUp()
+        [SetUp]
+        public async Task SetUp()
         {
             this.scope = this.factory.Services.CreateScope();
             var mandarinDbContext = this.scope.ServiceProvider.GetService<MandarinDbContext>();
@@ -42,10 +44,13 @@ namespace Mandarin.Tests.Pages
             await mandarinDbContext.SaveChangesAsync();
         }
 
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
+        [TearDown]
+        public async Task TearDown()
         {
-           this.scope.Dispose();
+            var mandarinDbContext = this.scope.ServiceProvider.GetService<MandarinDbContext>();
+            var migrator = mandarinDbContext.GetInfrastructure().GetService<IMigrator>();
+            await migrator.MigrateAsync("0");
+            this.scope.Dispose();
         }
 
         [Test]

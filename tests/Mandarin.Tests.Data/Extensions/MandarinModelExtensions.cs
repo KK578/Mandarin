@@ -9,7 +9,7 @@ namespace Mandarin.Tests.Data.Extensions
 {
     public static class MandarinModelExtensions
     {
-        public static Stockist WithStatus(this Stockist model, StatusMode statusMode = StatusMode.Active)
+        public static Stockist WithStatus(this Stockist model, StatusMode statusMode)
         {
             return new Stockist
             {
