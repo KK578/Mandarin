@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
 using Mandarin.Configuration;
+using Mandarin.ViewModels.About;
 using Mandarin.ViewModels.Artists;
 using Mandarin.ViewModels.Components.Navigation;
 using Mandarin.ViewModels.Contact;
-using Mandarin.ViewModels.Index;
-using Mandarin.ViewModels.Index.Carousel;
-using Mandarin.ViewModels.Index.MandarinMap;
-using Mandarin.ViewModels.Index.OpeningTimes;
+using Mandarin.ViewModels.Home;
+using Mandarin.ViewModels.Home.Carousel;
+using Mandarin.ViewModels.Home.MandarinMap;
+using Mandarin.ViewModels.Home.OpeningTimes;
 using Mandarin.ViewModels.Macarons;
 using Markdig;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +38,7 @@ namespace Mandarin.ViewModels
             services.AddSingleton(MandarinViewModelsServiceCollectionExtensions.CreatePageContentModel);
             services.AddTransient<IMandarinHeaderViewModel, MandarinHeaderViewModel>();
 
-            services.AddTransient<IIndexPageViewModel, IndexPageViewModel>();
+            services.AddTransient<IHomePageViewModel, HomePageViewModel>();
             services.AddTransient<ICarouselViewModel, CarouselViewModel>();
             services.AddTransient<IMandarinMapViewModel, MandarinMapViewModel>();
             services.AddTransient<IOpeningTimesViewModel, OpeningTimesViewModel>();
@@ -45,6 +46,8 @@ namespace Mandarin.ViewModels
             services.AddTransient<IArtistsPageViewModel, ArtistsPageViewModel>();
 
             services.AddTransient<IMacaronsPageViewModel, MacaronsPageViewModel>();
+
+            services.AddTransient<IAboutPageViewModel, AboutPageViewModel>();
 
             services.AddTransient<IContactPageViewModel, ContactPageViewModel>();
 

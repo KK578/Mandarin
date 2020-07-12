@@ -1,8 +1,8 @@
 ﻿@page "/about"
-@using Mandarin.ViewModels.Index;
-@inject IIndexPageViewModel ViewModel;
+@using Mandarin.ViewModels.About
+@inject IAboutPageViewModel ViewModel;
 
-<MandarinCarousel ViewModel="@ViewModel.CarouselViewModel" />
+<MandarinImage class="relative" ViewModel="@ViewModel.ImageViewModel" />
 
 @ViewModel.MainContent
 
@@ -20,11 +20,4 @@
       <a class="gift-card-button" href="https://squareup.com/gift/PT1RCJ52GTP8E/check-balance" target="_blank">Check eGift Card Balance</a>
     </div>
   </div>
-</div>
-
-<hr class="mt-6" />
-
-<div class="container flex flex-col justify-around md:flex-row mt-3 mx-auto self-center">
-  <MandarinOpeningTimes ViewModel="@ViewModel.OpeningTimesViewModel" class="mb-5 self-center" />
-  <MandarinMap ViewModel="@ViewModel.MapViewModel" />
 </div>

@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -54,9 +53,10 @@ namespace Mandarin.Tests.Pages
         }
 
         [Test]
-        [TestCase("/about", "We hope to see you soon!")]
-        [TestCase("/macarons", "Mandy also offers a range of sweets and chocolates")]
+        [TestCase("/home", "Closed")]
         [TestCase("/artists", "The Little Mandarin in-house art team!")]
+        [TestCase("/macarons", "Mandy also offers a range of sweets and chocolates")]
+        [TestCase("/about", "We hope to see you soon!")]
         [TestCase("/contact", "Feel free to contact us through this form and we will get back to you as soon as we can.")]
         public async Task BasicRenderTest_ShouldBeAbleToRenderRoute_AndFindSimpleStaticContentOnPage(
             string path,
@@ -72,7 +72,7 @@ namespace Mandarin.Tests.Pages
         {
             this.GivenUnauthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
-            this.AssertResponseIsRedirectedTo("/about");
+            this.AssertResponseIsRedirectedTo("/home");
         }
 
         [Test]
