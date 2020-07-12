@@ -18,7 +18,7 @@ namespace Mandarin.ViewModels.Tests.Artists
             Assert.That(subject.ShortDisplayName, Is.Null);
             Assert.That(subject.Description, Is.Null);
             Assert.That(subject.FacebookUrl, Is.Null);
-            Assert.That(subject.ImageUrl, Is.Null);
+            Assert.That(subject.BannerImageUrl, Is.Null);
             Assert.That(subject.InstagramUrl, Is.Null);
             Assert.That(subject.TumblrUrl, Is.Null);
             Assert.That(subject.TwitterUrl, Is.Null);
@@ -75,7 +75,7 @@ namespace Mandarin.ViewModels.Tests.Artists
             // Assert
             Assert.That(subject.TwitterUrl.ToString(), Is.EqualTo("https://twitter.com/MyTwitterHandle"));
             Assert.That(subject.FacebookUrl.ToString(), Is.EqualTo("https://facebook.com/MyFacebookHandle"));
-            Assert.That(subject.ImageUrl.ToString(), Is.EqualTo("https://localhost/image"));
+            Assert.That(subject.BannerImageUrl.ToString(), Is.EqualTo("https://localhost/image"));
             Assert.That(subject.InstagramUrl.ToString(), Is.EqualTo("https://instagram.com/MyInstagramHandle"));
             Assert.That(subject.TumblrUrl.ToString(), Is.EqualTo("https://MyTumblrHandle.tumblr.com/").IgnoreCase);
             Assert.That(subject.WebsiteUrl.ToString(), Is.EqualTo("https://localhost/website"));

@@ -35,7 +35,7 @@ namespace Mandarin.ViewModels.Artists
             {
                 this.IsLoading = true;
                 var details = await this.artistService.GetArtistsForDisplayAsync().ToList();
-                this.ViewModels = details.Select(x => new ArtistViewModel(x)).ToList().AsReadOnly();
+                this.ViewModels = details.OrderBy(x => x.Details.ShortDisplayName).Select(x => new ArtistViewModel(x)).ToList().AsReadOnly();
             }
             finally
             {

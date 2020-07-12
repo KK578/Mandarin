@@ -32,7 +32,10 @@ namespace Mandarin.ViewModels.Artists
         public string Description => this.model.Details.Description;
 
         /// <inheritdoc/>
-        public Uri ImageUrl => ArtistViewModel.ParseUri(this.model.Details.BannerImageUrl);
+        public Uri GridImageUrl => ArtistViewModel.ParseUri(this.model.Details.ThumbnailImageUrl);
+
+        /// <inheritdoc/>
+        public Uri BannerImageUrl => ArtistViewModel.ParseUri(this.model.Details.BannerImageUrl);
 
         /// <inheritdoc/>
         public Uri WebsiteUrl => ArtistViewModel.ParseUri(this.model.Details.WebsiteUrl);
