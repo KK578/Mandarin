@@ -36,34 +36,16 @@ namespace Mandarin.Tests.Data
 
         public static class Stockists
         {
-            public static readonly Stockist FullArtist = new Stockist
-            {
-                FirstName = "Artist",
-                LastName = "Name",
-                StatusCode = StatusMode.Active,
-                Details = new StockistDetail
-                {
-                    ShortDisplayName = "Artist Name",
-                    FullDisplayName = "Artist Name",
-                    Description = "Artist's Description.",
-                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
-                    TwitterHandle = "ArtistTwitter",
-                    InstagramHandle = "ArtistInstagram",
-                    FacebookHandle = "ArtistFacebook",
-                    TumblrHandle = "ArtistTumblr",
-                    WebsiteUrl = "https://localhost/artist/website",
-                },
-            };
-
             public static readonly Stockist InactiveArtist = new Stockist
             {
-                FirstName = "Artist",
-                LastName = "Name",
+                StockistCode = "IA1",
+                FirstName = "Inactive",
+                LastName = "Artist",
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = "Artist Name",
-                    FullDisplayName = "Artist Name",
+                    ShortDisplayName = nameof(Stockists.InactiveArtist),
+                    FullDisplayName = nameof(Stockists.InactiveArtist),
                     Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
@@ -71,13 +53,29 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist MinimalArtist = new Stockist
             {
-                FirstName = "Artist",
-                LastName = "Name",
+                StockistCode = "MA1",
+                FirstName = "Minimal",
+                LastName = "Artist",
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = "Artist Name",
-                    FullDisplayName = "Artist Name",
+                    ShortDisplayName = nameof(Stockists.MinimalArtist),
+                    FullDisplayName = nameof(Stockists.MinimalArtist),
+                    Description = "Artist's Description.",
+                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
+                },
+            };
+
+            public static readonly Stockist HiddenArtist = new Stockist
+            {
+                StockistCode = "HA1",
+                FirstName = "Hidden",
+                LastName = "Artist",
+                StatusCode = StatusMode.ActiveHidden,
+                Details = new StockistDetail
+                {
+                    ShortDisplayName = nameof(Stockists.HiddenArtist),
+                    FullDisplayName = nameof(Stockists.HiddenArtist),
                     Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },

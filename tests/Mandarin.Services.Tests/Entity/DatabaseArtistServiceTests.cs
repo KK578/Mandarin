@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
-using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Artists;
 using Mandarin.Tests.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 
@@ -20,101 +15,41 @@ namespace Mandarin.Services.Tests.Entity
     public class DatabaseArtistServiceTests
     {
         private MandarinDbContext dbContext;
-        private MandarinConfiguration mandarinConfiguration;
 
         [Test]
-        public async Task GetArtistDetailsAsync_GivenInactiveArtistDataFromService_ReturnsEmptyList()
+        public async Task GetArtistDetailsAsync_GivenArtists_ShouldOnlyContainActiveArtists()
         {
-            this.GivenMandarinConfigurationIsEmpty();
-            this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist);
-            var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
-            var artistDetails = await subject.GetArtistsForDisplayAsync().ToList();
-            Assert.That(artistDetails, Has.Count.Zero);
+            this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist,
+                                       WellKnownTestData.Stockists.HiddenArtist,
+                                       WellKnownTestData.Stockists.MinimalArtist);
+            var subject = new DatabaseArtistService(this.dbContext);
+            var actual = await subject.GetArtistsForDisplayAsync().ToList();
+
+            Assert.That(actual, Has.Count.EqualTo(1));
+            Assert.That(actual, Is.EqualTo(new[] { WellKnownTestData.Stockists.MinimalArtist }).AsCollection);
         }
 
         [Test]
-        public async Task GetArtistDetailsAsync_GivenMinimalJsonDataFromService_ShouldDeserializeCorrectly()
+        public async Task GetArtistDetailsForCommissionAsync_GivenArtists_ShouldReturnAllArtistsInOrderOfStockistCode()
         {
-            this.GivenMandarinConfigurationIsEmpty();
-            this.GivenDbContextReturns(WellKnownTestData.Stockists.MinimalArtist);
-            var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
-            var artistDetails = await subject.GetArtistsForDisplayAsync().ToList();
-            Assert.That(artistDetails, Has.Count.EqualTo(1));
-            Assert.That(artistDetails[0].FirstName, Is.EqualTo("Artist"));
-            Assert.That(artistDetails[0].LastName, Is.EqualTo("Name"));
-            Assert.That(artistDetails[0].Details.ShortDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].Details.FullDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].Details.Description, Is.EqualTo("Artist's Description."));
-            Assert.That(artistDetails[0].Details.BannerImageUrl, Is.EqualTo(new Uri("https://localhost/static/images/artist1.jpg")));
-            Assert.That(artistDetails[0].Details.TwitterHandle, Is.Null);
-            Assert.That(artistDetails[0].Details.InstagramHandle, Is.Null);
-            Assert.That(artistDetails[0].Details.FacebookHandle, Is.Null);
-            Assert.That(artistDetails[0].Details.TumblrHandle, Is.Null);
-            Assert.That(artistDetails[0].Details.WebsiteUrl, Is.Null);
-        }
+            this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist,
+                                       WellKnownTestData.Stockists.HiddenArtist,
+                                       WellKnownTestData.Stockists.MinimalArtist);
 
-        [Test]
-        public async Task GetArtistDetailsAsync_GivenJsonDataFromService_ShouldDeserializeCorrectly()
-        {
-            this.GivenMandarinConfigurationIsEmpty();
-            this.GivenDbContextReturns(WellKnownTestData.Stockists.FullArtist);
-            var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
-            var artistDetails = await subject.GetArtistsForDisplayAsync().ToList();
-            Assert.That(artistDetails, Has.Count.EqualTo(1));
-            Assert.That(artistDetails[0].FirstName, Is.EqualTo("Artist"));
-            Assert.That(artistDetails[0].LastName, Is.EqualTo("Name"));
-            Assert.That(artistDetails[0].Details.ShortDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].Details.FullDisplayName, Is.EqualTo("Artist Name"));
-            Assert.That(artistDetails[0].Details.Description, Is.EqualTo("Artist's Description."));
-            Assert.That(artistDetails[0].Details.BannerImageUrl, Is.EqualTo("https://localhost/static/images/artist1.jpg"));
-            Assert.That(artistDetails[0].Details.TwitterHandle, Is.EqualTo("ArtistTwitter"));
-            Assert.That(artistDetails[0].Details.InstagramHandle, Is.EqualTo("ArtistInstagram"));
-            Assert.That(artistDetails[0].Details.FacebookHandle, Is.EqualTo("ArtistFacebook"));
-            Assert.That(artistDetails[0].Details.TumblrHandle, Is.EqualTo("ArtistTumblr"));
-            Assert.That(artistDetails[0].Details.WebsiteUrl, Is.EqualTo("https://localhost/artist/website"));
-        }
-
-        [Test]
-        public async Task GetArtistDetailsForCommissionAsync_GivenConfigurationContainsAdditionalValues_ShouldContainAllValues()
-        {
-            var stockist = MandarinFixture.Instance.Create<Stockist>();
-            this.GivenMandarinConfigurationHasValue(stockist);
-            this.GivenDbContextReturns(WellKnownTestData.Stockists.FullArtist);
-            var subject = new DatabaseArtistService(this.dbContext, Options.Create(this.mandarinConfiguration));
+            var subject = new DatabaseArtistService(this.dbContext);
             var artistDetails = await subject.GetArtistsForCommissionAsync().ToList();
-            Assert.That(artistDetails, Has.Exactly(2).Items);
-            Assert.That(artistDetails.Last().StockistCode, Is.EqualTo(stockist.StockistCode));
+            Assert.That(artistDetails, Has.Exactly(3).Items);
+            Assert.That(artistDetails[0], Is.EqualTo(WellKnownTestData.Stockists.HiddenArtist));
+            Assert.That(artistDetails[1], Is.EqualTo(WellKnownTestData.Stockists.InactiveArtist));
+            Assert.That(artistDetails[2], Is.EqualTo(WellKnownTestData.Stockists.MinimalArtist));
         }
 
-        private void GivenMandarinConfigurationIsEmpty()
+        private IQueryable<Stockist> GivenDbContextReturns(params Stockist[] artists)
         {
-            this.mandarinConfiguration = new MandarinConfiguration
-            {
-                AdditionalStockists = new List<Dictionary<string, object>>(),
-            };
-        }
-
-        private void GivenMandarinConfigurationHasValue(Stockist stockist)
-        {
-            this.mandarinConfiguration = new MandarinConfiguration
-            {
-                AdditionalStockists = new List<Dictionary<string, object>>
-                {
-                    new Dictionary<string, object>
-                    {
-                        { nameof(Stockist.StockistCode), stockist.StockistCode },
-                    },
-                },
-            };
-        }
-
-        private IQueryable<Stockist> GivenDbContextReturns(Stockist artist)
-        {
-            var data = new List<Stockist> { artist }.AsQueryable();
+            var data = artists.AsQueryable();
             var mock = new Mock<DbSet<Stockist>>();
             mock.As<IQueryable<Stockist>>().Setup(m => m.Provider).Returns(data.Provider);
             mock.As<IQueryable<Stockist>>().Setup(m => m.Expression).Returns(data.Expression);
-            mock.As<IQueryable<Stockist>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mock.As<IQueryable<Stockist>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
 
             this.dbContext = Mock.Of<MandarinDbContext>(x => x.Stockist == mock.Object);
