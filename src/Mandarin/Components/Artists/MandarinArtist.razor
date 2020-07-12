@@ -1,7 +1,8 @@
 ﻿@using Mandarin.ViewModels.Artists
 
-<div class="text-center mx-auto">
-  <img src="@ViewModel.ImageUrl" alt="@ViewModel.FullDisplayName" />
+<div class="col-span-3 md:col-span-4 @(IsVisible ? "h-auto": "hidden")">
+  <hr class="my-5"/>
+  <img src="@ViewModel.BannerImageUrl" alt="@ViewModel.FullDisplayName" />
   <p class="text-2xl mt-2 mb-0">@ViewModel.FullDisplayName</p>
   @if (@ViewModel.WebsiteUrl != null)
   {
@@ -26,6 +27,7 @@
     }
   </div>
   <p>@ViewModel.Description</p>
+  <hr class="my-5" />
 </div>
 
 @code
@@ -35,4 +37,10 @@
   /// </summary>
   [Parameter]
   public IArtistViewModel ViewModel { get; set; }
+
+  /// <summary>
+  /// Gets or sets a value that determines whether this component should render itself.
+  /// </summary>
+  [Parameter]
+  public bool IsVisible { get; set; }
 }

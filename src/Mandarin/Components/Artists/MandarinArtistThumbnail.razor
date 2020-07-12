@@ -1,0 +1,21 @@
+﻿@using Mandarin.ViewModels.Artists
+
+<div class="ease-in-out duration-200 transition-opacity hover:opacity-75 cursor-pointer" @onclick="Clicked">
+  <img src="@ViewModel.GridImageUrl" alt="@ViewModel.ShortDisplayName" />
+  <p class="mt-1 mb-0 text-sm">@ViewModel.ShortDisplayName</p>
+</div>
+
+@code
+{
+  /// <summary>
+  /// Gets or sets the backing data model for the artist.
+  /// </summary>
+  [Parameter]
+  public IArtistViewModel ViewModel { get; set; }
+
+  /// <summary>
+  /// Gets or sets a handler that is fired on this component being clicked.
+  /// </summary>
+  [Parameter]
+  public EventCallback Clicked { get; set; }
+}

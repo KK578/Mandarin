@@ -1,0 +1,32 @@
+﻿@using Mandarin.ViewModels.Home.OpeningTimes
+
+<div class="container max-w-xs @Class">
+  <h3 class="font-bold">Opening Times</h3>
+
+  <table class="w-full">
+    <tbody>
+    @foreach (var openingTime in ViewModel.OpeningTimes)
+    {
+      <tr>
+        <td class="text-left">@openingTime.NameOfDay</td>
+        <td class="text-right">@openingTime.Message</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
+
+@code
+{
+  /// <summary>
+  /// Gets or sets the additional classes to attach to the containing html element.
+  /// </summary>
+  [Parameter]
+  public string Class { get; set; }
+
+  /// <summary>
+  /// Gets or sets the view model for the opening times.
+  /// </summary>
+  [Parameter]
+  public IOpeningTimesViewModel ViewModel { get; set; }
+}

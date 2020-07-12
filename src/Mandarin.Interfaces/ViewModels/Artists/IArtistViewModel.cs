@@ -25,7 +25,12 @@ namespace Mandarin.ViewModels.Artists
         /// <summary>
         /// Gets the artist's public image banner.
         /// </summary>
-        Uri ImageUrl { get; }
+        Uri GridImageUrl { get; }
+
+        /// <summary>
+        /// Gets the artist's public image banner.
+        /// </summary>
+        Uri BannerImageUrl { get; }
 
         /// <summary>
         /// Gets the artist's personal website url.
