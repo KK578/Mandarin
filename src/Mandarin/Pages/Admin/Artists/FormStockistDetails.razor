@@ -104,7 +104,7 @@ else
         <Validation>
           <Field>
             <FieldLabel>Grid Display Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName" Disabled="@(!StockistIsDisplayed || !isEditing)">
+            <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName" Disabled="@(!isEditing)">
               <Feedback><ValidationError /></Feedback>
             </TextEdit>
           </Field>
@@ -113,7 +113,7 @@ else
         <Validation>
           <Field>
             <FieldLabel>Banner Display Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.Details.FullDisplayName" Disabled="@(!StockistIsDisplayed || !isEditing)">
+            <TextEdit @bind-Text="@Stockist.Details.FullDisplayName" Disabled="@(!isEditing)">
               <Feedback><ValidationError /></Feedback>
             </TextEdit>
           </Field>
@@ -289,6 +289,7 @@ else
       this.Stockist = new Stockist
       {
         StatusCode = StatusMode.Active,
+        Details = new StockistDetail(),
       };
       Stockist.Commissions.Add(new Commission
       {
