@@ -6,7 +6,7 @@
     "url": "https://github.com/KK578/Mandarin"
   },
   "devDependencies": {
-    "autoprefixer": "^9.8.4",
+    "autoprefixer": "^9.8.5",
     "fancy-log": "^1.3.3",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.3.0",
