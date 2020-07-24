@@ -24,16 +24,15 @@ async function buildInformation() {
     const rawFromVersionSha = await git.raw(["describe", "--abbrev=0", "--tags", `${toVersionSha}^`]);
     const fromVersionSha = rawFromVersionSha.split("\n")[0];
 
-    const commits = await git.log({
-        from: fromVersionSha,
-        to: toVersionSha,
-        format: {
-            id: "%H",
-            comment: "%s"
-        }
-    }, x => x);
-
-    fancyLog.info(`Found ${commits.all.length} commits.`);
+    const rawCommits = await git.raw(["log", "--pretty=format:%H|%s", `${fromVersionSha}..${toVersionSha}`]);
+    const commits = rawCommits.split("\n")
+        .filter(x => x)
+        .map(x => x.split("|"))
+        .map(x => ({
+            id: x[0],
+            comment: x.splice(1).join("|")
+        }));
+    fancyLog.info(`Found ${commits.length} commits.`);
 
     const info = {
         buildEnvironment: "GitHub Actions",
@@ -43,7 +42,7 @@ async function buildInformation() {
         vcsType: "Git",
         vcsRoot: packageJson.repository.url,
         vcsCommitNumber: toVersionSha,
-        commits: commits.all
+        commits: commits
     };
     fancyLog.info(info);
 
