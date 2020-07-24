@@ -30,7 +30,7 @@ namespace Mandarin.Services
             services.AddLazyCache();
             services.AddMandarinDomainServices();
             services.AddSendGridServices(configuration);
-            services.AddArtistServices(configuration);
+            services.AddArtistServices();
             services.AddSquareServices(configuration);
 
             return services;
@@ -57,7 +57,7 @@ namespace Mandarin.Services
             }
         }
 
-        private static void AddArtistServices(this IServiceCollection services, IConfiguration configuration)
+        private static void AddArtistServices(this IServiceCollection services)
         {
             services.AddScoped<IArtistService, DatabaseArtistService>();
         }

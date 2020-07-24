@@ -10,8 +10,7 @@ async function buildInformation() {
     const toVersionSha = process.env["GITHUB_SHA"];
     const buildNumber = process.env["GITHUB_RUN_ID"];
 
-    if (!toVersionSha || !buildNumber)
-    {
+    if (!toVersionSha || !buildNumber) {
         fancyLog.warn("Not running on GitHub CI.");
         fancyLog.info("To run locally, please set the following environment variables:");
         if (!toVersionSha)
@@ -20,18 +19,38 @@ async function buildInformation() {
             fancyLog.info(" - GITHUB_RUN_ID = [Github Action run identifier]")
         return;
     }
+    else {
+        fancyLog.info(`Resolved 'to' version: ${toVersionSha}`);
+    }
 
     const rawFromVersionSha = await git.raw(["rev-list", "--tags", "--max-count=1"]);
     const fromVersionSha = rawFromVersionSha.split("\n")[0];
+    fancyLog.info(`Resolved 'from' version: ${fromVersionSha}`);
 
-    const commits = await git.log({
-        from: fromVersionSha,
-        to: toVersionSha,
-        format: {
-            id: "%H",
-            comment: "%s"
-        }
-    }, x => x);
+    let commits = [];
+
+    try {
+        fancyLog.info(`Getting commits between ${fromVersionSha} and ${toVersionSha}.`);
+        commits = await git.log({
+            from: fromVersionSha,
+            to: toVersionSha,
+            format: {
+                id: "%H",
+                comment: "%s"
+            }
+        }, x => x);
+    }
+    catch {
+        fancyLog.error(`Failed to get commits between ${fromVersionSha} and ${toVersionSha}.`);
+        fancyLog.info(`Getting commits from ${fromVersionSha} onwards.`);
+        commits = await git.log({
+            from: fromVersionSha,
+            format: {
+                id: "%H",
+                comment: "%s"
+            }
+        }, x => x);
+    }
 
     fancyLog.info(`Found ${commits.all.length} commits.`);
 
