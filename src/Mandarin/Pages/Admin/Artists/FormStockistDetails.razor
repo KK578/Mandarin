@@ -230,10 +230,10 @@ else
                 <AddonLabel Class="w-12">%</AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <Select TValue="CommissionRateGroup" @bind-SelectedValue="@Commission.RateGroup" Disabled="@(!isEditing)">
+                <Select TValue="int?" @bind-SelectedValue="@Commission.RateGroupId" Disabled="@(!isEditing)">
                   @foreach (var group in rateGroups)
                   {
-                    <SelectItem Value="@group">@(group.Rate)%</SelectItem>
+                    <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
                   }
                 </Select>
               </Addon>
@@ -324,6 +324,7 @@ else
     validations.ClearAll();
     isNew = false;
     isEditing = false;
+    StateHasChanged();
   }
 
   private async Task OnCancelClicked()
