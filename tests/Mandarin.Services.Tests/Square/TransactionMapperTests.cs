@@ -105,6 +105,7 @@ namespace Mandarin.Services.Tests.Square
                 new OrderLineItem("2",
                                   catalogObjectId: product.SquareId,
                                   name: product.ProductName,
+                                  basePriceMoney: new Money(500, "GBP"),
                                   totalMoney: new Money(1000, "GBP")),
             };
             return new Order("Location",
@@ -136,6 +137,7 @@ namespace Mandarin.Services.Tests.Square
                 new OrderReturnLineItem("3",
                                         catalogObjectId: product.SquareId,
                                         name: product.ProductName,
+                                        basePriceMoney: new Money(500, "GBP"),
                                         totalMoney: new Money(-1500, "GBP")),
             };
             return new Order("Location",

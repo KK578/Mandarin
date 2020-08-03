@@ -63,8 +63,8 @@ namespace Mandarin.Services.Square
                 if (fixedCommissionAmount != null)
                 {
                     var quantity = int.Parse(orderLineItem.Quantity);
-                    var commissionSubtotal = quantity * fixedCommissionAmount.Amount;
-                    var subTotal = decimal.Divide(orderLineItem.TotalMoney?.Amount ?? 0, 100) - commissionSubtotal;
+                    var commissionSubtotal = fixedCommissionAmount.Amount;
+                    var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
                     yield return new Subtransaction(product, quantity, subTotal);
                     yield return new Subtransaction(new Product("TLM-" + fixedCommissionAmount.ProductCode,
@@ -73,12 +73,12 @@ namespace Mandarin.Services.Square
                                                                 null,
                                                                 fixedCommissionAmount.Amount),
                                                     quantity,
-                                                    commissionSubtotal);
+                                                    quantity * commissionSubtotal);
                 }
                 else
                 {
                     var quantity = int.Parse(orderLineItem.Quantity);
-                    var subTotal = decimal.Divide(orderLineItem.TotalMoney?.Amount ?? 0, 100);
+                    var subTotal = quantity * decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100);
                     yield return new Subtransaction(product, quantity, subTotal);
                 }
             }
@@ -114,7 +114,7 @@ namespace Mandarin.Services.Square
                               {
                                   var product = await this.GetProductAsync(item.CatalogObjectId, item.Name);
                                   var quantity = -1 * int.Parse(item.Quantity);
-                                  var subtotal = decimal.Divide(item.TotalMoney?.Amount ?? 0, 100);
+                                  var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
                                   return new Subtransaction(product, quantity, subtotal);
                               });
         }
