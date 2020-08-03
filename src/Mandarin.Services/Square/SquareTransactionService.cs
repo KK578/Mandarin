@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
@@ -38,6 +39,8 @@ namespace Mandarin.Services.Square
         {
             this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
             return Observable.Create<Order>(SubscribeToOrders)
+                             .ToList()
+                             .SelectMany(FilterOrders)
                              .SelectMany(this.transactionMapper.MapToTransaction);
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
@@ -51,7 +54,7 @@ namespace Mandarin.Services.Square
                                       .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
                                                       .ClosedAt(new TimeRange.Builder()
                                                                 .StartAt(start.ToString("s"))
-                                                                .EndAt(end.ToString("s"))
+                                                                .EndAt(end.AddDays(14).ToString("s"))
                                                                 .Build())
                                                       .Build())
                                       .Build())
@@ -73,6 +76,15 @@ namespace Mandarin.Services.Square
                 while (response.Cursor != null);
 
                 o.OnCompleted();
+            }
+
+            IObservable<Order> FilterOrders(IList<Order> sourceOrders)
+            {
+                var orders = sourceOrders.Where(x => DateTime.Parse(x.ClosedAt) < end).Where(x => x.Returns == null).ToList();
+                var orderIds = orders.Select(x => x.Id).ToHashSet();
+                var refunds = sourceOrders.Where(x => x.Returns != null).Where(x => x.Returns.Any(r => orderIds.Contains(r.SourceOrderId))).ToList();
+
+                return orders.Concat(refunds).ToObservable();
             }
         }
 
