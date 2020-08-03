@@ -50,21 +50,6 @@ jobs:
       - name: "[Setup] Install gulp"
         run: npm install -g gulp-cli
 
-      - name: "[Coverage] Instrument with Sonar"
-        env:
-          SONARCLOUD_LOGIN: ${{ secrets.SONARCLOUD_LOGIN }}
-        run: |
-          dotnet tool install --global dotnet-sonarscanner --version 4.9.0
-          ~/.dotnet/tools/dotnet-sonarscanner begin \
-            /k:"KK578_Mandarin" \
-            /o:"kk578" \
-            /d:sonar.login="$SONARCLOUD_LOGIN" \
-            /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.nunit.reportsPaths="tests/*/TestResults/TestResults.xml" \
-            /d:sonar.cs.opencover.reportsPaths="coverage/coverage.opencover.xml" \
-            /d:sonar.cs.roslyn.ignoreIssues="true" \
-            /v:$GitVersion_FullSemVer
-
       - name: "[Build] npm install"
         working-directory: src/Mandarin/
         run: npm install
@@ -118,13 +103,6 @@ jobs:
         with:
           name: Mandarin.Build
           path: publish
-
-      - name: "[Coverage] Upload to SonarCloud"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONARCLOUD_LOGIN: ${{ secrets.SONARCLOUD_LOGIN }}
-        run: |
-          ~/.dotnet/tools/dotnet-sonarscanner end /d:sonar.login="$SONARCLOUD_LOGIN"
 
       - name: "[Coverage] Upload to Coveralls"
         uses: coverallsapp/github-action@v1.0.1
