@@ -35,7 +35,7 @@ jobs:
       - name: "[Setup] Create GitVersion"
         uses: docker://gittools/gitversion:5.3.8-linux-alpine.3.10-x64-netcoreapp3.1
         with:
-          args: /github/workspace /nofetch /exec /bin/sh /execargs "-c \"echo $GitVersion_FullSemVer > /github/workspace/version.txt\"
+          args: /github/workspace /nofetch /output buildserver
 
       - name: "[Setup] Install .NET Core"
         uses: actions/setup-dotnet@v1
