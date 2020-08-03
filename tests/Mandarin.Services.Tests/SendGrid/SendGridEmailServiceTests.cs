@@ -128,6 +128,23 @@ namespace Mandarin.Services.Tests.SendGrid
         }
 
         [Test]
+        public void BuildRecordOfSalesEmail_GivenValidModel_WhenEmailIsSentToRealContactEmail_ThenBccShouldNotBeSet()
+        {
+            var model = TestData.Create<ArtistSales>();
+            model = model.WithMessageCustomisations(SendGridEmailServiceTests.RealContactEmail, model.CustomMessage);
+            var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
+            var result = subject.BuildRecordOfSalesEmail(model);
+
+            Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
+            Assert.That(result.ReplyTo, Is.Null);
+            Assert.That(result.Personalizations[0].Bccs, Is.Null);
+            Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
+            Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
+            result.Personalizations[0].TemplateData
+                  .Should().BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress).Excluding(sales => sales.CustomMessage));
+        }
+
+        [Test]
         public void BuildRecordOfSalesEmail_GivenValidModel_ShouldCopyValuesCorrectly()
         {
             var model = TestData.Create<ArtistSales>();
@@ -136,6 +153,7 @@ namespace Mandarin.Services.Tests.SendGrid
 
             Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
             Assert.That(result.ReplyTo.Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
+            Assert.That(result.Personalizations[0].Bccs[0].Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
             Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
             Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
             result.Personalizations[0].TemplateData
