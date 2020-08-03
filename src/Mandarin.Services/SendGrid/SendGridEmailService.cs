@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using Bashi.Core.Enums;
@@ -67,11 +68,15 @@ namespace Mandarin.Services.SendGrid
             var email = new SendGridMessage();
             var configuration = this.sendGridConfigurationOption.Value;
             email.From = new EmailAddress(configuration.ServiceEmail);
-            email.ReplyTo = new EmailAddress(configuration.RealContactEmail);
             email.AddTo(new EmailAddress(artistSales.EmailAddress));
-            email.AddBcc(configuration.RealContactEmail);
             email.TemplateId = configuration.RecordOfSalesTemplateId;
             email.SetTemplateData(artistSales);
+
+            if (!string.Equals(artistSales.EmailAddress, configuration.RealContactEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                email.ReplyTo = new EmailAddress(configuration.RealContactEmail);
+                email.AddBcc(configuration.RealContactEmail);
+            }
 
             return email;
         }
