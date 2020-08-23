@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SendGrid" Version="9.15.1" />
+    <PackageReference Include="SendGrid" Version="9.21.0" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
