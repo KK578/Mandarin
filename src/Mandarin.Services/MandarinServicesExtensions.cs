@@ -50,10 +50,9 @@ namespace Mandarin.Services
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
 
-            static void ConfigureSendGrid(IServiceProvider s, SendGridClientOptions options)
+            void ConfigureSendGrid(IServiceProvider s, SendGridClientOptions options)
             {
-                var config = s.GetRequiredService<IOptions<SendGridClientOptions>>();
-                options.ApiKey = config.Value.ApiKey;
+                options.ApiKey = configuration.GetValue<string>("SendGrid:ApiKey");
             }
         }
 
