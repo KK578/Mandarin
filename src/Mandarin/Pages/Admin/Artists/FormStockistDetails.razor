@@ -230,7 +230,7 @@ else
                 <AddonLabel Class="w-12">%</AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <Select TValue="int?" @bind-SelectedValue="@Commission.RateGroupId" Disabled="@(!isEditing)">
+                <Select TValue="int?" SelectedValue="@Commission.RateGroupId" SelectedValueChanged="@OnRateGroupSelected" Disabled="@(!isEditing)">
                   @foreach (var group in rateGroups)
                   {
                     <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
@@ -293,6 +293,7 @@ else
       };
       Stockist.Commissions.Add(new Commission
       {
+        RateGroupId = rateGroups.First().GroupId,
         RateGroup = rateGroups.First(),
         StartDate = DateTime.Now.Date,
         EndDate = DateTime.Now.AddDays(90).Date,
@@ -371,4 +372,14 @@ else
     this.Stockist.Details.BannerImageUrl = "https://thelittlemandarin.co.uk/" + filename;
     StateHasChanged();
   }
+
+  private void OnRateGroupSelected(int? selectedId)
+  {
+    var value = rateGroups.FirstOrDefault(group => group.GroupId == selectedId) ?? rateGroups.First();
+    Commission.RateGroup = value;
+    Commission.RateGroupId = value.GroupId;
+
+    StateHasChanged();
+  }
+
 }
