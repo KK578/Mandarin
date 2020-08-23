@@ -9,7 +9,7 @@
     <PackageReference Include="LazyCache" Version="2.0.4" />
     <PackageReference Include="LazyCache.AspNetCore" Version="2.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.5" />
     <PackageReference Include="Scrutor" Version="3.2.1" />
     <PackageReference Include="Square" Version="6.0.0" />
