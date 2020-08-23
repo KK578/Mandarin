@@ -23,7 +23,7 @@ async function buildInformation() {
         fancyLog.info(`Resolved 'to' version: ${toVersionSha}`);
     }
 
-    const rawFromVersionSha = await git.raw(["rev-list", "--tags", "--max-count=1"]);
+    const rawFromVersionSha = await git.raw(["describe", "--abbrev=0", "--tags", "HEAD^"]);
     const fromVersionSha = rawFromVersionSha.split("\n")[0];
     fancyLog.info(`Resolved 'from' version: ${fromVersionSha}`);
 
