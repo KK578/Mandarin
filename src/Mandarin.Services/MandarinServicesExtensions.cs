@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SendGrid;
+using SendGrid.Extensions.DependencyInjection;
 using Square;
 using Environment = Square.Environment;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
@@ -44,16 +45,15 @@ namespace Mandarin.Services
 
         private static void AddSendGridServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<SendGridClientOptions>(configuration.GetSection("SendGrid"));
+            services.AddSendGrid(ConfigureSendGrid);
             services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
-            services.AddTransient(ConfigureSendGridClient);
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
 
-            static ISendGridClient ConfigureSendGridClient(IServiceProvider provider)
+            static void ConfigureSendGrid(IServiceProvider s, SendGridClientOptions options)
             {
-                var options = provider.GetRequiredService<IOptions<SendGridClientOptions>>();
-                return new SendGridClient(options.Value);
+                var config = s.GetRequiredService<IOptions<SendGridClientOptions>>();
+                options.ApiKey = config.Value.ApiKey;
             }
         }
 
