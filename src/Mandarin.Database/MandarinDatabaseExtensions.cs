@@ -18,7 +18,7 @@ namespace Mandarin.Database
         public static IServiceCollection AddMandarinDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddEntityFrameworkNpgsql();
-            services.AddDbContext<MandarinDbContext>((s, o) => o.UseNpgsql(configuration.GetConnectionString("MandarinConnection")).UseInternalServiceProvider(s));
+            services.AddDbContext<MandarinDbContext>((s, o) => o.UseNpgsql(configuration.GetConnectionString("MandarinConnection")).UseInternalServiceProvider(s).EnableSensitiveDataLogging());
 
             return services;
         }
