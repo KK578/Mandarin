@@ -54,7 +54,7 @@ namespace Mandarin
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+            services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
             services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
