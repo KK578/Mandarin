@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Mandarin.Configuration;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
+using Microsoft.Extensions.Options;
 using Square.Models;
 using Transaction = Mandarin.Models.Transactions.Transaction;
 
@@ -15,14 +17,17 @@ namespace Mandarin.Services.Square
     internal sealed class TransactionMapper : ITransactionMapper
     {
         private readonly IQueryableInventoryService inventoryService;
+        private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
         /// </summary>
         /// <param name="inventoryService">The inventory service.</param>
-        public TransactionMapper(IQueryableInventoryService inventoryService)
+        /// <param name="mandarinConfiguration">The application configuration.</param>
+        public TransactionMapper(IQueryableInventoryService inventoryService, IOptions<MandarinConfiguration> mandarinConfiguration)
         {
             this.inventoryService = inventoryService;
+            this.mandarinConfiguration = mandarinConfiguration;
         }
 
         /// <inheritdoc/>
@@ -41,15 +46,16 @@ namespace Mandarin.Services.Square
 
         private IObservable<IList<Subtransaction>> CreateSubtransactions(Order order)
         {
-            var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransaction);
+            var orderDate = DateTime.Parse(order.ClosedAt);
+            var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(orderLineItem => this.CreateSubtransaction(orderLineItem, orderDate));
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
-            var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionsFromReturn);
+            var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));
             return Observable.Merge(lineItems, discounts, returns).ToList();
         }
 
-        private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem)
+        private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, DateTime orderDate)
         {
-            return this.GetProductAsync(orderLineItem.CatalogObjectId, orderLineItem.Name)
+            return this.GetProductAsync(orderLineItem.CatalogObjectId, orderLineItem.Name, orderDate)
                        .ToObservable()
                        .SelectMany(product =>
                        {
@@ -107,32 +113,47 @@ namespace Mandarin.Services.Square
             return Observable.Return(subtransaction);
         }
 
-        private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn)
+        private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, DateTime orderDate)
         {
             return orderReturn.ReturnLineItems.ToObservable()
                               .SelectMany(async item =>
                               {
-                                  var product = await this.GetProductAsync(item.CatalogObjectId, item.Name);
+                                  var product = await this.GetProductAsync(item.CatalogObjectId, item.Name, orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
                                   var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
                                   return new Subtransaction(product, quantity, subtotal);
                               });
         }
 
-        private Task<Product> GetProductAsync(string squareId, string name)
+        private async Task<Product> GetProductAsync(string squareId, string name, DateTime orderDate)
         {
             if (squareId != null)
             {
-                return this.inventoryService.GetProductBySquareIdAsync(squareId);
+                var product = await this.inventoryService.GetProductBySquareIdAsync(squareId);
+                return await MapProduct(product);
             }
             else if (name != null)
             {
-                return this.inventoryService.GetProductByNameAsync(name);
+                var product = await this.inventoryService.GetProductByNameAsync(name);
+                return await MapProduct(product);
             }
             else
             {
                 var unknownProduct = new Product(null, "TLM-Unknown", "Unknown Product", "Unknown Product", null);
-                return Task.FromResult(unknownProduct);
+                return unknownProduct;
+            }
+
+            Task<Product> MapProduct(Product originalProduct)
+            {
+                foreach (var mapping in this.mandarinConfiguration.Value.ProductMappings)
+                {
+                    if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode))
+                    {
+                        return this.inventoryService.GetProductByProductCodeAsync(mapping.Mappings[originalProduct.ProductCode]);
+                    }
+                }
+
+                return Task.FromResult(originalProduct);
             }
         }
     }
