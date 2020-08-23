@@ -4,9 +4,11 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
+using Mandarin.Configuration;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Services.Square;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using Square.Models;
@@ -17,13 +19,17 @@ namespace Mandarin.Services.Tests.Square
     [TestFixture]
     public class TransactionMapperTests
     {
+        private readonly DateTime orderDate = DateTime.Now;
+
         private Mock<IQueryableInventoryService> inventoryService;
+        private MandarinConfiguration configuration;
 
         [Test]
         public async Task MapToTransaction_GivenOrderWithLineItems_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
             this.GivenInventoryServiceSetUpWithProduct(product);
+            this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsLineItem(product);
             var transactions = await this.WhenMappingTransactions(order);
             Assert.That(transactions.Count, Is.EqualTo(1));
@@ -35,12 +41,26 @@ namespace Mandarin.Services.Tests.Square
         }
 
         [Test]
+        public async Task MapToTransaction_GivenOrderWithLineItems_WhenConfigurationMapsProduct_ShouldMapCorrectly()
+        {
+            var product = TestData.Create<Product>();
+            var mappedProduct = TestData.Create<Product>();
+            this.GivenInventoryServiceSetUpWithProduct(product);
+            this.GivenConfigurationWithMappings(product, mappedProduct);
+            var order = this.GivenOrderProductAsLineItem(product);
+            var transactions = await this.WhenMappingTransactions(order);
+            Assert.That(transactions.Count, Is.EqualTo(1));
+            Assert.That(transactions[0].Subtransactions[0].Product, Is.EqualTo(mappedProduct));
+        }
+
+        [Test]
         public async Task MapToTransaction_GivenOrderWithFixedCommission_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
             var fixedCommission = new FixedCommissionAmount(product.ProductCode, 1.00m);
             this.GivenInventoryServiceSetUpWithProduct(product);
             this.GivenInventoryServiceSetUpWithFixedCommission(product, fixedCommission);
+            this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsLineItem(product);
             var transactions = await this.WhenMappingTransactions(order);
             Assert.That(transactions.Count, Is.EqualTo(1));
@@ -61,6 +81,7 @@ namespace Mandarin.Services.Tests.Square
         {
             var product = TestData.Create<Product>();
             this.GivenInventoryServiceSetUpWithProduct(product);
+            this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsDiscount(product);
             var transactions = await this.WhenMappingTransactions(order);
             Assert.That(transactions.Count, Is.EqualTo(1));
@@ -75,6 +96,7 @@ namespace Mandarin.Services.Tests.Square
         {
             var product = TestData.Create<Product>();
             this.GivenInventoryServiceSetUpWithProduct(product);
+            this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsReturn(product);
             var transactions = await this.WhenMappingTransactions(order);
             Assert.That(transactions.Count, Is.EqualTo(1));
@@ -88,6 +110,7 @@ namespace Mandarin.Services.Tests.Square
         {
             this.inventoryService ??= new Mock<IQueryableInventoryService>();
             this.inventoryService.Setup(x => x.GetProductBySquareIdAsync(product.SquareId)).ReturnsAsync(product);
+            this.inventoryService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
             this.inventoryService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
         }
 
@@ -96,6 +119,34 @@ namespace Mandarin.Services.Tests.Square
             this.inventoryService ??= new Mock<IQueryableInventoryService>();
             this.inventoryService.Setup(x => x.GetFixedCommissionAmount(product)).ReturnsAsync(fixedCommissionAmount);
         }
+
+
+        private void GivenConfigurationWithNoMappings()
+        {
+            this.configuration = new MandarinConfiguration();
+        }
+
+        private void GivenConfigurationWithMappings(Product product, Product mappedProduct)
+        {
+            this.configuration = new MandarinConfiguration();
+            this.configuration.ProductMappings = new List<ProductMapping>
+            {
+                new ProductMapping
+                {
+                    TransactionsAfterDate = this.orderDate.AddDays(-1),
+                    Mappings = new Dictionary<string, string>
+                    {
+                        { product.ProductCode, mappedProduct.ProductCode },
+                    },
+                },
+            };
+
+            this.inventoryService.Setup(x => x.GetProductBySquareIdAsync(mappedProduct.SquareId)).ReturnsAsync(mappedProduct);
+            this.inventoryService.Setup(x => x.GetProductByProductCodeAsync(mappedProduct.ProductCode)).ReturnsAsync(mappedProduct);
+            this.inventoryService.Setup(x => x.GetProductByNameAsync(mappedProduct.ProductName)).ReturnsAsync(mappedProduct);
+        }
+
+
 
 
         private Order GivenOrderProductAsLineItem(Product product)
@@ -112,7 +163,7 @@ namespace Mandarin.Services.Tests.Square
                              TestData.WellKnownString,
                              lineItems: lineItems,
                              totalMoney: new Money(1000, "GBP"),
-                             createdAt: DateTime.Now.ToString("O"));
+                             createdAt: this.orderDate.ToString("O"));
         }
 
         private Order GivenOrderProductAsDiscount(Product product)
@@ -127,7 +178,7 @@ namespace Mandarin.Services.Tests.Square
                              TestData.WellKnownString,
                              discounts: discounts,
                              totalMoney: new Money(-2000, "GBP"),
-                             createdAt: DateTime.Now.ToString("O"));
+                             createdAt: this.orderDate.ToString("O"));
         }
 
         private Order GivenOrderProductAsReturn(Product product)
@@ -144,12 +195,12 @@ namespace Mandarin.Services.Tests.Square
                              TestData.WellKnownString,
                              returns: new List<OrderReturn> { new OrderReturn(returnLineItems: returns) },
                              totalMoney: new Money(-1500, "GBP"),
-                             createdAt: DateTime.Now.ToString("O"));
+                             createdAt: this.orderDate.ToString("O"));
         }
 
         private Task<IList<Transaction>> WhenMappingTransactions(Order order)
         {
-            var subject = new TransactionMapper(this.inventoryService.Object);
+            var subject = new TransactionMapper(this.inventoryService.Object, Options.Create(this.configuration));
             return subject.MapToTransaction(order).ToList().ToTask();
         }
     }

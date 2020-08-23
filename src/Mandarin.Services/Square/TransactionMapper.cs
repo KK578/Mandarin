@@ -46,7 +46,7 @@ namespace Mandarin.Services.Square
 
         private IObservable<IList<Subtransaction>> CreateSubtransactions(Order order)
         {
-            var orderDate = DateTime.Parse(order.ClosedAt);
+            var orderDate = DateTime.Parse(order.CreatedAt);
             var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(orderLineItem => this.CreateSubtransaction(orderLineItem, orderDate));
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
             var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));
