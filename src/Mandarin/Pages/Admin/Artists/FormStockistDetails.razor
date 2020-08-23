@@ -322,6 +322,8 @@ else
     }
 
     await ArtistService.SaveArtistAsync(this.Stockist);
+    NavigationManager.NavigateTo($"/admin/artists/edit/{this.Stockist.StockistCode}");
+    validations.ClearAll();
     validations.ClearAll();
     isNew = false;
     isEditing = false;
