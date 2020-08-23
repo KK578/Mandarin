@@ -63,13 +63,15 @@ namespace Mandarin.Services.Artists
         }
 
         /// <inheritdoc/>
-        public Task<Stockist> GetArtistByCodeAsync(string stockistCode)
+        public async Task<Stockist> GetArtistByCodeAsync(string stockistCode)
         {
-            return this.mandarinDbContext.Stockist
+            var stockist = await this.mandarinDbContext.Stockist
                        .Include(x => x.Details)
                        .Include(x => x.Commissions)
                        .ThenInclude(x => x.RateGroup)
                        .FirstOrDefaultAsync(x => x.StockistCode == stockistCode);
+            await this.mandarinDbContext.Entry(stockist).ReloadAsync();
+            return stockist;
         }
     }
 }
