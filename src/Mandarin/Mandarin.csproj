@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
-    <PackageReference Include="Blazorise" Version="0.9.2-preview5" />
+    <PackageReference Include="Blazorise" Version="0.9.2-preview6" />
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.2-preview5" />
     <PackageReference Include="Blazorise.Components" Version="0.9.2-preview5" />
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.2-preview5" />
