@@ -18,6 +18,7 @@
     <PackageReference Include="LazyEntityGraph.AutoFixture" Version="2.3.4" />
     <PackageReference Include="LazyEntityGraph.EntityFrameworkCore" Version="2.3.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.7" />
+    <PackageReference Include="Square" Version="5.2.2" />
   </ItemGroup>
 
 </Project>

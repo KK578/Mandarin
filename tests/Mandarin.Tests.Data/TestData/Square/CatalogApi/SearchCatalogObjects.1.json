@@ -1,0 +1,99 @@
+﻿{
+  "cursor": "Page2",
+  "objects": [
+    {
+      "type": "ITEM",
+      "id": "U6ZPHE4ZZT673TNQH4MNFRSK",
+      "updated_at": "2020-09-17T19:14:48.534Z",
+      "version": 1600370088534,
+      "is_deleted": false,
+      "catalog_v1_ids": [
+        {
+          "catalog_v1_id": "ef5ac0c3-2303-4515-b6ac-7fb1f9ca7464",
+          "location_id": "QW81MR8HN4N8C"
+        }
+      ],
+      "present_at_all_locations": false,
+      "present_at_location_ids": [
+        "QW81MR8HN4N8C"
+      ],
+      "image_id": "ABIYSXZAKNMD3TS3MC43PP2M",
+      "item_data": {
+        "name": "Item1",
+        "description": "Item1's Description",
+        "abbreviation": "001",
+        "label_color": "ff9da2a6",
+        "visibility": "PRIVATE",
+        "category_id": "NAXTXKRJUFHVO7YGWFNEDANT",
+        "variations": [
+          {
+            "type": "ITEM_VARIATION",
+            "id": "CK4ULMQITL3XJKOV6T5TT4DI",
+            "updated_at": "2019-06-01T09:16:29.146Z",
+            "version": 1559380589146,
+            "is_deleted": false,
+            "present_at_all_locations": false,
+            "present_at_location_ids": [
+              "QW81MR8HN4N8C"
+            ],
+            "item_variation_data": {
+              "item_id": "U6ZPHE4ZZT673TNQH4MNFRSK",
+              "name": "Regular",
+              "sku": "ID-1",
+              "ordinal": 1,
+              "pricing_type": "FIXED_PRICING",
+              "price_money": {
+                "amount": 200,
+                "currency": "GBP"
+              },
+              "location_overrides": [
+                {
+                  "location_id": "QW81MR8HN4N8C",
+                  "track_inventory": true
+                }
+              ]
+            }
+          }
+        ],
+        "product_type": "REGULAR",
+        "skip_modifier_screen": false,
+        "ecom_available": false,
+        "ecom_visibility": "UNINDEXED"
+      }
+    },
+    {
+      "type": "ITEM_VARIATION",
+      "id": "CK4ULMQITL3XJKOV6T5TT4DI",
+      "updated_at": "2019-06-01T09:16:29.146Z",
+      "version": 1559380589146,
+      "is_deleted": false,
+      "catalog_v1_ids": [
+        {
+          "catalog_v1_id": "3755e519-636c-4a03-ae3b-8dd6e6e28475",
+          "location_id": "QW81MR8HN4N8C"
+        }
+      ],
+      "present_at_all_locations": false,
+      "present_at_location_ids": [
+        "QW81MR8HN4N8C"
+      ],
+      "item_variation_data": {
+        "item_id": "U6ZPHE4ZZT673TNQH4MNFRSK",
+        "name": "Regular",
+        "sku": "ID-1",
+        "ordinal": 1,
+        "pricing_type": "FIXED_PRICING",
+        "price_money": {
+          "amount": 200,
+          "currency": "GBP"
+        },
+        "location_overrides": [
+          {
+            "location_id": "QW81MR8HN4N8C",
+            "track_inventory": true
+          }
+        ]
+      }
+    }
+  ]
+}

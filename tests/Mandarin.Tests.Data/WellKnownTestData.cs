@@ -5,6 +5,7 @@ using Mandarin.Models.Artists;
 using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Square.Models;
 
 namespace Mandarin.Tests.Data
 {
@@ -103,10 +104,11 @@ namespace Mandarin.Tests.Data
         {
             public class CatalogApi
             {
-                public class ListCatalog
+                public class SearchCatalogObjects
                 {
-                    public const string ItemsOnlyPage1 = "TestData/Square/CatalogApi/ListCatalog/ListCatalog.ITEM.1.json";
-                    public const string ItemsOnlyPage2 = "TestData/Square/CatalogApi/ListCatalog/ListCatalog.ITEM.2.json";
+                    public static SearchCatalogObjectsResponse Page1 => WellKnownTestData.DeserializeFromFile<SearchCatalogObjectsResponse>("TestData/Square/CatalogApi/SearchCatalogObjects.1.json");
+
+                    public static SearchCatalogObjectsResponse Page2 => WellKnownTestData.DeserializeFromFile<SearchCatalogObjectsResponse>("TestData/Square/CatalogApi/SearchCatalogObjects.2.json");
                 }
             }
 

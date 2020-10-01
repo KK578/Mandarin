@@ -139,27 +139,24 @@ namespace Mandarin.Services.Tests.Square
         private ISquareClient GivenSquareClientCatalogApiReturnsData()
         {
             var squareClient = new Mock<ISquareClient>();
-            squareClient.Setup(x => x.CatalogApi.ListCatalogAsync(null, "ITEM", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<ListCatalogResponse>(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage1));
-            squareClient.Setup(x => x.CatalogApi.ListCatalogAsync(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage2, "ITEM", It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<ListCatalogResponse>(WellKnownTestData.Square.CatalogApi.ListCatalog.ItemsOnlyPage2));
+            squareClient.Setup(x => x.CatalogApi.SearchCatalogObjectsAsync(It.Is<SearchCatalogObjectsRequest>(request => request.Cursor == null), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page1);
+            squareClient.Setup(x => x.CatalogApi.SearchCatalogObjectsAsync(It.Is<SearchCatalogObjectsRequest>(request => request.Cursor == nameof(WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page2)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page2);
 
             return squareClient.Object;
         }
 
         private ISquareClient GivenSquareClientCatalogApiWaitsToContinue(out ManualResetEvent waitHandle)
         {
-            var mre = new ManualResetEvent(false);
+            var mre = waitHandle = new ManualResetEvent(false);
             var squareClient = new Mock<ISquareClient>();
-            squareClient
-                .Setup(x => x.CatalogApi.ListCatalogAsync(null, It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            squareClient.Setup(x => x.CatalogApi.SearchCatalogObjectsAsync(It.IsAny<SearchCatalogObjectsRequest>(), It.IsAny<CancellationToken>()))
                 .Returns(() => Task.Run(() =>
                 {
                     mre.WaitOne();
-                    return new ListCatalogResponse();
+                    return new SearchCatalogObjectsResponse();
                 }));
-
-            waitHandle = mre;
             return squareClient.Object;
         }
     }
