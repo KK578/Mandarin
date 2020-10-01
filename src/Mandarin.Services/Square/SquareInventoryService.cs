@@ -79,18 +79,25 @@ namespace Mandarin.Services.Square
         /// <inheritdoc/>
         public IObservable<Product> GetInventory()
         {
-            return Observable.Create<CatalogObject>(SubscribeToListCatalog)
-                             .SelectMany(MapToProducts)
+            return Observable.Create<CatalogObject>(ListFullCatalog)
+                             .ToList()
+                             .SelectMany(SquareInventoryService.MergeCatalogItems)
+                             .SelectMany(SquareInventoryService.MapToProduct)
                              .Where(x => x != null);
 
-            async Task SubscribeToListCatalog(IObserver<CatalogObject> o, CancellationToken ct)
+            async Task ListFullCatalog(IObserver<CatalogObject> o, CancellationToken ct)
             {
-                ListCatalogResponse response = null;
+                var requestBuilder = new SearchCatalogObjectsRequest.Builder()
+                                     .ObjectTypes(new List<string> { "ITEM", "ITEM_VARIATION" })
+                                     .IncludeDeletedObjects(true);
+                SearchCatalogObjectsResponse response = null;
                 do
                 {
-                    response = await this.squareClient.CatalogApi.ListCatalogAsync(response?.Cursor, "ITEM", ct);
+                    response = await this.squareClient.CatalogApi.SearchCatalogObjectsAsync(requestBuilder.Build(), ct);
                     ct.ThrowIfCancellationRequested();
+                    requestBuilder = requestBuilder.Cursor(response.Cursor);
                     this.logger.LogDebug("Loading Square Inventory - Got {Count} Items", response.Objects.Count);
+
                     foreach (var item in response.Objects)
                     {
                         o.OnNext(item);
@@ -100,17 +107,27 @@ namespace Mandarin.Services.Square
 
                 o.OnCompleted();
             }
+        }
 
-            static IEnumerable<Product> MapToProducts(CatalogObject catalogObject)
+        private static IEnumerable<CatalogItem> MergeCatalogItems(IList<CatalogObject> catalog)
+        {
+            var variations = catalog.Where(x => x.Type == "ITEM_VARIATION").ToList();
+            var items = catalog.Where(x => x.Type == "ITEM").ToList();
+
+            foreach (var item in items)
             {
-                return catalogObject.ItemData != null
-                    ? SquareInventoryService.MapToProduct(catalogObject.ItemData)
-                    : Enumerable.Empty<Product>();
+                var itemVariations = variations.Where(x => x.ItemVariationData.ItemId == item.Id).ToList();
+                yield return item.ItemData.ToBuilder().Variations(itemVariations).Build();
             }
         }
 
         private static IEnumerable<Product> MapToProduct(CatalogItem catalogItem)
         {
+            if (catalogItem == null)
+            {
+                yield break;
+            }
+
             var productName = catalogItem.Name.Split(" - ").Last();
             var description = catalogItem.Description;
 
