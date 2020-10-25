@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Configuration;
@@ -20,6 +21,9 @@ namespace Mandarin.Services.Square
     /// <inheritdoc />
     internal sealed class SquareInventoryService : IInventoryService
     {
+        private static readonly Regex HyphenSeparatedProductNameRegex = new Regex("^.* - (?<name>.*)$");
+        private static readonly Regex SquareBracketProductNameRegex = new Regex("^\\[.*\\] (?<name>.*)$");
+
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
@@ -128,7 +132,7 @@ namespace Mandarin.Services.Square
                 yield break;
             }
 
-            var productName = catalogItem.Name.Split(" - ").Last();
+            var productName = GetProductName(catalogItem.Name);
             var description = catalogItem.Description;
 
             foreach (var variation in catalogItem.Variations)
@@ -140,6 +144,23 @@ namespace Mandarin.Services.Square
                 var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
                 yield return new Product(squareId, productCode, variationName, description, unitPrice);
             }
+        }
+
+        private static string GetProductName(string catalogItemName)
+        {
+            var squareBracketMatch = SquareInventoryService.SquareBracketProductNameRegex.Match(catalogItemName);
+            if (squareBracketMatch.Success)
+            {
+                return squareBracketMatch.Groups["name"].ToString();
+            }
+
+            var hyphenMatch = SquareInventoryService.HyphenSeparatedProductNameRegex.Match(catalogItemName);
+            if (hyphenMatch.Success)
+            {
+                return hyphenMatch.Groups["name"].ToString();
+            }
+
+            return catalogItemName;
         }
 
         private async Task CommitData(IObservable<FixedCommissionAmount> dataObservable)
