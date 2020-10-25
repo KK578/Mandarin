@@ -125,7 +125,9 @@ namespace Mandarin.Services.Tests.Square
             var catalogObjects = await subject.GetInventory().ToList().ToTask((CancellationToken)default);
             Assert.That(catalogObjects.Count, Is.EqualTo(2));
             Assert.That(catalogObjects[0].ProductCode, Is.EqualTo("ID-1"));
+            Assert.That(catalogObjects[0].ProductName, Is.EqualTo("Item1 (Regular)"));
             Assert.That(catalogObjects[1].ProductCode, Is.EqualTo("ID-2"));
+            Assert.That(catalogObjects[1].ProductName, Is.EqualTo("Item2 (Regular)"));
         }
 
         private async Task<string> GivenTemporaryFileExists(FixedCommissionAmount data)
