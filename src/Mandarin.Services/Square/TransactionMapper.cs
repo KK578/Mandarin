@@ -107,7 +107,7 @@ namespace Mandarin.Services.Square
                 product = new Product("TLM-D", "TLM-D", "Other discounts", "Discounts that aren't tracked.", -0.01m);
             }
 
-            var quantity = orderLineItemDiscount.AmountMoney.Amount ?? 0;
+            var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
             var amount = decimal.Divide(quantity, 100);
             var subtransaction = new Subtransaction(product, (int)quantity, -amount);
             return Observable.Return(subtransaction);
