@@ -172,7 +172,8 @@ namespace Mandarin.Services.Tests.Square
             {
                 new OrderLineItemDiscount(catalogObjectId: product.SquareId,
                                           name: product.ProductName,
-                                          amountMoney: new Money(2000, "GBP")),
+                                          amountMoney: new Money(2000, "GBP"),
+                                          appliedMoney: new Money(2000, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,
