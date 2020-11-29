@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using LazyCache;
 using Mandarin.Models.Transactions;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,6 @@ namespace Mandarin.Services.Decorators
     /// </summary>
     internal sealed class CachingTransactionServiceDecorator : CachingDecoratorBase, ITransactionService
     {
-        private const string CacheKey = nameof(ITransactionService) + "." + nameof(CachingTransactionServiceDecorator.GetAllTransactions);
         private readonly ITransactionService transactionService;
 
         /// <summary>
@@ -38,9 +38,15 @@ namespace Mandarin.Services.Decorators
                        .SelectMany(x => x);
         }
 
-        private static string CreateCacheKey(DateTime start, DateTime end)
+        /// <inheritdoc/>
+        public IObservable<Transaction> GetAllOnlineTransactions(DateTime start, DateTime end)
         {
-            return $"{CachingTransactionServiceDecorator.CacheKey}-{start}-{end}";
+            return this.transactionService.GetAllOnlineTransactions(start, end);
+        }
+
+        private static string CreateCacheKey(DateTime start, DateTime end, [CallerMemberName] string methodName = null)
+        {
+            return $"{nameof(ITransactionService)}-{methodName}-{start}-{end}";
         }
     }
 }
