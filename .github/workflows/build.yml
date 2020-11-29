@@ -124,7 +124,7 @@ jobs:
           name: Mandarin.Build
 
       - name: "[Deploy] Set Version Environment Variable"
-        run: echo "name=GitVersion_NuGetVersionV2::$(cat Mandarin.Build/Version.txt)" >> $GITHUB_ENV
+        run: echo "GitVersion_NuGetVersionV2=$(cat Mandarin.Build/Version.txt)" >> $GITHUB_ENV
 
       - name: "[Deploy] octo pack"
         uses: docker://octopusdeploy/octo:7.1.3
