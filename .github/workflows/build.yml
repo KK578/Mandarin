@@ -40,12 +40,12 @@ jobs:
       - name: "[Setup] Install .NET Core"
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.302
+          dotnet-version: 5.0.100
 
       - name: "[Setup] Install node"
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '15.x'
 
       - name: "[Setup] Install gulp"
         run: npm install -g gulp-cli
@@ -127,16 +127,16 @@ jobs:
         run: echo "GitVersion_NuGetVersionV2=$(cat Mandarin.Build/Version.txt)" >> $GITHUB_ENV
 
       - name: "[Deploy] octo pack"
-        uses: docker://octopusdeploy/octo:7.1.3
+        uses: docker://octopusdeploy/octo:7.4.4
         with:
           args: pack --id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --format zip --basePath Mandarin.Build
 
       - name: "[Deploy] octo push"
-        uses: docker://octopusdeploy/octo:7.1.3
+        uses: docker://octopusdeploy/octo:7.4.4
         with:
           args: push --package Mandarin.${{ env.GitVersion_NuGetVersionV2 }}.zip --replace-existing --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
 
       - name: "[Metadata] octo build-information"
-        uses: docker://octopusdeploy/octo:7.1.3
+        uses: docker://octopusdeploy/octo:7.4.4
         with:
           args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/BuildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
