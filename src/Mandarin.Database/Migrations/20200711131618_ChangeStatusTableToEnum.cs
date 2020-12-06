@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Bashi.Core.Enums;
+using Bashi.Core.Extensions;
+using Bashi.Core.Utils;
 using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
