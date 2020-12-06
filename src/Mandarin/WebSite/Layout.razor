@@ -1,0 +1,80 @@
+﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<Layout Sider="true">
+  <LayoutSider>
+    <LayoutSiderContent>
+      <Bar Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" ThemeContrast="ThemeContrast.Dark">
+        <BarBrand>
+          <BarItem>
+            <BarLink To="/"><BarIcon IconName="IconName.Home" />Hello, @Name!</BarLink>
+          </BarItem>
+        </BarBrand>
+
+        <BarMenu>
+          <BarStart>
+            <BarItem>
+              <BarLink To="/artists"><BarIcon IconName="IconName.PaintBrush" />Artists</BarLink>
+            </BarItem>
+
+            <BarItem>
+              <BarDropdown>
+                <BarDropdownToggle><BarIcon IconName="IconName.Store" />Inventory</BarDropdownToggle>
+                <BarDropdownMenu>
+                  <BarDropdownItem To="/inventory">Stock</BarDropdownItem>
+                  <BarDropdownItem To="/inventory/fixed-commission-amounts">Fixed Commissions</BarDropdownItem>
+                </BarDropdownMenu>
+              </BarDropdown>
+            </BarItem>
+
+            <BarItem>
+              <BarDropdown>
+                <BarDropdownToggle><BarIcon IconName="IconName.DollarSign" />Payments</BarDropdownToggle>
+                <BarDropdownMenu>
+                  <BarDropdownItem To="/transactions">Transactions</BarDropdownItem>
+                  <BarDropdownItem To="/transactions/record-of-sales">Records of Sales</BarDropdownItem>
+                  <BarDropdownItem To="/transactions/online">Packaging Preparation</BarDropdownItem>
+                </BarDropdownMenu>
+              </BarDropdown>
+            </BarItem>
+
+            <BarItem>
+              <BarDropdown>
+                <BarDropdownToggle><BarIcon IconName="IconName.Wrench" />Maintenance</BarDropdownToggle>
+                <BarDropdownMenu>
+                  <BarDropdownItem To="/maintenance/cache">Inspect Caches</BarDropdownItem>
+                </BarDropdownMenu>
+              </BarDropdown>
+            </BarItem>
+          </BarStart>
+
+          <BarEnd>
+            <BarItem>
+              <BarLink To="/logout"><BarIcon IconName="IconName.Unlock" />Logout</BarLink>
+            </BarItem>
+          </BarEnd>
+        </BarMenu>
+      </Bar>
+    </LayoutSiderContent>
+  </LayoutSider>
+  <Layout>
+    <LayoutContent>
+      <Container Padding="new FluentPadding().Is3">@Body</Container>
+    </LayoutContent>
+  </Layout>
+</Layout>
+
+@code
+{
+  /// <summary>
+  /// Gets the logged in user's name.
+  /// </summary>
+  public string Name { get; set; }
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    this.Name = state.User.Identity.Name;
+  }
+}

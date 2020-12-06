@@ -42,4 +42,13 @@
     <ProjectReference Include="..\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Layouts\AdminLayout.razor" />
+    <_ContentIncludedByDefault Remove="Components\Layouts\PublicLayout.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Website\Shared" />
+  </ItemGroup>
+
 </Project>

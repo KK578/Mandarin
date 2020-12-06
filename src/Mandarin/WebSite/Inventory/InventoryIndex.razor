@@ -1,0 +1,44 @@
+﻿@page "/inventory"
+@using Mandarin.Services
+@using System.Reactive.Linq
+@using System.Reactive.Threading.Tasks
+@using Mandarin.Models.Inventory
+@inject IInventoryService InventoryService;
+
+<Card>
+  <CardHeader>
+    <CardTitle>Show Square Inventory</CardTitle>
+  </CardHeader>
+  <CardBody>
+    @if (Data == null || Data.Count == 0)
+    {
+      <Progress Size="Size.Medium">
+        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(Data == null ? Background.Primary : Background.Danger)">
+          @(Data == null ? "Fetching inventory..." : "No inventory data received.")
+        </ProgressBar>
+      </Progress>
+    }
+    else
+    {
+      <DataGrid Data="@Data" Filterable="true" ShowPager="true" PageSize="10" Striped="true" RowSelectable="@(_ => false)">
+        <DataGridColumn TItem="Product" Field="ProductCode" Caption="Product Code" Width="150px" />
+        <DataGridColumn TItem="Product" Field="ProductName" Caption="Name" Width="400px" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="Product" Field="Description" Caption="Description" TextAlignment="TextAlignment.Right" />
+        <DataGridNumericColumn TItem="Product" Field="UnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" Width="150px" TextAlignment="TextAlignment.Right" />
+      </DataGrid>
+    }
+  </CardBody>
+</Card>
+
+@code
+{
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    Data = await InventoryService.GetInventory().Catch((Exception ex) => Observable.Empty<Product>()).ToList().ToTask();
+  }
+
+  private IList<Product> Data { get; set; }
+}
