@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using Bashi.Tests.Framework.Logging;
 using Mandarin.Models.Commissions;
-using Mandarin.Models.Contact;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.Objects;
 using Moq;
@@ -15,23 +14,6 @@ namespace Mandarin.Services.Tests.Decorators
     [TestFixture]
     public class LoggingEmailServiceDecoratorTests
     {
-        [Test]
-        public async Task BuildEmailAsync_LogsEmailDetailsOnCreation()
-        {
-            var model = new ContactDetailsModel();
-            var logger = new TestableLogger<IEmailService>();
-            var email = new SendGridMessage();
-            email.SetFrom("SomeEmail@address.com");
-            email.Subject = "Hello";
-            email.PlainTextContent = "Content";
-            var service = Mock.Of<IEmailService>(x => x.BuildEmailAsync(model) == Task.FromResult(email));
-            var subject = new LoggingEmailServiceDecorator(service, logger);
-            var result = await subject.BuildEmailAsync(model);
-
-            Assert.That(result, Is.EqualTo(email));
-            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
-        }
-
         [Test]
         public void BuildRecordOfSalesEmail_IsFallthrough()
         {
