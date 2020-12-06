@@ -109,7 +109,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
 
             var name = TestData.Create<string>();
             var sales = TestData.Create<ArtistSales>();
-            var pageContentModel = new PageContentModel(null, JToken.FromObject(data));
+            var pageContentModel = new PageContentModel(JToken.FromObject(data));
             var httpContextAccessor = Mock.Of<IHttpContextAccessor>(x => x.HttpContext.User.Identity.Name == name);
             var subject = new ArtistRecordOfSalesViewModel(null, pageContentModel, httpContextAccessor, sales);
 

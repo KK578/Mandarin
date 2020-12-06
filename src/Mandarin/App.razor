@@ -1,13 +1,13 @@
 ﻿<Router AppAssembly="@typeof(Program).Assembly">
   <Found Context="routeData">
-    <AuthorizeRouteView DefaultLayout="@typeof(Layout)" RouteData="@routeData">
+    <AuthorizeRouteView DefaultLayout="@typeof(AdminLayout)" RouteData="@routeData">
       <NotAuthorized>
         <RedirectTo Href="/login" />
       </NotAuthorized>
     </AuthorizeRouteView>
   </Found>
   <NotFound>
-    <LayoutView Layout="@typeof(Layout)">
+    <LayoutView Layout="@typeof(AdminLayout)">
       <Jumbotron Background="Background.Dark">
         <JumbotronSubtitle Class="text-white">Sorry, that page doesn't exist.</JumbotronSubtitle>
       </Jumbotron>
