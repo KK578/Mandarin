@@ -7,7 +7,7 @@
       <Bar Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" ThemeContrast="ThemeContrast.Dark">
         <BarBrand>
           <BarItem>
-            <BarLink To="/"><BarIcon IconName="IconName.Home" />Hello, @Name!</BarLink>
+            <BarLink To="/"><BarIcon IconName="IconName.Home" />@Message!</BarLink>
           </BarItem>
         </BarBrand>
 
@@ -67,14 +67,14 @@
 @code
 {
   /// <summary>
-  /// Gets the logged in user's name.
+  /// Gets the message to display in the top corner.
   /// </summary>
-  public string Name { get; set; }
+  public string Message { get; set; }
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    this.Name = state.User.Identity.Name;
+    Message = state.User.Identity.IsAuthenticated ? $"Hello, {state.User.Identity.Name}" : "Login Please!";
   }
 }
