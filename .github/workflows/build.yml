@@ -75,14 +75,14 @@ jobs:
             /p:RepositoryCommit=$GITHUB_SHA
 
       - name: "[Test] Run Tests"
-        run: dotnet test --configuration Release
+        run: dotnet test --no-build --configuration Release
 
       - name: "[Deploy] Publish build"
         run: |
           dotnet publish src/Mandarin/Mandarin.csproj \
-            --output publish \
             --no-restore \
             --no-build \
+            --output publish \
             --configuration Release \
             /p:VersionPrefix=$GitVersion_MajorMinorPatch \
             /p:VersionSuffix=$GitVersion_PreReleaseLabel \
