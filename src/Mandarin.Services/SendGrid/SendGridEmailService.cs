@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Bashi.Core.Enums;
 using Mandarin.Models.Commissions;
-using Mandarin.Models.Contact;
 using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -33,33 +32,6 @@ namespace Mandarin.Services.SendGrid
             this.logger = logger;
             this.sendGridClient = sendGridClient;
             this.sendGridConfigurationOption = sendGridConfigurationOption;
-        }
-
-        /// <inheritdoc/>
-        public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
-        {
-            Validator.ValidateObject(model, new ValidationContext(model), true);
-
-            var email = new SendGridMessage();
-            var configuration = this.sendGridConfigurationOption.Value;
-            email.From = new EmailAddress(configuration.ServiceEmail);
-            email.ReplyTo = new EmailAddress(model.Email);
-            email.AddTo(new EmailAddress(configuration.RealContactEmail));
-            email.Subject = $"{model.Name} - {(model.Reason == ContactReasonType.Other ? $"Other ({model.AdditionalReason})" : model.Reason.GetDescription())}";
-
-            foreach (var attachment in model.Attachments)
-            {
-                await email.AddAttachmentAsync(attachment.Name, attachment.Data, attachment.Type);
-            }
-
-            var sb = new StringBuilder()
-                     .AppendLine($"Reason: {(model.Reason == ContactReasonType.Other ? model.AdditionalReason : model.Reason.GetDescription())}")
-                     .AppendLine()
-                     .AppendLine("Comment:")
-                     .AppendLine(model.Comment);
-            email.PlainTextContent = sb.ToString();
-
-            return email;
         }
 
         /// <inheritdoc/>

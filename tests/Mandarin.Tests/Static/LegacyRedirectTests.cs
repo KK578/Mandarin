@@ -19,7 +19,6 @@ namespace Mandarin.Tests.Static
         [Test]
         [TestCase("/static/logo-300.png", "/static/images/logo.png")]
         [TestCase("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf")]
-        [TestCase("/the-mini-mandarin", "/macarons")]
         public async Task GetStaticPath_GivenLegacyPath_ShouldRedirect(string requestPath, string expectedRedirect)
         {
             var client = this.factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });

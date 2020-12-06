@@ -17,19 +17,6 @@ namespace Mandarin.Services.Tests.Entity
         private MandarinDbContext dbContext;
 
         [Test]
-        public async Task GetArtistDetailsAsync_GivenArtists_ShouldOnlyContainActiveArtists()
-        {
-            this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist,
-                                       WellKnownTestData.Stockists.HiddenArtist,
-                                       WellKnownTestData.Stockists.MinimalArtist);
-            var subject = new DatabaseArtistService(this.dbContext);
-            var actual = await subject.GetArtistsForDisplayAsync().ToList();
-
-            Assert.That(actual, Has.Count.EqualTo(1));
-            Assert.That(actual, Is.EqualTo(new[] { WellKnownTestData.Stockists.MinimalArtist }).AsCollection);
-        }
-
-        [Test]
         public async Task GetArtistDetailsForCommissionAsync_GivenArtists_ShouldReturnAllArtistsInOrderOfStockistCode()
         {
             this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist,

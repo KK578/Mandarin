@@ -1,0 +1,189 @@
+﻿@page "/transactions/record-of-sales"
+@using Mandarin.Services
+@using System.Reactive.Linq
+@using System.Reactive.Threading.Tasks
+@using Bashi.Core.Enums
+@using Mandarin.Models.Commissions
+@using Mandarin.ViewModels
+@using Mandarin.ViewModels.Commissions
+@inject ICommissionService CommissionService;
+@inject IViewModelFactory ViewModelFactory;
+
+<EditForm EditContext="@DatePickerEditContext">
+  <Card Class="mb-4">
+    <CardHeader>
+      <CardTitle>Record of Sales - Select Month</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <Field>
+        <FieldLabel>Month</FieldLabel>
+        <DateEdit TValue="DateTime" @bind-Date="SelectedDate" />
+        <FieldHelp>The exact date is ignored - Only the year and month matter.</FieldHelp>
+      </Field>
+      <Alert Color="Color.Info" Visible="true">
+        <span>This will include transactions from <i>@($"{StartDate:d}")</i> to <i>@($"{EndDate:d}")</i>.</span>
+      </Alert>
+      <CardActions>
+        <Button Color="Color.Primary" Clicked="@UpdateTransactionsAsync" Disabled="@IsLoading">Update</Button>
+      </CardActions>
+    </CardBody>
+  </Card>
+</EditForm>
+
+@if (Commissions != null)
+{
+  <Card Class="mb-4">
+    <CardHeader>
+      <CardTitle>Sales by Artist Breakdown</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <DataGrid Class="whitespace-no-wrap" Data="@Commissions" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
+        <DataGridCheckColumn TItem="IArtistRecordOfSalesViewModel" Field="SendSuccessful" Caption="Sent">
+          <DisplayTemplate>
+            <Check TValue="bool?" Checked="context.SendSuccessful" Disabled="true" ReadOnly="true" />
+          </DisplayTemplate>
+        </DataGridCheckColumn>
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="StatusMessage" Caption="Email Status" />
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="Commission.StockistCode" Caption="Artist Code" />
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="Commission.Name" Caption="Name" />
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="Commission.Rate" Caption="Commission Rate" DisplayFormat="{0:P}" />
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="Commission.Subtotal" Caption="Subtotal" DisplayFormat="{0:C}" />
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="Commission.CommissionTotal" Caption="Commission" DisplayFormat="{0:C}" />
+        <DataGridColumn TItem="IArtistRecordOfSalesViewModel" Field="Commission.Total" Caption="Total" DisplayFormat="{0:C}" />
+      </DataGrid>
+    </CardBody>
+  </Card>
+}
+
+@if (SelectedCommission != null)
+{
+  <EditForm Model="@RecordOfSalesModel" OnValidSubmit="RecordOfSalesModel.SendEmailAsync">
+    <Card>
+      <CardHeader>
+        <CardTitle>Sales for @(SelectedCommission.Name)</CardTitle>
+      </CardHeader>
+      <CardBody>
+        <CardText Alignment="TextAlignment.Left">Subtotal: @($"{SelectedCommission.Subtotal:C}")</CardText>
+        <CardText Alignment="TextAlignment.Left">Commission: @($"{SelectedCommission.CommissionTotal:C}") (@($"{SelectedCommission.Rate:P}"))</CardText>
+        <CardText Alignment="TextAlignment.Left">Total: @($"{SelectedCommission.Total:C}")</CardText>
+
+        @if (SelectedCommission.Sales != null)
+        {
+          <DataGrid Data="@SelectedCommission.Sales" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
+            <DataGridColumn TItem="Sale" Field="ProductCode" Caption="Product Code" />
+            <DataGridColumn TItem="Sale" Field="ProductName" Caption="Product Name" />
+            <DataGridColumn TItem="Sale" Field="Quantity" Caption="Quantity" />
+            <DataGridColumn TItem="Sale" Field="UnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" />
+            <DataGridColumn TItem="Sale" Field="Subtotal" Caption="Subtotal" DisplayFormat="{0:C}" />
+            <DataGridColumn TItem="Sale" Field="Commission" Caption="Commission" DisplayFormat="{0:C}" />
+            <DataGridColumn TItem="Sale" Field="Total" Caption="Total" DisplayFormat="{0:C}" />
+          </DataGrid>
+        }
+        else
+        {
+          <Alert Visible="true" Color="Color.Secondary">No sales occurred in this period.</Alert>
+        }
+
+        <Validations>
+          <Validation>
+            <Field>
+              <FieldLabel>Email Address:</FieldLabel>
+              <TextEdit Placeholder="@SelectedCommission.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.EmailAddress" />
+            </Field>
+          </Validation>
+
+          <Validation>
+            <Field>
+              <div class="flex flex-row items-center">
+                <FieldLabel>Custom Message:</FieldLabel>
+                <span class="flex-grow"></span>
+                <FieldLabel>
+                  <Dropdown RightAligned="true">
+                    <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
+                    <DropdownMenu>
+                      @foreach (var option in EnumUtil.GetValues<RecordOfSalesTemplateKey>())
+                      {
+                        <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplate(option))">@(option.GetDescription())</DropdownItem>
+                      }
+                    </DropdownMenu>
+                  </Dropdown>
+                </FieldLabel>
+              </div>
+              <MemoEdit Placeholder="Custom Message" Rows="10" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.CustomMessage" />
+            </Field>
+          </Validation>
+        </Validations>
+
+        <CardActions Class="flex flex-row">
+          <Buttons>
+            <Button Clicked="@OnCloseSelectedCommission" Color="Color.Danger">Close</Button>
+            <Button Clicked="@RecordOfSalesModel.ToggleSentFlag" Color="Color.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</Button>
+          </Buttons>
+          <span class="flex-grow text-center self-center">@(RecordOfSalesModel.StatusMessage)</span>
+          <Button Type="@ButtonType.Submit" Color="Color.Primary" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)">Submit</Button>
+        </CardActions>
+      </CardBody>
+    </Card>
+  </EditForm>
+}
+
+@code
+{
+
+  private EditContext DatePickerEditContext { get; set; }
+  private DateTime SelectedDate { get; set; } = DateTime.Today.AddMonths(-1);
+  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+  private DateTime StartDate => SelectedMonth.AddDays(-15);
+  private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
+  private bool IsLoading { get; set; } = false;
+
+  private IList<IArtistRecordOfSalesViewModel> Commissions { get; set; }
+  private IArtistRecordOfSalesViewModel recordOfSalesModel;
+  private IDisposable subscription;
+
+  private IArtistRecordOfSalesViewModel RecordOfSalesModel
+  {
+    get => recordOfSalesModel;
+    set
+    {
+      this.subscription?.Dispose();
+      this.subscription = null;
+      this.recordOfSalesModel = value;
+
+      if (value != null)
+      {
+        this.subscription = value.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
+      }
+    }
+  }
+
+  private ArtistSales SelectedCommission => RecordOfSalesModel?.Commission;
+
+  /// <inheritdoc />
+  protected override void OnInitialized()
+  {
+    DatePickerEditContext = new EditContext(this);
+  }
+
+  private async Task UpdateTransactionsAsync()
+  {
+    try
+    {
+      IsLoading = true;
+      Commissions = await CommissionService.GetSalesByArtistForPeriod(StartDate, EndDate)
+                                           .Select(x => ViewModelFactory.CreateArtistRecordOfSalesViewModel(x))
+                                           .ToList()
+                                           .ToTask();
+    }
+    finally
+    {
+      IsLoading = false;
+      StateHasChanged();
+    }
+  }
+
+  private void OnCloseSelectedCommission()
+  {
+    this.RecordOfSalesModel = null;
+  }
+}

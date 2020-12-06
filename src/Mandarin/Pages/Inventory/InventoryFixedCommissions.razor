@@ -1,0 +1,148 @@
+﻿@page "/inventory/fixed-commission-amounts"
+@using Mandarin.Services
+@using System.Reactive.Linq
+@using System.Reactive.Threading.Tasks
+@using Mandarin.Models.Commissions
+@using Mandarin.Models.Inventory
+@inject IInventoryService InventoryService;
+
+<Card>
+  <CardHeader>
+    <CardTitle>Show Fixed Commission Amounts</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <DataGrid TItem="FixedCommissionRowModel" Data="@fixedCommissionAmountViewModels" Filterable="true" ShowPager="true" PageSize="15" Striped="true"
+              Editable="true" EditMode="DataGridEditMode.Inline" RowSelectable="@(_ => false)"
+              RowInserted="@AddNewCommission"
+              RowUpdated="@UpdateFixedCommission"
+              RowRemoved="DeleteCommission">
+      <DataGridColumn TItem="FixedCommissionRowModel" Field="ProductCode" Caption="Product Code" Editable="true" TextAlignment="TextAlignment.Left">
+        <EditTemplate>
+          @if (fixedCommissionAmountViewModels.All(x => !string.Equals(x.ProductCode, context.CellValue)))
+          {
+            <Autocomplete Data="products" TextField="@((Product item) => item.ToString())" ValueField="@((item) => item.ProductCode)" MinLength="2"
+                          Filter="AutocompleteFilter.Contains"
+                          @bind-SelectedValue="@(context.CellValue)" />
+          }
+          else
+          {
+            @(context.CellValue)
+          }
+        </EditTemplate>
+      </DataGridColumn>
+      <DataGridColumn TItem="FixedCommissionRowModel" Field="ProductCode" Caption="Product Name" TextAlignment="TextAlignment.Left">
+        <DisplayTemplate>
+          @(products.FirstOrDefault(product => string.Equals(product.ProductCode, context.ProductCode))?.ProductName ?? "N/A")
+        </DisplayTemplate>
+      </DataGridColumn>
+      <DataGridNumericColumn TItem="FixedCommissionRowModel" Field="ProductCode" Caption="Retail Price" DisplayFormat="{0:C}" Width="150px" TextAlignment="TextAlignment.Right">
+        <DisplayTemplate>
+          @($"{products.FirstOrDefault(product => string.Equals(product.ProductCode, context.ProductCode))?.UnitPrice:C}")
+        </DisplayTemplate>
+      </DataGridNumericColumn>
+      <DataGridNumericColumn TItem="FixedCommissionRowModel" Field="Amount" Caption="Frame Price" DisplayFormat="{0:C}" Width="150px" Editable="true" TextAlignment="TextAlignment.Right"/>
+      <DataGridNumericColumn TItem="FixedCommissionRowModel" Field="Amount" Caption="Artist Price" DisplayFormat="{0:C}" Width="150px" TextAlignment="TextAlignment.Right">
+        <DisplayTemplate>
+          @($"{products.FirstOrDefault(product => string.Equals(product.ProductCode, context.ProductCode))?.UnitPrice - context.Amount:C}")
+        </DisplayTemplate>
+      </DataGridNumericColumn>
+      <DataGridCommandColumn TItem="FixedCommissionRowModel" Width="125px" TextAlignment="TextAlignment.Right">
+        <DeleteCommandTemplate>
+          <Button Clicked="@(() => ShowModal(context))"><Icon Name="IconName.Delete"/></Button>
+        </DeleteCommandTemplate>
+        <ClearFilterCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Clear" /></Button>
+        </ClearFilterCommandTemplate>
+        <NewCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Add" /></Button>
+        </NewCommandTemplate>
+        <EditCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Edit" /></Button>
+        </EditCommandTemplate>
+        <SaveCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="IconName.Save" /></Button>
+        </SaveCommandTemplate>
+        <CancelCommandTemplate>
+          <Button Clicked="@context.Clicked"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.TimesCircle" /></Button>
+        </CancelCommandTemplate>
+      </DataGridCommandColumn>
+    </DataGrid>
+  </CardBody>
+</Card>
+
+<Modal @ref="modalRef">
+  <ModalBackdrop />
+  <ModalContent IsCentered="true">
+    <ModalHeader>
+      <ModalTitle>Are you sure you want to delete?</ModalTitle>
+      <CloseButton Clicked="@HideModal" />
+    </ModalHeader>
+    <ModalBody>
+      <Button Clicked="@HideModal">Cancel</Button>
+      <Button Color="Color.Danger" Clicked="@ConfirmModal">Delete</Button>
+    </ModalBody>
+  </ModalContent>
+</Modal>
+
+@code
+{
+  private class FixedCommissionRowModel
+  {
+    public string ProductCode { get; set; }
+    public decimal Amount { get; set; }
+  }
+
+  private Modal modalRef;
+  private EventCallback modalConfirm;
+  private IList<FixedCommissionRowModel> fixedCommissionAmountViewModels = new List<FixedCommissionRowModel>();
+  private IList<Product> products = new List<Product>();
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    fixedCommissionAmountViewModels = await InventoryService.GetFixedCommissionAmounts()
+                                                            .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
+                                                            .ToList()
+                                                            .ToTask();
+    products = await InventoryService.GetInventory().ToList().ToTask();
+  }
+
+  private Task AddNewCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
+  {
+    var insert = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
+    return InventoryService.AddFixedCommissionAmount(insert);
+  }
+
+  private Task UpdateFixedCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
+  {
+    var update = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
+    return InventoryService.UpdateFixedCommissionAmount(update);
+  }
+
+  private Task DeleteCommission(FixedCommissionRowModel arg)
+  {
+    return InventoryService.DeleteFixedCommissionAmount(arg.ProductCode);
+  }
+
+  private void ShowModal(CommandContext<FixedCommissionRowModel> commandContext)
+  {
+    modalConfirm = commandContext.Clicked;
+    modalRef.Show();
+  }
+
+  private void HideModal()
+  {
+    modalConfirm = EventCallback.Empty;
+    modalRef.Hide();
+  }
+
+  private async Task ConfirmModal()
+  {
+    if (modalConfirm.HasDelegate)
+      await modalConfirm.InvokeAsync(modalRef);
+
+    HideModal();
+  }
+}

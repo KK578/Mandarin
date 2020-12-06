@@ -53,26 +53,11 @@ namespace Mandarin.Tests.Pages
         }
 
         [Test]
-        [TestCase("/home", "Closed")]
-        [TestCase("/artists", "The Little Mandarin in-house art team!")]
-        [TestCase("/macarons", "Mandy also offers a range of sweets and chocolates")]
-        [TestCase("/about", "We hope to see you soon!")]
-        [TestCase("/contact", "Feel free to contact us through this form and we will get back to you as soon as we can.")]
-        public async Task BasicRenderTest_ShouldBeAbleToRenderRoute_AndFindSimpleStaticContentOnPage(
-            string path,
-            string expected)
-        {
-            this.GivenUnauthenticatedRequestFor(path);
-            var document = await this.WhenPageContentIsRequested();
-            Assert.That(document.DocumentElement.TextContent, Contains.Substring(expected));
-        }
-
-        [Test]
         public async Task AuthenticationTest_WhenNotAuthenticated_ShouldRedirectToAboutPage()
         {
             this.GivenUnauthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
-            this.AssertResponseIsRedirectedTo("/home");
+            this.AssertResponseIsRedirectedTo("/login");
         }
 
         [Test]
@@ -80,7 +65,7 @@ namespace Mandarin.Tests.Pages
         {
             this.GivenAuthenticatedRequestFor("/");
             await this.WhenPageResponseIsRequested();
-            this.AssertResponseIsRedirectedTo("/admin");
+            this.AssertResponseIsSuccessfulAndHtml();
         }
 
         private void GivenUnauthenticatedRequestFor(string path)

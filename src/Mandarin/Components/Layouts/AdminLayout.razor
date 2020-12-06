@@ -7,22 +7,22 @@
       <Bar Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" ThemeContrast="ThemeContrast.Dark">
         <BarBrand>
           <BarItem>
-            <BarLink To="/admin"><BarIcon IconName="IconName.Home" />Hello, @Name!</BarLink>
+            <BarLink To="/"><BarIcon IconName="IconName.Home" />@Message!</BarLink>
           </BarItem>
         </BarBrand>
 
         <BarMenu>
           <BarStart>
             <BarItem>
-              <BarLink To="/admin/artists"><BarIcon IconName="IconName.PaintBrush" />Artists</BarLink>
+              <BarLink To="/artists"><BarIcon IconName="IconName.PaintBrush" />Artists</BarLink>
             </BarItem>
 
             <BarItem>
               <BarDropdown>
                 <BarDropdownToggle><BarIcon IconName="IconName.Store" />Inventory</BarDropdownToggle>
                 <BarDropdownMenu>
-                  <BarDropdownItem To="/admin/inventory">Stock</BarDropdownItem>
-                  <BarDropdownItem To="/admin/inventory/fixed-commission-amounts">Fixed Commissions</BarDropdownItem>
+                  <BarDropdownItem To="/inventory">Stock</BarDropdownItem>
+                  <BarDropdownItem To="/inventory/fixed-commission-amounts">Fixed Commissions</BarDropdownItem>
                 </BarDropdownMenu>
               </BarDropdown>
             </BarItem>
@@ -31,8 +31,9 @@
               <BarDropdown>
                 <BarDropdownToggle><BarIcon IconName="IconName.DollarSign" />Payments</BarDropdownToggle>
                 <BarDropdownMenu>
-                  <BarDropdownItem To="/admin/transactions">Transactions</BarDropdownItem>
-                  <BarDropdownItem To="/admin/record-of-sales">Records of Sales</BarDropdownItem>
+                  <BarDropdownItem To="/transactions">Transactions</BarDropdownItem>
+                  <BarDropdownItem To="/transactions/record-of-sales">Records of Sales</BarDropdownItem>
+                  <BarDropdownItem To="/transactions/online">Packaging Preparation</BarDropdownItem>
                 </BarDropdownMenu>
               </BarDropdown>
             </BarItem>
@@ -41,7 +42,7 @@
               <BarDropdown>
                 <BarDropdownToggle><BarIcon IconName="IconName.Wrench" />Maintenance</BarDropdownToggle>
                 <BarDropdownMenu>
-                  <BarDropdownItem To="/admin/maintenance/cache">Inspect Caches</BarDropdownItem>
+                  <BarDropdownItem To="/maintenance/cache">Inspect Caches</BarDropdownItem>
                 </BarDropdownMenu>
               </BarDropdown>
             </BarItem>
@@ -66,14 +67,14 @@
 @code
 {
   /// <summary>
-  /// Gets the logged in user's name.
+  /// Gets the message to display in the top corner.
   /// </summary>
-  public string Name { get; set; }
+  public string Message { get; set; }
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    this.Name = state.User.Identity.Name;
+    Message = state.User.Identity.IsAuthenticated ? $"Hello, {state.User.Identity.Name}" : "Login Please!";
   }
 }

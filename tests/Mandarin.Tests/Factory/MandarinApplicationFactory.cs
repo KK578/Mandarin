@@ -20,7 +20,7 @@ namespace Mandarin.Tests.Factory
                                                     .UseSerilog(MandarinApplicationFactory.ConfigureSerilog));
         }
 
-        public static IWebHostBuilder ConfigureTestAuthentication(this IWebHostBuilder builder)
+        private static IWebHostBuilder ConfigureTestAuthentication(this IWebHostBuilder builder)
         {
             return builder.ConfigureTestServices(services =>
             {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
-using Mandarin.Models.Contact;
 using Mandarin.Services.Objects;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
@@ -25,14 +24,6 @@ namespace Mandarin.Services.Decorators
         {
             this.logger = logger;
             this.emailService = emailService;
-        }
-
-        /// <inheritdoc/>
-        public async Task<SendGridMessage> BuildEmailAsync(ContactDetailsModel model)
-        {
-            var email = await this.emailService.BuildEmailAsync(model);
-            this.logger.LogInformation("Sending Contact Form Email: {@Email}", email);
-            return email;
         }
 
         /// <inheritdoc/>

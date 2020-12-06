@@ -1,0 +1,90 @@
+﻿@page "/maintenance/cache"
+@using LazyCache
+@using Newtonsoft.Json
+@inject IAppCache AppCache
+
+<Card Class="mb-4">
+  <CardHeader>
+    <CardTitle>Current Application Caches</CardTitle>
+  </CardHeader>
+  <CardBody>
+    @if (Data == null || Data.Count == 0)
+    {
+      <Progress Size="Size.Medium">
+        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(Data == null ? Background.Primary : Background.Danger)">
+          @(Data == null ? "Fetching Cache Data..." : "No cache data received.")
+        </ProgressBar>
+      </Progress>
+    }
+
+    <CardActions Class="mt-3">
+      <Button Color="Color.Primary" Clicked="@RefreshAsync">Refresh</Button>
+      <Button Color="Color.Danger" Clicked="@ClearAll">Clear all caches</Button>
+    </CardActions>
+  </CardBody>
+</Card>
+
+@if (Data != null && Data.Count != 0)
+{
+  <Accordion>
+    @foreach (var cacheEntry in Data)
+    {
+      <Collapse Visible="@cacheEntry.Visible">
+        <CollapseHeader Class="flex flex-row">
+          <Heading Class="flex-grow" Size="HeadingSize.Is5">@cacheEntry.Key</Heading>
+          <Button Class="mr-1" Color="Color.Primary" Clicked="@(() => cacheEntry.Visible = !cacheEntry.Visible)">@(cacheEntry.Visible ? "Hide" : "Show")</Button>
+          <Button Color="Color.Danger" Clicked="@(() => Clear(cacheEntry))">Clear Value</Button>
+        </CollapseHeader>
+        <CollapseBody>
+          <div Class="font-mono whitespace-pre">@cacheEntry.JsonValue</div>
+        </CollapseBody>
+      </Collapse>
+    }
+  </Accordion>
+}
+
+@code
+{
+  private class CacheEntry
+  {
+    public string Key { get; set; }
+    public string JsonValue { get; set; }
+    public bool Visible { get; set; }
+  }
+
+  private IList<CacheEntry> Data { get; set; }
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    await RefreshAsync();
+  }
+
+  private async Task RefreshAsync()
+  {
+    Data = new List<CacheEntry>();
+    var cacheKeys = await AppCache.GetAsync<List<string>>("Cache.Keys") ?? new List<string>();
+    foreach (var cacheKey in cacheKeys)
+    {
+      var cacheValue = await AppCache.GetAsync<object>(cacheKey);
+      var jsonValue = JsonConvert.SerializeObject(cacheValue, Formatting.Indented);
+      Data.Add(new CacheEntry { Key = cacheKey, JsonValue = jsonValue });
+    }
+  }
+
+  private void ClearAll()
+  {
+    foreach (var cacheEntry in Data)
+    {
+      Clear(cacheEntry);
+    }
+  }
+
+  private void Clear(CacheEntry cacheEntry)
+  {
+    AppCache.Remove(cacheEntry.Key);
+    cacheEntry.JsonValue = "null";
+  }
+}

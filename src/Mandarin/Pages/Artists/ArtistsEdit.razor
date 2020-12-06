@@ -1,0 +1,387 @@
+﻿@page "/edit/{stockistCode}"
+@page "/new"
+@using Mandarin.Services
+@using Mandarin.Models.Artists
+@using Microsoft.EntityFrameworkCore
+@using System.IO
+@using Bashi.Core.Enums
+@using Mandarin.Database
+@using Mandarin.Models.Commissions
+@using Mandarin.Models.Common
+@inject IArtistService ArtistService;
+@inject MandarinDbContext MandarinDbContext;
+@inject NavigationManager NavigationManager;
+
+@if (Stockist == null)
+{
+  <Card>
+    <CardHeader>
+      <CardTitle>Artist Details...</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <Progress Size="Size.Medium">
+        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@Background.Primary">Fetching Artist...</ProgressBar>
+      </Progress>
+    </CardBody>
+  </Card>
+}
+else
+{
+  <Card>
+    <CardHeader>
+        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.ShortDisplayName}")</CardTitle>
+      <CardActions Float="Float.Right">
+        @if (isEditing)
+        {
+          <Button Color="Color.Primary" Clicked="OnSaveClicked">Save</Button>
+          <Button Color="Color.Danger" Clicked="OnCancelClicked">Cancel</Button>
+        }
+        else
+        {
+          <Button Color="Color.Primary" Clicked="@OnCloseClicked">Close</Button>
+          <Button Color="Color.Dark" Clicked="@OnEditClicked">Edit</Button>
+        }
+      </CardActions>
+    </CardHeader>
+    <CardBody>
+      <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false">
+        <Validation>
+          <Field>
+            <FieldLabel>Artist Code</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.StockistCode" Disabled="@(!isNew)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Fields>
+          <Validation>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>First Name</FieldLabel>
+              <TextEdit @bind-Text="@Stockist.FirstName" Disabled="@(!isEditing)">
+                <Feedback><ValidationError /></Feedback>
+              </TextEdit>
+            </Field>
+          </Validation>
+          <Validation>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>Last Name</FieldLabel>
+              <TextEdit @bind-Text="@Stockist.LastName" Disabled="@(!isEditing)">
+                <Feedback><ValidationError /></Feedback>
+              </TextEdit>
+            </Field>
+          </Validation>
+        </Fields>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Email Address</FieldLabel>
+            <TextEdit Role="@TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress" Disabled="@(!isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Status</FieldLabel>
+            <Select TValue="StatusMode" @bind-SelectedValue="@Stockist.StatusCode" Disabled="@(!isEditing)">
+              <ChildContent>
+                @foreach (var status in EnumUtil.GetValues<StatusMode>().Except(new[] { StatusMode.Unknown }))
+                {
+                  <SelectItem Value="@status">@(status.GetDescription())</SelectItem>
+                }
+              </ChildContent>
+              <Feedback><ValidationError /></Feedback>
+            </Select>
+          </Field>
+        </Validation>
+
+        <Divider />
+
+        <FieldLabel>Artists Page Details</FieldLabel>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Grid Display Name</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName" Disabled="@(!isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Banner Display Name</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.Details.FullDisplayName" Disabled="@(!isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Description</FieldLabel>
+            <MemoEdit @bind-Text="@Stockist.Details.Description" Rows="5" Disabled="@(!StockistIsDisplayed || !isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </MemoEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Grid Image</FieldLabel>
+            <FileEdit Filter="image/*" Disabled="@(!StockistIsDisplayed || !isEditing)" Changed="OnThumbnailImageChanged">
+              <Feedback><ValidationError /></Feedback>
+            </FileEdit>
+            <img class="mt-6" src="@Stockist.Details.ThumbnailImageUrl" />
+          </Field>
+        </Validation>
+
+
+        <Validation>
+          <Field>
+            <FieldLabel>Banner Image</FieldLabel>
+            <FileEdit Filter="image/*" Disabled="@(!StockistIsDisplayed || !isEditing)" Changed="OnBannerImageChanged">
+              <Feedback><ValidationError /></Feedback>
+            </FileEdit>
+            <img class="mt-6" src="@Stockist.Details.BannerImageUrl" />
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!StockistIsDisplayed || !isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+
+        <Divider />
+
+        <FieldLabel>Commission</FieldLabel>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12">%</AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <Select TValue="int?" SelectedValue="@Commission.RateGroupId" SelectedValueChanged="@OnRateGroupSelected" Disabled="@(!isEditing)">
+                  @foreach (var group in rateGroups)
+                  {
+                    <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
+                  }
+                </Select>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Fields>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>Start Date</FieldLabel>
+              <DateEdit TValue="DateTime" @bind-Date="@Commission.StartDate" Disabled="@(!isEditing)" />
+            </Field>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>End Date</FieldLabel>
+              <DateEdit TValue="DateTime" @bind-Date="@Commission.EndDate" Disabled="@(!isEditing)" />
+            </Field>
+          </Fields>
+        </Validation>
+      </Validations>
+    </CardBody>
+  </Card>
+}
+
+@code
+{
+  /// <summary>
+  /// Gets or sets the stockist code to be inspected.
+  /// </summary>
+  [Parameter]
+  public string StockistCode { get; set; }
+
+  private Stockist Stockist { get; set; }
+  private Commission Commission => Stockist.Commissions.Last();
+  private bool StockistIsDisplayed => Stockist.StatusCode == StatusMode.Active;
+
+  private IReadOnlyList<CommissionRateGroup> rateGroups;
+
+  private Validations validations;
+  private bool isNew;
+  private bool isEditing;
+
+  /// <inheritdoc />
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+
+    rateGroups = await MandarinDbContext.CommissionRateGroup.OrderBy(x => x.Rate).ToListAsync();
+
+    if (string.IsNullOrEmpty(StockistCode))
+    {
+      this.isNew = true;
+      this.isEditing = true;
+      this.Stockist = new Stockist
+      {
+        StatusCode = StatusMode.Active,
+        Details = new StockistDetail(),
+      };
+      Stockist.Commissions.Add(new Commission
+      {
+        RateGroupId = rateGroups.First().GroupId,
+        RateGroup = rateGroups.First(),
+        StartDate = DateTime.Now.Date,
+        EndDate = DateTime.Now.AddDays(90).Date,
+      });
+    }
+    else
+    {
+      this.isNew = false;
+      this.isEditing = false;
+      this.Stockist = await ArtistService.GetArtistByCodeAsync(StockistCode);
+    }
+  }
+
+  private void OnEditClicked()
+  {
+    this.isNew = false;
+    this.isEditing = true;
+    validations.ClearAll();
+  }
+
+  private async Task OnSaveClicked()
+  {
+    if (!validations.ValidateAll())
+    {
+      return;
+    }
+
+    await ArtistService.SaveArtistAsync(this.Stockist);
+    NavigationManager.NavigateTo($"/admin/artists/edit/{this.Stockist.StockistCode}");
+    validations.ClearAll();
+    validations.ClearAll();
+    isNew = false;
+    isEditing = false;
+    StateHasChanged();
+  }
+
+  private async Task OnCancelClicked()
+  {
+    this.isEditing = false;
+
+    if (isNew)
+    {
+      OnCloseClicked();
+    }
+    else
+    {
+      this.Stockist = await ArtistService.GetArtistByCodeAsync(this.StockistCode);
+    }
+  }
+
+  private void OnCloseClicked()
+  {
+    NavigationManager.NavigateTo("/artists");
+  }
+
+  private async Task OnThumbnailImageChanged(FileChangedEventArgs arg)
+  {
+    var file = arg.Files.FirstOrDefault();
+    Directory.CreateDirectory("wwwroot/static/images/artists/thumbs");
+    var filename = $"static/images/artists/thumbs/{file.Name}";
+    await using (var fs = File.Create("wwwroot/" + filename))
+    {
+      await file.WriteToStreamAsync(fs);
+    }
+    this.Stockist.Details.ThumbnailImageUrl = "https://thelittlemandarin.co.uk/" + filename;
+    StateHasChanged();
+  }
+
+  private async Task OnBannerImageChanged(FileChangedEventArgs arg)
+  {
+    var file = arg.Files.FirstOrDefault();
+    Directory.CreateDirectory("wwwroot/static/images/artists");
+    var filename = $"static/images/artists/{file.Name}";
+    await using (var fs = File.Create("wwwroot/" + filename))
+    {
+      await file.WriteToStreamAsync(fs);
+    }
+    this.Stockist.Details.BannerImageUrl = "https://thelittlemandarin.co.uk/" + filename;
+    StateHasChanged();
+  }
+
+  private void OnRateGroupSelected(int? selectedId)
+  {
+    var value = rateGroups.FirstOrDefault(group => group.GroupId == selectedId) ?? rateGroups.First();
+    Commission.RateGroup = value;
+    Commission.RateGroupId = value.GroupId;
+
+    StateHasChanged();
+  }
+
+}

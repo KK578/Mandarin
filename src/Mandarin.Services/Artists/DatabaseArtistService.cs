@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Database;
 using Mandarin.Models.Artists;
-using Mandarin.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mandarin.Services.Artists
@@ -21,16 +20,6 @@ namespace Mandarin.Services.Artists
         public DatabaseArtistService(MandarinDbContext mandarinDbContext)
         {
             this.mandarinDbContext = mandarinDbContext;
-        }
-
-        /// <inheritdoc/>
-        public IObservable<Stockist> GetArtistsForDisplayAsync()
-        {
-            return this.mandarinDbContext.Stockist
-                       .Include(x => x.Details)
-                       .OrderBy(x => x.StockistCode)
-                       .Where(x => x.StatusCode == StatusMode.Active)
-                       .ToObservable();
         }
 
         /// <inheritdoc/>
