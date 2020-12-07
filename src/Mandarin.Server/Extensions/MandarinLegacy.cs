@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace Mandarin.Extensions
+namespace Mandarin.Server.Extensions
 {
     /// <summary>
     /// Extensions to <see cref="IApplicationBuilder"/> to register legacy redirect routes.

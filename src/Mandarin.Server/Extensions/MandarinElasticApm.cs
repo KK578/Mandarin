@@ -2,7 +2,7 @@ using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
-namespace Mandarin.Extensions
+namespace Mandarin.Server.Extensions
 {
     /// <summary>
     /// Extensions to <see cref="IApplicationBuilder"/> to register Elastic services.

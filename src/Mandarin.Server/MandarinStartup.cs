@@ -1,9 +1,6 @@
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
 using Mandarin.Database;
-using Mandarin.Extensions;
+using Mandarin.Server.Extensions;
 using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Mandarin
+namespace Mandarin.Server
 {
     /// <summary>
     /// ASP.NET Core services configuration for Mandarin public-facing application.
@@ -38,10 +35,9 @@ namespace Mandarin
         /// Currently this includes:
         /// <list type="bullet">
         /// <item><term>Razor Pages</term></item>
-        /// <item><term>Server Side Blazor</term></item>
+        /// <item><term>Controllers</term></item>
         /// <item><term>Authentication</term></item>
         /// <item><term>Application Services</term></item>
-        /// <item><term>View Models</term></item>
         /// </list>
         ///
         /// <remarks>
@@ -53,13 +49,12 @@ namespace Mandarin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
+            services.AddControllersWithViews();
             services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
@@ -82,23 +77,22 @@ namespace Mandarin
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
             app.SafeUseAllElasticApm(this.configuration);
+            mandarinDbContext.Database.Migrate();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebAssemblyDebugging();
             }
             else
             {
-                mandarinDbContext.Database.Migrate();
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
-            app.AddLegacyRedirect("/static/logo-300.png", "/static/images/logo.png");
-            app.AddLegacyRedirect("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf");
 
             app.UseRouting();
 
@@ -106,14 +100,11 @@ namespace Mandarin
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.ApplicationServices.UseBootstrapProviders().UseBootstrapProviders();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

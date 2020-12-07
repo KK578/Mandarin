@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Mandarin
+namespace Mandarin.Server
 {
     /// <summary>
     /// Application entry point for Mandarin public-facing application.

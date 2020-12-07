@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Mandarin.Extensions
+namespace Mandarin.Server.Extensions
 {
     /// <summary>
     /// Extensions to <see cref="IServiceCollection"/> to register authentication services.
