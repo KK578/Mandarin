@@ -2,7 +2,8 @@
 @using Mandarin.Services
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
-@using Bashi.Core.Enums
+@using Bashi.Core.Extensions
+@using Bashi.Core.Utils
 @using Mandarin.Models.Commissions
 @using Mandarin.ViewModels
 @using Mandarin.ViewModels.Commissions
@@ -132,7 +133,7 @@
 
   private EditContext DatePickerEditContext { get; set; }
   private DateTime SelectedDate { get; set; } = DateTime.Today.AddMonths(-1);
-  private DateTime SelectedMonth => new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+  private DateTime SelectedMonth => new(SelectedDate.Year, SelectedDate.Month, 1);
   private DateTime StartDate => SelectedMonth.AddDays(-15);
   private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
   private bool IsLoading { get; set; } = false;

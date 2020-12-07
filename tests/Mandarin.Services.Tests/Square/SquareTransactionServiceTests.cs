@@ -58,7 +58,7 @@ namespace Mandarin.Services.Tests.Square
         {
             this.squareClient ??= new Mock<ISquareClient>();
             this.squareClient.Setup(x => x.LocationsApi.ListLocationsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ListLocationsResponse(locations: new List<Location> { new Location("MyTestLocationId") }));
+                .ReturnsAsync(new ListLocationsResponse(locations: new List<Location> { new("MyTestLocationId") }));
         }
 
         private void GivenSquareClientOrdersApiReturnsData()

@@ -21,8 +21,8 @@ namespace Mandarin.Services.Square
     /// <inheritdoc />
     internal sealed class SquareInventoryService : IInventoryService
     {
-        private static readonly Regex HyphenSeparatedProductNameRegex = new Regex("^.* - (?<name>.*)$");
-        private static readonly Regex SquareBracketProductNameRegex = new Regex("^\\[.*\\] (?<name>.*)$");
+        private static readonly Regex HyphenSeparatedProductNameRegex = new("^.* - (?<name>.*)$");
+        private static readonly Regex SquareBracketProductNameRegex = new("^\\[.*\\] (?<name>.*)$");
 
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;

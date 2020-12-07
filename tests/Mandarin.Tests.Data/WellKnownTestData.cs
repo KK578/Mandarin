@@ -11,7 +11,7 @@ namespace Mandarin.Tests.Data
 {
     public static class WellKnownTestData
     {
-        private static readonly JsonSerializer Serializer = new JsonSerializer();
+        private static readonly JsonSerializer Serializer = new();
 
         public static async Task SeedDatabaseAsync(MandarinDbContext mandarinDbContext)
         {
@@ -37,7 +37,7 @@ namespace Mandarin.Tests.Data
 
         public static class Stockists
         {
-            public static readonly Stockist InactiveArtist = new Stockist
+            public static readonly Stockist InactiveArtist = new()
             {
                 StockistCode = "IA1",
                 FirstName = "Inactive",
@@ -52,7 +52,7 @@ namespace Mandarin.Tests.Data
                 },
             };
 
-            public static readonly Stockist MinimalArtist = new Stockist
+            public static readonly Stockist MinimalArtist = new()
             {
                 StockistCode = "MA1",
                 FirstName = "Minimal",
@@ -67,7 +67,7 @@ namespace Mandarin.Tests.Data
                 },
             };
 
-            public static readonly Stockist HiddenArtist = new Stockist
+            public static readonly Stockist HiddenArtist = new()
             {
                 StockistCode = "HA1",
                 FirstName = "Hidden",
@@ -82,7 +82,7 @@ namespace Mandarin.Tests.Data
                 },
             };
 
-            public static readonly Stockist TheLittleMandarin = new Stockist
+            public static readonly Stockist TheLittleMandarin = new()
             {
                 StockistCode = "TLM",
                 FirstName = "Little",

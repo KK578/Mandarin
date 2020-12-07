@@ -14,7 +14,7 @@ namespace Mandarin.Services.Decorators
     /// </summary>
     internal abstract class CachingDecoratorBase
     {
-        private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+        private static readonly SemaphoreSlim Semaphore = new(1);
 
         private readonly IAppCache appCache;
         private readonly ILogger<CachingDecoratorBase> logger;

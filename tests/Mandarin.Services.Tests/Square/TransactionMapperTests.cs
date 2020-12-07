@@ -131,7 +131,7 @@ namespace Mandarin.Services.Tests.Square
             this.configuration = new MandarinConfiguration();
             this.configuration.ProductMappings = new List<ProductMapping>
             {
-                new ProductMapping
+                new()
                 {
                     TransactionsAfterDate = this.orderDate.AddDays(-1),
                     Mappings = new Dictionary<string, string>
@@ -153,11 +153,11 @@ namespace Mandarin.Services.Tests.Square
         {
             var lineItems = new List<OrderLineItem>
             {
-                new OrderLineItem("2",
-                                  catalogObjectId: product.SquareId,
-                                  name: product.ProductName,
-                                  basePriceMoney: new Money(500, "GBP"),
-                                  totalMoney: new Money(1000, "GBP")),
+                new("2",
+                    catalogObjectId: product.SquareId,
+                    name: product.ProductName,
+                    basePriceMoney: new Money(500, "GBP"),
+                    totalMoney: new Money(1000, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,
@@ -170,10 +170,10 @@ namespace Mandarin.Services.Tests.Square
         {
             var discounts = new List<OrderLineItemDiscount>
             {
-                new OrderLineItemDiscount(catalogObjectId: product.SquareId,
-                                          name: product.ProductName,
-                                          amountMoney: new Money(2000, "GBP"),
-                                          appliedMoney: new Money(2000, "GBP")),
+                new(catalogObjectId: product.SquareId,
+                    name: product.ProductName,
+                    amountMoney: new Money(2000, "GBP"),
+                    appliedMoney: new Money(2000, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,
@@ -186,15 +186,15 @@ namespace Mandarin.Services.Tests.Square
         {
             var returns = new List<OrderReturnLineItem>
             {
-                new OrderReturnLineItem("3",
-                                        catalogObjectId: product.SquareId,
-                                        name: product.ProductName,
-                                        basePriceMoney: new Money(500, "GBP"),
-                                        totalMoney: new Money(-1500, "GBP")),
+                new("3",
+                    catalogObjectId: product.SquareId,
+                    name: product.ProductName,
+                    basePriceMoney: new Money(500, "GBP"),
+                    totalMoney: new Money(-1500, "GBP")),
             };
             return new Order("Location",
                              TestData.WellKnownString,
-                             returns: new List<OrderReturn> { new OrderReturn(returnLineItems: returns) },
+                             returns: new List<OrderReturn> { new(returnLineItems: returns) },
                              totalMoney: new Money(-1500, "GBP"),
                              createdAt: this.orderDate.ToString("O"));
         }

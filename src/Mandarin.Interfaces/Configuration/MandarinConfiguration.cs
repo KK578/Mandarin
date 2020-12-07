@@ -20,6 +20,6 @@ namespace Mandarin.Configuration
         /// <summary>
         /// Gets or sets the list of product mappings to be applied.
         /// </summary>
-        public List<ProductMapping> ProductMappings { get; set; } = new List<ProductMapping>();
+        public List<ProductMapping> ProductMappings { get; set; } = new();
     }
 }

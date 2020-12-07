@@ -10,7 +10,6 @@ using Mandarin.Models.Common;
 using Mandarin.Models.Inventory;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Commission;
-using Mandarin.Services.Tests.Entity;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Data.Extensions;
 using Moq;
@@ -66,15 +65,15 @@ namespace Mandarin.Services.Tests.Commission
 
             var transactions = new List<Transaction>
             {
-                new Transaction(null, 10.00M, DateTime.Now, null, new List<Subtransaction>
-                                {
-                                    new Subtransaction(product1, 5, 5.00m),
-                                    new Subtransaction(product2, 1, 5.00m),
-                                }),
-                new Transaction(null, 50.00m, DateTime.Now, null, new List<Subtransaction>
-                                {
-                                    new Subtransaction(product2, 10, 50.00m),
-                                }),
+                new(null, 10.00M, DateTime.Now, null, new List<Subtransaction>
+                {
+                    new(product1, 5, 5.00m),
+                    new(product2, 1, 5.00m),
+                }),
+                new(null, 50.00m, DateTime.Now, null, new List<Subtransaction>
+                {
+                    new(product2, 10, 50.00m),
+                }),
             };
             this.transactionService ??= new Mock<ITransactionService>();
             this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))

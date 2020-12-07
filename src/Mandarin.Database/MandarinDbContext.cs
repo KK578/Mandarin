@@ -74,7 +74,7 @@ namespace Mandarin.Database
             modelBuilder.Entity<Stockist>(entity =>
             {
                 entity.HasIndex(e => e.StockistCode)
-                      .HasName("stockist_stockist_code_key")
+                      .HasDatabaseName("stockist_stockist_code_key")
                       .IsUnique();
             });
 
