@@ -6,7 +6,6 @@ using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Extensions.DependencyInjection;
 using Square;
