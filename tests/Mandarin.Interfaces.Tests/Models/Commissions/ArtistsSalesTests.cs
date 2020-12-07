@@ -62,8 +62,8 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
                                        0.10m,
                                        new List<Sale>
                                        {
-                                           new Sale("TLM-001", "A Mandarin", 1, 2.00M, 2.00M, -0.20M, 1.80M),
-                                           new Sale("TLM-002", "An Orange", 2, 4.00M, 8.00M, -0.80M, 9.20M),
+                                           new("TLM-001", "A Mandarin", 1, 2.00M, 2.00M, -0.20M, 1.80M),
+                                           new("TLM-002", "An Orange", 2, 4.00M, 8.00M, -0.80M, 9.20M),
                                        },
                                        10.00M,
                                        -1.00M,

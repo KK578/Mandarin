@@ -11,7 +11,7 @@ namespace Mandarin.Tests.Data.Extensions
     {
         public static Stockist WithStatus(this Stockist model, StatusMode statusMode)
         {
-            return new Stockist
+            return new()
             {
                 StockistId = model.StockistId,
                 StockistCode = model.StockistCode,
@@ -25,7 +25,7 @@ namespace Mandarin.Tests.Data.Extensions
 
         public static Stockist WithTenPercentCommission(this Stockist model)
         {
-            return new Stockist
+            return new()
             {
                 StockistId = model.StockistId,
                 StockistCode = "TLM",
@@ -34,7 +34,7 @@ namespace Mandarin.Tests.Data.Extensions
                 Details = model.Details,
                 Commissions = new List<Commission>
                 {
-                    new Commission
+                    new()
                     {
                         StartDate = model.Commissions.First().StartDate,
                         EndDate = model.Commissions.First().EndDate,
@@ -50,7 +50,7 @@ namespace Mandarin.Tests.Data.Extensions
 
         public static Stockist WithTlmStockistCode(this Stockist model)
         {
-            return new Stockist
+            return new()
             {
                 StockistId = model.StockistId,
                 StockistCode = "TLM",
@@ -64,20 +64,20 @@ namespace Mandarin.Tests.Data.Extensions
 
         public static Product WithTlmProductCode(this Product product)
         {
-            return new Product(product.SquareId,
-                               $"TLM-{product.ProductCode}",
-                               product.ProductName,
-                               product.Description,
-                               product.UnitPrice);
+            return new(product.SquareId,
+                       $"TLM-{product.ProductCode}",
+                       product.ProductName,
+                       product.Description,
+                       product.UnitPrice);
         }
 
         public static Product WithUnitPrice(this Product product, decimal unitPrice)
         {
-            return new Product(product.SquareId,
-                               $"TLM-{product.ProductCode}",
-                               product.ProductName,
-                               product.Description,
-                               unitPrice);
+            return new(product.SquareId,
+                       $"TLM-{product.ProductCode}",
+                       product.ProductName,
+                       product.Description,
+                       unitPrice);
         }
     }
 }

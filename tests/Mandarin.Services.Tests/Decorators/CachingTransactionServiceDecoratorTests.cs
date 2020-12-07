@@ -19,8 +19,8 @@ namespace Mandarin.Services.Tests.Decorators
     [TestFixture]
     public class CachingTransactionServiceDecoratorTests
     {
-        private static readonly DateTime StartDate = new DateTime(2020, 05, 26);
-        private static readonly DateTime EndDate = new DateTime(2020, 05, 27);
+        private static readonly DateTime StartDate = new(2020, 05, 26);
+        private static readonly DateTime EndDate = new(2020, 05, 27);
 
         private Mock<ITransactionService> service;
         private IAppCache appCache;

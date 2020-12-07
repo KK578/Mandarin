@@ -15,6 +15,6 @@ namespace Mandarin.Tests.Data
             this.Customize(new LazyEntityGraphCustomization(modelMetadata));
         }
 
-        public static MandarinFixture Instance { get; } = new MandarinFixture();
+        public static MandarinFixture Instance { get; } = new();
     }
 }

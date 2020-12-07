@@ -13,7 +13,7 @@ namespace Mandarin.Tests.Factory
     {
         public const string AuthenticationScheme = "TestAuth";
 
-        public static readonly AuthenticationHeaderValue AuthorizedToken = new AuthenticationHeaderValue(TestAuthHandler.AuthenticationScheme, "AuthorizedToken");
+        public static readonly AuthenticationHeaderValue AuthorizedToken = new(TestAuthHandler.AuthenticationScheme, "AuthorizedToken");
 
         public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
                                ILoggerFactory logger,

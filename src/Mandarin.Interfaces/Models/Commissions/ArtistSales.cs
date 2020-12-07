@@ -139,18 +139,18 @@ namespace Mandarin.Models.Commissions
         /// <returns>Updated Artist Sales.</returns>
         public ArtistSales WithMessageCustomisations(string emailAddress, string customMessage)
         {
-            return new ArtistSales(this.StockistCode,
-                                   this.FirstName,
-                                   this.Name,
-                                   emailAddress ?? this.EmailAddress,
-                                   customMessage ?? this.CustomMessage,
-                                   this.StartDate,
-                                   this.EndDate,
-                                   this.Rate,
-                                   this.Sales?.ToList(),
-                                   this.Subtotal,
-                                   this.CommissionTotal,
-                                   this.Total);
+            return new(this.StockistCode,
+                       this.FirstName,
+                       this.Name,
+                       emailAddress ?? this.EmailAddress,
+                       customMessage ?? this.CustomMessage,
+                       this.StartDate,
+                       this.EndDate,
+                       this.Rate,
+                       this.Sales?.ToList(),
+                       this.Subtotal,
+                       this.CommissionTotal,
+                       this.Total);
         }
 
         /// <inheritdoc />
