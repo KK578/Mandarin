@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Mandarin.App\Mandarin.App.csproj" />
     <ProjectReference Include="..\Mandarin.Database\Mandarin.Database.csproj" />
     <ProjectReference Include="..\Mandarin.Services\Mandarin.Services.csproj" />
     <ProjectReference Include="..\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
