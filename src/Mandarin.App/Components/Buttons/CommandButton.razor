@@ -1,0 +1,17 @@
+﻿<Button Clicked="@Command.ExecuteAsync" Color="Color.Primary">@ChildContent</Button>
+
+@code {
+
+  /// <summary>
+  /// Gets or sets the command to be executed on the button being clicked.
+  /// </summary>
+  [Parameter]
+  public ICommand Command { get; set; }
+
+  /// <summary>
+  /// Gets or sets the content to display within the button.
+  /// </summary>
+  [Parameter]
+  public RenderFragment ChildContent { get; set; }
+
+}

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Models.Commissions;
+using Mandarin.MVVM.ViewModels.Commissions;
 using Mandarin.Services;
 using Mandarin.Services.Objects;
 using Mandarin.ViewModels.Commissions;

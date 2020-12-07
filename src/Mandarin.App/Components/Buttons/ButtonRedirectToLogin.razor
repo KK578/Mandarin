@@ -1,12 +1,3 @@
-﻿@inject NavigationManager Navigation
+﻿@inject RedirectToLoginCommand Command
 
-<Button Color="Color.Primary" Clicked="OnLogin">Log In</Button>
-
-@code {
-
-  private void OnLogin()
-  {
-    Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
-  }
-
-}
+<CommandButton Command="@Command">Log In</CommandButton>

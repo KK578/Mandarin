@@ -4,12 +4,12 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.MVVM.ViewModels
 {
     /// <summary>
     /// Implements the basic functionality for all <see cref="IViewModel"/> classes.
     /// </summary>
-    internal abstract class ViewModelBase : IViewModel
+    public abstract class ViewModelBase : IViewModel
     {
         private readonly ISubject<string> stateSubject;
 

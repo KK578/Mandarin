@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Mandarin.Configuration;
+using Mandarin.MVVM.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;

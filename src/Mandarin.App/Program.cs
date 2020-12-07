@@ -1,9 +1,6 @@
 using System.Threading.Tasks;
-using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using Mandarin.App.Client;
-using Mandarin.App.Extensions;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace Mandarin.App
@@ -23,9 +20,7 @@ namespace Mandarin.App
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
-            builder.AddMandarinClient();
-            builder.AddMandarinAuthentication();
+            builder.AddMandarinWasm();
 
             var host = builder.Build();
             host.Services.UseBootstrapProviders().UseFontAwesomeIcons();
