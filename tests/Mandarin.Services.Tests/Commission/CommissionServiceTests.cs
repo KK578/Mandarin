@@ -52,10 +52,10 @@ namespace Mandarin.Services.Tests.Commission
             this.artistService ??= new Mock<IArtistService>();
             this.artistService
                 .Setup(x => x.GetArtistsForCommissionAsync())
-                .Returns(new List<Stockist>
+                .ReturnsAsync(new List<Stockist>
                 {
                     MandarinFixture.Instance.Create<Stockist>().WithStatus(StatusMode.Active).WithTlmStockistCode().WithTenPercentCommission(),
-                }.ToObservable());
+                });
         }
 
         private void GivenTransactionServiceReturnsData()

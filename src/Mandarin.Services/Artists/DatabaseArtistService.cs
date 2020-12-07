@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -23,13 +24,15 @@ namespace Mandarin.Services.Artists
         }
 
         /// <inheritdoc/>
-        public IObservable<Stockist> GetArtistsForCommissionAsync()
+        public async Task<IReadOnlyList<Stockist>> GetArtistsForCommissionAsync()
         {
-            return this.mandarinDbContext.Stockist
-                       .Include(x => x.Details)
-                       .Include(x => x.Commissions).ThenInclude(x => x.RateGroup)
-                       .OrderBy(x => x.StockistCode)
-                       .ToObservable();
+            var result = await this.mandarinDbContext.Stockist
+                                   .Include(x => x.Details)
+                                   .Include(x => x.Commissions)
+                                   .ThenInclude(x => x.RateGroup)
+                                   .OrderBy(x => x.StockistCode)
+                                   .ToListAsync();
+            return result.AsReadOnly();
         }
 
         /// <inheritdoc/>

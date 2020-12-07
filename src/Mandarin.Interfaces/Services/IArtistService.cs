@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 
@@ -21,7 +21,7 @@ namespace Mandarin.Services
         /// TODO: This list should return a time sensitive list of artists.
         /// </summary>
         /// <returns>A <see cref="Task{TResult}"/> containing all artists for commissioning purposes.</returns>
-        public IObservable<Stockist> GetArtistsForCommissionAsync();
+        Task<IReadOnlyList<Stockist>> GetArtistsForCommissionAsync();
 
         /// <summary>
         /// Saves all changes made to the artist. Will automatically detect if they are a new artist and make changes as required.

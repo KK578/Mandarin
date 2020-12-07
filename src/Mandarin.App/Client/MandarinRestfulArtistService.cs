@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Models.Artists;
 using Mandarin.Services;
@@ -29,9 +26,9 @@ namespace Mandarin.App.Client
         }
 
         /// <inheritdoc/>
-        public IObservable<Stockist> GetArtistsForCommissionAsync()
+        public Task<IReadOnlyList<Stockist>> GetArtistsForCommissionAsync()
         {
-            return this.mandarinHttpClient.GetAsync<List<Stockist>>("api/stockists").ToObservable().SelectMany(x => x);
+            return this.mandarinHttpClient.GetAsync<IReadOnlyList<Stockist>>("api/stockists");
         }
 
         /// <inheritdoc/>

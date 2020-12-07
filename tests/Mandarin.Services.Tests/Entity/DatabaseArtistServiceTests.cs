@@ -24,7 +24,7 @@ namespace Mandarin.Services.Tests.Entity
                                        WellKnownTestData.Stockists.MinimalArtist);
 
             var subject = new DatabaseArtistService(this.dbContext);
-            var artistDetails = await subject.GetArtistsForCommissionAsync().ToList();
+            var artistDetails = await subject.GetArtistsForCommissionAsync();
             Assert.That(artistDetails, Has.Exactly(3).Items);
             Assert.That(artistDetails[0], Is.EqualTo(WellKnownTestData.Stockists.HiddenArtist));
             Assert.That(artistDetails[1], Is.EqualTo(WellKnownTestData.Stockists.InactiveArtist));

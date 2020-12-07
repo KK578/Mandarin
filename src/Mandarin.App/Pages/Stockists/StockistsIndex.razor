@@ -2,7 +2,6 @@
 @using Mandarin.Models.Artists
 @using Bashi.Core.Extensions
 @using Mandarin.Services
-@using System.Reactive.Linq
 @inject IArtistService ArtistService;
 @inject NavigationManager NavigationManager;
 
@@ -40,13 +39,13 @@
 
 @code
 {
-  private IList<Stockist> data;
+  private IReadOnlyList<Stockist> data;
 
   /// <inheritdoc />
   protected override async void OnInitialized()
   {
     await base.OnInitializedAsync();
-    data = await ArtistService.GetArtistsForCommissionAsync().ToList();
+    data = await ArtistService.GetArtistsForCommissionAsync();
     StateHasChanged();
   }
 

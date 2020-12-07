@@ -30,18 +30,6 @@ namespace Mandarin.Server.Controllers
         }
 
         /// <summary>
-        /// Gets the full set of stockists who are active for commission purposes.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> containing the list of stockists to consider for commission.</returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(IList<Stockist>), 200)]
-        public async Task<ActionResult<IList<Stockist>>> GetStockists()
-        {
-            var artists = await this.artistService.GetArtistsForCommissionAsync().ToList().ToTask(this.HttpContext.RequestAborted);
-            return this.Ok(artists);
-        }
-
-        /// <summary>
         /// Gets the stockist's details for the stockist with the specified code.
         /// </summary>
         /// <param name="id">The artist's unique code.</param>
@@ -53,6 +41,17 @@ namespace Mandarin.Server.Controllers
         {
             var artist = await this.artistService.GetArtistByCodeAsync(id);
             return artist != null ? this.Ok(artist) : this.NoContent();
+        }
+
+        /// <summary>
+        /// Gets the full set of stockists who are active for commission purposes.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> containing the list of stockists to consider for commission.</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IReadOnlyList<Stockist>), 200)]
+        public async Task<ActionResult<IReadOnlyList<Stockist>>> GetStockists()
+        {
+            return this.Ok(await this.artistService.GetArtistsForCommissionAsync());
         }
     }
 }
