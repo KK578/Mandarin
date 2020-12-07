@@ -59,7 +59,12 @@ namespace Mandarin.Services.Artists
                        .Include(x => x.Commissions)
                        .ThenInclude(x => x.RateGroup)
                        .FirstOrDefaultAsync(x => x.StockistCode == stockistCode);
-            await this.mandarinDbContext.Entry(stockist).ReloadAsync();
+
+            if (stockist != null)
+            {
+                await this.mandarinDbContext.Entry(stockist).ReloadAsync();
+            }
+
             return stockist;
         }
     }

@@ -1,28 +1,25 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Server.Pages
 {
+    /// <summary>
+    /// Represents the backing model for the Error Page.
+    /// </summary>
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]
+    [SuppressMessage("StyleCop", "SA1649", Justification = "Model is code behind for the Razor page.")]
     public class ErrorModel : PageModel
     {
-        private readonly ILogger<ErrorModel> logger;
-
-        public ErrorModel(ILogger<ErrorModel> logger)
-        {
-            this.logger = logger;
-        }
-
         /// <summary>
-        /// The request id for the request in error.
+        /// Gets the request id for the request in error.
         /// </summary>
-        public string RequestId { get; set; }
+        public string RequestId { get; private set; }
 
         /// <summary>
-        /// Whether or not the request id should be shown.
+        /// Gets a value indicating whether the request id should be shown.
         /// </summary>
         public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
 

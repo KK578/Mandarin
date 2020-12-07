@@ -17,7 +17,7 @@ namespace Mandarin.Models.Artists
         public int StockistId { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's name.
+        /// Gets or sets the stockist's name.
         /// </summary>
         [Required]
         [Column("short_display_name")]
@@ -25,7 +25,7 @@ namespace Mandarin.Models.Artists
         public string ShortDisplayName { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's name.
+        /// Gets or sets the stockist's name.
         /// </summary>
         [Required]
         [Column("full_display_name")]
@@ -33,7 +33,7 @@ namespace Mandarin.Models.Artists
         public string FullDisplayName { get; set; }
 
         /// <summary>
-        /// Gets or sets a description about the stockist.
+        /// Gets or sets the stockist's description/biography.
         /// </summary>
         [Column("description")]
         [MaxLength(500)]

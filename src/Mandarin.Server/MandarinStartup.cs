@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Server.Extensions;
@@ -38,6 +39,7 @@ namespace Mandarin.Server
         /// <item><term>Controllers</term></item>
         /// <item><term>Authentication</term></item>
         /// <item><term>Application Services</term></item>
+        /// <item><term>Swagger</term></item>
         /// </list>
         ///
         /// <remarks>
@@ -49,7 +51,13 @@ namespace Mandarin.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    });
             services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -62,6 +70,7 @@ namespace Mandarin.Server
             services.AddMandarinDatabase(this.configuration);
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
+            services.AddMandarinSwagger();
         }
 
         /// <summary>
@@ -99,6 +108,9 @@ namespace Mandarin.Server
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseEndpoints(endpoints =>
             {
