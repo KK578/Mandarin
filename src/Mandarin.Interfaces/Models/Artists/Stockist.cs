@@ -66,5 +66,11 @@ namespace Mandarin.Models.Artists
         /// </summary>
         [InverseProperty(nameof(Commission.Stockist))]
         public virtual ICollection<Commission> Commissions { get; set; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{this.StockistCode}: {this.FirstName} {this.LastName}";
+        }
     }
 }

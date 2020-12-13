@@ -1,16 +1,16 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace Mandarin.MVVM.ViewModels
 {
     /// <summary>
-    /// Represents that the user can be notified of PropertyChange events.
+    /// Represents that the implementor is a ViewModel.
     /// </summary>
-    public interface IViewModel
+    public interface IViewModel : IPropertyChangedObservable
     {
         /// <summary>
-        /// Gets an observable sequence that receives a value any time a value is changed on the view model.
-        /// The value inside the sequence will reflect the name of a property.
+        /// Allows the <see cref="IViewModel"/> to run any asynchronous startup tasks.
         /// </summary>
-        IObservable<string> StateObservable { get; }
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task InitializeAsync();
     }
 }

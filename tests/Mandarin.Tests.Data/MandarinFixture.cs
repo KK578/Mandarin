@@ -7,7 +7,7 @@ namespace Mandarin.Tests.Data
 {
     public class MandarinFixture : Fixture
     {
-        /// <inheritdoc cref="AutoFixture.Fixture"/>
+        /// <inheritdoc cref="AutoFixture.Fixture" />
         private MandarinFixture()
         {
             var modelMetadata = ModelMetadataGenerator.LoadFromContext<MandarinDbContext>(o => new MandarinDbContext(o));

@@ -1,4 +1,4 @@
-﻿<Button Clicked="@Command.ExecuteAsync" Color="Color.Primary">@ChildContent</Button>
+﻿<Button Clicked="@Command.ExecuteAsync" Disabled="@(!Command.CanExecute)" @attributes="@AdditionalAttributes">@ChildContent</Button>
 
 @code {
 
@@ -7,6 +7,12 @@
   /// </summary>
   [Parameter]
   public ICommand Command { get; set; }
+
+  /// <summary>
+  /// Gets or sets the additional HTML attributes to apply to the <see cref="Button"/>.
+  /// </summary>
+  [Parameter(CaptureUnmatchedValues = true)]
+  public Dictionary<string, object> AdditionalAttributes { get; set; }
 
   /// <summary>
   /// Gets or sets the content to display within the button.

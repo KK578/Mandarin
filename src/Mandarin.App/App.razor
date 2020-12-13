@@ -6,9 +6,7 @@
           <Card>
             <CardHeader>Authenticating...</CardHeader>
             <CardBody>
-              <Progress Size="Size.Medium">
-                <ProgressBar Animated="true" Background="Background.Primary" Max="100" Min="0" Striped="true" Value="100">Just a moment...</ProgressBar>
-              </Progress>
+              <MandarinProgressBar>Just a moment...</MandarinProgressBar>
             </CardBody>
           </Card>
         </Authorizing>
@@ -18,7 +16,7 @@
             <CardBody>
               <CardText>You are not authorized to access this resource.</CardText>
               <CardActions Margin="Margin.Is3.FromTop" Float="Float.Right">
-                <ButtonRedirectToLogin />
+                <MandarinRedirectToLoginButton />
               </CardActions>
             </CardBody>
           </Card>

@@ -5,6 +5,7 @@ using Blazorise.Icons.FontAwesome;
 using Mandarin.App.Client;
 using Mandarin.App.Commands.Navigation;
 using Mandarin.App.ViewModels;
+using Mandarin.App.ViewModels.Stockists;
 using Mandarin.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -64,7 +65,8 @@ namespace Mandarin.App
 
         private static void AddViewModels(IServiceCollection services)
         {
-            services.AddTransient<IIndexPageViewModel, IndexPageViewModel>();
+            services.AddScoped<IIndexPageViewModel, IndexPageViewModel>();
+            services.AddScoped<IStockistIndexPageViewModel, StockistIndexPageViewModel>();
         }
     }
 }

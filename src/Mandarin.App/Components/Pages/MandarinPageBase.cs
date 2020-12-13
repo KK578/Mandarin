@@ -9,7 +9,7 @@ namespace Mandarin.App.Components.Pages
     /// Represents a <see cref="ComponentBase"/> for pages that is backed by a <see cref="IViewModel"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="IViewModel"/> that is to be injected into the page.</typeparam>
-    public class MandarinPageBase<T> : ComponentBase, IDisposable
+    public abstract class MandarinPageBase<T> : ComponentBase, IDisposable
         where T : IViewModel
     {
         private readonly CompositeDisposable disposables = new();
@@ -30,6 +30,7 @@ namespace Mandarin.App.Components.Pages
         protected override void OnInitialized()
         {
             this.disposables.Add(this.ViewModel.StateObservable.Subscribe(this.OnViewModelChanged));
+            this.ViewModel.InitializeAsync(); // Async call purposefully run in background.
         }
 
         private void OnViewModelChanged(string propertyName)

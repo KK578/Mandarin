@@ -5,7 +5,7 @@ using Mandarin.Models.Artists;
 namespace Mandarin.Services
 {
     /// <summary>
-    /// Represents a service that can retrieve details about artists.
+    /// Represents a service that can retrieve and update details about artists.
     /// </summary>
     public interface IArtistService
     {

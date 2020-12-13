@@ -4,58 +4,37 @@
 @using Mandarin.Services
 @inject IArtistService ArtistService;
 @inject NavigationManager NavigationManager;
+@inherits MandarinPageBase<IStockistIndexPageViewModel>
 
 <Card>
   <CardHeader>
     <CardTitle>All Artists</CardTitle>
     <CardActions Float="Float.Right">
-      <Button Color="Color.Primary" Clicked="@OnNewClicked">New</Button>
+      <CommandButton Command="@ViewModel.EditStockistCommand" Color="@Color.Secondary">Edit</CommandButton>
+      <CommandButton Command="@ViewModel.CreateNewStockistCommand" Color="@Color.Primary">New</CommandButton>
     </CardActions>
   </CardHeader>
   <CardBody>
-    @if (data == null || data.Count == 0)
+    @if (ViewModel.IsLoading)
     {
-      <Progress Size="Size.Medium">
-        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(data == null ? Background.Primary : Background.Danger)">
-          @(data == null ? "Fetching artists..." : "No artist data received.")
-        </ProgressBar>
-      </Progress>
+      <MandarinProgressBar>Fetching Artists...</MandarinProgressBar>
+    }
+    else if (!ViewModel.Stockists.Any())
+    {
+      <CardText>No artists found.</CardText>
     }
     else
     {
-      <div class="overflow-x-auto">
-        <DataGrid TItem="Stockist" Data="@data" Filterable="true" ShowPager="true" PageSize="10" Striped="true" Responsive="true"
-                  SelectedRowChanged="@OnStockistSelected">
-          <DataGridColumn TItem="Stockist" Field="StockistCode" Caption="Code" Width="75px" />
-          <DataGridColumn TItem="Stockist" Field="Details.ShortDisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
-          <DataGridColumn TItem="Stockist" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
-            <DisplayTemplate>@context.StatusCode.GetDescription()</DisplayTemplate>
-          </DataGridColumn>
-        </DataGrid>
-      </div>
+      <DataGrid TItem="Stockist" Data="@ViewModel.Stockists" Filterable="true"
+                Striped="true" Responsive="true" Hoverable="true"
+                ShowPager="true" PageSize="10" PagerPosition="DataGridPagerPosition.Top"
+                @bind-SelectedRow="@ViewModel.SelectedStockist">
+        <DataGridColumn TItem="Stockist" Field="StockistCode" Caption="Code" Width="75px" />
+        <DataGridColumn TItem="Stockist" Field="Details.ShortDisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="Stockist" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
+          <DisplayTemplate>@context.StatusCode.GetDescription()</DisplayTemplate>
+        </DataGridColumn>
+      </DataGrid>
     }
   </CardBody>
 </Card>
-
-@code
-{
-  private IReadOnlyList<Stockist> data;
-
-  /// <inheritdoc />
-  protected override async void OnInitialized()
-  {
-    await base.OnInitializedAsync();
-    data = await ArtistService.GetArtistsForCommissionAsync();
-    StateHasChanged();
-  }
-
-  private void OnNewClicked()
-  {
-    NavigationManager.NavigateTo("/stockists/new");
-  }
-
-  private void OnStockistSelected(Stockist selectedStockist)
-  {
-    NavigationManager.NavigateTo($"/stockists/edit/{selectedStockist.StockistCode}");
-  }
-}
