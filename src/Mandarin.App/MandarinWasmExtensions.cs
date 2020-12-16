@@ -56,6 +56,7 @@ namespace Mandarin.App
 
             services.AddTransient<MandarinHttpClient>();
             services.AddTransient<IArtistService, MandarinRestfulArtistService>();
+            services.AddTransient<ICommissionService, MandarinRestfulCommissionService>();
         }
 
         private static void AddCommands(IServiceCollection services)
@@ -67,6 +68,7 @@ namespace Mandarin.App
         {
             services.AddScoped<IIndexPageViewModel, IndexPageViewModel>();
             services.AddScoped<IStockistIndexPageViewModel, StockistIndexPageViewModel>();
+            services.AddScoped<IStockistsNewPageViewModel, StockistsNewPageViewModel>();
         }
     }
 }
