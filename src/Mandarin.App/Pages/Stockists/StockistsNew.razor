@@ -18,194 +18,201 @@
     </CardActions>
   </CardHeader>
   <CardBody>
-    <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false">
-      <Validation>
-        <Field>
-          <FieldLabel>Artist Code</FieldLabel>
-          <TextEdit @bind-Text="@Stockist.StockistCode">
-            <Feedback><ValidationError /></Feedback>
-          </TextEdit>
-        </Field>
-      </Validation>
-
-      <Fields>
+    @if (Stockist == null)
+    {
+      <MandarinProgressBar>Just a moment...</MandarinProgressBar>
+    }
+    else
+    {
+      <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false">
         <Validation>
-          <Field ColumnSize="ColumnSize.Is6">
-            <FieldLabel>First Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.FirstName">
+          <Field>
+            <FieldLabel>Artist Code</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.StockistCode">
               <Feedback><ValidationError /></Feedback>
             </TextEdit>
           </Field>
         </Validation>
-        <Validation>
-          <Field ColumnSize="ColumnSize.Is6">
-            <FieldLabel>Last Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.LastName">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
-      </Fields>
 
-      <Validation>
-        <Field>
-          <FieldLabel>Email Address</FieldLabel>
-          <TextEdit Role="@TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress">
-            <Feedback><ValidationError /></Feedback>
-          </TextEdit>
-        </Field>
-      </Validation>
-
-      <Validation>
-        <Field>
-          <FieldLabel>Status</FieldLabel>
-          <Select TValue="StatusMode" @bind-SelectedValue="@Stockist.StatusCode">
-            <ChildContent>
-              @foreach (var status in EnumUtil.GetValues<StatusMode>().Except(new[] { StatusMode.Unknown }))
-              {
-                <SelectItem Value="@status">@(status.GetDescription())</SelectItem>
-              }
-            </ChildContent>
-            <Feedback><ValidationError /></Feedback>
-          </Select>
-        </Field>
-      </Validation>
-
-      <Divider />
-
-      <FieldLabel>Artists Page Details</FieldLabel>
-
-      <Validation>
-        <Field>
-          <FieldLabel>Grid Display Name</FieldLabel>
-          <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName">
-            <Feedback><ValidationError /></Feedback>
-          </TextEdit>
-        </Field>
-      </Validation>
-
-      <Validation>
-        <Field>
-          <FieldLabel>Banner Display Name</FieldLabel>
-          <TextEdit @bind-Text="@Stockist.Details.FullDisplayName">
-            <Feedback><ValidationError /></Feedback>
-          </TextEdit>
-        </Field>
-      </Validation>
-
-      <Validation>
-        <Field>
-          <FieldLabel>Description</FieldLabel>
-          <MemoEdit @bind-Text="@Stockist.Details.Description" Rows="5" Disabled="@(!StockistIsDisplayed)">
-            <Feedback><ValidationError /></Feedback>
-          </MemoEdit>
-        </Field>
-      </Validation>
-
-      <Validation>
-        <Field>
-          <Addons>
-            <Addon AddonType="AddonType.Start">
-              <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
-            </Addon>
-            <Addon AddonType="AddonType.Body">
-              <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!StockistIsDisplayed)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Addon>
-          </Addons>
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <Addons>
-            <Addon AddonType="AddonType.Start">
-              <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
-            </Addon>
-            <Addon AddonType="AddonType.Body">
-              <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!StockistIsDisplayed)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Addon>
-          </Addons>
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <Addons>
-            <Addon AddonType="AddonType.Start">
-              <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
-            </Addon>
-            <Addon AddonType="AddonType.Body">
-              <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!StockistIsDisplayed)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Addon>
-          </Addons>
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <Addons>
-            <Addon AddonType="AddonType.Start">
-              <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
-            </Addon>
-            <Addon AddonType="AddonType.Body">
-              <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!StockistIsDisplayed)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Addon>
-          </Addons>
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <Addons>
-            <Addon AddonType="AddonType.Start">
-              <AddonLabel Class="w-12"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
-            </Addon>
-            <Addon AddonType="AddonType.Body">
-              <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!StockistIsDisplayed)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Addon>
-          </Addons>
-        </Field>
-      </Validation>
-
-      <Divider />
-
-      <FieldLabel>Commission</FieldLabel>
-      <Validation>
-        <Field>
-          <Addons>
-            <Addon AddonType="AddonType.Start">
-              <AddonLabel Class="w-12">%</AddonLabel>
-            </Addon>
-            <Addon AddonType="AddonType.Body">
-              <Select TValue="int?" SelectedValue="@Commission.RateGroupId" SelectedValueChanged="@OnRateGroupSelected">
-                @foreach (var group in ViewModel.CommissionRateGroups)
-                {
-                  <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
-                }
-              </Select>
-            </Addon>
-          </Addons>
-        </Field>
-      </Validation>
-      <Validation>
         <Fields>
-          <Field ColumnSize="ColumnSize.Is6">
-            <FieldLabel>Start Date</FieldLabel>
-            <DateEdit TValue="DateTime" @bind-Date="@Commission.StartDate" />
-          </Field>
-          <Field ColumnSize="ColumnSize.Is6">
-            <FieldLabel>End Date</FieldLabel>
-            <DateEdit TValue="DateTime" @bind-Date="@Commission.EndDate" />
-          </Field>
+          <Validation>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>First Name</FieldLabel>
+              <TextEdit @bind-Text="@Stockist.FirstName">
+                <Feedback><ValidationError /></Feedback>
+              </TextEdit>
+            </Field>
+          </Validation>
+          <Validation>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>Last Name</FieldLabel>
+              <TextEdit @bind-Text="@Stockist.LastName">
+                <Feedback><ValidationError /></Feedback>
+              </TextEdit>
+            </Field>
+          </Validation>
         </Fields>
-      </Validation>
-    </Validations>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Email Address</FieldLabel>
+            <TextEdit Role="@TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Status</FieldLabel>
+            <Select TValue="StatusMode" @bind-SelectedValue="@Stockist.StatusCode">
+              <ChildContent>
+                @foreach (var status in EnumUtil.GetValues<StatusMode>().Except(new[] { StatusMode.Unknown }))
+                {
+                  <SelectItem Value="@status">@(status.GetDescription())</SelectItem>
+                }
+              </ChildContent>
+              <Feedback><ValidationError /></Feedback>
+            </Select>
+          </Field>
+        </Validation>
+
+        <Divider />
+
+        <FieldLabel>Artists Page Details</FieldLabel>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Grid Display Name</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Banner Display Name</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.Details.FullDisplayName">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Description</FieldLabel>
+            <MemoEdit @bind-Text="@Stockist.Details.Description" Rows="5" Disabled="@(!StockistIsDisplayed)">
+              <Feedback><ValidationError /></Feedback>
+            </MemoEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!StockistIsDisplayed)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!StockistIsDisplayed)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!StockistIsDisplayed)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!StockistIsDisplayed)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!StockistIsDisplayed)">
+                  <Feedback><ValidationError /></Feedback>
+                </TextEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+
+        <Divider />
+
+        <FieldLabel>Commission</FieldLabel>
+        <Validation>
+          <Field>
+            <Addons>
+              <Addon AddonType="AddonType.Start">
+                <AddonLabel Class="w-12">%</AddonLabel>
+              </Addon>
+              <Addon AddonType="AddonType.Body">
+                <Select TValue="int?" SelectedValue="@Commission.RateGroupId" SelectedValueChanged="@OnRateGroupSelected">
+                  @foreach (var group in ViewModel.CommissionRateGroups)
+                  {
+                    <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
+                  }
+                </Select>
+              </Addon>
+            </Addons>
+          </Field>
+        </Validation>
+        <Validation>
+          <Fields>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>Start Date</FieldLabel>
+              <DateEdit TValue="DateTime" @bind-Date="@Commission.StartDate" />
+            </Field>
+            <Field ColumnSize="ColumnSize.Is6">
+              <FieldLabel>End Date</FieldLabel>
+              <DateEdit TValue="DateTime" @bind-Date="@Commission.EndDate" />
+            </Field>
+          </Fields>
+        </Validation>
+      </Validations>
+    }
   </CardBody>
 </Card>
 
