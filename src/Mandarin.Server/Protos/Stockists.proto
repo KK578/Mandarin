@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Mandarin";
+
+package uk.co.thelittlemandarin;
+
+// The stockist service definition.
+service Stockists {
+  // Gets the full set of stockists who are active for commission purposes.
+  rpc GetStockists (GetStockistsRequest) returns (stream GetStockistsResponse);
+}
+
+// The request message for getting all stockists.
+message GetStockistsRequest {
+}
+
+// The response message containing all stockists.
+message GetStockistsResponse {
+  Stockist stockist = 1;
+}
+
+message Stockist {
+  int32 stockistId = 1;
+  string stockistCode = 2;
+  string firstName = 3;
+  string lastName = 4;
+  StatusMode status = 5;
+  StockistDetail details = 6;
+  repeated Commission commissions = 7;
+}
+
+enum StatusMode {
+  UNKNOWN = 0;
+  INACTIVE = 1;
+  ACTIVEHIDDEN = 2;
+  ACTIVE = 4;
+}
+
+message StockistDetail {
+  int32 stockistId = 1;
+  string shortDisplayName = 2;
+  string fullDisplayName = 3;
+  string description = 4;
+  string twitterHandle = 5;
+  string instagramHandle = 6;
+  string facebookHandle = 7;
+  string websiteUrl = 8;
+  string thumbnailImageUrl = 9;
+  string bannerImageUrl = 10;
+  string tumblrHandle = 11;
+  string emailAddress = 12;
+}
+
+message Commission {
+  int32 commissionId = 1;
+  int32 stockistId = 2;
+  google.protobuf.Timestamp startDate = 3;
+  google.protobuf.Timestamp endDate = 4;
+  google.protobuf.Timestamp insertedAt = 5;
+  int32 rate = 6;
+}
