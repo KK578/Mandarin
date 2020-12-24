@@ -1,12 +1,11 @@
-using System.Text.Json.Serialization;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Server.Extensions;
+using Mandarin.Server.Services;
 using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,14 +50,7 @@ namespace Mandarin.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddControllersWithViews()
-                    .AddJsonOptions(options =>
-                    {
-                        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    });
-            services.AddHttpContextAccessor();
+            services.AddGrpc();
 
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
@@ -109,8 +101,7 @@ namespace Mandarin.Server
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
-                endpoints.MapControllers();
+                endpoints.MapGrpcService<StockistsGrpcService>();
                 endpoints.MapFallbackToFile("index.html");
             });
         }
