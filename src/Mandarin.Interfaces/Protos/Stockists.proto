@@ -1,15 +1,17 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
-option csharp_namespace = "Mandarin";
+option csharp_namespace = "Mandarin.Api";
+option java_package = "uk.co.thelittlemandarin.mandarin.api";
 
 package uk.co.thelittlemandarin;
 
 // The stockist service definition.
 service Stockists {
   // Gets the full set of stockists who are active for commission purposes.
-  rpc GetStockists (GetStockistsRequest) returns (stream GetStockistsResponse);
+  rpc GetStockists (GetStockistsRequest) returns (GetStockistsResponse);
 }
 
 // The request message for getting all stockists.
@@ -18,15 +20,15 @@ message GetStockistsRequest {
 
 // The response message containing all stockists.
 message GetStockistsResponse {
-  Stockist stockist = 1;
+  repeated Stockist stockists = 1;
 }
 
 message Stockist {
   int32 stockistId = 1;
   string stockistCode = 2;
-  string firstName = 3;
-  string lastName = 4;
-  StatusMode status = 5;
+  google.protobuf.StringValue firstName = 3;
+  google.protobuf.StringValue lastName = 4;
+  StatusMode statusCode = 5;
   StockistDetail details = 6;
   repeated Commission commissions = 7;
 }
@@ -42,15 +44,15 @@ message StockistDetail {
   int32 stockistId = 1;
   string shortDisplayName = 2;
   string fullDisplayName = 3;
-  string description = 4;
-  string twitterHandle = 5;
-  string instagramHandle = 6;
-  string facebookHandle = 7;
-  string websiteUrl = 8;
-  string thumbnailImageUrl = 9;
-  string bannerImageUrl = 10;
-  string tumblrHandle = 11;
-  string emailAddress = 12;
+  google.protobuf.StringValue description = 4;
+  google.protobuf.StringValue twitterHandle = 5;
+  google.protobuf.StringValue instagramHandle = 6;
+  google.protobuf.StringValue facebookHandle = 7;
+  google.protobuf.StringValue websiteUrl = 8;
+  google.protobuf.StringValue thumbnailImageUrl = 9;
+  google.protobuf.StringValue bannerImageUrl = 10;
+  google.protobuf.StringValue tumblrHandle = 11;
+  google.protobuf.StringValue emailAddress = 12;
 }
 
 message Commission {

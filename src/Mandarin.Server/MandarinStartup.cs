@@ -1,4 +1,8 @@
+using System;
+using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Mandarin.Configuration;
+using Mandarin.Converters;
 using Mandarin.Database;
 using Mandarin.Server.Extensions;
 using Mandarin.Server.Services;
@@ -51,13 +55,18 @@ namespace Mandarin.Server
         {
             services.AddRazorPages();
             services.AddGrpc();
+            services.AddHttpContextAccessor();
 
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinDatabase(this.configuration);
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
-            services.AddMandarinSwagger();
+
+            services.AddAutoMapper(options =>
+            {
+                options.AddProfile<MandarinMapperProfile>();
+            });
         }
 
         /// <summary>
@@ -92,12 +101,10 @@ namespace Mandarin.Server
 
             app.UseRouting();
 
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
             app.UseEndpoints(endpoints =>
             {

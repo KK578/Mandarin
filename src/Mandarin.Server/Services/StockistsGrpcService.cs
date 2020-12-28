@@ -1,50 +1,40 @@
-﻿using System.Threading.Tasks;
-using Bashi.Core.Utils;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Grpc.Core;
+using Mandarin.Api;
 using Mandarin.Services;
-using static Mandarin.Stockists;
+using Microsoft.AspNetCore.Authorization;
+using static Mandarin.Api.Stockists;
 
 namespace Mandarin.Server.Services
 {
     /// <inheritdoc />
+    [Authorize]
     internal sealed class StockistsGrpcService : StockistsBase
     {
         private readonly IArtistService artistService;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StockistsGrpcService"/> class.
         /// </summary>
         /// <param name="artistService">The service that can receive artist details.</param>
-        public StockistsGrpcService(IArtistService artistService)
+        /// <param name="mapper">The mapping service between CLR types.</param>
+        public StockistsGrpcService(IArtistService artistService, IMapper mapper)
         {
             this.artistService = artistService;
+            this.mapper = mapper;
         }
 
-        /// <inheritdoc />
-        public override async Task GetStockists(GetStockistsRequest request,
-                                                IServerStreamWriter<GetStockistsResponse> responseStream,
-                                                ServerCallContext context)
+        /// <inheritdoc/>
+        public override async Task<GetStockistsResponse> GetStockists(GetStockistsRequest request, ServerCallContext context)
         {
             var artists = await this.artistService.GetArtistsForCommissionAsync();
-            foreach (var artist in artists)
+            return new GetStockistsResponse
             {
-                // TODO: AutoMapper?
-                var stockist = new Stockist
-                {
-                    StockistId = artist.StockistId,
-                    Details = new StockistDetail
-                    {
-                        BannerImageUrl = artist.Details.BannerImageUrl,
-                    },
-                    FirstName = artist.FirstName,
-                    LastName = artist.LastName,
-                    Status = EnumUtil.ParseWithDescription<StatusMode>(artist.StatusCode.ToString()),
-                    Commissions = { },
-                    StockistCode = artist.StockistCode,
-                };
-
-                await responseStream.WriteAsync(new GetStockistsResponse { Stockist = stockist });
-            }
+                Stockists = { this.mapper.Map<IEnumerable<Stockist>>(artists) },
+            };
         }
     }
 }

@@ -1,15 +1,23 @@
 ﻿using System;
+using System.Net.Http;
+using AutoMapper;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Grpc.Core;
+using Grpc.Net.Client.Web;
+using Mandarin.Api;
 using Mandarin.App.Client;
 using Mandarin.App.Commands.Navigation;
 using Mandarin.App.ViewModels;
 using Mandarin.App.ViewModels.Stockists;
+using Mandarin.Converters;
 using Mandarin.Services;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using static Mandarin.Api.Stockists;
 
 namespace Mandarin.App
 {
@@ -30,6 +38,10 @@ namespace Mandarin.App
             MandarinWasmExtensions.AddRestClient(builder.Services, new Uri(builder.HostEnvironment.BaseAddress));
             MandarinWasmExtensions.AddCommands(builder.Services);
             MandarinWasmExtensions.AddViewModels(builder.Services);
+            builder.Services.AddAutoMapper(options =>
+            {
+                options.AddProfile<MandarinMapperProfile>();
+            });
 
             return builder;
         }
@@ -51,11 +63,12 @@ namespace Mandarin.App
         private static void AddRestClient(IServiceCollection services, Uri baseAddress)
         {
             services.AddScoped<JwtHttpMessageHandler>();
-            services.AddHttpClient("Mandarin", options => options.BaseAddress = baseAddress)
+            services.AddGrpcClient<StockistsClient>(options => options.Address = baseAddress)
+                    .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler()))
                     .AddHttpMessageHandler<JwtHttpMessageHandler>();
 
             services.AddTransient<MandarinHttpClient>();
-            services.AddTransient<IArtistService, MandarinRestfulArtistService>();
+            services.AddTransient<IArtistService, MandarinGrpcArtistService>();
             services.AddTransient<ICommissionService, MandarinRestfulCommissionService>();
         }
 

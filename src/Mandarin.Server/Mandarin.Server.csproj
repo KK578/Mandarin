@@ -4,16 +4,15 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>42ac3d34-42f7-4fa8-b674-cc0b7e385615</UserSecretsId>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Protobuf Include="Protos/*.proto" GrpcServices="Server" />
-  </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.7.1" />
     <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.1" />
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.34.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.34.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.0" />
