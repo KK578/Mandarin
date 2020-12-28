@@ -4,20 +4,18 @@ using AutoMapper;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using Grpc.Core;
 using Grpc.Net.Client.Web;
-using Mandarin.Api;
 using Mandarin.App.Client;
 using Mandarin.App.Commands.Navigation;
 using Mandarin.App.ViewModels;
 using Mandarin.App.ViewModels.Stockists;
 using Mandarin.Converters;
 using Mandarin.Services;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using static Mandarin.Api.Stockists;
+using static Mandarin.Api.Commissions.Commissions;
+using static Mandarin.Api.Stockists.Stockists;
 
 namespace Mandarin.App
 {
@@ -35,7 +33,7 @@ namespace Mandarin.App
         {
             MandarinWasmExtensions.AddBlazorise(builder.Services);
             MandarinWasmExtensions.AddAuthentication(builder);
-            MandarinWasmExtensions.AddRestClient(builder.Services, new Uri(builder.HostEnvironment.BaseAddress));
+            MandarinWasmExtensions.AddMandarinServices(builder.Services, new Uri(builder.HostEnvironment.BaseAddress));
             MandarinWasmExtensions.AddCommands(builder.Services);
             MandarinWasmExtensions.AddViewModels(builder.Services);
             builder.Services.AddAutoMapper(options =>
@@ -60,16 +58,22 @@ namespace Mandarin.App
             });
         }
 
-        private static void AddRestClient(IServiceCollection services, Uri baseAddress)
+        private static void AddMandarinServices(IServiceCollection services, Uri baseAddress)
         {
             services.AddScoped<JwtHttpMessageHandler>();
-            services.AddGrpcClient<StockistsClient>(options => options.Address = baseAddress)
-                    .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler()))
-                    .AddHttpMessageHandler<JwtHttpMessageHandler>();
+            AddMandarinGrpcClient<StockistsClient>();
+            AddMandarinGrpcClient<CommissionsClient>();
 
-            services.AddTransient<MandarinHttpClient>();
             services.AddTransient<IArtistService, MandarinGrpcArtistService>();
-            services.AddTransient<ICommissionService, MandarinRestfulCommissionService>();
+            services.AddTransient<ICommissionService, MandarinGrpcCommissionService>();
+
+            void AddMandarinGrpcClient<T>()
+                where T : class
+            {
+                services.AddGrpcClient<T>(options => options.Address = baseAddress)
+                        .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler()))
+                        .AddHttpMessageHandler<JwtHttpMessageHandler>();
+            }
         }
 
         private static void AddCommands(IServiceCollection services)

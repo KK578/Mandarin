@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option csharp_namespace = "Mandarin.Api.Common";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.stockists";
+
+package uk.co.thelittlemandarin;
+
+enum StatusMode {
+  UNKNOWN = 0;
+  INACTIVE = 1;
+  ACTIVEHIDDEN = 2;
+  ACTIVE = 4;
+}
+

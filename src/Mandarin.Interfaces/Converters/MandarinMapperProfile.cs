@@ -14,18 +14,14 @@ namespace Mandarin.Converters
         /// </summary>
         public MandarinMapperProfile()
         {
-            this.CreateMap<Models.Common.StatusMode, Api.StatusMode>();
-            this.CreateMap<Models.Artists.Stockist, Api.Stockist>().ReverseMap();
-            this.CreateMap<Models.Artists.StockistDetail, Api.StockistDetail>().ReverseMap();
-            this.CreateMap<Models.Commissions.Commission, Api.Commission>()
-                .ForMember(x => x.Rate, o => o.MapFrom(src => src.RateGroup.Rate))
-                .ReverseMap()
-                .ForMember(x => x.RateGroup,
-                           o => o.MapFrom(src => new Models.Commissions.CommissionRateGroup { Rate = src.Rate }));
-            this.CreateMap<DateTime, Timestamp>()
-                .ConstructUsing(d => Timestamp.FromDateTime(d.ToUniversalTime()))
-                .ReverseMap()
-                .ConstructUsing(t => t.ToDateTime());
+            this.CreateMap<Models.Common.StatusMode, Api.Common.StatusMode>().ReverseMap();
+            this.CreateMap<Models.Commissions.CommissionRateGroup, Api.Commissions.CommissionRateGroup>().ReverseMap();
+            this.CreateMap<Models.Artists.Stockist, Api.Stockists.Stockist>().ReverseMap();
+            this.CreateMap<Models.Artists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
+            this.CreateMap<Models.Commissions.Commission, Api.Stockists.Commission>().ReverseMap();
+
+            this.CreateMap<DateTime, Timestamp>().ConstructUsing(d => Timestamp.FromDateTime(d.ToUniversalTime()))
+                .ReverseMap().ConstructUsing(t => t.ToDateTime());
         }
     }
 }

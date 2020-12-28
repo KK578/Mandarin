@@ -1,0 +1,31 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Mandarin.Api.Commissions";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.commissions";
+
+package uk.co.thelittlemandarin;
+
+// The commission service definition.
+service Commissions {
+  // Gets the stockist with the matching stockist code.
+  rpc GetCommissionRateGroups (GetCommissionRateGroupsRequest) returns (GetCommissionRateGroupsResponse);
+}
+
+
+// The request message for getting all commission rate groups.
+message GetCommissionRateGroupsRequest {
+}
+
+// The response message containing all commission rate groups.
+message GetCommissionRateGroupsResponse {
+  // The list of all commission rate groups.
+  repeated CommissionRateGroup RateGroups = 1;
+}
+
+
+message CommissionRateGroup {
+  // The commission rate group's unique id.
+  int32 groupId = 1;
+  // The commission rate as a percentage.
+  int32 rate = 2;
+}

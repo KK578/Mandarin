@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos/*.proto" CopyToOutputDirectory="PreserveNewest" />
+    <Protobuf Include="Protos/*.proto" CopyToOutputDirectory="PreserveNewest" ProtoRoot="Protos/" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,4 @@
-using System;
 using AutoMapper;
-using Google.Protobuf.WellKnownTypes;
 using Mandarin.Configuration;
 using Mandarin.Converters;
 using Mandarin.Database;
@@ -109,6 +107,7 @@ namespace Mandarin.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<StockistsGrpcService>();
+                endpoints.MapGrpcService<CommissionsGrpcService>();
                 endpoints.MapFallbackToFile("index.html");
             });
         }

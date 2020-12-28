@@ -28,6 +28,7 @@ namespace Mandarin.App.ViewModels.Stockists
         public StockistIndexPageViewModel(IArtistService artistService, NavigationManager navigationManager)
         {
             this.artistService = artistService;
+            this.Stockists = new List<Stockist>().AsReadOnly();
 
             // TODO: Microsoft.Extensions.DependencyInjection doesn't automatically bind Lazy<T> so can't resolve the
             //       circular reference.

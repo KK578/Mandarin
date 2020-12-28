@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
-using Mandarin.Api;
+using Mandarin.Api.Stockists;
 using Mandarin.Services;
 using Microsoft.AspNetCore.Authorization;
-using static Mandarin.Api.Stockists;
+using static Mandarin.Api.Stockists.Stockists;
 
 namespace Mandarin.Server.Services
 {
@@ -28,6 +29,16 @@ namespace Mandarin.Server.Services
         }
 
         /// <inheritdoc/>
+        public override async Task<GetStockistResponse> GetStockist(GetStockistRequest request, ServerCallContext context)
+        {
+            var artist = await this.artistService.GetArtistByCodeAsync(request.StockistCode);
+            return new GetStockistResponse
+            {
+                Stockist = this.mapper.Map<Stockist>(artist),
+            };
+        }
+
+        /// <inheritdoc/>
         public override async Task<GetStockistsResponse> GetStockists(GetStockistsRequest request, ServerCallContext context)
         {
             var artists = await this.artistService.GetArtistsForCommissionAsync();
@@ -35,6 +46,12 @@ namespace Mandarin.Server.Services
             {
                 Stockists = { this.mapper.Map<IEnumerable<Stockist>>(artists) },
             };
+        }
+
+        /// <inheritdoc/>
+        public override Task<SaveStockistResponse> SaveStockist(SaveStockistRequest request, ServerCallContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
