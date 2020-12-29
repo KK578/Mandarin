@@ -16,8 +16,8 @@ namespace Mandarin.App.ViewModels.Stockists
     {
         private readonly ICommissionService commissionService;
 
-        private IReadOnlyList<CommissionRateGroup> commissionRateGroups;
         private Stockist selectedStockist;
+        private IReadOnlyList<CommissionRateGroup> commissionRateGroups;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StockistsNewPageViewModel"/> class.

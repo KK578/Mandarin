@@ -86,6 +86,7 @@ namespace Mandarin.App
             services.AddScoped<IIndexPageViewModel, IndexPageViewModel>();
             services.AddScoped<IStockistIndexPageViewModel, StockistIndexPageViewModel>();
             services.AddScoped<IStockistsNewPageViewModel, StockistsNewPageViewModel>();
+            services.AddScoped<IStockistsEditPageViewModel, StockistsEditPageViewModel>();
         }
     }
 }

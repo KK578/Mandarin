@@ -20,6 +20,14 @@
     "Mandarin.Server": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Mandarin.Server (+ Browser)": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
