@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
+using Mandarin.MVVM.Commands;
 using Mandarin.MVVM.ViewModels;
 
 namespace Mandarin.App.ViewModels.Stockists
@@ -10,6 +11,11 @@ namespace Mandarin.App.ViewModels.Stockists
     /// </summary>
     public interface IStockistsEditPageViewModel : IViewModel
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether the ViewModel allows editing.
+        /// </summary>
+        bool IsEditing { get; set; }
+
         /// <summary>
         /// Gets or sets the selected stockist's code.
         /// </summary>
@@ -24,5 +30,10 @@ namespace Mandarin.App.ViewModels.Stockists
         /// Gets the list of available <see cref="CommissionRateGroup"/> options.
         /// </summary>
         IReadOnlyList<CommissionRateGroup> CommissionRateGroups { get; }
+
+        /// <summary>
+        /// Gets the command to activate on closing the page.
+        /// </summary>
+        ICommand CloseCommand { get; }
     }
 }

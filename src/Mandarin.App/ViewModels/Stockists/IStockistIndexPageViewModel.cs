@@ -21,11 +21,6 @@ namespace Mandarin.App.ViewModels.Stockists
         Stockist SelectedStockist { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether <see cref="Stockists"/> data is currently being loaded.
-        /// </summary>
-        bool IsLoading { get; }
-
-        /// <summary>
         /// Gets a command to direct the user to create a new <see cref="Stockist"/>.
         /// </summary>
         ICommand CreateNewStockistCommand { get; }

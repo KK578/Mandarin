@@ -14,7 +14,7 @@
     <CardTitle>New Artist</CardTitle>
     <CardActions Float="Float.Right">
       <Button Color="Color.Primary" Clicked="OnSaveClicked">Save</Button>
-      <Button Color="Color.Danger" Clicked="OnCancelClicked">Cancel</Button>
+      <CommandButton Command="ViewModel.CloseCommand" Color="Color.Danger">Cancel</CommandButton>
     </CardActions>
   </CardHeader>
   <CardBody>
@@ -231,13 +231,7 @@
       return;
     }
 
-    await ArtistService.SaveArtistAsync(this.Stockist);
-    NavigationManager.NavigateTo($"/stockists/edit/{this.Stockist.StockistCode}");
-  }
-
-  private void OnCancelClicked()
-  {
-    NavigationManager.NavigateTo("/stockists");
+    await ViewModel.SubmitCommand.ExecuteAsync();
   }
 
   private void OnRateGroupSelected(int? selectedId)

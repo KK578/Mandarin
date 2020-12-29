@@ -7,10 +7,12 @@ using Blazorise.Icons.FontAwesome;
 using Grpc.Net.Client.Web;
 using Mandarin.App.Client;
 using Mandarin.App.Commands.Navigation;
+using Mandarin.App.Commands.Stockists;
 using Mandarin.App.ViewModels;
 using Mandarin.App.ViewModels.Stockists;
 using Mandarin.Converters;
 using Mandarin.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,6 +86,10 @@ namespace Mandarin.App
         private static void AddCommands(IServiceCollection services)
         {
             services.AddTransient<RedirectToLoginCommand>();
+            services.AddLazyTransient<RedirectToStockistsEditCommand>();
+            services.AddTransient<RedirectToStockistsIndexCommand>();
+            services.AddTransient<RedirectToStockistsNewCommand>();
+            services.AddLazyTransient<SaveNewStockistCommand>();
         }
 
         private static void AddViewModels(IServiceCollection services)

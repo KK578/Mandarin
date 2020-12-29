@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Mandarin.App.Commands.Stockists;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
+using Mandarin.MVVM.Commands;
 using Mandarin.MVVM.ViewModels;
 using Mandarin.Services;
 using Microsoft.AspNetCore.Components;
@@ -23,10 +25,15 @@ namespace Mandarin.App.ViewModels.Stockists
         /// Initializes a new instance of the <see cref="StockistsNewPageViewModel"/> class.
         /// </summary>
         /// <param name="commissionService">The service for interacting with commission details.</param>
-        /// <param name="navigationManager">Service for getting and updating the current navigation URL.</param>
-        public StockistsNewPageViewModel(ICommissionService commissionService, NavigationManager navigationManager)
+        /// <param name="redirectToStockistsIndexCommand">The command to redirect the user to the stockists index page.</param>
+        /// <param name="saveNewStockistCommand">The command to save the newly created stockist.</param>
+        public StockistsNewPageViewModel(ICommissionService commissionService,
+                                         RedirectToStockistsIndexCommand redirectToStockistsIndexCommand,
+                                         SaveNewStockistCommand saveNewStockistCommand)
         {
             this.commissionService = commissionService;
+            this.CloseCommand = redirectToStockistsIndexCommand;
+            this.SubmitCommand = saveNewStockistCommand;
         }
 
         /// <inheritdoc/>
@@ -43,8 +50,14 @@ namespace Mandarin.App.ViewModels.Stockists
             private set => this.RaiseAndSetPropertyChanged(ref this.commissionRateGroups, value);
         }
 
-        /// <inheritdoc cref="IViewModel" />
-        public override async Task InitializeAsync()
+        /// <inheritdoc/>
+        public ICommand CloseCommand { get; }
+
+        /// <inheritdoc/>
+        public ICommand SubmitCommand { get; }
+
+        /// <inheritdoc/>
+        protected override async Task DoInitializeAsync()
         {
             this.CommissionRateGroups = await this.commissionService.GetCommissionRateGroups();
 

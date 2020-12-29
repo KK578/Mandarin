@@ -25,7 +25,7 @@ namespace Mandarin.Services.Commission
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
-        /// <param name="artistService">The Artist service.</param>
+        /// <param name="artistService">The service that can receive artist details.</param>
         /// <param name="transactionService">The transaction service.</param>
         /// <param name="mandarinDbContext">The application database context.</param>
         public CommissionService(IArtistService artistService,

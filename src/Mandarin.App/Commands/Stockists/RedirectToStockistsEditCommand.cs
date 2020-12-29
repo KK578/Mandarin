@@ -1,29 +1,29 @@
 ﻿using System;
-using System.Threading.Tasks;
+using Mandarin.App.Commands.Navigation;
+using Mandarin.App.Pages.Stockists;
 using Mandarin.App.ViewModels.Stockists;
 using Mandarin.Models.Artists;
-using Mandarin.MVVM.Commands;
+using Mandarin.MVVM.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace Mandarin.App.Commands.Stockists
 {
     /// <summary>
-    /// Represents a command to direct the user to create a new <see cref="Stockist"/>.
+    /// Represents a command to direct the user to edit an existing <see cref="Stockist"/>.
     /// </summary>
-    internal sealed class EditStockistCommand : CommandBase
+    internal sealed class RedirectToStockistsEditCommand : RedirectToCommandBase
     {
         private readonly IStockistIndexPageViewModel stockistIndexPageViewModel;
-        private readonly NavigationManager navigationManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EditStockistCommand"/> class.
+        /// Initializes a new instance of the <see cref="RedirectToStockistsEditCommand"/> class.
         /// </summary>
-        /// <param name="stockistIndexPageViewModel">The ViewModel for the Index page.</param>
+        /// <param name="stockistIndexPageViewModel">The <see cref="IViewModel"/> for the <see cref="StockistsIndex"/> page.</param>
         /// <param name="navigationManager">Service for getting and updating the current navigation URL.</param>
-        public EditStockistCommand(IStockistIndexPageViewModel stockistIndexPageViewModel, NavigationManager navigationManager)
+        public RedirectToStockistsEditCommand(IStockistIndexPageViewModel stockistIndexPageViewModel, NavigationManager navigationManager)
+            : base(navigationManager)
         {
             this.stockistIndexPageViewModel = stockistIndexPageViewModel;
-            this.navigationManager = navigationManager;
 
             this.Disposables.Add(stockistIndexPageViewModel.StateObservable.Subscribe(this.UpdateCanExecute));
         }
@@ -32,11 +32,10 @@ namespace Mandarin.App.Commands.Stockists
         public override bool CanExecute => this.stockistIndexPageViewModel.SelectedStockist != null;
 
         /// <inheritdoc/>
-        public override Task ExecuteAsync()
+        protected override string GetTargetUri()
         {
             var selectedStockist = this.stockistIndexPageViewModel.SelectedStockist;
-            this.navigationManager.NavigateTo($"/stockists/edit/{selectedStockist.StockistCode}");
-            return Task.CompletedTask;
+            return $"/stockists/edit/{selectedStockist.StockistCode}";
         }
     }
 }

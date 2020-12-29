@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Mandarin.App.Commands.Stockists;
 using Mandarin.Models.Artists;
 using Mandarin.MVVM.Commands;
 using Mandarin.MVVM.ViewModels;
 using Mandarin.Services;
-using Microsoft.AspNetCore.Components;
 
 namespace Mandarin.App.ViewModels.Stockists
 {
@@ -15,39 +13,32 @@ namespace Mandarin.App.ViewModels.Stockists
     internal sealed class StockistIndexPageViewModel : ViewModelBase, IStockistIndexPageViewModel
     {
         private readonly IArtistService artistService;
+        private readonly Lazy<RedirectToStockistsEditCommand> lazyRedirectToStockistsEditCommand;
 
         private IReadOnlyList<Stockist> stockists;
         private Stockist selectedStockist;
-        private bool isLoading;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StockistIndexPageViewModel"/> class.
         /// </summary>
         /// <param name="artistService">The service that can receive artist details.</param>
-        /// <param name="navigationManager">Service for getting and updating the current navigation URL.</param>
-        public StockistIndexPageViewModel(IArtistService artistService, NavigationManager navigationManager)
+        /// <param name="redirectToStockistsNewCommand">The command to redirect the user to the create new stockist page.</param>
+        /// <param name="lazyRedirectToStockistsEditCommand">The command to redirect the user to the edit stockist page.</param>
+        public StockistIndexPageViewModel(IArtistService artistService,
+                                          RedirectToStockistsNewCommand redirectToStockistsNewCommand,
+                                          Lazy<RedirectToStockistsEditCommand> lazyRedirectToStockistsEditCommand)
         {
             this.artistService = artistService;
+            this.lazyRedirectToStockistsEditCommand = lazyRedirectToStockistsEditCommand;
+            this.CreateNewStockistCommand = redirectToStockistsNewCommand;
             this.Stockists = new List<Stockist>().AsReadOnly();
-
-            // TODO: Microsoft.Extensions.DependencyInjection doesn't automatically bind Lazy<T> so can't resolve the
-            //       circular reference.
-            this.CreateNewStockistCommand = new CreateNewStockistCommand(navigationManager);
-            this.EditStockistCommand = new EditStockistCommand(this, navigationManager);
-        }
-
-        /// <inheritdoc/>
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            private set => this.RaiseAndSetPropertyChanged(ref this.isLoading, value);
         }
 
         /// <inheritdoc/>
         public ICommand CreateNewStockistCommand { get; }
 
         /// <inheritdoc/>
-        public ICommand EditStockistCommand { get; }
+        public ICommand EditStockistCommand => this.lazyRedirectToStockistsEditCommand.Value;
 
         /// <inheritdoc/>
         public IReadOnlyList<Stockist> Stockists
@@ -64,17 +55,9 @@ namespace Mandarin.App.ViewModels.Stockists
         }
 
         /// <inheritdoc cref="IViewModel" />
-        public override async Task InitializeAsync()
+        protected override async Task DoInitializeAsync()
         {
-            try
-            {
-                this.IsLoading = true;
-                this.Stockists = await this.artistService.GetArtistsForCommissionAsync();
-            }
-            finally
-            {
-                this.IsLoading = false;
-            }
+            this.Stockists = await this.artistService.GetArtistsForCommissionAsync();
         }
     }
 }
