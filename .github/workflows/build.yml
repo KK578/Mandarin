@@ -33,7 +33,7 @@ jobs:
           git branch --create-reflog master origin/master
 
       - name: "[Setup] Create GitVersion"
-        uses: docker://gittools/gitversion:5.5.2-linux-alpine.3.10-x64-netcoreapp3.1
+        uses: docker://gittools/gitversion:5.6.1-alpine.3.12-x64-3.1
         with:
           args: /github/workspace /nofetch /output buildserver
 
