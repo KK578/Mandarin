@@ -3,23 +3,36 @@
     <Found Context="routeData">
       <AuthorizeRouteView DefaultLayout="@typeof(MainLayout)" RouteData="@routeData">
         <Authorizing>
-          <p>Authenticating...</p>
+          <Card>
+            <CardHeader>Authenticating...</CardHeader>
+            <CardBody>
+              <Progress Size="Size.Medium">
+                <ProgressBar Animated="true" Background="Background.Primary" Max="100" Min="0" Striped="true" Value="100">Just a moment...</ProgressBar>
+              </Progress>
+            </CardBody>
+          </Card>
         </Authorizing>
         <NotAuthorized>
-          @if (context.User.Identity?.IsAuthenticated == false)
-          {
-            <RedirectToLogin />
-          }
-          else
-          {
-            <p>You are not authorized to access this resource.</p>
-          }
+          <Card>
+            <CardHeader>Unauthorized</CardHeader>
+            <CardBody>
+              <CardText>You are not authorized to access this resource.</CardText>
+              <CardActions Margin="Margin.Is3.FromTop" Float="Float.Right">
+                <ButtonRedirectToLogin />
+              </CardActions>
+            </CardBody>
+          </Card>
         </NotAuthorized>
       </AuthorizeRouteView>
     </Found>
     <NotFound>
       <LayoutView Layout="@typeof(MainLayout)">
-        <p>Sorry, there's nothing at this address.</p>
+        <Card>
+          <CardHeader>Not Found!</CardHeader>
+          <CardBody>
+            <CardText>Sorry, there's nothing at this address.</CardText>
+          </CardBody>
+        </Card>
       </LayoutView>
     </NotFound>
   </Router>

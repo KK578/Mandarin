@@ -1,9 +1,10 @@
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+using Mandarin.App.Client;
+using Mandarin.App.Extensions;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.App
 {
@@ -17,20 +18,18 @@ namespace Mandarin.App
         /// </summary>
         /// <param name="args">The command line arguments.</param>
         /// <returns>A <see cref="Task"/> representing the application running state.</returns>
-        public static async Task Main(string[] args)
+        public static Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
+            builder.AddMandarinClient();
+            builder.AddMandarinAuthentication();
 
-            builder.Services.AddOidcAuthentication(options =>
-            {
-                builder.Configuration.Bind("Auth0", options.ProviderOptions);
-                options.ProviderOptions.ResponseType = "code";
-            });
-
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+            host.Services.UseBootstrapProviders().UseFontAwesomeIcons();
+            return host.RunAsync();
         }
     }
 }

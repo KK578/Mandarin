@@ -1,10 +1,10 @@
 ﻿@inject NavigationManager Navigation
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<Button Color="Color.Primary" Clicked="OnLogin">Log In</Button>
 
 @code {
 
-  /// <inheritdoc />
-  protected override void OnInitialized()
+  private void OnLogin()
   {
     Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
   }

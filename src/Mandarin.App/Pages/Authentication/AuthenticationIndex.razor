@@ -1,5 +1,13 @@
 ﻿@page "/authentication/{action}"
-<RemoteAuthenticatorView Action="@Action" />
+
+<Card>
+  <CardHeader>
+    <CardTitle>Authentication</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <RemoteAuthenticatorView Action="@Action" />
+  </CardBody>
+</Card>
 
 @code{
 
