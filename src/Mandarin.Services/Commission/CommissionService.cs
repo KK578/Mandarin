@@ -32,7 +32,7 @@ namespace Mandarin.Services.Commission
         {
             return this.transactionService.GetAllTransactions(start, end)
                        .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                       .GroupBy(subtransaction => subtransaction.Product?.ProductCode ?? "TLM-Unknown")
+                       .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? "TLM-Unknown", subtransaction.TransactionUnitPrice))
                        .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
                        .ToList()
                        .Zip(this.artistService.GetArtistsForCommissionAsync().Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList(), (s, a) => (Subtransactions: s, Artists: a))
