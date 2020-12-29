@@ -18,6 +18,7 @@ namespace Mandarin.Models.Transactions
             this.Product = product;
             this.Quantity = quantity;
             this.Subtotal = subtotal;
+            this.TransactionUnitPrice = quantity == 0 ? 0 : subtotal / quantity;
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace Mandarin.Models.Transactions
         /// Gets the unit price for the product within this subtransaction.
         /// This may differ from the product's unit price if the product has been updated since the transaction was made.
         /// </summary>
-        public decimal TransactionUnitPrice => this.Subtotal / this.Quantity;
+        public decimal TransactionUnitPrice { get; }
 
         /// <summary>
         /// Gets the total monetary amount for this subtransaction.
