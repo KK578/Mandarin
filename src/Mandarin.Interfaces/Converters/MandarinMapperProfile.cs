@@ -16,9 +16,9 @@ namespace Mandarin.Converters
         {
             this.CreateMap<Models.Common.StatusMode, Api.Common.StatusMode>().ReverseMap();
             this.CreateMap<Models.Commissions.CommissionRateGroup, Api.Commissions.CommissionRateGroup>().ReverseMap();
+            this.CreateMap<Models.Commissions.Commission, Api.Commissions.Commission>().ReverseMap();
             this.CreateMap<Models.Artists.Stockist, Api.Stockists.Stockist>().ReverseMap();
             this.CreateMap<Models.Artists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
-            this.CreateMap<Models.Commissions.Commission, Api.Stockists.Commission>().ReverseMap();
 
             this.CreateMap<DateTime, Timestamp>().ConstructUsing(d => Timestamp.FromDateTime(d.ToUniversalTime()))
                 .ReverseMap().ConstructUsing(t => t.ToDateTime());

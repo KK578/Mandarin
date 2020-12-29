@@ -38,19 +38,7 @@ namespace Mandarin.Services.Artists
         /// <inheritdoc/>
         public async Task SaveArtistAsync(Stockist stockist)
         {
-            var entry = this.mandarinDbContext.Entry(stockist);
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                case EntityState.Detached:
-                    await this.mandarinDbContext.Stockist.AddAsync(stockist);
-                    break;
-
-                case EntityState.Modified:
-                    this.mandarinDbContext.Stockist.Update(stockist);
-                    break;
-            }
-
+            this.mandarinDbContext.Stockist.Update(stockist);
             await this.mandarinDbContext.SaveChangesAsync();
         }
 

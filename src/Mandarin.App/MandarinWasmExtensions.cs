@@ -34,12 +34,9 @@ namespace Mandarin.App
             MandarinWasmExtensions.AddBlazorise(builder.Services);
             MandarinWasmExtensions.AddAuthentication(builder);
             MandarinWasmExtensions.AddMandarinServices(builder.Services, new Uri(builder.HostEnvironment.BaseAddress));
+            MandarinWasmExtensions.AddMapper(builder.Services);
             MandarinWasmExtensions.AddCommands(builder.Services);
             MandarinWasmExtensions.AddViewModels(builder.Services);
-            builder.Services.AddAutoMapper(options =>
-            {
-                options.AddProfile<MandarinMapperProfile>();
-            });
 
             return builder;
         }
@@ -74,6 +71,14 @@ namespace Mandarin.App
                         .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler()))
                         .AddHttpMessageHandler<JwtHttpMessageHandler>();
             }
+        }
+
+        private static void AddMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(options =>
+            {
+                options.AddProfile<MandarinMapperProfile>();
+            });
         }
 
         private static void AddCommands(IServiceCollection services)

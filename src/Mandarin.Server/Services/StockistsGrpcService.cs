@@ -49,9 +49,18 @@ namespace Mandarin.Server.Services
         }
 
         /// <inheritdoc/>
-        public override Task<SaveStockistResponse> SaveStockist(SaveStockistRequest request, ServerCallContext context)
+        public override async Task<SaveStockistResponse> SaveStockist(SaveStockistRequest request, ServerCallContext context)
         {
-            throw new NotImplementedException();
+            var stockist = this.mapper.Map<Models.Artists.Stockist>(request.Stockist);
+            try
+            {
+                await this.artistService.SaveArtistAsync(stockist);
+                return new SaveStockistResponse { Successful = true };
+            }
+            catch (Exception ex)
+            {
+                return new SaveStockistResponse { Successful = false, Message = ex.Message };
+            }
         }
     }
 }

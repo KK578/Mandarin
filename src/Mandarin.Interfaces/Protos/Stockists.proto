@@ -85,11 +85,3 @@ message StockistDetail {
   google.protobuf.StringValue emailAddress = 12;
 }
 
-message Commission {
-  int32 commissionId = 1;
-  int32 stockistId = 2;
-  google.protobuf.Timestamp startDate = 3;
-  google.protobuf.Timestamp endDate = 4;
-  google.protobuf.Timestamp insertedAt = 5;
-  CommissionRateGroup rateGroup = 6;
-}
