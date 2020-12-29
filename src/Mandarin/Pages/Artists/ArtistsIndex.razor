@@ -40,14 +40,14 @@
 
 @code
 {
-  private IList<Stockist> data;
+  private IReadOnlyList<Stockist> data;
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
 
-    data = await ArtistService.GetArtistsForCommissionAsync().ToList();
+    data = await ArtistService.GetArtistsForCommissionAsync();
   }
 
   private void OnNewClicked()
