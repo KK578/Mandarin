@@ -6,11 +6,13 @@ using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Stockists;
 using Mandarin.Services;
+using Microsoft.AspNetCore.Authorization;
 using static Mandarin.Api.Stockists.Stockists;
 
 namespace Mandarin.Grpc
 {
     /// <inheritdoc />
+    [Authorize]
     internal sealed class StockistsGrpcService : StockistsBase
     {
         private readonly IStockistService stockistService;
@@ -31,6 +33,7 @@ namespace Mandarin.Grpc
         public override async Task<GetStockistResponse> GetStockist(GetStockistRequest request, ServerCallContext context)
         {
             var stockist = await this.stockistService.GetStockistByCodeAsync(request.StockistCode);
+
             return new GetStockistResponse
             {
                 Stockist = this.mapper.Map<Stockist>(stockist),
@@ -41,6 +44,7 @@ namespace Mandarin.Grpc
         public override async Task<GetStockistsResponse> GetStockists(GetStockistsRequest request, ServerCallContext context)
         {
             var stockists = await this.stockistService.GetStockistsAsync();
+
             return new GetStockistsResponse
             {
                 Stockists = { this.mapper.Map<List<Stockist>>(stockists) },
@@ -54,7 +58,11 @@ namespace Mandarin.Grpc
             {
                 var stockist = this.mapper.Map<Models.Stockists.Stockist>(request.Stockist);
                 await this.stockistService.SaveStockistAsync(stockist);
-                return new SaveStockistResponse { Successful = true };
+
+                return new SaveStockistResponse
+                {
+                    Successful = true,
+                };
             }
             catch (Exception ex)
             {

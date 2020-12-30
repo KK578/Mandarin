@@ -4,6 +4,7 @@ using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Extensions;
+using Mandarin.Grpc;
 using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -55,6 +56,7 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
+            services.AddGrpc();
             services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -82,6 +84,7 @@ namespace Mandarin
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
             app.SafeUseAllElasticApm(this.configuration);
+            mandarinDbContext.Database.Migrate();
 
             if (env.IsDevelopment())
             {
@@ -89,7 +92,6 @@ namespace Mandarin
             }
             else
             {
-                mandarinDbContext.Database.Migrate();
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
@@ -111,6 +113,8 @@ namespace Mandarin
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapGrpcService<CommissionsGrpcService>();
+                endpoints.MapGrpcService<StockistsGrpcService>();
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
