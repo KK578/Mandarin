@@ -2,15 +2,13 @@
 @page "/new"
 @using Mandarin.Services
 @using Mandarin.Models.Artists
-@using Microsoft.EntityFrameworkCore
 @using System.IO
 @using Bashi.Core.Extensions
 @using Bashi.Core.Utils
-@using Mandarin.Database
 @using Mandarin.Models.Commissions
 @using Mandarin.Models.Common
 @inject IArtistService ArtistService;
-@inject MandarinDbContext MandarinDbContext;
+@inject ICommissionService CommissionService;
 @inject NavigationManager NavigationManager;
 
 @if (Stockist == null)
@@ -281,7 +279,7 @@ else
   {
     await base.OnInitializedAsync();
 
-    rateGroups = await MandarinDbContext.CommissionRateGroup.OrderBy(x => x.Rate).ToListAsync();
+    rateGroups = await CommissionService.GetCommissionRateGroupsAsync();
 
     if (string.IsNullOrEmpty(StockistCode))
     {

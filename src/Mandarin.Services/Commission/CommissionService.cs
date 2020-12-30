@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Mandarin.Database;
+using Mandarin.Database.Extensions;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
@@ -15,16 +18,29 @@ namespace Mandarin.Services.Commission
     {
         private readonly IArtistService artistService;
         private readonly ITransactionService transactionService;
+        private readonly MandarinDbContext mandarinDbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
         /// <param name="artistService">The Artist service.</param>
         /// <param name="transactionService">The transaction service.</param>
-        public CommissionService(IArtistService artistService, ITransactionService transactionService)
+        /// <param name="mandarinDbContext">The application database context.</param>
+        public CommissionService(IArtistService artistService,
+                                 ITransactionService transactionService,
+                                 MandarinDbContext mandarinDbContext)
         {
             this.artistService = artistService;
             this.transactionService = transactionService;
+            this.mandarinDbContext = mandarinDbContext;
+        }
+
+        /// <inheritdoc />
+        public Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
+        {
+            return this.mandarinDbContext.CommissionRateGroup
+                       .OrderBy(x => x.Rate)
+                       .ToReadOnlyListAsync();
         }
 
         /// <inheritdoc />
