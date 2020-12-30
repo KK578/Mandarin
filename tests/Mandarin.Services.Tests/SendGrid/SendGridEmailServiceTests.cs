@@ -8,7 +8,6 @@ using Bashi.Tests.Framework.Logging;
 using FluentAssertions;
 using Mandarin.Models.Commissions;
 using Mandarin.Services.SendGrid;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -56,6 +55,12 @@ namespace Mandarin.Services.Tests.SendGrid
                 .ReturnsAsync(response);
         }
 
+        private void GivenSendGridThrows(Exception ex)
+        {
+            this.sendGridClient.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(ex);
+        }
+
         [TestFixture]
         private class SendRecordOfSalesEmailAsyncTests : SendGridEmailServiceTests
         {
@@ -96,7 +101,7 @@ namespace Mandarin.Services.Tests.SendGrid
             }
 
             [Test]
-            public async Task ShouldLogAndRespondWithErrorIfUnsuccessfulOnSendingEmail()
+            public async Task ShouldRespondWithErrorIfUnsuccessfulOnSendingEmail()
             {
                 var model = TestData.Create<RecordOfSales>();
                 var sendGridResponse = new Response(HttpStatusCode.Unauthorized, new StringContent("Invalid API Key"), null);
@@ -105,24 +110,35 @@ namespace Mandarin.Services.Tests.SendGrid
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
 
                 Assert.That(response.IsSuccess, Is.False);
-                Assert.That(response.StatusCode, Is.EqualTo(401));
-                Assert.That(this.logger.LogEntries.Count, Is.EqualTo(1));
-                Assert.That(this.logger.LogEntries[0].LogLevel, Is.EqualTo(LogLevel.Information));
-                Assert.That(this.logger.LogEntries[0].Message, Contains.Substring("Invalid API Key"));
+                Assert.That(response.Message, Contains.Substring("Invalid API Key"));
             }
 
             [Test]
-            public void SendEmailAsync_GivenResponseBodyIsNull_NoExceptionIsThrown()
+            public async Task ShouldCorrectlyProcessMessageWhenSendGridResponseBodyIsEmpty()
             {
                 var model = TestData.Create<RecordOfSales>();
                 var sendGridResponse = new Response(HttpStatusCode.Accepted, null, null);
                 this.GivenSendGridReturns(sendGridResponse);
 
-                Assert.DoesNotThrowAsync(() => this.Subject.SendRecordOfSalesEmailAsync(model));
+                var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
+
+                Assert.That(response.IsSuccess, Is.True);
             }
 
             [Test]
-            public async Task SendEmailAsync_GivenResponse_StatusCodeIsCopiedToResponse()
+            public async Task ShouldHaveAnyExceptionMessageInResponseMessage()
+            {
+                var model = TestData.Create<RecordOfSales>();
+                var ex = new Exception("Service didn't work.");
+                this.GivenSendGridThrows(ex);
+                var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
+
+                Assert.That(response.IsSuccess, Is.False);
+                Assert.That(response.Message, Contains.Substring("Service didn't work."));
+            }
+
+            [Test]
+            public async Task ShouldShowSuccessIfSendGridAcceptsEmail()
             {
                 var model = TestData.Create<RecordOfSales>();
                 var sendGridResponse = new Response(HttpStatusCode.Accepted, new StringContent(string.Empty), null);
@@ -131,7 +147,7 @@ namespace Mandarin.Services.Tests.SendGrid
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
 
                 Assert.That(response.IsSuccess, Is.True);
-                Assert.That(response.StatusCode, Is.EqualTo(202));
+                Assert.That(response.Message, Contains.Substring("Success"));
             }
         }
     }

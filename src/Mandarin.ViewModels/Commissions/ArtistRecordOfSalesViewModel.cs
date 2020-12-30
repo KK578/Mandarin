@@ -22,7 +22,7 @@ namespace Mandarin.ViewModels.Commissions
         /// <summary>
         /// Initializes a new instance of the <see cref="ArtistRecordOfSalesViewModel"/> class.
         /// </summary>
-        /// <param name="emailService">The email service.</param>
+        /// <param name="emailService">The application service for sending emails.</param>
         /// <param name="pageContentModel">The website content model.</param>
         /// <param name="httpContextAccessor">The http context accessor.</param>
         /// <param name="recordOfSales">The artist commission breakdown.</param>
@@ -87,16 +87,8 @@ namespace Mandarin.ViewModels.Commissions
                 var recordOfSales = this.RecordOfSales.WithMessageCustomisations(this.EmailAddress, this.CustomMessage);
                 var response = await this.emailService.SendRecordOfSalesEmailAsync(recordOfSales);
 
-                if (response.IsSuccess)
-                {
-                    this.SendSuccessful = true;
-                    this.StatusMessage = $"Successfully sent to {this.EmailAddress ?? this.RecordOfSales.EmailAddress}.";
-                }
-                else
-                {
-                    this.SendSuccessful = false;
-                    this.StatusMessage = $"Error sending email to {this.EmailAddress ?? this.RecordOfSales.EmailAddress}. Check logs.";
-                }
+                this.SendSuccessful = response.IsSuccess;
+                this.StatusMessage = response.Message;
             }
             catch (Exception ex)
             {

@@ -47,7 +47,6 @@ namespace Mandarin.Services
             services.AddSendGrid(ConfigureSendGrid);
             services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
             services.AddTransient<IEmailService, SendGridEmailService>();
-            services.Decorate<IEmailService, LoggingEmailServiceDecorator>();
 
             void ConfigureSendGrid(IServiceProvider s, SendGridClientOptions options)
             {

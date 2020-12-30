@@ -3,22 +3,16 @@
     /// <summary>
     /// Represents the status response of sending a new email.
     /// </summary>
-    public class EmailResponse
+    public record EmailResponse
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EmailResponse"/> class.
+        /// Gets a value indicating whether the email was sent successfully.
         /// </summary>
-        /// <param name="statusCode">The status code from sending the email.</param>
-        public EmailResponse(int statusCode) => this.StatusCode = statusCode;
+        public bool IsSuccess { get; init; }
 
         /// <summary>
-        /// Gets the status code from sending the email.
+        /// Gets a user displayable message on the status of the email.
         /// </summary>
-        public int StatusCode { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether sending the email was successful.
-        /// </summary>
-        public bool IsSuccess => this.StatusCode >= 200 && this.StatusCode < 400;
+        public string Message { get; init; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
@@ -58,10 +59,39 @@ namespace Mandarin.Services.SendGrid
 
         private async Task<EmailResponse> SendEmail(SendGridMessage email)
         {
-            var response = await this.sendGridClient.SendEmailAsync(email);
-            var bodyContent = await GetBodyContent(response.Body);
-            this.logger.LogInformation("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
-            return new EmailResponse((int)response.StatusCode);
+            try
+            {
+                var emails = string.Join(", ", email.Personalizations[0].Tos.Select(x => x.Email));
+                var response = await this.sendGridClient.SendEmailAsync(email);
+                var bodyContent = await GetBodyContent(response.Body);
+                this.logger.LogInformation("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    this.logger.LogInformation("Sent email successfully: {@Email}", email);
+                    return new EmailResponse
+                    {
+                        IsSuccess = true,
+                        Message = $"Successfully sent to {emails}.",
+                    };
+                }
+
+                this.logger.LogWarning("Email sent with errors: {@Response} {@Email}", response, email);
+                return new EmailResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Failed to send to {emails}. Additional info: {bodyContent}",
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Exception whilst attempting to send email: {@Email}.", email);
+                return new EmailResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Failed to send email. Additional info: {ex.Message}",
+                };
+            }
 
             static async Task<string> GetBodyContent(HttpContent content)
             {

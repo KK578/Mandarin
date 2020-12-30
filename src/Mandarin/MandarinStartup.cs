@@ -114,6 +114,7 @@ namespace Mandarin
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapGrpcService<CommissionsGrpcService>();
+                endpoints.MapGrpcService<EmailGrpcService>();
                 endpoints.MapGrpcService<StockistsGrpcService>();
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();

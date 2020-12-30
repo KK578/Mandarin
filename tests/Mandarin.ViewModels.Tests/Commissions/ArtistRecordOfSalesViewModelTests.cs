@@ -75,16 +75,16 @@ namespace Mandarin.ViewModels.Tests.Commissions
         public async Task SendEmailAsync_GivenServiceSendsSuccessfully_SetsStatusToSuccess()
         {
             var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>())).ReturnsAsync(new EmailResponse(200));
-
             var recordOfSales = TestData.Create<RecordOfSales>();
+            var response = new EmailResponse { IsSuccess = true, Message = $"Successfully sent to {TestData.WellKnownString}!" };
+            emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>())).ReturnsAsync(response);
+
             var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, recordOfSales);
             subject.EmailAddress = TestData.WellKnownString;
             await subject.SendEmailAsync();
 
             Assert.That(subject.SendSuccessful, Is.True);
-            Assert.That(subject.StatusMessage, Contains.Substring("Successful"));
-            Assert.That(subject.StatusMessage, Contains.Substring(TestData.WellKnownString));
+            Assert.That(subject.StatusMessage, Is.EqualTo(response.Message));
         }
 
         [Test]
