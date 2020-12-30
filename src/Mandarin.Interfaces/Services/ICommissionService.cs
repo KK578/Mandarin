@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
 
 namespace Mandarin.Services
@@ -8,6 +10,12 @@ namespace Mandarin.Services
     /// </summary>
     public interface ICommissionService
     {
+        /// <summary>
+        /// Gets an observable sequence of all commission rate groups.
+        /// </summary>
+        /// <returns>Observable sequence of all commission rate groups.</returns>
+        Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync();
+
         /// <summary>
         /// Gets an observable sequence of all artist sales between the specified dates.
         /// </summary>
