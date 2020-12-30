@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Mandarin.Database;
+using Mandarin.Database.Extensions;
 using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Square;
-using Microsoft.EntityFrameworkCore;
 
 namespace Mandarin.Services.Commission
 {
@@ -37,12 +36,11 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
+        public Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
         {
-            var results = await this.mandarinDbContext.CommissionRateGroup
-                                    .OrderBy(x => x.Rate)
-                                    .ToListAsync();
-            return results.AsReadOnly();
+            return this.mandarinDbContext.CommissionRateGroup
+                       .OrderBy(x => x.Rate)
+                       .ToReadOnlyListAsync();
         }
 
         /// <inheritdoc />
