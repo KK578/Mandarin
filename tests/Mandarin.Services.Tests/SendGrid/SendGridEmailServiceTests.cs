@@ -39,7 +39,7 @@ namespace Mandarin.Services.Tests.SendGrid
         [Test]
         public void BuildRecordOfSalesEmail_GivenValidModel_WhenEmailIsSentToRealContactEmail_ThenBccShouldNotBeSet()
         {
-            var model = TestData.Create<ArtistSales>();
+            var model = TestData.Create<RecordOfSales>();
             model = model.WithMessageCustomisations(SendGridEmailServiceTests.RealContactEmail, model.CustomMessage);
             var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
             var result = subject.BuildRecordOfSalesEmail(model);
@@ -56,7 +56,7 @@ namespace Mandarin.Services.Tests.SendGrid
         [Test]
         public void BuildRecordOfSalesEmail_GivenValidModel_ShouldCopyValuesCorrectly()
         {
-            var model = TestData.Create<ArtistSales>();
+            var model = TestData.Create<RecordOfSales>();
             var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
             var result = subject.BuildRecordOfSalesEmail(model);
 

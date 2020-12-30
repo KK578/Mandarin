@@ -61,21 +61,21 @@ namespace Mandarin.Models.Commissions
         public decimal UnitPrice { get; }
 
         /// <summary>
-        /// Gets the total monetary amount of product sold before commission.
+        /// Gets the total monetary amount of this product's sale (before commission).
         /// </summary>
         [JsonProperty("subtotal")]
         [JsonConverter(typeof(NumberAsCurrencyConverter))]
         public decimal Subtotal { get; }
 
         /// <summary>
-        /// Gets the total monetary amount that is commissioned of the product sold.
+        /// Gets the total monetary amount of this product's sale to be paid as commission.
         /// </summary>
         [JsonProperty("commission")]
         [JsonConverter(typeof(NumberAsCurrencyConverter))]
         public decimal Commission { get; }
 
         /// <summary>
-        /// Gets the total monetary amount of product sold after commission is applied.
+        /// Gets the total monetary amount of this product's sale (after commission).
         /// </summary>
         [JsonProperty("total")]
         [JsonConverter(typeof(NumberAsCurrencyConverter))]

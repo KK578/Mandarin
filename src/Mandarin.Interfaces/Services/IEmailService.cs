@@ -13,9 +13,9 @@ namespace Mandarin.Services
         /// <summary>
         /// Generates an email from The Little Mandarin to an Artist, with details of their commission for a time period.
         /// </summary>
-        /// <param name="artistSales">Model containing the artist's commission details.</param>
+        /// <param name="recordOfSales">Model containing the artist's commission details.</param>
         /// <returns>A prepared email to be sent via <see cref="SendEmailAsync"/>.</returns>
-        SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales);
+        SendGridMessage BuildRecordOfSalesEmail(RecordOfSales recordOfSales);
 
         /// <summary>
         /// Sends the provided email to the SendGrid API.

@@ -31,14 +31,14 @@
   </Card>
 </EditForm>
 
-@if (Commissions != null)
+@if (RecordOfSales != null)
 {
   <Card Class="mb-4">
     <CardHeader>
       <CardTitle>Sales by Artist Breakdown</CardTitle>
     </CardHeader>
     <CardBody>
-      <DataGrid Class="whitespace-no-wrap" Data="@Commissions" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
+      <DataGrid Class="whitespace-no-wrap" Data="@RecordOfSales" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
         <DataGridCheckColumn TItem="IArtistRecordOfSalesViewModel" Field="SendSuccessful" Caption="Sent">
           <DisplayTemplate>
             <Check TValue="bool?" Checked="context.SendSuccessful" Disabled="true" ReadOnly="true" />
@@ -56,21 +56,21 @@
   </Card>
 }
 
-@if (SelectedCommission != null)
+@if (SelectedRecordOfSales != null)
 {
   <EditForm Model="@RecordOfSalesModel" OnValidSubmit="RecordOfSalesModel.SendEmailAsync">
     <Card>
       <CardHeader>
-        <CardTitle>Sales for @(SelectedCommission.Name)</CardTitle>
+        <CardTitle>Sales for @(SelectedRecordOfSales.Name)</CardTitle>
       </CardHeader>
       <CardBody>
-        <CardText Alignment="TextAlignment.Left">Subtotal: @($"{SelectedCommission.Subtotal:C}")</CardText>
-        <CardText Alignment="TextAlignment.Left">Commission: @($"{SelectedCommission.CommissionTotal:C}") (@($"{SelectedCommission.Rate:P}"))</CardText>
-        <CardText Alignment="TextAlignment.Left">Total: @($"{SelectedCommission.Total:C}")</CardText>
+        <CardText Alignment="TextAlignment.Left">Subtotal: @($"{SelectedRecordOfSales.Subtotal:C}")</CardText>
+        <CardText Alignment="TextAlignment.Left">Commission: @($"{SelectedRecordOfSales.CommissionTotal:C}") (@($"{SelectedRecordOfSales.Rate:P}"))</CardText>
+        <CardText Alignment="TextAlignment.Left">Total: @($"{SelectedRecordOfSales.Total:C}")</CardText>
 
-        @if (SelectedCommission.Sales != null)
+        @if (SelectedRecordOfSales.Sales != null)
         {
-          <DataGrid Data="@SelectedCommission.Sales" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
+          <DataGrid Data="@SelectedRecordOfSales.Sales" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
             <DataGridColumn TItem="Sale" Field="ProductCode" Caption="Product Code" />
             <DataGridColumn TItem="Sale" Field="ProductName" Caption="Product Name" />
             <DataGridColumn TItem="Sale" Field="Quantity" Caption="Quantity" />
@@ -89,7 +89,7 @@
           <Validation>
             <Field>
               <FieldLabel>Email Address:</FieldLabel>
-              <TextEdit Placeholder="@SelectedCommission.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.EmailAddress" />
+              <TextEdit Placeholder="@SelectedRecordOfSales.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.EmailAddress" />
             </Field>
           </Validation>
 
@@ -138,7 +138,7 @@
   private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
   private bool IsLoading { get; set; } = false;
 
-  private IList<IArtistRecordOfSalesViewModel> Commissions { get; set; }
+  private IList<IArtistRecordOfSalesViewModel> RecordOfSales { get; set; }
   private IArtistRecordOfSalesViewModel recordOfSalesModel;
   private IDisposable subscription;
 
@@ -158,7 +158,7 @@
     }
   }
 
-  private ArtistSales SelectedCommission => RecordOfSalesModel?.Commission;
+  private RecordOfSales SelectedRecordOfSales => RecordOfSalesModel?.RecordOfSales;
 
   /// <inheritdoc />
   protected override void OnInitialized()
@@ -171,10 +171,8 @@
     try
     {
       IsLoading = true;
-      Commissions = await CommissionService.GetSalesByArtistForPeriod(StartDate, EndDate)
-                                           .Select(x => ViewModelFactory.CreateArtistRecordOfSalesViewModel(x))
-                                           .ToList()
-                                           .ToTask();
+      var recordOfSales = await CommissionService.GetSalesByArtistForPeriod(StartDate, EndDate);
+      RecordOfSales = recordOfSales.Select(x => ViewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
     }
     finally
     {

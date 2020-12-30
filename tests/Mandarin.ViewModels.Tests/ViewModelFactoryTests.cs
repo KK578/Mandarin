@@ -16,7 +16,7 @@ namespace Mandarin.ViewModels.Tests
         {
             var pageContentModel = new PageContentModel(JToken.FromObject(new object()));
             var subject = new ViewModelFactory(Mock.Of<IEmailService>(), pageContentModel, Mock.Of<IHttpContextAccessor>());
-            Assert.That(() => subject.CreateArtistRecordOfSalesViewModel(TestData.Create<ArtistSales>()), Throws.Nothing);
+            Assert.That(() => subject.CreateArtistRecordOfSalesViewModel(TestData.Create<RecordOfSales>()), Throws.Nothing);
         }
     }
 }

@@ -1,0 +1,85 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Mandarin.Api.Commissions";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.commissions";
+
+package uk.co.thelittlemandarin;
+
+// The commission service definition.
+service Commissions {
+  // Gets the stockist with the matching stockist code.
+  rpc GetCommissionRateGroups (GetCommissionRateGroupsRequest) returns (GetCommissionRateGroupsResponse);
+
+  // Gets the RecordOfSales for each active Stockist.
+  // The included sales are limited to those between the specified dates.
+  rpc GetRecordsOfSales (GetRecordsOfSalesRequest) returns (GetRecordsOfSalesResponse);
+}
+
+
+// The request message for getting all commission rate groups.
+message GetCommissionRateGroupsRequest {
+}
+
+// The response message containing all commission rate groups.
+message GetCommissionRateGroupsResponse {
+  repeated CommissionRateGroup RateGroups = 1; // The list of all commission rate groups.
+}
+
+// The request message for getting records of sales.
+message GetRecordsOfSalesRequest {
+  google.protobuf.Timestamp startDate = 1; // The start datetime to query transactions for.
+  google.protobuf.Timestamp endDate = 2; // The end datetime to query transactions for.
+}
+
+// The response message containing all commission rate groups.
+message GetRecordsOfSalesResponse {
+  repeated RecordOfSales sales = 1; // The list of all records of sales.
+}
+
+
+// Represents an agreed commission period with a stockist.
+message Commission {
+  int32 commissionId = 1; // Gets the commission's Database ID.
+  int32 stockistId = 2; // Gets the related stockist ID related to this commission.
+  google.protobuf.Timestamp startDate = 3; // Gets the start date for this commission.
+  google.protobuf.Timestamp endDate = 4; // Gets the end date for this commission.
+  google.protobuf.Int32Value rateGroupId = 5; //  Gets the agreed commission rate group for this commission.
+  google.protobuf.Timestamp insertedAt = 6; // Gets the time that this commission was created at.
+  CommissionRateGroup rateGroup = 7; // Gets the related commission rate group for this commission.
+}
+
+// Represents a specific commission rate shared by a group of commission periods.
+message CommissionRateGroup {
+  int32 groupId = 1; // The commission rate group's unique id.
+  int32 rate = 2; // The commission rate as a percentage.
+}
+
+// Represents a summary of the sales for the specified artist (by code), with customizations for the Record of Sales email.
+message RecordOfSales {
+  string stockistCode = 1; // Gets the artist's stockist code.
+  string firstName = 2; // Gets the artist's first name.
+  string name = 3; // Gets the artist's name.
+  string emailAddress = 4; // Gets the email address to send the Record of Sales to.
+  string customMessage = 5; // Gets the custom message to attach to the Record of Sales.
+  google.protobuf.Timestamp startDate = 6; // Gets the start date of transactions included in the Record of Sales.
+  google.protobuf.Timestamp endDate = 7; // Gets the end date of transactions included in the Record of Sales.
+  double rate = 8; // Gets the commission rate for the Record of Sales.
+  repeated Sale sales = 9; // Gets the list of all sales in the Record of Sales.
+  double subtotal = 10; // Gets the total amount of money made by the sales (before commission).
+  double commissionTotal = 11; // Gets the total amount of money to be paid as commission.
+  double total = 12; // Gets the total amount of money made in sales (after commission).
+}
+
+// Represents all sales for a specific product, with commission and sale amounts.
+message Sale {
+  string productCode = 1; // Gets the product's unique item code.
+  string productName = 2; // Gets the product's name.
+  int32 quantity = 3; // Gets the quantity of products sold.
+  double unitPrice = 4; // Gets the unit price for the product sold.
+  double subtotal = 5; // Gets the total monetary amount of this product's sale (before commission).
+  double commission = 6; // Gets the total monetary amount of this product's sale to be paid as commission.
+  double total = 7; // Gets the total monetary amount of this product's sale (after commission).
+}

@@ -26,9 +26,9 @@ namespace Mandarin.ViewModels
         }
 
         /// <inheritdoc/>
-        public IArtistRecordOfSalesViewModel CreateArtistRecordOfSalesViewModel(ArtistSales commission)
+        public IArtistRecordOfSalesViewModel CreateArtistRecordOfSalesViewModel(RecordOfSales recordOfSales)
         {
-            return new ArtistRecordOfSalesViewModel(this.emailService, this.pageContentModel, this.httpContextAccessor, commission);
+            return new ArtistRecordOfSalesViewModel(this.emailService, this.pageContentModel, this.httpContextAccessor, recordOfSales);
         }
     }
 }

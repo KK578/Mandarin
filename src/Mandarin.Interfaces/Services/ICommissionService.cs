@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 
 namespace Mandarin.Services
@@ -11,17 +12,18 @@ namespace Mandarin.Services
     public interface ICommissionService
     {
         /// <summary>
-        /// Gets an observable sequence of all commission rate groups.
+        /// Gets all currently available commission rate groups.
         /// </summary>
-        /// <returns>Observable sequence of all commission rate groups.</returns>
+        /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of all commission rate groups.</returns>
         Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync();
 
         /// <summary>
-        /// Gets an observable sequence of all artist sales between the specified dates.
+        /// Gets the <see cref="RecordOfSales"/> for each active <see cref="Stockist"/>.
+        /// The included sales are limited to those between the specified dates.
         /// </summary>
         /// <param name="start">The start datetime to query transactions for.</param>
         /// <param name="end">The end datetime to query transactions for.</param>
-        /// <returns>Observable sequence of all artist sales between the specified dates.</returns>
-        IObservable<ArtistSales> GetSalesByArtistForPeriod(DateTime start, DateTime end);
+        /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of the sales broken down by each <see cref="Stockist"/>.</returns>
+        Task<IReadOnlyList<RecordOfSales>> GetSalesByArtistForPeriod(DateTime start, DateTime end);
     }
 }

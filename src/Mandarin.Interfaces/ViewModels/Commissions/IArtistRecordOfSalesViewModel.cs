@@ -11,7 +11,7 @@ namespace Mandarin.ViewModels.Commissions
         /// <summary>
         /// Gets the summary of the artist's commissions.
         /// </summary>
-        ArtistSales Commission { get; }
+        RecordOfSales RecordOfSales { get; }
 
         /// <summary>
         /// Gets a value indicating whether an Email being sent is in progress.

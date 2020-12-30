@@ -32,16 +32,16 @@ namespace Mandarin.Services.SendGrid
         }
 
         /// <inheritdoc/>
-        public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
+        public SendGridMessage BuildRecordOfSalesEmail(RecordOfSales recordOfSales)
         {
             var email = new SendGridMessage();
             var configuration = this.sendGridConfigurationOption.Value;
             email.From = new EmailAddress(configuration.ServiceEmail);
-            email.AddTo(new EmailAddress(artistSales.EmailAddress));
+            email.AddTo(new EmailAddress(recordOfSales.EmailAddress));
             email.TemplateId = configuration.RecordOfSalesTemplateId;
-            email.SetTemplateData(artistSales);
+            email.SetTemplateData(recordOfSales);
 
-            if (!string.Equals(artistSales.EmailAddress, configuration.RealContactEmail, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(recordOfSales.EmailAddress, configuration.RealContactEmail, StringComparison.OrdinalIgnoreCase))
             {
                 email.ReplyTo = new EmailAddress(configuration.RealContactEmail);
                 email.AddBcc(configuration.RealContactEmail);

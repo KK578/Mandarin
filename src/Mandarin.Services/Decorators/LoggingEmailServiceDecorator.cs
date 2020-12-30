@@ -27,9 +27,9 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
+        public SendGridMessage BuildRecordOfSalesEmail(RecordOfSales recordOfSales)
         {
-            var email = this.emailService.BuildRecordOfSalesEmail(artistSales);
+            var email = this.emailService.BuildRecordOfSalesEmail(recordOfSales);
             this.logger.LogInformation("Sending Record of Sales Email: {@Email}", email);
             return email;
         }

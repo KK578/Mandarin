@@ -9,10 +9,10 @@ namespace Mandarin.Models.Commissions
     /// <summary>
     /// Represents a summary of the sales for the specified artist (by code), with customizations for the Record of Sales email.
     /// </summary>
-    public class ArtistSales
+    public class RecordOfSales
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ArtistSales"/> class.
+        /// Initializes a new instance of the <see cref="RecordOfSales"/> class.
         /// </summary>
         /// <param name="stockistCode">The artist's unique stockist code.</param>
         /// <param name="firstName">The artist's first name.</param>
@@ -26,7 +26,7 @@ namespace Mandarin.Models.Commissions
         /// <param name="subtotal">Total amount of money made in sales (before commission).</param>
         /// <param name="commissionTotal">Total amount of money that is commissioned.</param>
         /// <param name="total">Total amount of money made in sales (after commission).</param>
-        public ArtistSales(string stockistCode,
+        public RecordOfSales(string stockistCode,
                            string firstName,
                            string artistName,
                            string emailAddress,
@@ -54,7 +54,7 @@ namespace Mandarin.Models.Commissions
         }
 
         /// <summary>
-        /// Gets the artist's stockist code for the sales summary.
+        /// Gets the artist's stockist code.
         /// </summary>
         [JsonProperty("stockistCode")]
         public string StockistCode { get; }
@@ -84,41 +84,41 @@ namespace Mandarin.Models.Commissions
         public string CustomMessage { get; }
 
         /// <summary>
-        /// Gets the start date of transactions for sales summary.
+        /// Gets the start date of transactions included in the Record of Sales.
         /// </summary>
         [JsonProperty("startDate")]
         [JsonConverter(typeof(IsoDateConverter))]
         public DateTime StartDate { get; }
 
         /// <summary>
-        /// Gets the end date of transactions for sales summary.
+        /// Gets the end date of transactions included in the Record of Sales.
         /// </summary>
         [JsonProperty("endDate")]
         [JsonConverter(typeof(IsoDateConverter))]
         public DateTime EndDate { get; }
 
         /// <summary>
-        /// Gets the commission rate for the sales summary.
+        /// Gets the commission rate for the Record of Sales.
         /// </summary>
         [JsonProperty("rate")]
         [JsonConverter(typeof(NumberAsPercentageConverter))]
         public decimal Rate { get; }
 
         /// <summary>
-        /// Gets the list of all sales in this summary.
+        /// Gets the list of all sales in the Record of Sales.
         /// </summary>
         [JsonProperty("sales")]
         public IReadOnlyList<Sale> Sales { get; }
 
         /// <summary>
-        /// Gets the total amount of money made in sales (before commission).
+        /// Gets the total amount of money made by the sales (before commission).
         /// </summary>
         [JsonProperty("subtotal")]
         [JsonConverter(typeof(NumberAsCurrencyConverter))]
         public decimal Subtotal { get; }
 
         /// <summary>
-        /// Gets the total amount of money that is commissioned.
+        /// Gets the total amount of money to be paid as commission.
         /// </summary>
         [JsonProperty("commissionTotal")]
         [JsonConverter(typeof(NumberAsCurrencyConverter))]
@@ -132,12 +132,12 @@ namespace Mandarin.Models.Commissions
         public decimal Total { get; }
 
         /// <summary>
-        /// Clones this instance of a <see cref="ArtistSales"/> with modified email address and custom message if not null.
+        /// Clones this instance of a <see cref="RecordOfSales"/> with modified email address and custom message if not null.
         /// </summary>
         /// <param name="emailAddress">New email address.</param>
         /// <param name="customMessage">New custom message.</param>
         /// <returns>Updated Artist Sales.</returns>
-        public ArtistSales WithMessageCustomisations(string emailAddress, string customMessage)
+        public RecordOfSales WithMessageCustomisations(string emailAddress, string customMessage)
         {
             return new(this.StockistCode,
                        this.FirstName,

@@ -19,7 +19,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
         [Test]
         public void OnConstruction_AssertDefaults()
         {
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<ArtistSales>());
+            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<RecordOfSales>());
             Assert.That(subject.SendInProgress, Is.False);
             Assert.That(subject.SendSuccessful, Is.False);
             Assert.That(subject.StatusMessage, Is.Null);
@@ -28,7 +28,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
         [Test]
         public void VerifySimpleSettersAndFormatting()
         {
-            var artistSales = TestData.Create<ArtistSales>();
+            var artistSales = TestData.Create<RecordOfSales>();
             var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, artistSales);
             subject.EmailAddress = "MyEmail";
             subject.CustomMessage = TestData.WellKnownString;
@@ -40,7 +40,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
         [Test]
         public void ToggleSentFlag_GivenFirstCall_ShouldSetToStatusToIgnored()
         {
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<ArtistSales>());
+            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<RecordOfSales>());
             subject.ToggleSentFlag();
 
             Assert.That(subject.SendSuccessful, Is.True);
@@ -50,7 +50,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
         [Test]
         public void ToggleSentFlag_GivenSecondCAll_ShouldSetToOriginalState()
         {
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<ArtistSales>());
+            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<RecordOfSales>());
             subject.ToggleSentFlag();
             subject.ToggleSentFlag();
 
@@ -63,10 +63,10 @@ namespace Mandarin.ViewModels.Tests.Commissions
         {
             var exception = new Exception(TestData.WellKnownString);
             var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<ArtistSales>())).Returns(new SendGridMessage());
+            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<RecordOfSales>())).Returns(new SendGridMessage());
             emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ThrowsAsync(exception);
 
-            var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, TestData.Create<ArtistSales>());
+            var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, TestData.Create<RecordOfSales>());
             await subject.SendEmailAsync();
 
             Assert.That(subject.SendSuccessful, Is.False);
@@ -77,10 +77,10 @@ namespace Mandarin.ViewModels.Tests.Commissions
         public async Task SendEmailAsync_GivenServiceSendsSuccessfully_SetsStatusToSuccess()
         {
             var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<ArtistSales>())).Returns(new SendGridMessage());
+            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<RecordOfSales>())).Returns(new SendGridMessage());
             emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ReturnsAsync(new EmailResponse(200));
 
-            var artistSales = TestData.Create<ArtistSales>();
+            var artistSales = TestData.Create<RecordOfSales>();
             var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, artistSales);
             subject.EmailAddress = TestData.WellKnownString;
             await subject.SendEmailAsync();
@@ -108,14 +108,14 @@ namespace Mandarin.ViewModels.Tests.Commissions
             };
 
             var name = TestData.Create<string>();
-            var sales = TestData.Create<ArtistSales>();
+            var recordOfSales = TestData.Create<RecordOfSales>();
             var pageContentModel = new PageContentModel(JToken.FromObject(data));
             var httpContextAccessor = Mock.Of<IHttpContextAccessor>(x => x.HttpContext.User.Identity.Name == name);
-            var subject = new ArtistRecordOfSalesViewModel(null, pageContentModel, httpContextAccessor, sales);
+            var subject = new ArtistRecordOfSalesViewModel(null, pageContentModel, httpContextAccessor, recordOfSales);
 
             subject.SetMessageFromTemplate(RecordOfSalesTemplateKey.Sales);
 
-            Assert.That(subject.CustomMessage, Is.EqualTo($"For {sales.FirstName} there are sales. {name}"));
+            Assert.That(subject.CustomMessage, Is.EqualTo($"For {recordOfSales.FirstName} there are sales. {name}"));
         }
     }
 }

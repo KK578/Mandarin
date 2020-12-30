@@ -23,7 +23,7 @@ namespace Mandarin.Services.Commission
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
-        /// <param name="artistService">The Artist service.</param>
+        /// <param name="artistService">The application service for interacting with stockists.</param>
         /// <param name="transactionService">The transaction service.</param>
         /// <param name="mandarinDbContext">The application database context.</param>
         public CommissionService(IArtistService artistService,
@@ -44,43 +44,49 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public IObservable<ArtistSales> GetSalesByArtistForPeriod(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetSalesByArtistForPeriod(DateTime start, DateTime end)
         {
-            return this.transactionService.GetAllTransactions(start, end)
-                       .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                       .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? "TLM-Unknown", subtransaction.TransactionUnitPrice))
-                       .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
-                       .ToList()
-                       .Zip(this.artistService.GetArtistsForCommissionAsync().Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList(), (s, a) => (Subtransactions: s, Artists: a))
-                       .SelectMany(tuple => tuple.Artists.Select(artist => ToArtistSales(artist, tuple.Subtransactions)));
+            var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
+            var artists = await this.artistService.GetArtistsForCommissionAsync()
+                                    .Where(x => x.StatusCode >= StatusMode.ActiveHidden)
+                                    .ToList();
 
-            Subtransaction ToAggregateSubtransaction(IList<Subtransaction> s)
+            var aggregateTransactions = transactions
+                                        .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
+                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? "TLM-Unknown", subtransaction.TransactionUnitPrice))
+                                        .Select(ToAggregateSubtransaction)
+                                        .ToList();
+
+            return artists.Select(artist => ToArtistSales(artist, aggregateTransactions)).ToList().AsReadOnly();
+
+            static Subtransaction ToAggregateSubtransaction(IEnumerable<Subtransaction> s)
             {
-                var product = s.First().Product;
-                var quantity = s.Sum(y => y.Quantity);
-                var subtotal = s.Sum(y => y.Subtotal);
+                var list = s.ToList();
+                var product = list.First().Product;
+                var quantity = list.Sum(y => y.Quantity);
+                var subtotal = list.Sum(y => y.Subtotal);
                 return new Subtransaction(product, quantity, subtotal);
             }
 
-            ArtistSales ToArtistSales(Stockist artist, IList<Subtransaction> subtransactions)
+            RecordOfSales ToArtistSales(Stockist artist, IEnumerable<Subtransaction> subtransactions)
             {
                 var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(artist.StockistCode)).ToList();
                 var rate = decimal.Divide(artist.Commissions.Last().RateGroup.Rate ?? 0, 100);
 
                 if (artistSubtransactions.Count == 0)
                 {
-                    return new ArtistSales(artist.StockistCode,
-                                           artist.FirstName,
-                                           artist.Details.ShortDisplayName,
-                                           artist.Details.EmailAddress,
-                                           string.Empty,
-                                           start,
-                                           end,
-                                           rate,
-                                           null,
-                                           0,
-                                           0,
-                                           0);
+                    return new RecordOfSales(artist.StockistCode,
+                                             artist.FirstName,
+                                             artist.Details.ShortDisplayName,
+                                             artist.Details.EmailAddress,
+                                             string.Empty,
+                                             start,
+                                             end,
+                                             rate,
+                                             null,
+                                             0,
+                                             0,
+                                             0);
                 }
                 else
                 {
@@ -88,18 +94,18 @@ namespace Mandarin.Services.Commission
                     var subtotal = sales.Sum(x => x.Subtotal);
                     var commission = sales.Sum(x => x.Commission);
 
-                    return new ArtistSales(artist.StockistCode,
-                                           artist.FirstName,
-                                           artist.Details.ShortDisplayName,
-                                           artist.Details.EmailAddress,
-                                           string.Empty,
-                                           start,
-                                           end,
-                                           rate,
-                                           sales,
-                                           subtotal,
-                                           commission,
-                                           subtotal + commission);
+                    return new RecordOfSales(artist.StockistCode,
+                                             artist.FirstName,
+                                             artist.Details.ShortDisplayName,
+                                             artist.Details.EmailAddress,
+                                             string.Empty,
+                                             start,
+                                             end,
+                                             rate,
+                                             sales,
+                                             subtotal,
+                                             commission,
+                                             subtotal + commission);
                 }
             }
         }

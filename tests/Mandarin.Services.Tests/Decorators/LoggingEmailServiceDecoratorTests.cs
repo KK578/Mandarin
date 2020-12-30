@@ -17,7 +17,7 @@ namespace Mandarin.Services.Tests.Decorators
         [Test]
         public void BuildRecordOfSalesEmail_IsFallthrough()
         {
-            var model = TestData.Create<ArtistSales>();
+            var model = TestData.Create<RecordOfSales>();
             var logger = new TestableLogger<IEmailService>();
             var email = new SendGridMessage();
             email.SetFrom("SomeEmail@address.com");

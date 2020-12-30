@@ -25,17 +25,17 @@ namespace Mandarin.ViewModels.Commissions
         /// <param name="emailService">The email service.</param>
         /// <param name="pageContentModel">The website content model.</param>
         /// <param name="httpContextAccessor">The http context accessor.</param>
-        /// <param name="commission">The artist commission breakdown.</param>
-        public ArtistRecordOfSalesViewModel(IEmailService emailService, PageContentModel pageContentModel, IHttpContextAccessor httpContextAccessor, ArtistSales commission)
+        /// <param name="recordOfSales">The artist commission breakdown.</param>
+        public ArtistRecordOfSalesViewModel(IEmailService emailService, PageContentModel pageContentModel, IHttpContextAccessor httpContextAccessor, RecordOfSales recordOfSales)
         {
             this.emailService = emailService;
             this.pageContentModel = pageContentModel;
             this.httpContextAccessor = httpContextAccessor;
-            this.Commission = commission;
+            this.RecordOfSales = recordOfSales;
         }
 
         /// <inheritdoc/>
-        public ArtistSales Commission { get; }
+        public RecordOfSales RecordOfSales { get; }
 
         /// <inheritdoc/>
         public bool SendInProgress { get => this.sendInProgress; private set => this.RaiseAndSetPropertyChanged(ref this.sendInProgress, value); }
@@ -57,7 +57,7 @@ namespace Mandarin.ViewModels.Commissions
         {
             var name = this.httpContextAccessor.HttpContext.User.Identity.Name;
             var templateFormat = this.pageContentModel.Get<string>("Admin", "RecordOfSales", "Templates", templateKey.ToString());
-            this.CustomMessage = string.Format(templateFormat, this.Commission.FirstName ?? this.Commission.Name, name);
+            this.CustomMessage = string.Format(templateFormat, this.RecordOfSales.FirstName ?? this.RecordOfSales.Name, name);
         }
 
         /// <inheritdoc/>
@@ -84,12 +84,12 @@ namespace Mandarin.ViewModels.Commissions
 
             try
             {
-                var commission = this.Commission.WithMessageCustomisations(this.EmailAddress, this.CustomMessage);
+                var commission = this.RecordOfSales.WithMessageCustomisations(this.EmailAddress, this.CustomMessage);
                 var email = this.emailService.BuildRecordOfSalesEmail(commission);
                 await this.emailService.SendEmailAsync(email);
 
                 this.SendSuccessful = true;
-                this.StatusMessage = $"Successfully sent to {this.EmailAddress ?? this.Commission.EmailAddress}.";
+                this.StatusMessage = $"Successfully sent to {this.EmailAddress ?? this.RecordOfSales.EmailAddress}.";
             }
             catch (Exception ex)
             {
@@ -105,7 +105,7 @@ namespace Mandarin.ViewModels.Commissions
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{this.Commission} to {this.EmailAddress}";
+            return $"{this.RecordOfSales} to {this.EmailAddress}";
         }
     }
 }

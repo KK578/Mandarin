@@ -102,10 +102,11 @@
   {
     await base.OnInitializedAsync();
 
-    fixedCommissionAmountViewModels = await InventoryService.GetFixedCommissionAmounts()
-                                                            .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
-                                                            .ToList()
-                                                            .ToTask();
+    var fixedCommissionAmounts = await InventoryService.GetFixedCommissionAmounts();
+    fixedCommissionAmountViewModels = fixedCommissionAmounts
+      .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
+      .ToList()
+      .AsReadOnly();
     products = await InventoryService.GetInventory().ToList().ToTask();
   }
 
