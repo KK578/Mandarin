@@ -84,12 +84,19 @@ namespace Mandarin.ViewModels.Commissions
 
             try
             {
-                var commission = this.RecordOfSales.WithMessageCustomisations(this.EmailAddress, this.CustomMessage);
-                var email = this.emailService.BuildRecordOfSalesEmail(commission);
-                await this.emailService.SendEmailAsync(email);
+                var recordOfSales = this.RecordOfSales.WithMessageCustomisations(this.EmailAddress, this.CustomMessage);
+                var response = await this.emailService.SendRecordOfSalesEmailAsync(recordOfSales);
 
-                this.SendSuccessful = true;
-                this.StatusMessage = $"Successfully sent to {this.EmailAddress ?? this.RecordOfSales.EmailAddress}.";
+                if (response.IsSuccess)
+                {
+                    this.SendSuccessful = true;
+                    this.StatusMessage = $"Successfully sent to {this.EmailAddress ?? this.RecordOfSales.EmailAddress}.";
+                }
+                else
+                {
+                    this.SendSuccessful = false;
+                    this.StatusMessage = $"Error sending email to {this.EmailAddress ?? this.RecordOfSales.EmailAddress}. Check logs.";
+                }
             }
             catch (Exception ex)
             {

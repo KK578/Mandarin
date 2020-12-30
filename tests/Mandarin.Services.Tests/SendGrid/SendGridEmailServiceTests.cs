@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using Bashi.Tests.Framework.Logging;
 using FluentAssertions;
 using Mandarin.Models.Commissions;
 using Mandarin.Services.SendGrid;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -23,93 +24,115 @@ namespace Mandarin.Services.Tests.SendGrid
         private const string RealContactEmail = "contact@example.com";
         private const string TemplateId = "TemplateId";
 
+        private Mock<ISendGridClient> sendGridClient;
         private IOptions<SendGridConfiguration> configuration;
+        private TestableLogger<SendGridEmailService> logger;
+
+        private IEmailService Subject => new SendGridEmailService(this.sendGridClient.Object, this.configuration, this.logger);
 
         [SetUp]
         public void SetUp()
         {
+            this.sendGridClient = new Mock<ISendGridClient>();
             this.configuration = Options.Create(new SendGridConfiguration
             {
                 ServiceEmail = SendGridEmailServiceTests.ServiceEmail,
                 RealContactEmail = SendGridEmailServiceTests.RealContactEmail,
                 RecordOfSalesTemplateId = SendGridEmailServiceTests.TemplateId,
             });
+            this.logger = new TestableLogger<SendGridEmailService>();
         }
 
-        [Test]
-        public void BuildRecordOfSalesEmail_GivenValidModel_WhenEmailIsSentToRealContactEmail_ThenBccShouldNotBeSet()
+        private void GivenExpectedEmailMatches(Action<SendGridMessage> verifyMessageFunc)
         {
-            var model = TestData.Create<RecordOfSales>();
-            model = model.WithMessageCustomisations(SendGridEmailServiceTests.RealContactEmail, model.CustomMessage);
-            var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
-            var result = subject.BuildRecordOfSalesEmail(model);
-
-            Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
-            Assert.That(result.ReplyTo, Is.Null);
-            Assert.That(result.Personalizations[0].Bccs, Is.Null);
-            Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
-            Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
-            result.Personalizations[0].TemplateData
-                  .Should().BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress).Excluding(sales => sales.CustomMessage));
+            this.sendGridClient.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
+                .Callback((SendGridMessage message, CancellationToken _) => verifyMessageFunc(message))
+                .ReturnsAsync(new Response(HttpStatusCode.Accepted, new StringContent(string.Empty), null));
         }
 
-        [Test]
-        public void BuildRecordOfSalesEmail_GivenValidModel_ShouldCopyValuesCorrectly()
+        private void GivenSendGridReturns(Response response)
         {
-            var model = TestData.Create<RecordOfSales>();
-            var subject = new SendGridEmailService(Mock.Of<ISendGridClient>(), this.configuration, NullLogger<SendGridEmailService>.Instance);
-            var result = subject.BuildRecordOfSalesEmail(model);
-
-            Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
-            Assert.That(result.ReplyTo.Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
-            Assert.That(result.Personalizations[0].Bccs[0].Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
-            Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
-            Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
-            result.Personalizations[0].TemplateData
-                  .Should().BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress).Excluding(sales => sales.CustomMessage));
+            this.sendGridClient.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
         }
 
-        [Test]
-        public async Task SendEmailAsync_GivenErrorResponse_BodyIsLogged_AndStatusCodeIsCopiedToResponse()
+        [TestFixture]
+        private class SendRecordOfSalesEmailAsyncTests : SendGridEmailServiceTests
         {
-            var email = new SendGridMessage();
-            var sendGridClient = new Mock<ISendGridClient>();
-            sendGridClient.Setup(x => x.SendEmailAsync(email, It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(new Response(HttpStatusCode.Unauthorized, new StringContent("Invalid API Key"), null));
-            var logger = new TestableLogger<SendGridEmailService>();
-            var subject = new SendGridEmailService(sendGridClient.Object, this.configuration, logger);
-            var result = await subject.SendEmailAsync(email);
+            [Test]
+            public async Task ShouldCopyEmailDetailsFromConfiguration()
+            {
+                var model = TestData.Create<RecordOfSales>();
 
-            Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.StatusCode, Is.EqualTo(401));
-            Assert.That(logger.LogEntries.Count, Is.EqualTo(1));
-            Assert.That(logger.LogEntries[0].Message, Contains.Substring("Invalid API Key"));
-        }
+                this.GivenExpectedEmailMatches(result =>
+                {
+                    Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
+                    Assert.That(result.ReplyTo.Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
+                    Assert.That(result.Personalizations[0].Bccs[0].Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
+                    Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
+                    Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
+                    result.Personalizations[0].TemplateData
+                          .Should().BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress)
+                                                                .Excluding(sales => sales.CustomMessage));
+                });
 
-        [Test]
-        public void SendEmailAsync_GivenResponseBodyIsNull_NoExceptionIsThrown()
-        {
-            var email = new SendGridMessage();
-            var sendGridClient = new Mock<ISendGridClient>();
-            sendGridClient.Setup(x => x.SendEmailAsync(email, It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(new Response(HttpStatusCode.Accepted, null, null));
-            var subject = new SendGridEmailService(sendGridClient.Object, this.configuration, NullLogger<SendGridEmailService>.Instance);
+                var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
+                Assert.That(response.IsSuccess, Is.True);
+            }
 
-            Assert.DoesNotThrowAsync(() => subject.SendEmailAsync(email));
-        }
+            [Test]
+            public async Task ShouldNotSetBccIfEmailIsSentToRealContactEmail()
+            {
+                var model = TestData.Create<RecordOfSales>();
+                model = model.WithMessageCustomisations(SendGridEmailServiceTests.RealContactEmail, model.CustomMessage);
 
-        [Test]
-        public async Task SendEmailAsync_GivenResponse_StatusCodeIsCopiedToResponse()
-        {
-            var email = new SendGridMessage();
-            var sendGridClient = new Mock<ISendGridClient>();
-            sendGridClient.Setup(x => x.SendEmailAsync(email, It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(new Response(HttpStatusCode.Accepted, new StringContent(string.Empty), null));
-            var subject = new SendGridEmailService(sendGridClient.Object, this.configuration, NullLogger<SendGridEmailService>.Instance);
-            var result = await subject.SendEmailAsync(email);
+                this.GivenExpectedEmailMatches(result =>
+                {
+                    Assert.That(result.Personalizations[0].Bccs, Is.Null);
+                });
 
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.StatusCode, Is.EqualTo(202));
+                var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
+                Assert.That(response.IsSuccess, Is.True);
+            }
+
+            [Test]
+            public async Task ShouldLogAndRespondWithErrorIfUnsuccessfulOnSendingEmail()
+            {
+                var model = TestData.Create<RecordOfSales>();
+                var sendGridResponse = new Response(HttpStatusCode.Unauthorized, new StringContent("Invalid API Key"), null);
+                this.GivenSendGridReturns(sendGridResponse);
+
+                var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
+
+                Assert.That(response.IsSuccess, Is.False);
+                Assert.That(response.StatusCode, Is.EqualTo(401));
+                Assert.That(this.logger.LogEntries.Count, Is.EqualTo(1));
+                Assert.That(this.logger.LogEntries[0].LogLevel, Is.EqualTo(LogLevel.Information));
+                Assert.That(this.logger.LogEntries[0].Message, Contains.Substring("Invalid API Key"));
+            }
+
+            [Test]
+            public void SendEmailAsync_GivenResponseBodyIsNull_NoExceptionIsThrown()
+            {
+                var model = TestData.Create<RecordOfSales>();
+                var sendGridResponse = new Response(HttpStatusCode.Accepted, null, null);
+                this.GivenSendGridReturns(sendGridResponse);
+
+                Assert.DoesNotThrowAsync(() => this.Subject.SendRecordOfSalesEmailAsync(model));
+            }
+
+            [Test]
+            public async Task SendEmailAsync_GivenResponse_StatusCodeIsCopiedToResponse()
+            {
+                var model = TestData.Create<RecordOfSales>();
+                var sendGridResponse = new Response(HttpStatusCode.Accepted, new StringContent(string.Empty), null);
+                this.GivenSendGridReturns(sendGridResponse);
+
+                var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
+
+                Assert.That(response.IsSuccess, Is.True);
+                Assert.That(response.StatusCode, Is.EqualTo(202));
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
 using Mandarin.Services.Objects;
@@ -32,7 +33,12 @@ namespace Mandarin.Services.SendGrid
         }
 
         /// <inheritdoc/>
-        public SendGridMessage BuildRecordOfSalesEmail(RecordOfSales recordOfSales)
+        public Task<EmailResponse> SendRecordOfSalesEmailAsync(RecordOfSales recordOfSales)
+        {
+            return this.SendEmail(this.BuildRecordOfSalesEmail(recordOfSales));
+        }
+
+        private SendGridMessage BuildRecordOfSalesEmail(RecordOfSales recordOfSales)
         {
             var email = new SendGridMessage();
             var configuration = this.sendGridConfigurationOption.Value;
@@ -50,24 +56,29 @@ namespace Mandarin.Services.SendGrid
             return email;
         }
 
-        /// <inheritdoc/>
-        public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
+        private async Task<EmailResponse> SendEmail(SendGridMessage email)
         {
             var response = await this.sendGridClient.SendEmailAsync(email);
-            var bodyContent = await SendGridEmailService.GetBodyContent(response);
-            this.logger.LogInformation("SendGrid SendEmail: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
+            var bodyContent = await GetBodyContent(response.Body);
+            this.logger.LogInformation("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
             return new EmailResponse((int)response.StatusCode);
-        }
 
-        private static async Task<string> GetBodyContent(Response response)
-        {
-            if (response.Body == null)
+            static async Task<string> GetBodyContent(HttpContent content)
             {
-                return null;
-            }
+                if (content == null)
+                {
+                    return null;
+                }
 
-            var bodyContent = await response.Body.ReadAsStringAsync();
-            return bodyContent;
+                try
+                {
+                    return await content.ReadAsStringAsync();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
         }
     }
 }

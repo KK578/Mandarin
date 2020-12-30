@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using SendGrid.Helpers.Mail;
 
 namespace Mandarin.ViewModels.Tests.Commissions
 {
@@ -63,8 +62,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
         {
             var exception = new Exception(TestData.WellKnownString);
             var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<RecordOfSales>())).Returns(new SendGridMessage());
-            emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ThrowsAsync(exception);
+            emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>())).ThrowsAsync(exception);
 
             var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, TestData.Create<RecordOfSales>());
             await subject.SendEmailAsync();
@@ -77,8 +75,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
         public async Task SendEmailAsync_GivenServiceSendsSuccessfully_SetsStatusToSuccess()
         {
             var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<RecordOfSales>())).Returns(new SendGridMessage());
-            emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ReturnsAsync(new EmailResponse(200));
+            emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>())).ReturnsAsync(new EmailResponse(200));
 
             var recordOfSales = TestData.Create<RecordOfSales>();
             var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, recordOfSales);
