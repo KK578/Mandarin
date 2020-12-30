@@ -44,7 +44,7 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
         {
             var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
             var stockists = await this.stockistService.GetStockistsAsync()

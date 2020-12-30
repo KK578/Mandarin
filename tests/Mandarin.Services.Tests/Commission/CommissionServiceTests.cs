@@ -102,7 +102,7 @@ namespace Mandarin.Services.Tests.Commission
         }
 
         [TestFixture]
-        private class GetRecordOfSalesAsyncTests : CommissionServiceTests
+        private class GetRecordOfSalesForPeriodAsyncTests : CommissionServiceTests
         {
             [Test]
             public async Task ShouldCalculateCommissionCorrectly()
@@ -110,7 +110,7 @@ namespace Mandarin.Services.Tests.Commission
                 this.GivenTlmStockistExists();
                 this.GivenTransactionServiceReturnsData();
 
-                var artistSales = await this.Subject.GetRecordOfSalesAsync(DateTime.Now, DateTime.Now);
+                var artistSales = await this.Subject.GetRecordOfSalesForPeriodAsync(DateTime.Now, DateTime.Now);
 
                 Assert.That(artistSales.Count, Is.EqualTo(1));
                 Assert.That(artistSales[0].Subtotal, Is.EqualTo(60.00m));

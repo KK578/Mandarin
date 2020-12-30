@@ -15,7 +15,7 @@ service Commissions {
 
   // Gets the RecordOfSales for each active Stockist.
   // The included sales are limited to those between the specified dates.
-  rpc GetRecordsOfSales (GetRecordsOfSalesRequest) returns (GetRecordsOfSalesResponse);
+  rpc GetRecordOfSalesForPeriod (GetRecordOfSalesForPeriodRequest) returns (GetRecordOfSalesForPeriodResponse);
 }
 
 
@@ -28,14 +28,14 @@ message GetCommissionRateGroupsResponse {
   repeated CommissionRateGroup RateGroups = 1; // The list of all commission rate groups.
 }
 
-// The request message for getting records of sales.
-message GetRecordsOfSalesRequest {
+// The request message for getting record of sales for the selected period.
+message GetRecordOfSalesForPeriodRequest {
   google.protobuf.Timestamp startDate = 1; // The start datetime to query transactions for.
   google.protobuf.Timestamp endDate = 2; // The end datetime to query transactions for.
 }
 
-// The response message containing all commission rate groups.
-message GetRecordsOfSalesResponse {
+// The response message containing all commission rate groups for the selected period.
+message GetRecordOfSalesForPeriodResponse {
   repeated RecordOfSales sales = 1; // The list of all records of sales.
 }
 
