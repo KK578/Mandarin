@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mandarin.Models.Artists
+namespace Mandarin.Models.Stockists
 {
     /// <summary>
     /// Represents a stockist's personal information.
@@ -101,7 +101,7 @@ namespace Mandarin.Models.Artists
         /// Gets or sets the stockist related to these details.
         /// </summary>
         [ForeignKey(nameof(StockistDetail.StockistId))]
-        [InverseProperty(nameof(Artists.Stockist.Details))]
+        [InverseProperty(nameof(Stockists.Stockist.Details))]
         public virtual Stockist Stockist { get; set; }
     }
 }

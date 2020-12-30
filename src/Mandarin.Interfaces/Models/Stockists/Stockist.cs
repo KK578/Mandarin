@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 
-namespace Mandarin.Models.Artists
+namespace Mandarin.Models.Stockists
 {
     /// <summary>
     /// Represents a stockist who is a person provides stock/products with The Little Mandarin.

@@ -5,9 +5,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Database;
 using Mandarin.Database.Extensions;
-using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
+using Mandarin.Models.Stockists;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Square;
 
@@ -16,21 +16,21 @@ namespace Mandarin.Services.Commission
     /// <inheritdoc />
     public class CommissionService : ICommissionService
     {
-        private readonly IArtistService artistService;
+        private readonly IStockistService stockistService;
         private readonly ITransactionService transactionService;
         private readonly MandarinDbContext mandarinDbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
-        /// <param name="artistService">The application service for interacting with stockists.</param>
+        /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="transactionService">The transaction service.</param>
         /// <param name="mandarinDbContext">The application database context.</param>
-        public CommissionService(IArtistService artistService,
+        public CommissionService(IStockistService stockistService,
                                  ITransactionService transactionService,
                                  MandarinDbContext mandarinDbContext)
         {
-            this.artistService = artistService;
+            this.stockistService = stockistService;
             this.transactionService = transactionService;
             this.mandarinDbContext = mandarinDbContext;
         }
@@ -44,12 +44,12 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<RecordOfSales>> GetSalesByArtistForPeriod(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateTime start, DateTime end)
         {
             var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
-            var artists = await this.artistService.GetArtistsForCommissionAsync()
-                                    .Where(x => x.StatusCode >= StatusMode.ActiveHidden)
-                                    .ToList();
+            var stockists = await this.stockistService.GetStockistsAsync()
+                                      .Where(x => x.StatusCode >= StatusMode.ActiveHidden)
+                                      .ToList();
 
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
@@ -57,7 +57,7 @@ namespace Mandarin.Services.Commission
                                         .Select(ToAggregateSubtransaction)
                                         .ToList();
 
-            return artists.Select(artist => ToArtistSales(artist, aggregateTransactions)).ToList().AsReadOnly();
+            return stockists.Select(s => ToRecordOfSales(s, aggregateTransactions)).ToList().AsReadOnly();
 
             static Subtransaction ToAggregateSubtransaction(IEnumerable<Subtransaction> s)
             {
@@ -68,17 +68,17 @@ namespace Mandarin.Services.Commission
                 return new Subtransaction(product, quantity, subtotal);
             }
 
-            RecordOfSales ToArtistSales(Stockist artist, IEnumerable<Subtransaction> subtransactions)
+            RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)
             {
-                var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(artist.StockistCode)).ToList();
-                var rate = decimal.Divide(artist.Commissions.Last().RateGroup.Rate ?? 0, 100);
+                var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(stockist.StockistCode)).ToList();
+                var rate = decimal.Divide(stockist.Commissions.Last().RateGroup.Rate ?? 0, 100);
 
-                if (artistSubtransactions.Count == 0)
+                if (stockistsSubtransactions.Count == 0)
                 {
-                    return new RecordOfSales(artist.StockistCode,
-                                             artist.FirstName,
-                                             artist.Details.ShortDisplayName,
-                                             artist.Details.EmailAddress,
+                    return new RecordOfSales(stockist.StockistCode,
+                                             stockist.FirstName,
+                                             stockist.Details.ShortDisplayName,
+                                             stockist.Details.EmailAddress,
                                              string.Empty,
                                              start,
                                              end,
@@ -90,14 +90,14 @@ namespace Mandarin.Services.Commission
                 }
                 else
                 {
-                    var sales = artistSubtransactions.Select(x => SaleMapper.FromTransaction(x, rate)).ToList();
+                    var sales = stockistsSubtransactions.Select(x => SaleMapper.FromTransaction(x, rate)).ToList();
                     var subtotal = sales.Sum(x => x.Subtotal);
                     var commission = sales.Sum(x => x.Commission);
 
-                    return new RecordOfSales(artist.StockistCode,
-                                             artist.FirstName,
-                                             artist.Details.ShortDisplayName,
-                                             artist.Details.EmailAddress,
+                    return new RecordOfSales(stockist.StockistCode,
+                                             stockist.FirstName,
+                                             stockist.Details.ShortDisplayName,
+                                             stockist.Details.EmailAddress,
                                              string.Empty,
                                              start,
                                              end,

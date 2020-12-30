@@ -1,9 +1,9 @@
 ﻿using System;
-using Mandarin.Services.Artists;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
+using Mandarin.Services.Stockists;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendGrid;
@@ -30,7 +30,7 @@ namespace Mandarin.Services
             services.AddLazyCache();
             services.AddMandarinDomainServices();
             services.AddSendGridServices(configuration);
-            services.AddArtistServices();
+            services.AddStockistServices();
             services.AddSquareServices(configuration);
 
             return services;
@@ -55,9 +55,9 @@ namespace Mandarin.Services
             }
         }
 
-        private static void AddArtistServices(this IServiceCollection services)
+        private static void AddStockistServices(this IServiceCollection services)
         {
-            services.AddScoped<IArtistService, DatabaseArtistService>();
+            services.AddScoped<IStockistService, EntityFrameworkStockistService>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
+using Mandarin.Models.Stockists;
 
 namespace Mandarin.Services
 {
     /// <summary>
-    /// Represents a service that can retrieve commission breakdowns by artists.
+    /// Represents a service that can retrieve commission breakdowns by stockists.
     /// </summary>
     public interface ICommissionService
     {
@@ -24,6 +24,6 @@ namespace Mandarin.Services
         /// <param name="start">The start datetime to query transactions for.</param>
         /// <param name="end">The end datetime to query transactions for.</param>
         /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of the sales broken down by each <see cref="Stockist"/>.</returns>
-        Task<IReadOnlyList<RecordOfSales>> GetSalesByArtistForPeriod(DateTime start, DateTime end);
+        Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateTime start, DateTime end);
     }
 }

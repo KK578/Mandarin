@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Mandarin.Database;
-using Mandarin.Models.Artists;
 using Mandarin.Models.Common;
+using Mandarin.Models.Stockists;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Square.Models;
@@ -15,10 +15,10 @@ namespace Mandarin.Tests.Data
 
         public static async Task SeedDatabaseAsync(MandarinDbContext mandarinDbContext)
         {
-            var tlmStockist = await mandarinDbContext.Stockist.FirstOrDefaultAsync(x => x.StockistCode == WellKnownTestData.Stockists.TheLittleMandarin.StockistCode);
+            var tlmStockist = await mandarinDbContext.Stockist.FirstOrDefaultAsync(x => x.StockistCode == WellKnownTestData.Stockists.TheLittleMandarinStockist.StockistCode);
             if (tlmStockist == null)
             {
-                await mandarinDbContext.Stockist.AddAsync(WellKnownTestData.Stockists.TheLittleMandarin);
+                await mandarinDbContext.Stockist.AddAsync(WellKnownTestData.Stockists.TheLittleMandarinStockist);
             }
         }
 
@@ -32,12 +32,12 @@ namespace Mandarin.Tests.Data
 
         public static class Commissions
         {
-            public const string ArtistSalesTLM = "TestData/Commissions/ArtistSales.TLM.json";
+            public const string ArtistSalesTLM = "TestData/Commissions/RecordOfSales.TLM.json";
         }
 
         public static class Stockists
         {
-            public static readonly Stockist InactiveArtist = new()
+            public static readonly Stockist InactiveStockist = new()
             {
                 StockistCode = "IA1",
                 FirstName = "Inactive",
@@ -45,14 +45,14 @@ namespace Mandarin.Tests.Data
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = nameof(Stockists.InactiveArtist),
-                    FullDisplayName = nameof(Stockists.InactiveArtist),
+                    ShortDisplayName = nameof(Stockists.InactiveStockist),
+                    FullDisplayName = nameof(Stockists.InactiveStockist),
                     Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
 
-            public static readonly Stockist MinimalArtist = new()
+            public static readonly Stockist MinimalStockist = new()
             {
                 StockistCode = "MA1",
                 FirstName = "Minimal",
@@ -60,14 +60,14 @@ namespace Mandarin.Tests.Data
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = nameof(Stockists.MinimalArtist),
-                    FullDisplayName = nameof(Stockists.MinimalArtist),
+                    ShortDisplayName = nameof(Stockists.MinimalStockist),
+                    FullDisplayName = nameof(Stockists.MinimalStockist),
                     Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
 
-            public static readonly Stockist HiddenArtist = new()
+            public static readonly Stockist HiddenStockist = new()
             {
                 StockistCode = "HA1",
                 FirstName = "Hidden",
@@ -75,14 +75,14 @@ namespace Mandarin.Tests.Data
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = nameof(Stockists.HiddenArtist),
-                    FullDisplayName = nameof(Stockists.HiddenArtist),
+                    ShortDisplayName = nameof(Stockists.HiddenStockist),
+                    FullDisplayName = nameof(Stockists.HiddenStockist),
                     Description = "Artist's Description.",
                     BannerImageUrl = "https://localhost/static/images/artist1.jpg",
                 },
             };
 
-            public static readonly Stockist TheLittleMandarin = new()
+            public static readonly Stockist TheLittleMandarinStockist = new()
             {
                 StockistCode = "TLM",
                 FirstName = "Little",

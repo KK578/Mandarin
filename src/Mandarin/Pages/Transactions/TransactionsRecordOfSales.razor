@@ -171,7 +171,7 @@
     try
     {
       IsLoading = true;
-      var recordOfSales = await CommissionService.GetSalesByArtistForPeriod(StartDate, EndDate);
+      var recordOfSales = await CommissionService.GetRecordOfSalesAsync(StartDate, EndDate);
       RecordOfSales = recordOfSales.Select(x => ViewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
     }
     finally

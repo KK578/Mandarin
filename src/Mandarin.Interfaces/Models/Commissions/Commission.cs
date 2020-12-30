@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Mandarin.Models.Artists;
+using Mandarin.Models.Stockists;
 
 namespace Mandarin.Models.Commissions
 {
@@ -59,7 +59,7 @@ namespace Mandarin.Models.Commissions
         /// Gets or sets the related stockist for this commission.
         /// </summary>
         [ForeignKey(nameof(Commission.StockistId))]
-        [InverseProperty(nameof(Artists.Stockist.Commissions))]
+        [InverseProperty(nameof(Stockists.Stockist.Commissions))]
         public virtual Stockist Stockist { get; set; }
     }
 }

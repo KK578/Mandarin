@@ -22,25 +22,25 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
         }
 
         [TestFixture]
-        private class WithMessageCustomisations
+        private class WithMessageCustomisationsTests : RecordOfSalesTests
         {
             [Test]
             public void ShouldMaintainNullSalesList()
             {
-                var artistSales = new RecordOfSales(TestData.NextString(),
-                                                    TestData.NextString(),
-                                                    TestData.NextString(),
-                                                    TestData.NextString(),
-                                                    TestData.NextString(),
-                                                    TestData.Create<DateTime>(),
-                                                    TestData.Create<DateTime>(),
-                                                    TestData.Create<decimal>(),
-                                                    null,
-                                                    TestData.Create<decimal>(),
-                                                    TestData.Create<decimal>(),
-                                                    TestData.Create<decimal>());
+                var recordOfSales = new RecordOfSales(TestData.NextString(),
+                                                      TestData.NextString(),
+                                                      TestData.NextString(),
+                                                      TestData.NextString(),
+                                                      TestData.NextString(),
+                                                      TestData.Create<DateTime>(),
+                                                      TestData.Create<DateTime>(),
+                                                      TestData.Create<decimal>(),
+                                                      null,
+                                                      TestData.Create<decimal>(),
+                                                      TestData.Create<decimal>(),
+                                                      TestData.Create<decimal>());
 
-                var copy = artistSales.WithMessageCustomisations(null, null);
+                var copy = recordOfSales.WithMessageCustomisations(null, null);
                 Assert.That(copy.Sales, Is.Null);
             }
 
@@ -62,7 +62,7 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
         }
 
         [TestFixture]
-        private class AsJson
+        private class AsJsonTests : RecordOfSalesTests
         {
             [Test]
             public async Task AsJson_ShouldMatchSnapshot()

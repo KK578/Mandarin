@@ -28,8 +28,8 @@ namespace Mandarin.ViewModels.Tests.Commissions
         [Test]
         public void VerifySimpleSettersAndFormatting()
         {
-            var artistSales = TestData.Create<RecordOfSales>();
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, artistSales);
+            var recordOfSales = TestData.Create<RecordOfSales>();
+            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, recordOfSales);
             subject.EmailAddress = "MyEmail";
             subject.CustomMessage = TestData.WellKnownString;
 
@@ -80,8 +80,8 @@ namespace Mandarin.ViewModels.Tests.Commissions
             emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<RecordOfSales>())).Returns(new SendGridMessage());
             emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ReturnsAsync(new EmailResponse(200));
 
-            var artistSales = TestData.Create<RecordOfSales>();
-            var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, artistSales);
+            var recordOfSales = TestData.Create<RecordOfSales>();
+            var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, recordOfSales);
             subject.EmailAddress = TestData.WellKnownString;
             await subject.SendEmailAsync();
 

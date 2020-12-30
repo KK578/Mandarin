@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using Mandarin.Database;
-using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 using Mandarin.Models.Inventory;
+using Mandarin.Models.Stockists;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Commission;
 using Mandarin.Tests.Data;
@@ -24,19 +24,19 @@ namespace Mandarin.Services.Tests.Commission
     [TestFixture]
     public class CommissionServiceTests
     {
-        private Mock<IArtistService> artistService;
+        private Mock<IStockistService> stockistService;
         private Mock<ITransactionService> transactionService;
         private Mock<MandarinDbContext> mandarinDbContext;
 
         private ICommissionService Subject =>
-            new CommissionService(this.artistService.Object,
+            new CommissionService(this.stockistService.Object,
                                   this.transactionService.Object,
                                   this.mandarinDbContext.Object);
 
         [SetUp]
         public void SetUp()
         {
-            this.artistService = new Mock<IArtistService>();
+            this.stockistService = new Mock<IStockistService>();
             this.transactionService = new Mock<ITransactionService>();
             this.mandarinDbContext = new Mock<MandarinDbContext>();
         }
@@ -47,9 +47,9 @@ namespace Mandarin.Services.Tests.Commission
             this.mandarinDbContext.Setup(x => x.CommissionRateGroup).ReturnsDbSet(data);
         }
 
-        private void GivenArtistServiceReturnsData()
+        private void GivenTlmStockistExists()
         {
-            this.artistService.Setup(x => x.GetArtistsForCommissionAsync())
+            this.stockistService.Setup(x => x.GetStockistsAsync())
                                   .Returns(new List<Stockist>
                                   {
                                       MandarinFixture.Instance.Create<Stockist>()
@@ -82,7 +82,7 @@ namespace Mandarin.Services.Tests.Commission
         }
 
         [TestFixture]
-        private class GetCommissionRateGroups : CommissionServiceTests
+        private class GetCommissionRateGroupsTests : CommissionServiceTests
         {
             [Test]
             public async Task ShouldReturnAllEntries()
@@ -102,15 +102,15 @@ namespace Mandarin.Services.Tests.Commission
         }
 
         [TestFixture]
-        private class GetSalesByArtistForPeriod : CommissionServiceTests
+        private class GetRecordOfSalesAsyncTests : CommissionServiceTests
         {
             [Test]
             public async Task ShouldCalculateCommissionCorrectly()
             {
-                this.GivenArtistServiceReturnsData();
+                this.GivenTlmStockistExists();
                 this.GivenTransactionServiceReturnsData();
 
-                var artistSales = await this.Subject.GetSalesByArtistForPeriod(DateTime.Now, DateTime.Now).ToList().ToTask();
+                var artistSales = await this.Subject.GetRecordOfSalesAsync(DateTime.Now, DateTime.Now);
 
                 Assert.That(artistSales.Count, Is.EqualTo(1));
                 Assert.That(artistSales[0].Subtotal, Is.EqualTo(60.00m));

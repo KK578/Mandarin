@@ -3,27 +3,27 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Database;
-using Mandarin.Models.Artists;
+using Mandarin.Models.Stockists;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mandarin.Services.Artists
+namespace Mandarin.Services.Stockists
 {
     /// <inheritdoc />
-    internal sealed class DatabaseArtistService : IArtistService
+    internal sealed class EntityFrameworkStockistService : IStockistService
     {
         private readonly MandarinDbContext mandarinDbContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseArtistService"/> class.
+        /// Initializes a new instance of the <see cref="EntityFrameworkStockistService"/> class.
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
-        public DatabaseArtistService(MandarinDbContext mandarinDbContext)
+        public EntityFrameworkStockistService(MandarinDbContext mandarinDbContext)
         {
             this.mandarinDbContext = mandarinDbContext;
         }
 
         /// <inheritdoc/>
-        public IObservable<Stockist> GetArtistsForCommissionAsync()
+        public IObservable<Stockist> GetStockistsAsync()
         {
             return this.mandarinDbContext.Stockist
                        .Include(x => x.Details)
@@ -33,26 +33,14 @@ namespace Mandarin.Services.Artists
         }
 
         /// <inheritdoc/>
-        public async Task SaveArtistAsync(Stockist stockist)
+        public async Task SaveStockistAsync(Stockist stockist)
         {
-            var entry = this.mandarinDbContext.Entry(stockist);
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                case EntityState.Detached:
-                    await this.mandarinDbContext.Stockist.AddAsync(stockist);
-                    break;
-
-                case EntityState.Modified:
-                    this.mandarinDbContext.Stockist.Update(stockist);
-                    break;
-            }
-
+            this.mandarinDbContext.Stockist.Update(stockist);
             await this.mandarinDbContext.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public async Task<Stockist> GetArtistByCodeAsync(string stockistCode)
+        public async Task<Stockist> GetStockistByCodeAsync(string stockistCode)
         {
             var stockist = await this.mandarinDbContext.Stockist
                        .Include(x => x.Details)
