@@ -47,9 +47,8 @@ namespace Mandarin.Services.Commission
         public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
         {
             var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
-            var stockists = await this.stockistService.GetStockistsAsync()
-                                      .Where(x => x.StatusCode >= StatusMode.ActiveHidden)
-                                      .ToList();
+            var allStockists = await this.stockistService.GetStockistsAsync();
+            var stockists = allStockists.Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList();
 
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())

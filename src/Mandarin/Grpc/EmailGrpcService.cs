@@ -27,12 +27,12 @@ namespace Mandarin.Grpc
         }
 
         /// <inheritdoc/>
-        public override async Task<SendRecordOfSalesResponse> SendRecordOfSalesEmail(SendRecordOfSalesRequest request, ServerCallContext context)
+        public override async Task<SendRecordOfSalesEmailResponse> SendRecordOfSalesEmail(SendRecordOfSalesEmailRequest request, ServerCallContext context)
         {
             var recordOfSales = this.mapper.Map<RecordOfSales>(request.RecordOfSales);
             var response = await this.emailService.SendRecordOfSalesEmailAsync(recordOfSales);
 
-            return new SendRecordOfSalesResponse
+            return new SendRecordOfSalesEmailResponse
             {
                 IsSuccess = response.IsSuccess,
                 Message = response.Message,

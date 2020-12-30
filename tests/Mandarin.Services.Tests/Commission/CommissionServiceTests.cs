@@ -49,14 +49,14 @@ namespace Mandarin.Services.Tests.Commission
 
         private void GivenTlmStockistExists()
         {
-            this.stockistService.Setup(x => x.GetStockistsAsync())
-                                  .Returns(new List<Stockist>
-                                  {
-                                      MandarinFixture.Instance.Create<Stockist>()
-                                                     .WithStatus(StatusMode.Active)
-                                                     .WithTlmStockistCode()
-                                                     .WithTenPercentCommission(),
-                                  }.ToObservable());
+            var stockists = new List<Stockist>
+            {
+                MandarinFixture.Instance.Create<Stockist>()
+                               .WithStatus(StatusMode.Active)
+                               .WithTlmStockistCode()
+                               .WithTenPercentCommission(),
+            };
+            this.stockistService.Setup(x => x.GetStockistsAsync()).ReturnsAsync(stockists);
         }
 
         private void GivenTransactionServiceReturnsData()

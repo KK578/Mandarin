@@ -21,16 +21,6 @@ service Stockists {
   rpc SaveStockist (SaveStockistRequest) returns (SaveStockistResponse);
 }
 
-// The request message for getting all stockists.
-message GetStockistsRequest {
-}
-
-// The response message containing all stockists.
-message GetStockistsResponse {
-  // The list of all stockists.
-  repeated Stockist stockists = 1;
-}
-
 
 // The request message for getting a stockist by stockist code.
 message GetStockistRequest {
@@ -44,6 +34,15 @@ message GetStockistResponse {
   Stockist stockist = 1;
 }
 
+// The request message for getting all stockists.
+message GetStockistsRequest {
+}
+
+// The response message containing all stockists.
+message GetStockistsResponse {
+  // The list of all stockists.
+  repeated Stockist stockists = 1;
+}
 
 // The request message for saving or updating a stockist.
 message SaveStockistRequest {

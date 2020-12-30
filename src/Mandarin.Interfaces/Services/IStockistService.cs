@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Models.Stockists;
 
@@ -19,8 +20,8 @@ namespace Mandarin.Services
         /// <summary>
         /// Gets a list of all known stockists.
         /// </summary>
-        /// <returns>A <see cref="Task{TResult}"/> containing all stockists.</returns>
-        public IObservable<Stockist> GetStockistsAsync();
+        /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of all stockists.</returns>
+        Task<IReadOnlyList<Stockist>> GetStockistsAsync();
 
         /// <summary>
         /// Saves all changes made to the stockist. Will automatically detect if they are a new stockist and create them as required.

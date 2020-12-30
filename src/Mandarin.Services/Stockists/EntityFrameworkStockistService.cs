@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Database;
+using Mandarin.Database.Extensions;
 using Mandarin.Models.Stockists;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,13 +25,13 @@ namespace Mandarin.Services.Stockists
         }
 
         /// <inheritdoc/>
-        public IObservable<Stockist> GetStockistsAsync()
+        public Task<IReadOnlyList<Stockist>> GetStockistsAsync()
         {
             return this.mandarinDbContext.Stockist
                        .Include(x => x.Details)
                        .Include(x => x.Commissions).ThenInclude(x => x.RateGroup)
                        .OrderBy(x => x.StockistCode)
-                       .ToObservable();
+                       .ToReadOnlyListAsync();
         }
 
         /// <inheritdoc/>

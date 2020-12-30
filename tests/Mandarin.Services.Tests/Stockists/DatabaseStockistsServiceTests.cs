@@ -38,7 +38,7 @@ namespace Mandarin.Services.Tests.Stockists
                                          WellKnownTestData.Stockists.HiddenStockist,
                                          WellKnownTestData.Stockists.MinimalStockist);
 
-                var artistDetails = await this.Subject.GetStockistsAsync().ToList();
+                var artistDetails = await this.Subject.GetStockistsAsync();
                 Assert.That(artistDetails, Has.Exactly(3).Items);
                 Assert.That(artistDetails[0], Is.EqualTo(WellKnownTestData.Stockists.HiddenStockist));
                 Assert.That(artistDetails[1], Is.EqualTo(WellKnownTestData.Stockists.InactiveStockist));
