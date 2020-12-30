@@ -10,21 +10,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise" Version="0.9.2.3" />
-    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.2.3" />
-    <PackageReference Include="Blazorise.Components" Version="0.9.2.3" />
-    <PackageReference Include="Blazorise.DataGrid" Version="0.9.2.3" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.2.3" />
+    <PackageReference Include="Blazorise" Version="0.9.2.4" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.2.4" />
+    <PackageReference Include="Blazorise.Components" Version="0.9.2.4" />
+    <PackageReference Include="Blazorise.DataGrid" Version="0.9.2.4" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.2.4" />
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.7.1" />
     <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.1" />
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
