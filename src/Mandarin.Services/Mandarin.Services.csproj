@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
     <PackageReference Include="Scrutor" Version="3.3.0" />
     <PackageReference Include="SendGrid.Extensions.DependencyInjection" Version="1.0.0" />
-    <PackageReference Include="Square" Version="7.0.0" />
+    <PackageReference Include="Square" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
