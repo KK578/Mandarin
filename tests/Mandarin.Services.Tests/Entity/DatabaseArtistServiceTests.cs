@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Database;
 using Mandarin.Models.Artists;
 using Mandarin.Services.Artists;
 using Mandarin.Tests.Data;
-using Microsoft.EntityFrameworkCore;
 using Moq;
+using Moq.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace Mandarin.Services.Tests.Entity
@@ -14,33 +13,37 @@ namespace Mandarin.Services.Tests.Entity
     [TestFixture]
     public class DatabaseArtistServiceTests
     {
-        private MandarinDbContext dbContext;
+        private Mock<MandarinDbContext> mandarinDbContext;
 
-        [Test]
-        public async Task GetArtistDetailsForCommissionAsync_GivenArtists_ShouldReturnAllArtistsInOrderOfStockistCode()
+        private IArtistService Subject => new DatabaseArtistService(this.mandarinDbContext.Object);
+
+        [SetUp]
+        public void SetUp()
         {
-            this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist,
-                                       WellKnownTestData.Stockists.HiddenArtist,
-                                       WellKnownTestData.Stockists.MinimalArtist);
-
-            var subject = new DatabaseArtistService(this.dbContext);
-            var artistDetails = await subject.GetArtistsForCommissionAsync().ToList();
-            Assert.That(artistDetails, Has.Exactly(3).Items);
-            Assert.That(artistDetails[0], Is.EqualTo(WellKnownTestData.Stockists.HiddenArtist));
-            Assert.That(artistDetails[1], Is.EqualTo(WellKnownTestData.Stockists.InactiveArtist));
-            Assert.That(artistDetails[2], Is.EqualTo(WellKnownTestData.Stockists.MinimalArtist));
+            this.mandarinDbContext = new Mock<MandarinDbContext>();
         }
 
-        private IQueryable<Stockist> GivenDbContextReturns(params Stockist[] artists)
+        private void GivenDbContextReturns(params Stockist[] artists)
         {
-            var data = artists.AsQueryable();
-            var mock = new Mock<DbSet<Stockist>>();
-            mock.As<IQueryable<Stockist>>().Setup(m => m.Provider).Returns(data.Provider);
-            mock.As<IQueryable<Stockist>>().Setup(m => m.Expression).Returns(data.Expression);
-            mock.As<IQueryable<Stockist>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            this.mandarinDbContext.Setup(x => x.Stockist).ReturnsDbSet(artists);
+        }
 
-            this.dbContext = Mock.Of<MandarinDbContext>(x => x.Stockist == mock.Object);
-            return data;
+        [TestFixture]
+        private class GetArtistsForCommissionAsync : DatabaseArtistServiceTests
+        {
+            [Test]
+            public async Task ShouldReturnAllArtistsInOrderOfStockistCode()
+            {
+                this.GivenDbContextReturns(WellKnownTestData.Stockists.InactiveArtist,
+                                           WellKnownTestData.Stockists.HiddenArtist,
+                                           WellKnownTestData.Stockists.MinimalArtist);
+
+                var artistDetails = await this.Subject.GetArtistsForCommissionAsync().ToList();
+                Assert.That(artistDetails, Has.Exactly(3).Items);
+                Assert.That(artistDetails[0], Is.EqualTo(WellKnownTestData.Stockists.HiddenArtist));
+                Assert.That(artistDetails[1], Is.EqualTo(WellKnownTestData.Stockists.InactiveArtist));
+                Assert.That(artistDetails[2], Is.EqualTo(WellKnownTestData.Stockists.MinimalArtist));
+            }
         }
     }
 }
