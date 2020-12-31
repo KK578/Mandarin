@@ -11,7 +11,7 @@ namespace Mandarin.Tests.Factory
 {
     internal class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        public const string AuthenticationScheme = "TestAuth";
+        public const string AuthenticationScheme = "Bearer";
 
         public static readonly AuthenticationHeaderValue AuthorizedToken = new(TestAuthHandler.AuthenticationScheme, "AuthorizedToken");
 

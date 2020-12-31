@@ -10,7 +10,7 @@ using Serilog.Events;
 
 namespace Mandarin.Tests.Factory
 {
-    internal static class MandarinApplicationFactory
+    public static class MandarinApplicationFactory
     {
         public static WebApplicationFactory<MandarinStartup> Create()
         {
@@ -41,6 +41,7 @@ namespace Mandarin.Tests.Factory
                 { "Auth0:Domain", "localhost" },
                 { "Auth0:ClientId", "SuperSecretId" },
                 { "Auth0:ClientSecret", "SuperSecretValue" },
+                { "ConnectionStrings:MandarinConnection", "Host=localhost;Port=5555;Database=postgres;Username=postgres;Password=password;Include Error Detail=true" },
             });
         }
 

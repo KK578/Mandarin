@@ -1,7 +1,9 @@
+using AutoMapper;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
+using Mandarin.Converters;
 using Mandarin.Database;
 using Mandarin.Extensions;
 using Mandarin.Grpc;
@@ -67,6 +69,7 @@ namespace Mandarin
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinDatabase(this.configuration);
+            services.AddAutoMapper(options => { options.AddProfile<MandarinMapperProfile>(); });
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }
@@ -104,6 +107,7 @@ namespace Mandarin
 
             app.UseRouting();
 
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
