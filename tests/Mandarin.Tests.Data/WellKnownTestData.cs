@@ -1,9 +1,6 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
-using Mandarin.Database;
 using Mandarin.Models.Common;
 using Mandarin.Models.Stockists;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Square.Models;
 
@@ -12,15 +9,6 @@ namespace Mandarin.Tests.Data
     public static class WellKnownTestData
     {
         private static readonly JsonSerializer Serializer = new();
-
-        public static async Task SeedDatabaseAsync(MandarinDbContext mandarinDbContext)
-        {
-            var tlmStockist = await mandarinDbContext.Stockist.FirstOrDefaultAsync(x => x.StockistCode == WellKnownTestData.Stockists.TheLittleMandarinStockist.StockistCode);
-            if (tlmStockist == null)
-            {
-                await mandarinDbContext.Stockist.AddAsync(WellKnownTestData.Stockists.TheLittleMandarinStockist);
-            }
-        }
 
         public static T DeserializeFromFile<T>(string path)
         {

@@ -36,7 +36,7 @@ namespace Mandarin.Services.Stockists
                        .Include(x => x.Commissions)
                        .ThenInclude(x => x.RateGroup)
                        .FirstOrDefaultAsync(x => x.StockistCode == stockistCode);
-            this.logger.LogInformation("Fetched stockist '{StockistCode}': {Stockist}", stockistCode, stockist);
+            this.logger.LogInformation("Fetched stockist '{StockistCode}': {@Stockist}", stockistCode, stockist);
             await this.mandarinDbContext.Entry(stockist).ReloadAsync();
             return stockist;
         }
@@ -55,7 +55,7 @@ namespace Mandarin.Services.Stockists
         /// <inheritdoc/>
         public async Task SaveStockistAsync(Stockist stockist)
         {
-            this.logger.LogInformation("Saving stockist: {Stockist}", stockist);
+            this.logger.LogInformation("Saving stockist: {@Stockist}", stockist);
             this.mandarinDbContext.Stockist.Update(stockist);
             await this.mandarinDbContext.SaveChangesAsync();
         }
