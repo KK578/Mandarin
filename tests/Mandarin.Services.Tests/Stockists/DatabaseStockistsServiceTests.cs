@@ -1,9 +1,9 @@
-﻿using System.Reactive.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Mandarin.Database;
 using Mandarin.Models.Stockists;
 using Mandarin.Services.Stockists;
 using Mandarin.Tests.Data;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using NUnit.Framework;
@@ -15,7 +15,7 @@ namespace Mandarin.Services.Tests.Stockists
     {
         private Mock<MandarinDbContext> mandarinDbContext;
 
-        private IStockistService Subject => new EntityFrameworkStockistService(this.mandarinDbContext.Object);
+        private IStockistService Subject => new EntityFrameworkStockistService(this.mandarinDbContext.Object, NullLogger<EntityFrameworkStockistService>.Instance);
 
         [SetUp]
         public void SetUp()

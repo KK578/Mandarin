@@ -3,53 +3,24 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using Mandarin.Database;
-using Mandarin.Tests.Data;
-using Mandarin.Tests.Factory;
-using Microsoft.AspNetCore.Hosting;
+using Mandarin.Tests.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace Mandarin.Tests.Pages
 {
     [TestFixture("Development")]
     [TestFixture("Production")]
-    public class GetPageIntegrationTests
+    public class GetPageIntegrationTests : MandarinIntegrationTestsBase
     {
-        private readonly WebApplicationFactory<MandarinStartup> factory;
         private readonly HttpClient client;
 
-        private IServiceScope scope;
         private HttpRequestMessage request;
         private HttpResponseMessage response;
 
         public GetPageIntegrationTests(string environment)
         {
-            this.factory = MandarinApplicationFactory.Create().WithWebHostBuilder(b => b.UseEnvironment(environment));
-            this.client = this.factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
-        }
-
-        [SetUp]
-        public async Task SetUp()
-        {
-            this.scope = this.factory.Services.CreateScope();
-            var mandarinDbContext = this.scope.ServiceProvider.GetService<MandarinDbContext>();
-            await mandarinDbContext.Database.MigrateAsync();
-            await WellKnownTestData.SeedDatabaseAsync(mandarinDbContext);
-            await mandarinDbContext.SaveChangesAsync();
-        }
-
-        [TearDown]
-        public async Task TearDown()
-        {
-            var mandarinDbContext = this.scope.ServiceProvider.GetService<MandarinDbContext>();
-            var migrator = mandarinDbContext.GetInfrastructure().GetService<IMigrator>();
-            await migrator.MigrateAsync("0");
-            this.scope.Dispose();
+            this.client = this.Factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         }
 
         [Test]

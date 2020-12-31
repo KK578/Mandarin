@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using Mandarin.Client.Services.Tests.Helpers;
 using Mandarin.Services;
 using Mandarin.Tests.Data;
 using NUnit.Framework;
 
-namespace Mandarin.Client.Services.Tests
+namespace Mandarin.Client.Services.Tests.Stockists
 {
     [TestFixture]
     public class StockistsGrpcServiceTests : GrpcServiceTestsBase
@@ -18,16 +19,23 @@ namespace Mandarin.Client.Services.Tests
             {
                 var stockistCode = WellKnownTestData.Stockists.TheLittleMandarinStockist.StockistCode;
                 var stockist = await this.Subject.GetStockistByCodeAsync(stockistCode);
-                stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.TheLittleMandarinStockist, o => o.IgnoringCyclicReferences());
+                stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.TheLittleMandarinStockist,
+                                                 o => o.IgnoringCyclicReferences());
             }
+        }
 
+        private class GetStockistsAsyncTests : StockistsGrpcServiceTests
+        {
             [Test]
             public async Task ShouldBeAbleToListAllStockists()
             {
                 var stockists = await this.Subject.GetStockistsAsync();
                 Assert.That(stockists, Has.Count.EqualTo(1));
             }
+        }
 
+        private class SaveStockistsAsyncTests : StockistsGrpcServiceTests
+        {
             [Test]
             public async Task ShouldBeAbleToAddANewStockistAndRetrieveDetailsBack()
             {

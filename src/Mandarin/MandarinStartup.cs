@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Mandarin
 {
@@ -63,7 +64,7 @@ namespace Mandarin
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
@@ -86,7 +87,6 @@ namespace Mandarin
         /// <param name="mandarinDbContext">The application database context.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
-            app.SafeUseAllElasticApm(this.configuration);
             mandarinDbContext.Database.Migrate();
 
             if (env.IsDevelopment())
@@ -99,6 +99,8 @@ namespace Mandarin
                 app.UseHsts();
             }
 
+            app.SafeUseAllElasticApm(this.configuration);
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
