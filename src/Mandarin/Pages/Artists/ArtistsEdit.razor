@@ -1,13 +1,13 @@
 ﻿@page "/edit/{stockistCode}"
 @page "/new"
 @using Mandarin.Services
-@using Mandarin.Models.Artists
 @using System.IO
 @using Bashi.Core.Extensions
 @using Bashi.Core.Utils
 @using Mandarin.Models.Commissions
 @using Mandarin.Models.Common
-@inject IArtistService ArtistService;
+@using Mandarin.Models.Stockists
+@inject IStockistService StockistService;
 @inject ICommissionService CommissionService;
 @inject NavigationManager NavigationManager;
 
@@ -302,7 +302,7 @@ else
     {
       this.isNew = false;
       this.isEditing = false;
-      this.Stockist = await ArtistService.GetArtistByCodeAsync(StockistCode);
+      this.Stockist = await StockistService.GetStockistByCodeAsync(StockistCode);
     }
   }
 
@@ -320,7 +320,7 @@ else
       return;
     }
 
-    await ArtistService.SaveArtistAsync(this.Stockist);
+    await StockistService.SaveStockistAsync(this.Stockist);
     NavigationManager.NavigateTo($"/admin/artists/edit/{this.Stockist.StockistCode}");
     validations.ClearAll();
     validations.ClearAll();
@@ -339,7 +339,7 @@ else
     }
     else
     {
-      this.Stockist = await ArtistService.GetArtistByCodeAsync(this.StockistCode);
+      this.Stockist = await StockistService.GetStockistByCodeAsync(this.StockistCode);
     }
   }
 

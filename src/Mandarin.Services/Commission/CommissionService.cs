@@ -5,9 +5,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Database;
 using Mandarin.Database.Extensions;
-using Mandarin.Models.Artists;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
+using Mandarin.Models.Stockists;
 using Mandarin.Models.Transactions;
 using Mandarin.Services.Square;
 
@@ -16,21 +16,21 @@ namespace Mandarin.Services.Commission
     /// <inheritdoc />
     public class CommissionService : ICommissionService
     {
-        private readonly IArtistService artistService;
+        private readonly IStockistService stockistService;
         private readonly ITransactionService transactionService;
         private readonly MandarinDbContext mandarinDbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
-        /// <param name="artistService">The Artist service.</param>
+        /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="transactionService">The transaction service.</param>
         /// <param name="mandarinDbContext">The application database context.</param>
-        public CommissionService(IArtistService artistService,
+        public CommissionService(IStockistService stockistService,
                                  ITransactionService transactionService,
                                  MandarinDbContext mandarinDbContext)
         {
-            this.artistService = artistService;
+            this.stockistService = stockistService;
             this.transactionService = transactionService;
             this.mandarinDbContext = mandarinDbContext;
         }
@@ -44,62 +44,73 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public IObservable<ArtistSales> GetSalesByArtistForPeriod(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
         {
-            return this.transactionService.GetAllTransactions(start, end)
-                       .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                       .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? "TLM-Unknown", subtransaction.TransactionUnitPrice))
-                       .SelectMany(subtransactions => subtransactions.ToList().Select(ToAggregateSubtransaction))
-                       .ToList()
-                       .Zip(this.artistService.GetArtistsForCommissionAsync().Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList(), (s, a) => (Subtransactions: s, Artists: a))
-                       .SelectMany(tuple => tuple.Artists.Select(artist => ToArtistSales(artist, tuple.Subtransactions)));
+            var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
+            var allStockists = await this.stockistService.GetStockistsAsync();
+            var stockists = allStockists.Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList();
 
-            Subtransaction ToAggregateSubtransaction(IList<Subtransaction> s)
+            var aggregateTransactions = transactions
+                                        .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
+                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? "TLM-Unknown", subtransaction.TransactionUnitPrice))
+                                        .Select(ToAggregateSubtransaction)
+                                        .ToList();
+
+            return stockists.Select(s => ToRecordOfSales(s, aggregateTransactions)).ToList().AsReadOnly();
+
+            static Subtransaction ToAggregateSubtransaction(IEnumerable<Subtransaction> s)
             {
-                var product = s.First().Product;
-                var quantity = s.Sum(y => y.Quantity);
-                var subtotal = s.Sum(y => y.Subtotal);
+                var list = s.ToList();
+                var product = list.First().Product;
+                var quantity = list.Sum(y => y.Quantity);
+                var subtotal = list.Sum(y => y.Subtotal);
                 return new Subtransaction(product, quantity, subtotal);
             }
 
-            ArtistSales ToArtistSales(Stockist artist, IList<Subtransaction> subtransactions)
+            RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)
             {
-                var artistSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(artist.StockistCode)).ToList();
-                var rate = decimal.Divide(artist.Commissions.Last().RateGroup.Rate ?? 0, 100);
+                var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(stockist.StockistCode)).ToList();
+                var rate = decimal.Divide(stockist.Commissions.Last().RateGroup.Rate ?? 0, 100);
 
-                if (artistSubtransactions.Count == 0)
+                if (stockistsSubtransactions.Count == 0)
                 {
-                    return new ArtistSales(artist.StockistCode,
-                                           artist.FirstName,
-                                           artist.Details.ShortDisplayName,
-                                           artist.Details.EmailAddress,
-                                           string.Empty,
-                                           start,
-                                           end,
-                                           rate,
-                                           null,
-                                           0,
-                                           0,
-                                           0);
+                    return new RecordOfSales
+                    {
+                        StockistCode = stockist.StockistCode,
+                        FirstName = stockist.FirstName,
+                        Name = stockist.Details.ShortDisplayName,
+                        EmailAddress = stockist.Details.EmailAddress,
+                        CustomMessage = string.Empty,
+                        StartDate = start,
+                        EndDate = end,
+                        Rate = rate,
+                        Sales = new List<Sale>().AsReadOnly(),
+                        Subtotal = 0,
+                        CommissionTotal = 0,
+                        Total = 0,
+                    };
                 }
                 else
                 {
-                    var sales = artistSubtransactions.Select(x => SaleMapper.FromTransaction(x, rate)).ToList();
+                    var sales = stockistsSubtransactions.Select(x => SaleMapper.FromTransaction(x, rate)).ToList();
                     var subtotal = sales.Sum(x => x.Subtotal);
                     var commission = sales.Sum(x => x.Commission);
 
-                    return new ArtistSales(artist.StockistCode,
-                                           artist.FirstName,
-                                           artist.Details.ShortDisplayName,
-                                           artist.Details.EmailAddress,
-                                           string.Empty,
-                                           start,
-                                           end,
-                                           rate,
-                                           sales,
-                                           subtotal,
-                                           commission,
-                                           subtotal + commission);
+                    return new RecordOfSales
+                    {
+                        StockistCode = stockist.StockistCode,
+                        FirstName = stockist.FirstName,
+                        Name = stockist.Details.ShortDisplayName,
+                        EmailAddress = stockist.Details.EmailAddress,
+                        CustomMessage = string.Empty,
+                        StartDate = start,
+                        EndDate = end,
+                        Rate = rate,
+                        Sales = sales,
+                        Subtotal = subtotal,
+                        CommissionTotal = commission,
+                        Total = subtotal + commission,
+                    };
                 }
             }
         }

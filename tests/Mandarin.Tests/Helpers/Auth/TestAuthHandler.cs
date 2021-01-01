@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Mandarin.Tests.Factory
+namespace Mandarin.Tests.Helpers.Auth
 {
     internal class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        public const string AuthenticationScheme = "TestAuth";
+        public const string AuthenticationScheme = "Bearer";
 
         public static readonly AuthenticationHeaderValue AuthorizedToken = new(TestAuthHandler.AuthenticationScheme, "AuthorizedToken");
 

@@ -1,0 +1,86 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "Commissions.proto";
+import "Common.proto";
+
+option csharp_namespace = "Mandarin.Api.Stockists";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.stockists";
+
+package uk.co.thelittlemandarin;
+
+// The stockist service definition.
+service Stockists {
+  // Gets the stockist with the matching stockist code.
+  rpc GetStockist (GetStockistRequest) returns (GetStockistResponse);
+  // Gets the full set of stockists who are active for commission purposes.
+  rpc GetStockists (GetStockistsRequest) returns (GetStockistsResponse);
+
+  // Saves the stockist with all the specified details.
+  rpc SaveStockist (SaveStockistRequest) returns (SaveStockistResponse);
+}
+
+
+// The request message for getting a stockist by stockist code.
+message GetStockistRequest {
+  // The stockist's uniquely identifying code.
+  string stockistCode = 1;
+}
+
+// The response message for getting a stockist by stockist code.
+message GetStockistResponse {
+  // The stockist.
+  Stockist stockist = 1;
+}
+
+// The request message for getting all stockists.
+message GetStockistsRequest {
+}
+
+// The response message containing all stockists.
+message GetStockistsResponse {
+  // The list of all stockists.
+  repeated Stockist stockists = 1;
+}
+
+// The request message for saving or updating a stockist.
+message SaveStockistRequest {
+  // The complete stockist to be saved/updated.
+  Stockist stockist = 1;
+}
+
+// The response message for saving/updating a stockist.
+message SaveStockistResponse {
+  // Indicates whether the stockist was successfully saved/updated.
+  bool successful = 1;
+  // Displayable details on the save/update.
+  string message = 2;
+}
+
+
+message Stockist {
+  int32 stockistId = 1;
+  string stockistCode = 2;
+  google.protobuf.StringValue firstName = 3;
+  google.protobuf.StringValue lastName = 4;
+  StatusMode statusCode = 5;
+  StockistDetail details = 6;
+  repeated Commission commissions = 7;
+}
+
+message StockistDetail {
+  int32 stockistId = 1;
+  string shortDisplayName = 2;
+  string fullDisplayName = 3;
+  google.protobuf.StringValue description = 4;
+  google.protobuf.StringValue twitterHandle = 5;
+  google.protobuf.StringValue instagramHandle = 6;
+  google.protobuf.StringValue facebookHandle = 7;
+  google.protobuf.StringValue websiteUrl = 8;
+  google.protobuf.StringValue thumbnailImageUrl = 9;
+  google.protobuf.StringValue bannerImageUrl = 10;
+  google.protobuf.StringValue tumblrHandle = 11;
+  google.protobuf.StringValue emailAddress = 12;
+}
+

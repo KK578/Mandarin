@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using NUnit.Framework;
+using FluentAssertions;
+using Xunit;
 
 namespace Mandarin.Tests.Data
 {
-    [TestFixture]
     public class TestDataVerificationTests
     {
-        public static IEnumerable<string> ListAllFileNames()
+        public static IEnumerable<object[]> ListAllFileNames()
         {
             var assemblyTypes = typeof(TestDataVerificationTests).Assembly.GetTypes();
             var staticTypes = assemblyTypes.Where(t => t.IsClass && t.IsSealed && t.IsAbstract);
@@ -18,16 +19,16 @@ namespace Mandarin.Tests.Data
                 var value = constantField.GetValue(null);
                 if (value is string s)
                 {
-                    yield return s;
+                    yield return new object[] { s };
                 }
             }
         }
 
-        [Test]
-        [TestCaseSource(nameof(TestDataVerificationTests.ListAllFileNames))]
+        [Theory]
+        [MemberData(nameof(TestDataVerificationTests.ListAllFileNames))]
         public void VerifyFileExists(string filename)
         {
-            FileAssert.Exists(filename);
+            File.Exists(filename).Should().BeTrue();
         }
     }
 }

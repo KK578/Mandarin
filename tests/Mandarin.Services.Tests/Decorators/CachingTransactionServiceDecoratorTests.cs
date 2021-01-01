@@ -12,89 +12,89 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
 namespace Mandarin.Services.Tests.Decorators
 {
-    [TestFixture]
     public class CachingTransactionServiceDecoratorTests
     {
         private static readonly DateTime StartDate = new(2020, 05, 26);
         private static readonly DateTime EndDate = new(2020, 05, 27);
 
-        private Mock<ITransactionService> service;
-        private IAppCache appCache;
+        private readonly Mock<ITransactionService> transactionService;
+        private readonly IAppCache appCache;
 
-        [SetUp]
-        public void SetUp()
+        protected CachingTransactionServiceDecoratorTests()
         {
-            this.service = new Mock<ITransactionService>();
+            this.transactionService = new Mock<ITransactionService>();
+            var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+            this.appCache = new CachingService(new MemoryCacheProvider(memoryCache));
         }
 
-        [Test]
-        public async Task GetAllTransactions_GivenMultipleCalls_WhenServiceThrowsException_ThenServiceIsCalledEachTime()
-        {
-            this.GivenServiceThrowsException();
-            this.GivenRealMemoryCache();
-            await this.WhenServiceIsCalledMultipleTimes(5);
-            this.service.Verify(x => x.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate), Times.Exactly(5));
-        }
-
-        [Test]
-        public async Task GetAllTransactions_GivenMultipleCalls_WhenServiceReturnsDataSuccessfullyFirstTime_ThenServiceIsOnlyCalledOnce()
-        {
-            this.GivenServiceReturnsData();
-            this.GivenRealMemoryCache();
-            await this.WhenServiceIsCalledMultipleTimes(5);
-            this.service.Verify(x => x.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate), Times.Once());
-        }
-
-        [Test]
-        public async Task GetAllTransactions_GivenCallsToDifferentDates_ServiceIsCalledPerDateCombination()
-        {
-            this.GivenServiceReturnsData();
-            this.GivenRealMemoryCache();
-
-            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache, NullLogger<CachingTransactionServiceDecorator>.Instance);
-            var startDate = CachingTransactionServiceDecoratorTests.StartDate;
-            var midDate = CachingTransactionServiceDecoratorTests.StartDate.AddDays(1);
-            var endDate = CachingTransactionServiceDecoratorTests.EndDate;
-            await subject.GetAllTransactions(startDate, endDate).ToList().ToTask();
-            await subject.GetAllTransactions(startDate, midDate).ToList().ToTask();
-            await subject.GetAllTransactions(startDate, midDate).ToList().ToTask();
-            await subject.GetAllTransactions(midDate, endDate).ToList().ToTask();
-
-            this.service.Verify(x => x.GetAllTransactions(startDate, endDate), Times.Once());
-            this.service.Verify(x => x.GetAllTransactions(startDate, midDate), Times.Once());
-            this.service.Verify(x => x.GetAllTransactions(midDate, endDate), Times.Once());
-        }
+        private ITransactionService Subject =>
+            new CachingTransactionServiceDecorator(this.transactionService.Object,
+                                                   this.appCache,
+                                                   NullLogger<CachingTransactionServiceDecorator>.Instance);
 
         private void GivenServiceReturnsData()
         {
             var data = TestData.Create<List<Transaction>>();
-            this.service.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+            this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(data.ToObservable())
                 .Verifiable();
         }
 
-        private void GivenRealMemoryCache()
-        {
-            this.appCache = new CachingService(new MemoryCacheProvider(new MemoryCache(Options.Create(new MemoryCacheOptions()))));
-        }
-
         private void GivenServiceThrowsException()
         {
-            this.service.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Throws(new Exception("Service failure."))
+            this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(Observable.Throw<Transaction>(new Exception("Service failure.")))
                 .Verifiable();
         }
 
-        private async Task WhenServiceIsCalledMultipleTimes(int times)
+        public class TransactionTests : CachingTransactionServiceDecoratorTests
         {
-            var subject = new CachingTransactionServiceDecorator(this.service.Object, this.appCache, NullLogger<CachingTransactionServiceDecorator>.Instance);
-            for (var i = 0; i < times; i++)
+            [Fact]
+            public async Task ShouldAttemptToPopulateTheCacheIfAnExceptionOccurredPreviously()
             {
-                await subject.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate).ToList().ToTask();
+                this.GivenServiceThrowsException();
+                await this.WhenServiceIsCalledMultipleTimes(5);
+                this.transactionService.Verify(x => x.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate), Times.Exactly(5));
+            }
+
+            [Fact]
+            public async Task ShouldNotCallTheServiceIfCacheIsAlreadyPopulated()
+            {
+                this.GivenServiceReturnsData();
+                await this.WhenServiceIsCalledMultipleTimes(5);
+                this.transactionService.Verify(x => x.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate), Times.Once());
+            }
+
+            [Fact]
+            public async Task ShouldCallServiceOncePerDateCombination()
+            {
+                this.GivenServiceReturnsData();
+
+                var startDate = CachingTransactionServiceDecoratorTests.StartDate;
+                var midDate = CachingTransactionServiceDecoratorTests.StartDate.AddDays(1);
+                var endDate = CachingTransactionServiceDecoratorTests.EndDate;
+
+                var subject = this.Subject;
+                await subject.GetAllTransactions(startDate, endDate).ToList().ToTask();
+                await subject.GetAllTransactions(startDate, midDate).ToList().ToTask();
+                await subject.GetAllTransactions(startDate, midDate).ToList().ToTask();
+                await subject.GetAllTransactions(midDate, endDate).ToList().ToTask();
+
+                this.transactionService.Verify(x => x.GetAllTransactions(startDate, endDate), Times.Once());
+                this.transactionService.Verify(x => x.GetAllTransactions(startDate, midDate), Times.Once());
+                this.transactionService.Verify(x => x.GetAllTransactions(midDate, endDate), Times.Once());
+            }
+
+            private async Task WhenServiceIsCalledMultipleTimes(int times)
+            {
+                for (var i = 0; i < times; i++)
+                {
+                    await this.Subject.GetAllTransactions(CachingTransactionServiceDecoratorTests.StartDate, CachingTransactionServiceDecoratorTests.EndDate).ToList();
+                }
             }
         }
     }

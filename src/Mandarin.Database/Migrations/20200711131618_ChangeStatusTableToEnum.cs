@@ -79,6 +79,7 @@ namespace Mandarin.Database.Migrations
                 });
 
             migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'ACTIVE' WHERE stockist_status = 'Active';");
+            migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'ACTIVEHIDDEN' WHERE stockist_status = 'ActiveHidden';");
             migrationBuilder.Sql("UPDATE inventory.stockist SET stockist_status = 'INACTIVE' WHERE stockist_status = 'Inactive';");
 
             var statuses = EnumUtil.GetValues<StatusMode>().ToList();

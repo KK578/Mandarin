@@ -1,30 +1,36 @@
 ﻿using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Mandarin.Tests.Factory;
+using FluentAssertions;
+using Mandarin.Tests.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
-using NUnit.Framework;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Mandarin.Tests.Static
 {
-    [TestFixture]
-    public class LegacyRedirectTests
+    [Collection(nameof(MandarinTestsCollectionFixture))]
+    public class LegacyRedirectTests : MandarinIntegrationTestsBase
     {
-        private readonly WebApplicationFactory<MandarinStartup> factory;
+        private readonly HttpClient client;
 
-        public LegacyRedirectTests()
+        public LegacyRedirectTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+            : base(fixture, testOutputHelper)
         {
-            this.factory = MandarinApplicationFactory.Create();
+            this.client = this.Fixture.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+            });
         }
 
-        [Test]
-        [TestCase("/static/logo-300.png", "/static/images/logo.png")]
-        [TestCase("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf")]
+        [Theory]
+        [InlineData("/static/logo-300.png", "/static/images/logo.png")]
+        [InlineData("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf")]
         public async Task GetStaticPath_GivenLegacyPath_ShouldRedirect(string requestPath, string expectedRedirect)
         {
-            var client = this.factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
-            var response = await client.GetAsync(requestPath);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Redirect));
-            Assert.That(response.Headers.Location.ToString(), Is.EqualTo(expectedRedirect));
+            var response = await this.client.GetAsync(requestPath);
+            response.StatusCode.Should().Be(HttpStatusCode.Redirect);
+            response.Headers.Location.ToString().Should().Be(expectedRedirect);
         }
     }
 }

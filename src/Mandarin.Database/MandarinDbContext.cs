@@ -1,5 +1,5 @@
-﻿using Mandarin.Models.Artists;
-using Mandarin.Models.Commissions;
+﻿using Mandarin.Models.Commissions;
+using Mandarin.Models.Stockists;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mandarin.Database

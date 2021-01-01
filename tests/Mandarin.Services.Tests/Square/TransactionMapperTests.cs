@@ -4,19 +4,19 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
+using FluentAssertions;
 using Mandarin.Configuration;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Inventory;
 using Mandarin.Services.Square;
 using Microsoft.Extensions.Options;
 using Moq;
-using NUnit.Framework;
 using Square.Models;
+using Xunit;
 using Transaction = Mandarin.Models.Transactions.Transaction;
 
 namespace Mandarin.Services.Tests.Square
 {
-    [TestFixture]
     public class TransactionMapperTests
     {
         private readonly DateTime orderDate = DateTime.Now;
@@ -24,7 +24,7 @@ namespace Mandarin.Services.Tests.Square
         private Mock<IQueryableInventoryService> inventoryService;
         private MandarinConfiguration configuration;
 
-        [Test]
+        [Fact]
         public async Task MapToTransaction_GivenOrderWithLineItems_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
@@ -32,15 +32,16 @@ namespace Mandarin.Services.Tests.Square
             this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsLineItem(product);
             var transactions = await this.WhenMappingTransactions(order);
-            Assert.That(transactions.Count, Is.EqualTo(1));
-            Assert.That(transactions[0].TotalAmount, Is.EqualTo(10.00m));
-            Assert.That(transactions[0].Subtransactions[0].Product, Is.EqualTo(product));
-            Assert.That(transactions[0].Subtransactions[0].Quantity, Is.EqualTo(2));
-            Assert.That(transactions[0].Subtransactions[0].TransactionUnitPrice, Is.EqualTo(5.00m));
-            Assert.That(transactions[0].Subtransactions[0].Subtotal, Is.EqualTo(10.00m));
+
+            transactions.Should().HaveCount(1);
+            transactions[0].TotalAmount.Should().Be(10.00m);
+            transactions[0].Subtransactions[0].Product.Should().Be(product);
+            transactions[0].Subtransactions[0].Quantity.Should().Be(2);
+            transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
+            transactions[0].Subtransactions[0].Subtotal.Should().Be(10.00m);
         }
 
-        [Test]
+        [Fact]
         public async Task MapToTransaction_GivenOrderWithLineItems_WhenConfigurationMapsProduct_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
@@ -49,11 +50,12 @@ namespace Mandarin.Services.Tests.Square
             this.GivenConfigurationWithMappings(product, mappedProduct);
             var order = this.GivenOrderProductAsLineItem(product);
             var transactions = await this.WhenMappingTransactions(order);
-            Assert.That(transactions.Count, Is.EqualTo(1));
-            Assert.That(transactions[0].Subtransactions[0].Product, Is.EqualTo(mappedProduct));
+
+            transactions.Should().HaveCount(1);
+            transactions[0].Subtransactions[0].Product.Should().Be(mappedProduct);
         }
 
-        [Test]
+        [Fact]
         public async Task MapToTransaction_GivenOrderWithFixedCommission_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
@@ -63,20 +65,21 @@ namespace Mandarin.Services.Tests.Square
             this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsLineItem(product);
             var transactions = await this.WhenMappingTransactions(order);
-            Assert.That(transactions.Count, Is.EqualTo(1));
-            Assert.That(transactions[0].TotalAmount, Is.EqualTo(10.00m));
-            Assert.That(transactions[0].Subtransactions.Count, Is.EqualTo(2));
-            Assert.That(transactions[0].Subtransactions[0].Product, Is.EqualTo(product));
-            Assert.That(transactions[0].Subtransactions[0].Quantity, Is.EqualTo(2));
-            Assert.That(transactions[0].Subtransactions[0].TransactionUnitPrice, Is.EqualTo(4.00m));
-            Assert.That(transactions[0].Subtransactions[0].Subtotal, Is.EqualTo(8.00m));
-            Assert.That(transactions[0].Subtransactions[1].Product.ProductCode, Does.StartWith("TLM"));
-            Assert.That(transactions[0].Subtransactions[1].Quantity, Is.EqualTo(2));
-            Assert.That(transactions[0].Subtransactions[1].TransactionUnitPrice, Is.EqualTo(1.00m));
-            Assert.That(transactions[0].Subtransactions[1].Subtotal, Is.EqualTo(2.00m));
+
+            transactions.Should().HaveCount(1);
+            transactions[0].TotalAmount.Should().Be(10.00m);
+            transactions[0].Subtransactions.Should().HaveCount(2);
+            transactions[0].Subtransactions[0].Product.Should().Be(product);
+            transactions[0].Subtransactions[0].Quantity.Should().Be(2);
+            transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(4.00m);
+            transactions[0].Subtransactions[0].Subtotal.Should().Be(8.00m);
+            transactions[0].Subtransactions[1].Product.ProductCode.Should().StartWith("TLM");
+            transactions[0].Subtransactions[1].Quantity.Should().Be(2);
+            transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(1.00m);
+            transactions[0].Subtransactions[1].Subtotal.Should().Be(2.00m);
         }
 
-        [Test]
+        [Fact]
         public async Task MapToTransaction_GivenOrderWithDiscount_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
@@ -84,14 +87,15 @@ namespace Mandarin.Services.Tests.Square
             this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsDiscount(product);
             var transactions = await this.WhenMappingTransactions(order);
-            Assert.That(transactions.Count, Is.EqualTo(1));
-            Assert.That(transactions[0].TotalAmount, Is.EqualTo(-20.00m));
-            Assert.That(transactions[0].Subtransactions[0].Quantity, Is.EqualTo(2000));
-            Assert.That(transactions[0].Subtransactions[0].TransactionUnitPrice, Is.EqualTo(-0.01m));
-            Assert.That(transactions[0].Subtransactions[0].Subtotal, Is.EqualTo(-20.00m));
+
+            transactions.Should().HaveCount(1);
+            transactions[0].TotalAmount.Should().Be(-20.00m);
+            transactions[0].Subtransactions[0].Quantity.Should().Be(2000);
+            transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(-0.01m);
+            transactions[0].Subtransactions[0].Subtotal.Should().Be(-20.00m);
         }
 
-        [Test]
+        [Fact]
         public async Task MapToTransaction_GivenOrderWithReturn_ShouldMapCorrectly()
         {
             var product = TestData.Create<Product>();
@@ -99,11 +103,12 @@ namespace Mandarin.Services.Tests.Square
             this.GivenConfigurationWithNoMappings();
             var order = this.GivenOrderProductAsReturn(product);
             var transactions = await this.WhenMappingTransactions(order);
-            Assert.That(transactions.Count, Is.EqualTo(1));
-            Assert.That(transactions[0].TotalAmount, Is.EqualTo(-15.00m));
-            Assert.That(transactions[0].Subtransactions[0].Quantity, Is.EqualTo(-3));
-            Assert.That(transactions[0].Subtransactions[0].TransactionUnitPrice, Is.EqualTo(5.00m));
-            Assert.That(transactions[0].Subtransactions[0].Subtotal, Is.EqualTo(-15.00m));
+
+            transactions.Should().HaveCount(1);
+            transactions[0].TotalAmount.Should().Be(-15.00m);
+            transactions[0].Subtransactions[0].Quantity.Should().Be(-3);
+            transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
+            transactions[0].Subtransactions[0].Subtotal.Should().Be(-15.00m);
         }
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)

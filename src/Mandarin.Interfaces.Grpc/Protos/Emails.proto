@@ -1,0 +1,25 @@
+﻿syntax = "proto3";
+
+import "Commissions.proto";
+
+option csharp_namespace = "Mandarin.Api.Emails";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.emails";
+
+package uk.co.thelittlemandarin;
+
+// The email service definition.
+service Emails {
+  // Sends the <see cref="RecordOfSales"/> to the attached email address.
+  rpc SendRecordOfSalesEmail (SendRecordOfSalesEmailRequest) returns (SendRecordOfSalesEmailResponse);
+}
+
+// The request message for getting all stockists.
+message SendRecordOfSalesEmailRequest {
+  RecordOfSales recordOfSales = 1; // The artist commission breakdown.
+}
+
+// The response message containing all stockists.
+message SendRecordOfSalesEmailResponse {
+  bool isSuccess = 1;
+  string message = 2;
+}

@@ -1,9 +1,12 @@
+using AutoMapper;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Extensions;
+using Mandarin.Grpc;
+using Mandarin.Grpc.Converters;
 using Mandarin.Services;
 using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Mandarin
 {
@@ -55,16 +59,18 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
+            services.AddGrpc();
             services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinDatabase(this.configuration);
+            services.AddAutoMapper(options => { options.AddProfile<MandarinMapperProfile>(); });
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }
@@ -81,7 +87,7 @@ namespace Mandarin
         /// <param name="mandarinDbContext">The application database context.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
-            app.SafeUseAllElasticApm(this.configuration);
+            mandarinDbContext.Database.Migrate();
 
             if (env.IsDevelopment())
             {
@@ -89,11 +95,12 @@ namespace Mandarin
             }
             else
             {
-                mandarinDbContext.Database.Migrate();
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
+            app.SafeUseAllElasticApm(this.configuration);
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -102,6 +109,7 @@ namespace Mandarin
 
             app.UseRouting();
 
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -111,6 +119,9 @@ namespace Mandarin
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapGrpcService<CommissionsGrpcService>();
+                endpoints.MapGrpcService<EmailGrpcService>();
+                endpoints.MapGrpcService<StockistsGrpcService>();
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");

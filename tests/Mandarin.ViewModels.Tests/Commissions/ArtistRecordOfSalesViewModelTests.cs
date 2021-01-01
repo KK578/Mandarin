@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
+using FluentAssertions;
 using Mandarin.Models.Commissions;
 using Mandarin.Services;
 using Mandarin.Services.Objects;
@@ -8,114 +9,124 @@ using Mandarin.ViewModels.Commissions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using SendGrid.Helpers.Mail;
+using Xunit;
 
 namespace Mandarin.ViewModels.Tests.Commissions
 {
-    [TestFixture]
     public class ArtistRecordOfSalesViewModelTests
     {
-        [Test]
-        public void OnConstruction_AssertDefaults()
+        private const string CurrentUserName = "Fred";
+
+        private readonly Mock<IEmailService> emailService;
+        private readonly PageContentModel pageContentModel;
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        private readonly RecordOfSales recordOfSales;
+
+        protected ArtistRecordOfSalesViewModelTests()
         {
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<ArtistSales>());
-            Assert.That(subject.SendInProgress, Is.False);
-            Assert.That(subject.SendSuccessful, Is.False);
-            Assert.That(subject.StatusMessage, Is.Null);
+            var data = new { Admin = new { RecordOfSales = new { Templates = new { Sales = "For {0} there are sales. {1}" } } } };
+
+            this.emailService = new Mock<IEmailService>();
+            this.pageContentModel = new PageContentModel(JToken.FromObject(data));
+            this.httpContextAccessor = Mock.Of<IHttpContextAccessor>(x => x.HttpContext.User.Identity.Name == ArtistRecordOfSalesViewModelTests.CurrentUserName);
+            this.recordOfSales = TestData.Create<RecordOfSales>();
         }
 
-        [Test]
-        public void VerifySimpleSettersAndFormatting()
+        private IArtistRecordOfSalesViewModel Subject =>
+            new ArtistRecordOfSalesViewModel(this.emailService.Object,
+                                             this.pageContentModel,
+                                             this.httpContextAccessor,
+                                             this.recordOfSales);
+
+        public class GeneralTests : ArtistRecordOfSalesViewModelTests
         {
-            var artistSales = TestData.Create<ArtistSales>();
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, artistSales);
-            subject.EmailAddress = "MyEmail";
-            subject.CustomMessage = TestData.WellKnownString;
-
-            Assert.That(subject.ToString(), Contains.Substring(subject.EmailAddress));
-            Assert.That(subject.CustomMessage, Is.EqualTo(TestData.WellKnownString));
-        }
-
-        [Test]
-        public void ToggleSentFlag_GivenFirstCall_ShouldSetToStatusToIgnored()
-        {
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<ArtistSales>());
-            subject.ToggleSentFlag();
-
-            Assert.That(subject.SendSuccessful, Is.True);
-            Assert.That(subject.StatusMessage, Is.EqualTo("Ignored."));
-        }
-
-        [Test]
-        public void ToggleSentFlag_GivenSecondCAll_ShouldSetToOriginalState()
-        {
-            var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<ArtistSales>());
-            subject.ToggleSentFlag();
-            subject.ToggleSentFlag();
-
-            Assert.That(subject.SendSuccessful, Is.False);
-            Assert.That(subject.StatusMessage, Is.Null);
-        }
-
-        [Test]
-        public async Task SendEmailAsync_GivenServiceThrowsException_SetsStatusToExceptionMessage()
-        {
-            var exception = new Exception(TestData.WellKnownString);
-            var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<ArtistSales>())).Returns(new SendGridMessage());
-            emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ThrowsAsync(exception);
-
-            var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, TestData.Create<ArtistSales>());
-            await subject.SendEmailAsync();
-
-            Assert.That(subject.SendSuccessful, Is.False);
-            Assert.That(subject.StatusMessage, Is.EqualTo(TestData.WellKnownString));
-        }
-
-        [Test]
-        public async Task SendEmailAsync_GivenServiceSendsSuccessfully_SetsStatusToSuccess()
-        {
-            var emailService = new Mock<IEmailService>();
-            emailService.Setup(x => x.BuildRecordOfSalesEmail(It.IsAny<ArtistSales>())).Returns(new SendGridMessage());
-            emailService.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>())).ReturnsAsync(new EmailResponse(200));
-
-            var artistSales = TestData.Create<ArtistSales>();
-            var subject = new ArtistRecordOfSalesViewModel(emailService.Object, null, null, artistSales);
-            subject.EmailAddress = TestData.WellKnownString;
-            await subject.SendEmailAsync();
-
-            Assert.That(subject.SendSuccessful, Is.True);
-            Assert.That(subject.StatusMessage, Contains.Substring("Successful"));
-            Assert.That(subject.StatusMessage, Contains.Substring(TestData.WellKnownString));
-        }
-
-        [Test]
-        public void SetMessageFromTemplate_GivenFormat_TheMessageShouldBeUpdatedToFormat()
-        {
-            var data = new
+            [Fact]
+            public void OnConstruction_AssertDefaults()
             {
-                Admin = new
-                {
-                    RecordOfSales = new
-                    {
-                        Templates = new
-                        {
-                            Sales = "For {0} there are sales. {1}",
-                        },
-                    },
-                },
-            };
+                var subject = this.Subject;
+                subject.SendInProgress.Should().BeFalse();
+                subject.SendSuccessful.Should().BeFalse();
+                subject.StatusMessage.Should().BeNull();
+            }
 
-            var name = TestData.Create<string>();
-            var sales = TestData.Create<ArtistSales>();
-            var pageContentModel = new PageContentModel(JToken.FromObject(data));
-            var httpContextAccessor = Mock.Of<IHttpContextAccessor>(x => x.HttpContext.User.Identity.Name == name);
-            var subject = new ArtistRecordOfSalesViewModel(null, pageContentModel, httpContextAccessor, sales);
+            [Fact]
+            public void VerifySimpleSettersAndFormatting()
+            {
+                var subject = this.Subject;
+                subject.EmailAddress = "MyEmail";
+                subject.CustomMessage = TestData.WellKnownString;
 
-            subject.SetMessageFromTemplate(RecordOfSalesTemplateKey.Sales);
+                subject.ToString().Should().Contain(subject.EmailAddress);
+                subject.CustomMessage.Should().Be(TestData.WellKnownString);
+            }
+        }
 
-            Assert.That(subject.CustomMessage, Is.EqualTo($"For {sales.FirstName} there are sales. {name}"));
+        public class ToggleSentFlagTests : ArtistRecordOfSalesViewModelTests
+        {
+            [Fact]
+            public void ShouldSetStatusToIgnored()
+            {
+                var subject = this.Subject;
+                subject.ToggleSentFlag();
+
+                subject.SendSuccessful.Should().BeTrue();
+                subject.StatusMessage.Should().Be("Ignored.");
+            }
+
+            [Fact]
+            public void ShouldReturnStatusToNullIfPreviouslyIgnored()
+            {
+                var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<RecordOfSales>());
+                subject.ToggleSentFlag();
+                subject.ToggleSentFlag();
+
+                subject.SendSuccessful.Should().BeFalse();
+                subject.StatusMessage.Should().BeNull();
+            }
+        }
+
+        public class SendEmailAsyncTests : ArtistRecordOfSalesViewModelTests
+        {
+            [Fact]
+            public async Task ShouldDisplayErrorIfServiceThrows()
+            {
+                var exception = new Exception(TestData.WellKnownString);
+                this.emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>()))
+                    .ThrowsAsync(exception);
+
+                var subject = this.Subject;
+                await subject.SendEmailAsync();
+
+                subject.SendSuccessful.Should().BeFalse();
+                subject.StatusMessage.Should().Be(TestData.WellKnownString);
+            }
+
+            [Fact]
+            public async Task ShouldShowServiceResponseOnSuccess()
+            {
+                var response = new EmailResponse { IsSuccess = true, Message = $"Successfully sent to {TestData.WellKnownString}!" };
+                this.emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>())).ReturnsAsync(response);
+
+                var subject = this.Subject;
+                subject.EmailAddress = TestData.WellKnownString;
+                await subject.SendEmailAsync();
+
+                subject.SendSuccessful.Should().BeTrue();
+                subject.StatusMessage.Should().Be(response.Message);
+            }
+        }
+
+        public class SetMessageFromTemplateTests : ArtistRecordOfSalesViewModelTests
+        {
+            [Fact]
+            public void ShouldSetTheCustomMessageToFormattedTemplateString()
+            {
+                var subject = this.Subject;
+                subject.SetMessageFromTemplate(RecordOfSalesTemplateKey.Sales);
+
+                subject.CustomMessage.Should().Be($"For {this.recordOfSales.FirstName} there are sales. {ArtistRecordOfSalesViewModelTests.CurrentUserName}");
+            }
         }
     }
 }

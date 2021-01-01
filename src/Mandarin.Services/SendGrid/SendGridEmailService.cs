@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Mandarin.Models.Commissions;
 using Mandarin.Services.Objects;
@@ -32,16 +34,21 @@ namespace Mandarin.Services.SendGrid
         }
 
         /// <inheritdoc/>
-        public SendGridMessage BuildRecordOfSalesEmail(ArtistSales artistSales)
+        public Task<EmailResponse> SendRecordOfSalesEmailAsync(RecordOfSales recordOfSales)
+        {
+            return this.SendEmail(this.BuildRecordOfSalesEmail(recordOfSales));
+        }
+
+        private SendGridMessage BuildRecordOfSalesEmail(RecordOfSales recordOfSales)
         {
             var email = new SendGridMessage();
             var configuration = this.sendGridConfigurationOption.Value;
             email.From = new EmailAddress(configuration.ServiceEmail);
-            email.AddTo(new EmailAddress(artistSales.EmailAddress));
+            email.AddTo(new EmailAddress(recordOfSales.EmailAddress));
             email.TemplateId = configuration.RecordOfSalesTemplateId;
-            email.SetTemplateData(artistSales);
+            email.SetTemplateData(recordOfSales);
 
-            if (!string.Equals(artistSales.EmailAddress, configuration.RealContactEmail, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(recordOfSales.EmailAddress, configuration.RealContactEmail, StringComparison.OrdinalIgnoreCase))
             {
                 email.ReplyTo = new EmailAddress(configuration.RealContactEmail);
                 email.AddBcc(configuration.RealContactEmail);
@@ -50,24 +57,58 @@ namespace Mandarin.Services.SendGrid
             return email;
         }
 
-        /// <inheritdoc/>
-        public async Task<EmailResponse> SendEmailAsync(SendGridMessage email)
+        private async Task<EmailResponse> SendEmail(SendGridMessage email)
         {
-            var response = await this.sendGridClient.SendEmailAsync(email);
-            var bodyContent = await SendGridEmailService.GetBodyContent(response);
-            this.logger.LogInformation("SendGrid SendEmail: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
-            return new EmailResponse((int)response.StatusCode);
-        }
-
-        private static async Task<string> GetBodyContent(Response response)
-        {
-            if (response.Body == null)
+            try
             {
-                return null;
+                var emails = string.Join(", ", email.Personalizations[0].Tos.Select(x => x.Email));
+                var response = await this.sendGridClient.SendEmailAsync(email);
+                var bodyContent = await GetBodyContent(response.Body);
+                this.logger.LogInformation("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    this.logger.LogInformation("Sent email successfully: {@Email}", email);
+                    return new EmailResponse
+                    {
+                        IsSuccess = true,
+                        Message = $"Successfully sent to {emails}.",
+                    };
+                }
+
+                this.logger.LogWarning("Email sent with errors: {@Response} {@Email}", response, email);
+                return new EmailResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Failed to send to {emails}. Additional info: {bodyContent}",
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Exception whilst attempting to send email: {@Email}.", email);
+                return new EmailResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Failed to send email. Additional info: {ex.Message}",
+                };
             }
 
-            var bodyContent = await response.Body.ReadAsStringAsync();
-            return bodyContent;
+            static async Task<string> GetBodyContent(HttpContent content)
+            {
+                if (content == null)
+                {
+                    return null;
+                }
+
+                try
+                {
+                    return await content.ReadAsStringAsync();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
         }
     }
 }

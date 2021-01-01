@@ -1,9 +1,8 @@
 ﻿@page "/artists"
 @using Mandarin.Services
-@using Mandarin.Models.Artists
-@using System.Reactive.Linq
 @using Bashi.Core.Extensions
-@inject IArtistService ArtistService;
+@using Mandarin.Models.Stockists
+@inject IStockistService StockistService;
 @inject NavigationManager NavigationManager;
 
 <Card>
@@ -40,14 +39,14 @@
 
 @code
 {
-  private IList<Stockist> data;
+  private IReadOnlyList<Stockist> data;
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
 
-    data = await ArtistService.GetArtistsForCommissionAsync().ToList();
+    data = await StockistService.GetStockistsAsync();
   }
 
   private void OnNewClicked()

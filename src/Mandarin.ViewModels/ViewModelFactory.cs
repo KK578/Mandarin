@@ -15,7 +15,7 @@ namespace Mandarin.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewModelFactory"/> class.
         /// </summary>
-        /// <param name="emailService">The email service.</param>
+        /// <param name="emailService">The application service for sending emails.</param>
         /// <param name="pageContentModel">The website content model.</param>
         /// <param name="httpContextAccessor">The HttpContext accessor.</param>
         public ViewModelFactory(IEmailService emailService, PageContentModel pageContentModel, IHttpContextAccessor httpContextAccessor)
@@ -26,9 +26,9 @@ namespace Mandarin.ViewModels
         }
 
         /// <inheritdoc/>
-        public IArtistRecordOfSalesViewModel CreateArtistRecordOfSalesViewModel(ArtistSales commission)
+        public IArtistRecordOfSalesViewModel CreateArtistRecordOfSalesViewModel(RecordOfSales recordOfSales)
         {
-            return new ArtistRecordOfSalesViewModel(this.emailService, this.pageContentModel, this.httpContextAccessor, commission);
+            return new ArtistRecordOfSalesViewModel(this.emailService, this.pageContentModel, this.httpContextAccessor, recordOfSales);
         }
     }
 }
