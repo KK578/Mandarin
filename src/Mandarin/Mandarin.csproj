@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Mandarin.Interfaces.Grpc\Mandarin.Interfaces.Grpc.csproj" />
     <ProjectReference Include="..\Mandarin.Interfaces\Mandarin.Interfaces.csproj" />
     <ProjectReference Include="..\Mandarin.Services\Mandarin.Services.csproj" />
     <ProjectReference Include="..\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />

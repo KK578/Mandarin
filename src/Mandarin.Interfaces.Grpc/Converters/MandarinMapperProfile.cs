@@ -2,7 +2,7 @@
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 
-namespace Mandarin.Converters
+namespace Mandarin.Grpc.Converters
 {
     /// <summary>
     /// Configuration Profile for <see cref="Mapper"/> to convert Mandarin Domain types.
