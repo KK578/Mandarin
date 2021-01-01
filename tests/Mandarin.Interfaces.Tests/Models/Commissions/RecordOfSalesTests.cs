@@ -3,28 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
+using FluentAssertions;
 using Mandarin.Models.Commissions;
 using Mandarin.Tests.Data;
 using Newtonsoft.Json;
-using NUnit.Framework;
+using Xunit;
 
 namespace Mandarin.Interfaces.Tests.Models.Commissions
 {
-    [TestFixture]
     public class RecordOfSalesTests
     {
-        private static string SanitizeWhitespace(string input)
+        public class WithMessageCustomisationsTests : RecordOfSalesTests
         {
-            var trimmed = input.Replace("\r", string.Empty)
-                               .Replace("\n", string.Empty)
-                               .Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" ", trimmed);
-        }
-
-        [TestFixture]
-        private class WithMessageCustomisationsTests : RecordOfSalesTests
-        {
-            [Test]
+            [Fact]
             public void ShouldMaintainNullSalesList()
             {
                 var recordOfSales = new RecordOfSales(TestData.NextString(),
@@ -41,30 +32,29 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
                                                       TestData.Create<decimal>());
 
                 var copy = recordOfSales.WithMessageCustomisations(null, null);
-                Assert.That(copy.Sales, Is.Null);
+                copy.Sales.Should().BeNull();
             }
 
-            [Test]
+            [Fact]
             public void WithMessageCustomisations_EmailAndMessageShouldUpdateWhenNotNull()
             {
                 var original = TestData.Create<RecordOfSales>();
 
                 var copyWithNulls = original.WithMessageCustomisations(null, null);
-                Assert.That(copyWithNulls.EmailAddress, Is.EqualTo(original.EmailAddress));
-                Assert.That(copyWithNulls.CustomMessage, Is.EqualTo(original.CustomMessage));
+                copyWithNulls.EmailAddress.Should().Be(original.EmailAddress);
+                copyWithNulls.CustomMessage.Should().Be(original.CustomMessage);
 
                 var email = TestData.NextString();
                 var message = TestData.NextString();
                 var updated = original.WithMessageCustomisations(email, message);
-                Assert.That(updated.EmailAddress, Is.EqualTo(email));
-                Assert.That(updated.CustomMessage, Is.EqualTo(message));
+                updated.EmailAddress.Should().Be(email);
+                updated.CustomMessage.Should().Be(message);
             }
         }
 
-        [TestFixture]
-        private class AsJsonTests : RecordOfSalesTests
+        public class AsJsonTests : RecordOfSalesTests
         {
-            [Test]
+            [Fact]
             public async Task AsJson_ShouldMatchSnapshot()
             {
                 var data = new RecordOfSales("TLM",
@@ -84,11 +74,10 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
                                              -1.00M,
                                              9.00M);
 
-                var snapshot = await File.ReadAllTextAsync(WellKnownTestData.Commissions.ArtistSalesTLM);
+                var snapshot = await File.ReadAllTextAsync(WellKnownTestData.Commissions.RecordOfSalesTLM);
                 var actual = JsonConvert.SerializeObject(data, Formatting.Indented);
 
-                Assert.That(RecordOfSalesTests.SanitizeWhitespace(actual),
-                            Is.EqualTo(RecordOfSalesTests.SanitizeWhitespace(snapshot)).NoClip.AsCollection);
+                actual.Should().BeEquivalentTo(snapshot.Trim());
             }
         }
     }

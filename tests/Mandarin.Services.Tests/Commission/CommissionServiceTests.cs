@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using AutoFixture;
 using Bashi.Tests.Framework.Data;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Mandarin.Database;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
@@ -17,29 +18,27 @@ using Mandarin.Tests.Data;
 using Mandarin.Tests.Data.Extensions;
 using Moq;
 using Moq.EntityFrameworkCore;
-using NUnit.Framework;
+using Xunit;
 
 namespace Mandarin.Services.Tests.Commission
 {
-    [TestFixture]
     public class CommissionServiceTests
     {
-        private Mock<IStockistService> stockistService;
-        private Mock<ITransactionService> transactionService;
-        private Mock<MandarinDbContext> mandarinDbContext;
+        private readonly Mock<IStockistService> stockistService;
+        private readonly Mock<ITransactionService> transactionService;
+        private readonly Mock<MandarinDbContext> mandarinDbContext;
 
-        private ICommissionService Subject =>
-            new CommissionService(this.stockistService.Object,
-                                  this.transactionService.Object,
-                                  this.mandarinDbContext.Object);
-
-        [SetUp]
-        public void SetUp()
+        protected CommissionServiceTests()
         {
             this.stockistService = new Mock<IStockistService>();
             this.transactionService = new Mock<ITransactionService>();
             this.mandarinDbContext = new Mock<MandarinDbContext>();
         }
+
+        private ICommissionService Subject =>
+            new CommissionService(this.stockistService.Object,
+                                  this.transactionService.Object,
+                                  this.mandarinDbContext.Object);
 
         private void GivenCommissionRateGroups(params int[] rates)
         {
@@ -81,50 +80,55 @@ namespace Mandarin.Services.Tests.Commission
                 .Returns(transactions.ToObservable());
         }
 
-        [TestFixture]
-        private class GetCommissionRateGroupsTests : CommissionServiceTests
+        public class GetCommissionRateGroupsTests : CommissionServiceTests
         {
-            [Test]
+            [Fact]
             public async Task ShouldReturnAllEntries()
             {
                 this.GivenCommissionRateGroups(10, 20, 30);
                 var actual = await this.Subject.GetCommissionRateGroupsAsync();
-                Assert.That(actual, Has.Count.EqualTo(3));
+                actual.Should().HaveCount(3);
             }
 
-            [Test]
+            [Fact]
             public async Task ShouldReturnEntriesInAscendingOrderByRate()
             {
                 this.GivenCommissionRateGroups(40, 20, 10, 50, 30, 100);
                 var actual = await this.Subject.GetCommissionRateGroupsAsync();
-                Assert.That(actual.Select(x => x.Rate), Is.EqualTo(new[] { 10, 20, 30, 40, 50, 100 }).AsCollection);
+                actual.Select(x => x.Rate).Should().HaveCount(6).And.BeInAscendingOrder();
             }
         }
 
-        [TestFixture]
-        private class GetRecordOfSalesForPeriodAsyncTests : CommissionServiceTests
+        public class GetRecordOfSalesForPeriodAsyncTests : CommissionServiceTests
         {
-            [Test]
+            [Fact]
             public async Task ShouldCalculateCommissionCorrectly()
             {
                 this.GivenTlmStockistExists();
                 this.GivenTransactionServiceReturnsData();
 
-                var artistSales = await this.Subject.GetRecordOfSalesForPeriodAsync(DateTime.Now, DateTime.Now);
+                var actual = await this.Subject.GetRecordOfSalesForPeriodAsync(DateTime.Now, DateTime.Now);
 
-                Assert.That(artistSales.Count, Is.EqualTo(1));
-                Assert.That(artistSales[0].Subtotal, Is.EqualTo(60.00m));
-                Assert.That(artistSales[0].CommissionTotal, Is.EqualTo(-6.00m));
-                Assert.That(artistSales[0].Total, Is.EqualTo(54.00m));
-                Assert.That(artistSales[0].Sales.Count, Is.EqualTo(2));
-                Assert.That(artistSales[0].Sales[0].Quantity, Is.EqualTo(5));
-                Assert.That(artistSales[0].Sales[0].Subtotal, Is.EqualTo(5));
-                Assert.That(artistSales[0].Sales[0].Commission, Is.EqualTo(-0.5m));
-                Assert.That(artistSales[0].Sales[0].Total, Is.EqualTo(4.5m));
-                Assert.That(artistSales[0].Sales[1].Quantity, Is.EqualTo(11));
-                Assert.That(artistSales[0].Sales[1].Subtotal, Is.EqualTo(55m));
-                Assert.That(artistSales[0].Sales[1].Commission, Is.EqualTo(-5.5m));
-                Assert.That(artistSales[0].Sales[1].Total, Is.EqualTo(49.5m));
+                actual.Should().HaveCount(1);
+                using (new AssertionScope())
+                {
+                    actual[0].Subtotal.Should().Be(60.00m);
+                    actual[0].CommissionTotal.Should().Be(-6.00m);
+                    actual[0].Total.Should().Be(54.00m);
+                    actual[0].Sales.Should().HaveCount(2);
+                }
+
+                using (new AssertionScope())
+                {
+                    actual[0].Sales[0].Quantity.Should().Be(5);
+                    actual[0].Sales[0].Subtotal.Should().Be(5);
+                    actual[0].Sales[0].Commission.Should().Be(-0.5m);
+                    actual[0].Sales[0].Total.Should().Be(4.5m);
+                    actual[0].Sales[1].Quantity.Should().Be(11);
+                    actual[0].Sales[1].Subtotal.Should().Be(55m);
+                    actual[0].Sales[1].Commission.Should().Be(-5.5m);
+                    actual[0].Sales[1].Total.Should().Be(49.5m);
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using FluentAssertions;
 using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace Mandarin.Interfaces.Tests.Converters
 {
@@ -8,15 +8,15 @@ namespace Mandarin.Interfaces.Tests.Converters
     {
         private static readonly JsonSerializer JsonSerializer = JsonSerializer.CreateDefault();
 
-        public static void AssertRoundTripOfValue(JsonConverter subject, object o)
+        public static void AssertRoundTripOfValue(JsonConverter subject, object original)
         {
-            var serialized = JsonConverterTestHelper.WriteToString(subject, o);
+            var serialized = JsonConverterTestHelper.WriteToString(subject, original);
             using var sr = new StringReader(serialized);
             using var jsonReader = new JsonTextReader(sr);
             jsonReader.Read();
-            var data = subject.ReadJson(jsonReader, o.GetType(), null, JsonConverterTestHelper.JsonSerializer);
+            var data = subject.ReadJson(jsonReader, original.GetType(), null, JsonConverterTestHelper.JsonSerializer);
 
-            Assert.That(data, Is.EqualTo(o));
+            data.Should().Be(original);
         }
 
         public static string WriteToString(JsonConverter subject, object o)
@@ -31,7 +31,7 @@ namespace Mandarin.Interfaces.Tests.Converters
 
         public static void AssertCanConvert(JsonConverter subject, object o)
         {
-            Assert.That(subject.CanConvert(o.GetType()), Is.True);
+            subject.CanConvert(o.GetType()).Should().BeTrue();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Mandarin.Database;
 using Mandarin.Models.Stockists;
 using Mandarin.Services.Stockists;
@@ -6,32 +7,29 @@ using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Moq.EntityFrameworkCore;
-using NUnit.Framework;
+using Xunit;
 
 namespace Mandarin.Services.Tests.Stockists
 {
-    [TestFixture]
     public class DatabaseStockistsServiceTests
     {
-        private Mock<MandarinDbContext> mandarinDbContext;
+        private readonly Mock<MandarinDbContext> mandarinDbContext;
 
-        private IStockistService Subject => new EntityFrameworkStockistService(this.mandarinDbContext.Object, NullLogger<EntityFrameworkStockistService>.Instance);
-
-        [SetUp]
-        public void SetUp()
+        protected DatabaseStockistsServiceTests()
         {
             this.mandarinDbContext = new Mock<MandarinDbContext>();
         }
+
+        private IStockistService Subject => new EntityFrameworkStockistService(this.mandarinDbContext.Object, NullLogger<EntityFrameworkStockistService>.Instance);
 
         private void GivenStockistsExist(params Stockist[] stockists)
         {
             this.mandarinDbContext.Setup(x => x.Stockist).ReturnsDbSet(stockists);
         }
 
-        [TestFixture]
-        private class GetStockistsAsyncTests : DatabaseStockistsServiceTests
+        public class GetStockistsAsyncTests : DatabaseStockistsServiceTests
         {
-            [Test]
+            [Fact]
             public async Task ShouldReturnAllStockistsInOrderOfStockistCode()
             {
                 this.GivenStockistsExist(WellKnownTestData.Stockists.InactiveStockist,
@@ -39,10 +37,11 @@ namespace Mandarin.Services.Tests.Stockists
                                          WellKnownTestData.Stockists.MinimalStockist);
 
                 var artistDetails = await this.Subject.GetStockistsAsync();
-                Assert.That(artistDetails, Has.Exactly(3).Items);
-                Assert.That(artistDetails[0], Is.EqualTo(WellKnownTestData.Stockists.HiddenStockist));
-                Assert.That(artistDetails[1], Is.EqualTo(WellKnownTestData.Stockists.InactiveStockist));
-                Assert.That(artistDetails[2], Is.EqualTo(WellKnownTestData.Stockists.MinimalStockist));
+
+                artistDetails.Should().HaveCount(3);
+                artistDetails[0].Should().Be(WellKnownTestData.Stockists.HiddenStockist);
+                artistDetails[1].Should().Be(WellKnownTestData.Stockists.InactiveStockist);
+                artistDetails[2].Should().Be(WellKnownTestData.Stockists.MinimalStockist);
             }
         }
     }

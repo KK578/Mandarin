@@ -10,27 +10,23 @@ using Mandarin.Models.Commissions;
 using Mandarin.Services.SendGrid;
 using Microsoft.Extensions.Options;
 using Moq;
-using NUnit.Framework;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Xunit;
 
 namespace Mandarin.Services.Tests.SendGrid
 {
-    [TestFixture]
     public class SendGridEmailServiceTests
     {
         private const string ServiceEmail = "noreply@example.com";
         private const string RealContactEmail = "contact@example.com";
         private const string TemplateId = "TemplateId";
 
-        private Mock<ISendGridClient> sendGridClient;
-        private IOptions<SendGridConfiguration> configuration;
-        private TestableLogger<SendGridEmailService> logger;
+        private readonly Mock<ISendGridClient> sendGridClient;
+        private readonly IOptions<SendGridConfiguration> configuration;
+        private readonly TestableLogger<SendGridEmailService> logger;
 
-        private IEmailService Subject => new SendGridEmailService(this.sendGridClient.Object, this.configuration, this.logger);
-
-        [SetUp]
-        public void SetUp()
+        protected SendGridEmailServiceTests()
         {
             this.sendGridClient = new Mock<ISendGridClient>();
             this.configuration = Options.Create(new SendGridConfiguration
@@ -41,6 +37,8 @@ namespace Mandarin.Services.Tests.SendGrid
             });
             this.logger = new TestableLogger<SendGridEmailService>();
         }
+
+        private IEmailService Subject => new SendGridEmailService(this.sendGridClient.Object, this.configuration, this.logger);
 
         private void GivenExpectedEmailMatches(Action<SendGridMessage> verifyMessageFunc)
         {
@@ -61,46 +59,42 @@ namespace Mandarin.Services.Tests.SendGrid
                 .ThrowsAsync(ex);
         }
 
-        [TestFixture]
-        private class SendRecordOfSalesEmailAsyncTests : SendGridEmailServiceTests
+        public class SendRecordOfSalesEmailAsyncTests : SendGridEmailServiceTests
         {
-            [Test]
+            [Fact]
             public async Task ShouldCopyEmailDetailsFromConfiguration()
             {
                 var model = TestData.Create<RecordOfSales>();
 
                 this.GivenExpectedEmailMatches(result =>
                 {
-                    Assert.That(result.From.Email, Is.EqualTo(SendGridEmailServiceTests.ServiceEmail));
-                    Assert.That(result.ReplyTo.Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
-                    Assert.That(result.Personalizations[0].Bccs[0].Email, Is.EqualTo(SendGridEmailServiceTests.RealContactEmail));
-                    Assert.That(result.Personalizations[0].Tos[0].Email, Is.EqualTo(model.EmailAddress));
-                    Assert.That(result.TemplateId, Is.EqualTo(SendGridEmailServiceTests.TemplateId));
-                    result.Personalizations[0].TemplateData
-                          .Should().BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress)
-                                                                .Excluding(sales => sales.CustomMessage));
+                    result.From.Email.Should().Be(SendGridEmailServiceTests.ServiceEmail);
+                    result.ReplyTo.Email.Should().Be(SendGridEmailServiceTests.RealContactEmail);
+                    result.Personalizations[0].Bccs[0].Email.Should().Be(SendGridEmailServiceTests.RealContactEmail);
+                    result.Personalizations[0].Tos[0].Email.Should().Be(model.EmailAddress);
+                    result.TemplateId.Should().Be(SendGridEmailServiceTests.TemplateId);
+                    result.Personalizations[0].TemplateData.Should()
+                          .BeEquivalentTo(model, o => o.Excluding(a => a.EmailAddress)
+                                                       .Excluding(sales => sales.CustomMessage));
                 });
 
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
-                Assert.That(response.IsSuccess, Is.True);
+                response.IsSuccess.Should().BeTrue();
             }
 
-            [Test]
+            [Fact]
             public async Task ShouldNotSetBccIfEmailIsSentToRealContactEmail()
             {
                 var model = TestData.Create<RecordOfSales>();
                 model = model.WithMessageCustomisations(SendGridEmailServiceTests.RealContactEmail, model.CustomMessage);
 
-                this.GivenExpectedEmailMatches(result =>
-                {
-                    Assert.That(result.Personalizations[0].Bccs, Is.Null);
-                });
+                this.GivenExpectedEmailMatches(result => result.Personalizations[0].Bccs.Should().BeNull());
 
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
-                Assert.That(response.IsSuccess, Is.True);
+                response.IsSuccess.Should().BeTrue();
             }
 
-            [Test]
+            [Fact]
             public async Task ShouldRespondWithErrorIfUnsuccessfulOnSendingEmail()
             {
                 var model = TestData.Create<RecordOfSales>();
@@ -109,11 +103,11 @@ namespace Mandarin.Services.Tests.SendGrid
 
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
 
-                Assert.That(response.IsSuccess, Is.False);
-                Assert.That(response.Message, Contains.Substring("Invalid API Key"));
+                response.IsSuccess.Should().BeFalse();
+                response.Message.Should().Contain("Invalid API Key");
             }
 
-            [Test]
+            [Fact]
             public async Task ShouldCorrectlyProcessMessageWhenSendGridResponseBodyIsEmpty()
             {
                 var model = TestData.Create<RecordOfSales>();
@@ -122,10 +116,10 @@ namespace Mandarin.Services.Tests.SendGrid
 
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
 
-                Assert.That(response.IsSuccess, Is.True);
+                response.IsSuccess.Should().BeTrue();
             }
 
-            [Test]
+            [Fact]
             public async Task ShouldHaveAnyExceptionMessageInResponseMessage()
             {
                 var model = TestData.Create<RecordOfSales>();
@@ -133,11 +127,11 @@ namespace Mandarin.Services.Tests.SendGrid
                 this.GivenSendGridThrows(ex);
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
 
-                Assert.That(response.IsSuccess, Is.False);
-                Assert.That(response.Message, Contains.Substring("Service didn't work."));
+                response.IsSuccess.Should().BeFalse();
+                response.Message.Should().Contain("Service didn't work.");
             }
 
-            [Test]
+            [Fact]
             public async Task ShouldShowSuccessIfSendGridAcceptsEmail()
             {
                 var model = TestData.Create<RecordOfSales>();
@@ -146,8 +140,8 @@ namespace Mandarin.Services.Tests.SendGrid
 
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
 
-                Assert.That(response.IsSuccess, Is.True);
-                Assert.That(response.Message, Contains.Substring("Success"));
+                response.IsSuccess.Should().BeTrue();
+                response.Message.Should().Contain("Success");
             }
         }
     }

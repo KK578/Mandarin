@@ -12,16 +12,15 @@ using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
-using NUnit.Framework;
 using Square;
 using Square.Models;
+using Xunit;
 
 namespace Mandarin.Services.Tests.Square
 {
-    [TestFixture]
     public class SquareInventoryServiceTests
     {
-        [Test]
+        [Fact]
         public async Task AddFixedCommissionAmount_GivenDataExists_ShouldAppendValue()
         {
             var squareClient = Mock.Of<ISquareClient>();
@@ -34,11 +33,11 @@ namespace Mandarin.Services.Tests.Square
             await subject.AddFixedCommissionAmount(additionalData);
 
             var result = await subject.GetFixedCommissionAmounts().ToList();
-            Assert.That(result.Count, Is.EqualTo(2));
-            Assert.That(result[1].ProductCode, Is.EqualTo(additionalData.ProductCode));
+            result.Should().HaveCount(2);
+            result[1].ProductCode.Should().Be(additionalData.ProductCode);
         }
 
-        [Test]
+        [Fact]
         public async Task UpdateFixedCommissionAmount_GivenDataExists_ShouldAppendValue()
         {
             var squareClient = Mock.Of<ISquareClient>();
@@ -51,12 +50,12 @@ namespace Mandarin.Services.Tests.Square
             await subject.UpdateFixedCommissionAmount(additionalData);
 
             var result = await subject.GetFixedCommissionAmounts().ToList();
-            Assert.That(result.Count, Is.EqualTo(1));
-            Assert.That(result[0].ProductCode, Is.EqualTo(additionalData.ProductCode));
-            Assert.That(result[0].Amount, Is.EqualTo(additionalData.Amount));
+            result.Should().HaveCount(1);
+            result[0].ProductCode.Should().Be(additionalData.ProductCode);
+            result[0].Amount.Should().Be(additionalData.Amount);
         }
 
-        [Test]
+        [Fact]
         public async Task DeleteFixedCommissionAmount_GivenDataExists_ShouldAppendValue()
         {
             var squareClient = Mock.Of<ISquareClient>();
@@ -68,30 +67,30 @@ namespace Mandarin.Services.Tests.Square
             await subject.DeleteFixedCommissionAmount(data.ProductCode);
 
             var result = await subject.GetFixedCommissionAmounts().ToList();
-            Assert.That(result.Count, Is.EqualTo(0));
+            result.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public async Task GetFixedCommissionAmounts_GivenEmptyFileName_ShouldReturnEmpty()
         {
             var squareClient = Mock.Of<ISquareClient>();
             var configuration = new MandarinConfiguration { FixedCommissionAmountFilePath = string.Empty };
             var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, squareClient, Options.Create(configuration));
             var actual = await subject.GetFixedCommissionAmounts().ToList().ToTask();
-            Assert.That(actual, Is.Empty);
+            actual.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public async Task GetFixedCommissionAmounts_GivenNonExistingFile_ShouldReturnEmpty()
         {
             var squareClient = Mock.Of<ISquareClient>();
-            var configuration = new MandarinConfiguration { FixedCommissionAmountFilePath = "NonExistantFile.json" };
+            var configuration = new MandarinConfiguration { FixedCommissionAmountFilePath = "NonExistentFile.json" };
             var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, squareClient, Options.Create(configuration));
             var actual = await subject.GetFixedCommissionAmounts().ToList().ToTask();
-            Assert.That(actual, Is.Empty);
+            actual.Should().BeEmpty();
         }
 
-        [Test]
+        [Fact]
         public async Task GetFixedCommissionAmounts_GivenFileExists_ShouldContainAllObjects()
         {
             var squareClient = Mock.Of<ISquareClient>();
@@ -101,11 +100,11 @@ namespace Mandarin.Services.Tests.Square
             var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, squareClient, Options.Create(configuration));
             var actual = await subject.GetFixedCommissionAmounts().ToList().ToTask();
 
-            Assert.That(actual, Has.Exactly(1).Items);
+            actual.Should().HaveCount(1);
             actual[0].Should().BeEquivalentTo(data);
         }
 
-        [Test]
+        [Fact]
         public void GetInventory_WhenRequestIsCancelled_ShouldThrowException()
         {
             var squareClient = this.GivenSquareClientCatalogApiWaitsToContinue(out var waitHandle);
@@ -114,20 +113,22 @@ namespace Mandarin.Services.Tests.Square
             var task = subject.GetInventory().ToList().ToTask(cts.Token);
             cts.Cancel();
             waitHandle.Set();
-            Assert.ThrowsAsync<TaskCanceledException>(() => task);
+
+            task.Awaiting(x => x).Should().ThrowAsync<TaskCanceledException>();
         }
 
-        [Test]
+        [Fact]
         public async Task GetInventory_WhenServiceListsMultiplePages_ShouldContainAllObjects()
         {
             var squareClient = this.GivenSquareClientCatalogApiReturnsData();
             var subject = new SquareInventoryService(NullLogger<SquareTransactionService>.Instance, squareClient, Options.Create(new MandarinConfiguration()));
             var catalogObjects = await subject.GetInventory().ToList().ToTask((CancellationToken)default);
-            Assert.That(catalogObjects.Count, Is.EqualTo(2));
-            Assert.That(catalogObjects[0].ProductCode, Is.EqualTo("ID-1"));
-            Assert.That(catalogObjects[0].ProductName, Is.EqualTo("Item1 (Regular)"));
-            Assert.That(catalogObjects[1].ProductCode, Is.EqualTo("ID-2"));
-            Assert.That(catalogObjects[1].ProductName, Is.EqualTo("Item2 (Regular)"));
+
+            catalogObjects.Should().HaveCount(2);
+            catalogObjects[0].ProductCode.Should().Be("ID-1");
+            catalogObjects[0].ProductName.Should().Be("Item1 (Regular)");
+            catalogObjects[1].ProductCode.Should().Be("ID-2");
+            catalogObjects[1].ProductName.Should().Be("Item2 (Regular)");
         }
 
         private async Task<string> GivenTemporaryFileExists(FixedCommissionAmount data)

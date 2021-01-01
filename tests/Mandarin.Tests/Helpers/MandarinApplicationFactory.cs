@@ -8,17 +8,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace Mandarin.Tests.Helpers
 {
     public class MandarinApplicationFactory : WebApplicationFactory<MandarinStartup>
     {
+        public ITestOutputHelper TestOutputHelper { get; set; }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration(MandarinApplicationFactory.AddTestConfiguration);
             builder.ConfigureTestServices(MandarinApplicationFactory.ConfigureTestAuthentication);
             builder.ConfigureLogging(l => l.ClearProviders());
-            builder.UseSerilog(MandarinApplicationFactory.ConfigureSerilog, true, true);
+            builder.UseSerilog(this.ConfigureSerilog, true, true);
         }
 
         private static void AddTestConfiguration(WebHostBuilderContext host, IConfigurationBuilder configurationBuilder)
@@ -43,13 +47,13 @@ namespace Mandarin.Tests.Helpers
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, _ => { });
         }
 
-        private static void ConfigureSerilog(WebHostBuilderContext b, LoggerConfiguration c)
+        private void ConfigureSerilog(WebHostBuilderContext b, LoggerConfiguration c)
         {
             c.MinimumLevel.Verbose()
              .MinimumLevel.Override("Elastic.Apm", LogEventLevel.Error)
              .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
              .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
-             .WriteTo.NUnitOutput(outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
+             .WriteTo.TestOutput(this.TestOutputHelper, outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
         }
     }
 }

@@ -5,31 +5,30 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
+using FluentAssertions;
 using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using NUnit.Framework;
 using Square;
 using Square.Models;
+using Xunit;
 using Transaction = Mandarin.Models.Transactions.Transaction;
 
 namespace Mandarin.Services.Tests.Square
 {
-    [TestFixture]
     public class SquareTransactionServiceTests
     {
         private Mock<ISquareClient> squareClient;
         private Mock<ITransactionMapper> transactionMapper;
 
-        [TearDown]
-        public void TearDown()
+        public SquareTransactionServiceTests()
         {
-            this.squareClient = null;
-            this.transactionMapper = null;
+            this.squareClient = new Mock<ISquareClient>();
+            this.transactionMapper = new Mock<ITransactionMapper>();
         }
 
-        [Test]
+        [Fact]
         public void GetTransaction_WhenRequestIsCancelled_ShouldThrowException()
         {
             this.GivenSquareClientLocationApiReturnsData();
@@ -40,18 +39,20 @@ namespace Mandarin.Services.Tests.Square
             task.Wait(10);
             cts.Cancel();
             waitHandle.Set();
-            Assert.ThrowsAsync<TaskCanceledException>(() => task);
+
+            task.Awaiting(x => x).Should().ThrowAsync<TaskCanceledException>();
         }
 
-        [Test]
+        [Fact]
         public async Task GetTransaction_WhenServiceListsMultiplePages_ShouldContainAllObjects()
         {
             this.GivenSquareClientLocationApiReturnsData();
             this.GivenSquareClientOrdersApiReturnsData();
             this.GivenTransactionMapperMapsToFakeData();
             var transactions = await this.WhenListingTransactions();
-            Assert.That(transactions.Count, Is.EqualTo(6));
-            Assert.That(transactions[0].SquareId, Contains.Substring("squareId"));
+
+            transactions.Should().HaveCount(6);
+            transactions[0].SquareId.Should().Contain("squareId");
         }
 
         private void GivenSquareClientLocationApiReturnsData()

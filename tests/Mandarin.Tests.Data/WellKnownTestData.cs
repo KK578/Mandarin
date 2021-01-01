@@ -20,7 +20,7 @@ namespace Mandarin.Tests.Data
 
         public static class Commissions
         {
-            public const string ArtistSalesTLM = "TestData/Commissions/RecordOfSales.TLM.json";
+            public const string RecordOfSalesTLM = "TestData/Commissions/RecordOfSales.TLM.json";
         }
 
         public static class Stockists
