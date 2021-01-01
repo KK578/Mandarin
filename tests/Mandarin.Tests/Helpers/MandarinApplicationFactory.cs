@@ -55,6 +55,8 @@ namespace Mandarin.Tests.Helpers
                 { "Auth0:ClientId", "SuperSecretId" },
                 { "Auth0:ClientSecret", "SuperSecretValue" },
                 { "ConnectionStrings:MandarinConnection", "Host=localhost;Port=5555;Database=postgres;Username=postgres;Password=password;Include Error Detail=true" },
+                { "SendGrid:ServiceEmail", "ServiceEmail@example.com" },
+                { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },
             });
         }
 
