@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Client.Services.Tests.Helpers;
 using Mandarin.Models.Commissions;
 using Mandarin.Services;
 using Mandarin.Tests.Helpers;
@@ -14,10 +13,10 @@ using SendGrid.Helpers.Mail;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Client.Services.Tests.Emails
+namespace Mandarin.Tests.Grpc.Emails
 {
-    [Collection(nameof(MandarinClientTestsCollectionFixture))]
-    public class EmailGrpcServiceTests : GrpcServiceTestsBase
+    [Collection(nameof(MandarinTestsCollectionFixture))]
+    public class EmailGrpcServiceTests : MandarinGrpcIntegrationTestsBase
     {
         public EmailGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)

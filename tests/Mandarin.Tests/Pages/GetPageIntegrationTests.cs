@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Mandarin.Tests.Helpers;
+using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 using Xunit.Abstractions;

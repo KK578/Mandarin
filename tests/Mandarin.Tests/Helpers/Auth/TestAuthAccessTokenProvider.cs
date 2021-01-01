@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
-namespace Mandarin.Client.Services.Tests.Helpers
+namespace Mandarin.Tests.Helpers.Auth
 {
     internal sealed class TestAuthAccessTokenProvider : IAccessTokenProvider
     {

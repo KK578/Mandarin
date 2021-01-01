@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Mandarin.Tests.Helpers
+namespace Mandarin.Tests.Helpers.Auth
 {
     internal class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {

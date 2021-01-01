@@ -18,18 +18,10 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
             [Fact]
             public void ShouldMaintainNullSalesList()
             {
-                var recordOfSales = new RecordOfSales(TestData.NextString(),
-                                                      TestData.NextString(),
-                                                      TestData.NextString(),
-                                                      TestData.NextString(),
-                                                      TestData.NextString(),
-                                                      TestData.Create<DateTime>(),
-                                                      TestData.Create<DateTime>(),
-                                                      TestData.Create<decimal>(),
-                                                      null,
-                                                      TestData.Create<decimal>(),
-                                                      TestData.Create<decimal>(),
-                                                      TestData.Create<decimal>());
+                var recordOfSales = TestData.Create<RecordOfSales>() with
+                {
+                    Sales = null,
+                };
 
                 var copy = recordOfSales.WithMessageCustomisations(null, null);
                 copy.Sales.Should().BeNull();
@@ -57,22 +49,43 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
             [Fact]
             public async Task AsJson_ShouldMatchSnapshot()
             {
-                var data = new RecordOfSales("TLM",
-                                             "Owner",
-                                             "The Little Mandarin",
-                                             "email@address.com",
-                                             "My Message",
-                                             new DateTime(2020, 06, 01),
-                                             new DateTime(2020, 06, 03),
-                                             0.10m,
-                                             new List<Sale>
-                                             {
-                                                 new("TLM-001", "A Mandarin", 1, 2.00M, 2.00M, -0.20M, 1.80M),
-                                                 new("TLM-002", "An Orange", 2, 4.00M, 8.00M, -0.80M, 9.20M),
-                                             },
-                                             10.00M,
-                                             -1.00M,
-                                             9.00M);
+                var data = new RecordOfSales
+                {
+                    StockistCode = "TLM",
+                    FirstName = "Owner",
+                    Name = "The Little Mandarin",
+                    EmailAddress = "email@address.com",
+                    CustomMessage = "My Message",
+                    StartDate = new DateTime(2020, 06, 01),
+                    EndDate = new DateTime(2020, 06, 03),
+                    Rate = 0.10m,
+                    Sales = new List<Sale>
+                    {
+                        new()
+                        {
+                            ProductCode = "TLM-001",
+                            ProductName = "A Mandarin",
+                            Quantity = 1,
+                            UnitPrice = 2.00M,
+                            Subtotal = 2.00M,
+                            Commission = -0.20M,
+                            Total = 1.80M,
+                        },
+                        new()
+                        {
+                            ProductCode = "TLM-002",
+                            ProductName = "An Orange",
+                            Quantity = 2,
+                            UnitPrice = 4.00M,
+                            Subtotal = 8.00M,
+                            Commission = -0.80M,
+                            Total = 9.20M,
+                        },
+                    }.AsReadOnly(),
+                    Subtotal = 10.00M,
+                    CommissionTotal = -1.00M,
+                    Total = 9.00M,
+                };
 
                 var snapshot = await File.ReadAllTextAsync(WellKnownTestData.Commissions.RecordOfSalesTLM);
                 var actual = JsonConvert.SerializeObject(data, Formatting.Indented);

@@ -17,13 +17,16 @@ namespace Mandarin.Models.Commissions
         {
             var subTotal = subtransaction.Subtotal;
             var commission = subTotal * rate;
-            var sale = new Sale(subtransaction.Product.ProductCode,
-                                subtransaction.Product.ProductName,
-                                subtransaction.Quantity,
-                                subtransaction.TransactionUnitPrice,
-                                subTotal,
-                                -commission,
-                                subTotal - commission);
+            var sale = new Sale
+            {
+                ProductCode = subtransaction.Product.ProductCode,
+                ProductName = subtransaction.Product.ProductName,
+                Quantity = subtransaction.Quantity,
+                UnitPrice = subtransaction.TransactionUnitPrice,
+                Subtotal = subTotal,
+                Commission = -commission,
+                Total = subTotal - commission,
+            };
 
             return sale;
         }

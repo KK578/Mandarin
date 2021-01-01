@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
+using Mandarin.Client.Services;
 using Mandarin.Converters;
 using Mandarin.Tests.Helpers;
+using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
-namespace Mandarin.Client.Services.Tests.Helpers
+namespace Mandarin.Tests.Grpc
 {
-    public abstract class GrpcServiceTestsBase : MandarinIntegrationTestsBase
+    public abstract class MandarinGrpcIntegrationTestsBase : MandarinIntegrationTestsBase
     {
         private readonly ServiceProvider clientServiceProvider;
 
-        protected GrpcServiceTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        protected MandarinGrpcIntegrationTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             var server = this.Fixture.Server;

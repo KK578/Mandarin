@@ -74,18 +74,21 @@ namespace Mandarin.Services.Commission
 
                 if (stockistsSubtransactions.Count == 0)
                 {
-                    return new RecordOfSales(stockist.StockistCode,
-                                             stockist.FirstName,
-                                             stockist.Details.ShortDisplayName,
-                                             stockist.Details.EmailAddress,
-                                             string.Empty,
-                                             start,
-                                             end,
-                                             rate,
-                                             null,
-                                             0,
-                                             0,
-                                             0);
+                    return new RecordOfSales
+                    {
+                        StockistCode = stockist.StockistCode,
+                        FirstName = stockist.FirstName,
+                        Name = stockist.Details.ShortDisplayName,
+                        EmailAddress = stockist.Details.EmailAddress,
+                        CustomMessage = string.Empty,
+                        StartDate = start,
+                        EndDate = end,
+                        Rate = rate,
+                        Sales = new List<Sale>().AsReadOnly(),
+                        Subtotal = 0,
+                        CommissionTotal = 0,
+                        Total = 0,
+                    };
                 }
                 else
                 {
@@ -93,18 +96,21 @@ namespace Mandarin.Services.Commission
                     var subtotal = sales.Sum(x => x.Subtotal);
                     var commission = sales.Sum(x => x.Commission);
 
-                    return new RecordOfSales(stockist.StockistCode,
-                                             stockist.FirstName,
-                                             stockist.Details.ShortDisplayName,
-                                             stockist.Details.EmailAddress,
-                                             string.Empty,
-                                             start,
-                                             end,
-                                             rate,
-                                             sales,
-                                             subtotal,
-                                             commission,
-                                             subtotal + commission);
+                    return new RecordOfSales
+                    {
+                        StockistCode = stockist.StockistCode,
+                        FirstName = stockist.FirstName,
+                        Name = stockist.Details.ShortDisplayName,
+                        EmailAddress = stockist.Details.EmailAddress,
+                        CustomMessage = string.Empty,
+                        StartDate = start,
+                        EndDate = end,
+                        Rate = rate,
+                        Sales = sales,
+                        Subtotal = subtotal,
+                        CommissionTotal = commission,
+                        Total = subtotal + commission,
+                    };
                 }
             }
         }

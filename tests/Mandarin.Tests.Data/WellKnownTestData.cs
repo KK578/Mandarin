@@ -72,6 +72,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist TheLittleMandarinStockist = new()
             {
+                StockistId = 1,
                 StockistCode = "TLM",
                 FirstName = "Little",
                 LastName = "Mandarin",
