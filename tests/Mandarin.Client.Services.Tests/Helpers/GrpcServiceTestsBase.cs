@@ -3,6 +3,7 @@ using Mandarin.Converters;
 using Mandarin.Tests.Helpers;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests.Helpers
 {
@@ -10,9 +11,10 @@ namespace Mandarin.Client.Services.Tests.Helpers
     {
         private readonly ServiceProvider clientServiceProvider;
 
-        protected GrpcServiceTestsBase()
+        protected GrpcServiceTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+            : base(fixture, testOutputHelper)
         {
-            var server = this.Factory.Server;
+            var server = this.Fixture.Server;
             var handler = server.CreateHandler();
 
             var services = new ServiceCollection();
