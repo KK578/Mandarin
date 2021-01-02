@@ -1,4 +1,6 @@
-﻿using Mandarin.Database.Commissions;
+﻿using DbUp.Engine.Output;
+using Mandarin.Database.Commissions;
+using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +20,9 @@ namespace Mandarin.Database
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<MandarinDbContext>();
+            services.AddTransient<IUpgradeLog, DbUpLogger>();
+            services.AddSingleton<IMigrator, Migrator>();
+            services.AddTransient<MandarinDbContext>();
 
             services.AddTransient<IStockistRepository, StockistRepository>();
             services.AddTransient<ICommissionRepository, CommissionRepository>();

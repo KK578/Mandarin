@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Mandarin.Database.Migrations;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
@@ -10,14 +11,17 @@ namespace Mandarin.Database
     public class MandarinDbContext
     {
         private readonly IConfiguration configuration;
+        private readonly IMigrator migrator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MandarinDbContext"/> class.
         /// </summary>
         /// <param name="configuration">Application configuration for configuring services.</param>
-        public MandarinDbContext(IConfiguration configuration)
+        /// <param name="migrator">The service for upgrading the database schema.</param>
+        public MandarinDbContext(IConfiguration configuration, IMigrator migrator)
         {
             this.configuration = configuration;
+            this.migrator = migrator;
         }
 
         /// <summary>
@@ -34,7 +38,7 @@ namespace Mandarin.Database
         /// </summary>
         public void RunMigrations()
         {
-            // TODO: Implement migrations
+            this.migrator.RunMigrations();
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using Mandarin.Database;
 using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,11 +20,10 @@ namespace Mandarin.Tests.Helpers
 
         protected override void Dispose(bool disposing)
         {
-            using var scope = this.Services.CreateScope();
-            var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
-            var migrator = mandarinDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
-            migrator.Migrate("0");
-
+            // using var scope = this.Services.CreateScope();
+            // var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
+            // var migrator = mandarinDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
+            // migrator.Migrate("0");
             base.Dispose(disposing);
         }
 

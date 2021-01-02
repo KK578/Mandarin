@@ -3,13 +3,20 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations/*.sql" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Bashi.Core" Version="3.0.0" />
     <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="dbup" Version="4.5.0" />
+    <PackageReference Include="dbup-postgresql" Version="4.5.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Npgsql" Version="5.0.1.1" />
   </ItemGroup>
 
