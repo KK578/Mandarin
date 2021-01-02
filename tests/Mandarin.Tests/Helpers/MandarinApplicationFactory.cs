@@ -18,15 +18,6 @@ namespace Mandarin.Tests.Helpers
     {
         public ITestOutputHelper TestOutputHelper { get; set; } = new TestOutputHelper();
 
-        protected override void Dispose(bool disposing)
-        {
-            // using var scope = this.Services.CreateScope();
-            // var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
-            // var migrator = mandarinDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
-            // migrator.Migrate("0");
-            base.Dispose(disposing);
-        }
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration(MandarinApplicationFactory.AddTestConfiguration);
@@ -41,6 +32,7 @@ namespace Mandarin.Tests.Helpers
 
         protected virtual void ConfigureTestServices(IServiceCollection services)
         {
+            services.AddSingleton(this.GetType().Assembly);
         }
 
         private static void AddTestConfiguration(WebHostBuilderContext host, IConfigurationBuilder configurationBuilder)

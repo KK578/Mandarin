@@ -21,5 +21,13 @@ namespace Mandarin.Database.Stockists
         /// </summary>
         /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of all stockists.</returns>
         Task<IReadOnlyList<Stockist>> GetAllStockists();
+
+        /// <summary>
+        /// Saves the provided stockist details.
+        /// This method will automatically detect if the stockist already exists and insert or update accordingly.
+        /// </summary>
+        /// <param name="stockist">The stockist to be saved.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<int> SaveStockistAsync(Stockist stockist);
     }
 }

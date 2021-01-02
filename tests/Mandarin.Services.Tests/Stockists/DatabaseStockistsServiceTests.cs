@@ -32,16 +32,14 @@ namespace Mandarin.Services.Tests.Stockists
             [Fact]
             public async Task ShouldReturnAllStockistsInOrderOfStockistCode()
             {
-                this.GivenStockistsExist(WellKnownTestData.Stockists.InactiveStockist,
-                                         WellKnownTestData.Stockists.HiddenStockist,
-                                         WellKnownTestData.Stockists.MinimalStockist);
+                this.GivenStockistsExist(WellKnownTestData.Stockists.KelbyTynan,
+                                         WellKnownTestData.Stockists.OthilieMapples);
 
                 var artistDetails = await this.Subject.GetStockistsAsync();
 
-                artistDetails.Should().HaveCount(3);
-                artistDetails[0].Should().Be(WellKnownTestData.Stockists.HiddenStockist);
-                artistDetails[1].Should().Be(WellKnownTestData.Stockists.InactiveStockist);
-                artistDetails[2].Should().Be(WellKnownTestData.Stockists.MinimalStockist);
+                artistDetails.Should().HaveCount(2);
+                artistDetails[0].Should().Be(WellKnownTestData.Stockists.OthilieMapples);
+                artistDetails[1].Should().Be(WellKnownTestData.Stockists.KelbyTynan);
             }
         }
     }

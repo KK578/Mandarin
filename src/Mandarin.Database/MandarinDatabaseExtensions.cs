@@ -1,5 +1,7 @@
-﻿using DbUp.Engine.Output;
+﻿using Dapper;
+using DbUp.Engine.Output;
 using Mandarin.Database.Commissions;
+using Mandarin.Database.Converters;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
 using Microsoft.Extensions.Configuration;
@@ -20,9 +22,12 @@ namespace Mandarin.Database
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinDatabase(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton(typeof(Migrator).Assembly);
             services.AddTransient<IUpgradeLog, DbUpLogger>();
             services.AddSingleton<IMigrator, Migrator>();
             services.AddTransient<MandarinDbContext>();
+
+            SqlMapper.AddTypeHandler(new DateTimeUtcHandler());
 
             services.AddTransient<IStockistRepository, StockistRepository>();
             services.AddTransient<ICommissionRepository, CommissionRepository>();

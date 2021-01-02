@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using DbUp;
 using DbUp.Engine;
 using DbUp.Engine.Output;
@@ -15,12 +18,12 @@ namespace Mandarin.Database.Migrations
         /// Initializes a new instance of the <see cref="Migrator"/> class.
         /// </summary>
         /// <param name="configuration">Application configuration for configuring services.</param>
+        /// <param name="assemblies">The assemblies where there are migration scripts to run.</param>
         /// <param name="upgradeLog">The logger instance for DbUp.</param>
-        public Migrator(IConfiguration configuration, IUpgradeLog upgradeLog)
+        public Migrator(IConfiguration configuration, IEnumerable<Assembly> assemblies, IUpgradeLog upgradeLog)
         {
-            var assembly = typeof(Migrator).Assembly;
             this.upgradeEngine = DeployChanges.To.PostgresqlDatabase(configuration.GetConnectionString("MandarinConnection"))
-                                              .WithScriptsEmbeddedInAssembly(assembly)
+                                              .WithScriptsEmbeddedInAssemblies(assemblies.ToArray())
                                               .LogTo(upgradeLog)
                                               .Build();
         }

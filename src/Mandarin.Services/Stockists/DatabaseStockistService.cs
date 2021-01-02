@@ -36,7 +36,10 @@ namespace Mandarin.Services.Stockists
             this.logger.LogDebug("Fetching stockist '{StockistCode}'.", stockistCode);
             var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
             var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
-            stockist.Commissions.Add(commission);
+            if (commission != null)
+            {
+                stockist.Commissions.Add(commission);
+            }
 
             return stockist;
         }
@@ -49,10 +52,10 @@ namespace Mandarin.Services.Stockists
         }
 
         /// <inheritdoc/>
-        public Task SaveStockistAsync(Stockist stockist)
+        public async Task SaveStockistAsync(Stockist stockist)
         {
             this.logger.LogInformation("Saving stockist: {@Stockist}", stockist);
-            throw new NotImplementedException();
+            await this.stockistRepository.SaveStockistAsync(stockist);
         }
     }
 }

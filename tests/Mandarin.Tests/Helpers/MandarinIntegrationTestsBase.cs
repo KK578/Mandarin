@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -8,6 +9,8 @@ namespace Mandarin.Tests.Helpers
     {
         protected MandarinIntegrationTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
         {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
             fixture.TestOutputHelper = testOutputHelper;
             this.Fixture = fixture;
         }

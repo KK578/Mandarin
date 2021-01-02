@@ -44,11 +44,11 @@ namespace Mandarin.Database.Commissions
             const string sql = @"SELECT c.*, crg.*
                                  FROM billing.commission c
                                  INNER JOIN billing.commission_rate_group crg on crg.group_id = c.rate_group
-                                 WHERE stockist_id = @StockistId
+                                 WHERE stockist_id = @stockist_id
                                  ORDER BY commission_id DESC";
             var commissionRecord = await connection.QueryAsync<CommissionRecord, CommissionRateGroupRecord, CommissionRecord>(sql,
                 (c, crg) => c with { CommissionRateGroup = crg },
-                new { StockistId = stockistId },
+                new { stockist_id = stockistId },
                 splitOn: "stockist_id,group_id");
 
             var commission = this.mapper.Map<Commission>(commissionRecord.FirstOrDefault());

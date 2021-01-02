@@ -21,25 +21,24 @@ namespace Mandarin.Tests.Grpc.Stockists
         [Fact]
         public async Task ShouldBeAbleToRetrieveAStockist()
         {
-            var stockistCode = WellKnownTestData.Stockists.TheLittleMandarinStockist.StockistCode;
+            var stockistCode = WellKnownTestData.Stockists.KelbyTynan.StockistCode;
             var stockist = await this.Subject.GetStockistByCodeAsync(stockistCode);
-            stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.TheLittleMandarinStockist,
-                                             o => o.IgnoringCyclicReferences());
+            stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.KelbyTynan, o => o.IgnoringCyclicReferences());
         }
 
         [Fact]
         public async Task ShouldBeAbleToListAllStockists()
         {
             var stockists = await this.Subject.GetStockistsAsync();
-            stockists.Should().HaveCount(1);
+            stockists.Should().HaveCount(10);
         }
 
         [Fact]
         public async Task ShouldBeAbleToAddANewStockistAndRetrieveDetailsBack()
         {
-            await this.Subject.SaveStockistAsync(WellKnownTestData.Stockists.HiddenStockist);
-            var stockist = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.HiddenStockist.StockistCode);
-            stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.HiddenStockist,
+            await this.Subject.SaveStockistAsync(WellKnownTestData.Stockists.ArlueneWoodes);
+            var stockist = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.ArlueneWoodes.StockistCode);
+            stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.ArlueneWoodes,
                                              o => o.IgnoringCyclicReferences()
                                                    .Excluding(x => x.StockistId)
                                                    .Excluding(x => x.Details.StockistId));

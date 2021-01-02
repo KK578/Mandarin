@@ -25,6 +25,7 @@ namespace Mandarin.Tests.Helpers
 
         protected override void ConfigureTestServices(IServiceCollection services)
         {
+            base.ConfigureTestServices(services);
             services.AddSingleton<Mock<ISendGridClient>>();
             services.AddTransient(s => s.GetRequiredService<Mock<ISendGridClient>>().Object);
         }
