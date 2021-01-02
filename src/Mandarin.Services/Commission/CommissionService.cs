@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Mandarin.Database;
-using Mandarin.Database.Extensions;
+using Dapper;
+using Mandarin.Database.Commissions;
 using Mandarin.Models.Commissions;
 using Mandarin.Models.Common;
 using Mandarin.Models.Stockists;
@@ -16,31 +16,29 @@ namespace Mandarin.Services.Commission
     /// <inheritdoc />
     public class CommissionService : ICommissionService
     {
+        private readonly ICommissionRepository commissionRepository;
         private readonly IStockistService stockistService;
         private readonly ITransactionService transactionService;
-        private readonly MandarinDbContext mandarinDbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
+        /// <param name="commissionRepository">The application repository for interacting with commissions.</param>
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="transactionService">The transaction service.</param>
-        /// <param name="mandarinDbContext">The application database context.</param>
-        public CommissionService(IStockistService stockistService,
-                                 ITransactionService transactionService,
-                                 MandarinDbContext mandarinDbContext)
+        public CommissionService(ICommissionRepository commissionRepository,
+                                 IStockistService stockistService,
+                                 ITransactionService transactionService)
         {
+            this.commissionRepository = commissionRepository;
             this.stockistService = stockistService;
             this.transactionService = transactionService;
-            this.mandarinDbContext = mandarinDbContext;
         }
 
         /// <inheritdoc />
         public Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
         {
-            return this.mandarinDbContext.CommissionRateGroup
-                       .OrderBy(x => x.Rate)
-                       .ToReadOnlyListAsync();
+            return this.commissionRepository.GetCommissionRateGroups();
         }
 
         /// <inheritdoc />

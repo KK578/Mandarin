@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Models.Stockists;
 
 namespace Mandarin.Services
 {
     /// <summary>
-    /// Represents a service that can retrieve and update details about stockists.
+    /// Represents a service that can retrieve and update details about <see cref="Stockist"/>.
     /// </summary>
     public interface IStockistService
     {

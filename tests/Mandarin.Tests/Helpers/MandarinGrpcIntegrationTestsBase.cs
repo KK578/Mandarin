@@ -22,7 +22,7 @@ namespace Mandarin.Tests.Grpc
             var services = new ServiceCollection();
             services.AddMandarinClientServices(server.BaseAddress, () => handler);
             services.AddSingleton<IAccessTokenProvider, TestAuthAccessTokenProvider>();
-            services.AddAutoMapper(options => { options.AddProfile<MandarinMapperProfile>(); });
+            services.AddAutoMapper(options => { options.AddProfile<MandarinGrpcMapperProfile>(); });
             this.clientServiceProvider = services.BuildServiceProvider();
         }
 

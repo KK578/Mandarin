@@ -5,14 +5,14 @@ using Google.Protobuf.WellKnownTypes;
 namespace Mandarin.Grpc.Converters
 {
     /// <summary>
-    /// Configuration Profile for <see cref="Mapper"/> to convert Mandarin Domain types.
+    /// Configuration Profile for <see cref="Mapper"/> to convert between Mandarin gRPC DTOs and Mandarin Domain.
     /// </summary>
-    public class MandarinMapperProfile : Profile
+    public class MandarinGrpcMapperProfile : Profile
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MandarinMapperProfile"/> class.
+        /// Initializes a new instance of the <see cref="MandarinGrpcMapperProfile"/> class.
         /// </summary>
-        public MandarinMapperProfile()
+        public MandarinGrpcMapperProfile()
         {
             this.CreateMap<Models.Common.StatusMode, Api.Common.StatusMode>().ReverseMap();
             this.CreateMap<Models.Commissions.CommissionRateGroup, Api.Commissions.CommissionRateGroup>().ReverseMap();

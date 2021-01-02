@@ -1,12 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Data;
 using System.Threading.Tasks;
+using Dapper;
 using Mandarin.Database;
 using Mandarin.Models.Stockists;
 using Mandarin.Tests.Data;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace Mandarin.Tests.Helpers.Database
 {
@@ -14,22 +11,28 @@ namespace Mandarin.Tests.Helpers.Database
     {
         public static async Task SeedTestDataAsync(this MandarinDbContext mandarinDbContext)
         {
-            await mandarinDbContext.AddStockistIfNotPresentAsync(WellKnownTestData.Stockists.TheLittleMandarinStockist);
-            await mandarinDbContext.Database.ExecuteSqlRawAsync(@"ALTER SEQUENCE inventory.stockist_stockist_id_seq RESTART WITH 5;");
-
-            await mandarinDbContext.SaveChangesAsync();
+            using var connection = mandarinDbContext.GetConnection();
+            connection.Open();
+            await connection.AddStockistIfNotPresentAsync(WellKnownTestData.Stockists.TheLittleMandarinStockist);
+            await connection.ExecuteAsync(@"ALTER SEQUENCE inventory.stockist_stockist_id_seq RESTART WITH 5;");
         }
 
         public static async Task CleanupTestDataAsync(this MandarinDbContext mandarinDbContext)
         {
-            await mandarinDbContext.Database.ExecuteSqlRawAsync(@"TRUNCATE TABLE billing.commission_rate_group, billing.commission, inventory.stockist_detail, inventory.stockist");
+            using var connection = mandarinDbContext.GetConnection();
+            connection.Open();
+            await connection.ExecuteAsync(@"TRUNCATE TABLE billing.commission_rate_group, billing.commission, inventory.stockist_detail, inventory.stockist");
         }
 
-        private static async Task AddStockistIfNotPresentAsync(this MandarinDbContext mandarinDbContext, Stockist stockist)
+        private static async Task AddStockistIfNotPresentAsync(this IDbConnection connection, Stockist stockist)
         {
-            if (!await mandarinDbContext.Stockist.AnyAsync(x => x.StockistCode == stockist.StockistCode))
+            var existing = await connection.QueryFirstOrDefaultAsync("SELECT * FROM inventory.stockist WHERE stockist_code = @StockistCode", new { StockistCode = stockist.StockistCode });
+            if (existing == null)
             {
-                await mandarinDbContext.Stockist.AddAsync(stockist);
+                var sql = @"INSERT INTO inventory.stockist (stockist_code, stockist_status, first_name, last_name)
+                            VALUES (@StockistCode, @StatusCode, @FirstName, @LastName)";
+
+                await connection.ExecuteAsync(sql, stockist);
             }
         }
     }

@@ -20,7 +20,7 @@ namespace Mandarin.Services.Tests.Stockists
             this.mandarinDbContext = new Mock<MandarinDbContext>();
         }
 
-        private IStockistService Subject => new EntityFrameworkStockistService(this.mandarinDbContext.Object, NullLogger<EntityFrameworkStockistService>.Instance);
+        private IStockistService Subject => new DatabaseStockistService(this.mandarinDbContext.Object, NullLogger<DatabaseStockistService>.Instance);
 
         private void GivenStockistsExist(params Stockist[] stockists)
         {

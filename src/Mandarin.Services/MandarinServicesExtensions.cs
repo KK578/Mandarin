@@ -56,7 +56,7 @@ namespace Mandarin.Services
 
         private static void AddStockistServices(this IServiceCollection services)
         {
-            services.AddScoped<IStockistService, EntityFrameworkStockistService>();
+            services.AddScoped<IStockistService, DatabaseStockistService>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)

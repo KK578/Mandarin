@@ -28,14 +28,14 @@ namespace Mandarin.Models.Stockists
         public int StockistId { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's name.
+        /// Gets or sets the Stockist's first name.
         /// </summary>
         [Column("first_name")]
         [StringLength(100)]
         public string FirstName { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's name.
+        /// Gets or sets the Stockist's last name.
         /// </summary>
         [Column("last_name")]
         [StringLength(100)]
