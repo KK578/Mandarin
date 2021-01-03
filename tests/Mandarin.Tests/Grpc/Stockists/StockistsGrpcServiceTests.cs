@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Services;
 using Mandarin.Tests.Data;
@@ -23,7 +24,7 @@ namespace Mandarin.Tests.Grpc.Stockists
         {
             var stockistCode = WellKnownTestData.Stockists.KelbyTynan.StockistCode;
             var stockist = await this.Subject.GetStockistByCodeAsync(stockistCode);
-            stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.KelbyTynan, o => o.IgnoringCyclicReferences());
+            stockist.Should().MatchStockist(WellKnownTestData.Stockists.KelbyTynan);
         }
 
         [Fact]
@@ -38,10 +39,22 @@ namespace Mandarin.Tests.Grpc.Stockists
         {
             await this.Subject.SaveStockistAsync(WellKnownTestData.Stockists.ArlueneWoodes);
             var stockist = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.ArlueneWoodes.StockistCode);
-            stockist.Should().BeEquivalentTo(WellKnownTestData.Stockists.ArlueneWoodes,
-                                             o => o.IgnoringCyclicReferences()
-                                                   .Excluding(x => x.StockistId)
-                                                   .Excluding(x => x.Details.StockistId));
+            stockist.Should().MatchStockistIgnoringIds(WellKnownTestData.Stockists.ArlueneWoodes);
+        }
+
+        [Fact]
+        public async Task ShouldBeAbleToUpdateAStockistAndVerifyPersisted()
+        {
+            var existing = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.KelbyTynan.StockistCode);
+            existing.Should().MatchStockistIgnoringIds(WellKnownTestData.Stockists.KelbyTynan);
+
+            existing.Details.EmailAddress = TestData.NextString();
+            existing.Details.Description = "New Description";
+
+            await this.Subject.SaveStockistAsync(existing);
+
+            var updated = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.KelbyTynan.StockistCode);
+            updated.Should().MatchStockistIgnoringIds(existing);
         }
     }
 }

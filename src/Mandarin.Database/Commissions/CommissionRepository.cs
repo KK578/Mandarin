@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -53,6 +54,45 @@ namespace Mandarin.Database.Commissions
 
             var commission = this.mapper.Map<Commission>(commissionRecord.FirstOrDefault());
             return commission;
+        }
+
+        /// <inheritdoc/>
+        public async Task SaveCommissionAsync(int stockistId, Commission commission)
+        {
+            var commissionRecord = this.mapper.Map<CommissionRecord>(commission) with { stockist_id = stockistId };
+
+            using var db = this.mandarinDbContext.GetConnection();
+            db.Open();
+            using var transaction = db.BeginTransaction();
+
+            // TODO: CommissionId should probably be nullable.
+            if (commissionRecord.commission_id == 0)
+            {
+                await CommissionRepository.InsertCommissionAsync(db, commissionRecord);
+                transaction.Commit();
+            }
+            else
+            {
+                await CommissionRepository.UpdateCommissionAsync(db, commissionRecord);
+                transaction.Commit();
+            }
+        }
+
+        private static async Task InsertCommissionAsync(IDbConnection db, CommissionRecord commissionRecord)
+        {
+            var sql = @"INSERT INTO billing.commission (stockist_id, start_date, end_date, rate_group)
+                        VALUES (@stockist_id, @start_date, @end_date, @rate_group)";
+            await db.ExecuteAsync(sql, commissionRecord);
+        }
+
+        private static async Task UpdateCommissionAsync(IDbConnection db, CommissionRecord commissionRecord)
+        {
+            var sql = @"UPDATE billing.commission
+                        SET start_date = @start_date,
+                            end_date = @end_date,
+                            rate_group = @rate_group
+                        WHERE stockist_id = @stockist_id";
+            await db.ExecuteAsync(sql, commissionRecord);
         }
     }
 }

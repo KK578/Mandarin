@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Mandarin.Database;
 using Mandarin.Database.Commissions;
 using Mandarin.Database.Stockists;
 using Mandarin.Models.Stockists;
@@ -18,10 +20,12 @@ namespace Mandarin.Services.Stockists
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseStockistService"/> class.
         /// </summary>
+        /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="stockistRepository">The application repository for interacting with stockists.</param>
         /// <param name="commissionRepository">The application repository for interacting with commissions.</param>
         /// <param name="logger">The application logger.</param>
-        public DatabaseStockistService(IStockistRepository stockistRepository,
+        public DatabaseStockistService(MandarinDbContext mandarinDbContext,
+                                       IStockistRepository stockistRepository,
                                        ICommissionRepository commissionRepository,
                                        ILogger<DatabaseStockistService> logger)
         {
@@ -55,7 +59,16 @@ namespace Mandarin.Services.Stockists
         public async Task SaveStockistAsync(Stockist stockist)
         {
             this.logger.LogInformation("Saving stockist: {@Stockist}", stockist);
-            await this.stockistRepository.SaveStockistAsync(stockist);
+            try
+            {
+                var stockistId = await this.stockistRepository.SaveStockistAsync(stockist);
+                await this.commissionRepository.SaveCommissionAsync(stockistId, stockist.Commissions.First());
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Failed to save the stockist {@Stockist}.", stockist);
+                throw;
+            }
         }
     }
 }

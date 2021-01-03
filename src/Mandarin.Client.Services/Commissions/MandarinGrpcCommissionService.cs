@@ -33,7 +33,7 @@ namespace Mandarin.Client.Services.Commissions
         {
             var request = new GetCommissionRateGroupsRequest();
             var response = await this.commissionsClient.GetCommissionRateGroupsAsync(request);
-            return this.mapper.Map<List<CommissionRateGroup>>(response).AsReadOnly();
+            return this.mapper.Map<List<CommissionRateGroup>>(response.RateGroups).AsReadOnly();
         }
 
         /// <inheritdoc/>

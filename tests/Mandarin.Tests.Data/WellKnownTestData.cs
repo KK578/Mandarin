@@ -137,7 +137,7 @@ namespace Mandarin.Tests.Data
                     new()
                     {
                         StartDate = new DateTime(2019, 11, 28),
-                        EndDate = new DateTime(2019, 06, 09),
+                        EndDate = new DateTime(2020, 06, 09),
                         RateGroupId = 3,
                         RateGroup = new CommissionRateGroup
                         {

@@ -22,7 +22,7 @@ namespace Mandarin.Grpc.Converters
             this.CreateMap<Models.Stockists.Stockist, Api.Stockists.Stockist>().ReverseMap();
             this.CreateMap<Models.Stockists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
 
-            this.CreateMap<DateTime, Timestamp>().ConstructUsing(d => Timestamp.FromDateTime(d.ToUniversalTime()))
+            this.CreateMap<DateTime, Timestamp>().ConstructUsing(d => Timestamp.FromDateTime(DateTime.SpecifyKind(d, DateTimeKind.Utc)))
                 .ReverseMap().ConstructUsing(t => t.ToDateTime());
         }
     }

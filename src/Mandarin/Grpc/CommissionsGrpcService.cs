@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
@@ -33,7 +34,7 @@ namespace Mandarin.Grpc
 
             return new GetCommissionRateGroupsResponse
             {
-                RateGroups = { this.mapper.Map<CommissionRateGroup>(commissionRateGroups) },
+                RateGroups = { this.mapper.Map<List<CommissionRateGroup>>(commissionRateGroups) },
             };
         }
 
@@ -46,7 +47,7 @@ namespace Mandarin.Grpc
 
             return new GetRecordOfSalesForPeriodResponse
             {
-                Sales = { this.mapper.Map<RecordOfSales>(recordOfSales) },
+                Sales = { this.mapper.Map<List<RecordOfSales>>(recordOfSales) },
             };
         }
     }

@@ -9,6 +9,7 @@ INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, fir
 INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (8, 'DW19', 'Inactive', 'Denni', 'Wolford');
 INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (9, 'SB20', 'Active', 'Sherye', 'Bulpitt');
 INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (10, 'SF19', 'Active', 'Sebastian', 'Faiers');
+ALTER SEQUENCE inventory.stockist_stockist_id_seq RESTART WITH 11;
 
 INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_handle, facebook_handle, website_url, image_url, tumblr_handle, email_address, description, full_display_name, short_display_name, thumbnail_image_url) VALUES (1, 'jharrowing0', 'jharrowing0', null, 'https://hhs.gov/velit.png', 'http://dummyimage.com/600x200.png/cc0000/ffffff', null, 'ccareless0@homestead.com', 'integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor sed tristique', 'Kelby Tynan', 'Kelby Tynan', 'http://dummyimage.com/200x200.png/cc0000/ffffff');
 INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_handle, facebook_handle, website_url, image_url, tumblr_handle, email_address, description, full_display_name, short_display_name, thumbnail_image_url) VALUES (2, 'astorck1', null, null, 'https://w3.org/rutrum/nulla/nunc.xml', 'http://dummyimage.com/600x200.png/5fa2dd/ffffff', null, 'ghorlock1@smh.com.au', 'faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor vel est donec odio justo sollicitudin ut suscipit', 'Werner Apps', 'Werner Apps', 'http://dummyimage.com/200x200.png/cc0000/ffffff');
@@ -22,10 +23,11 @@ INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_ha
 INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_handle, facebook_handle, website_url, image_url, tumblr_handle, email_address, description, full_display_name, short_display_name, thumbnail_image_url) VALUES (10, 'vdeakin9', null, 'vdeakin9', 'http://wiley.com/ante/vel/ipsum/praesent/blandit/lacinia/erat.jpg', 'http://dummyimage.com/600x200.png/5fa2dd/ffffff', 'vdeakin9', 'mtooth9@google.ru', 'cras mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim lorem', 'Sebastian Faiers', 'Sebastian Faiers', 'http://dummyimage.com/200x200.png/cc0000/ffffff');
 
 INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (1, 10);
-INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (2, 20);
-INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (3, 40);
-INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (4, 80);
-INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (5, 100);
+INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (2, 40);
+INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (3, 20);
+INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (4, 100);
+INSERT INTO billing.commission_rate_group (group_id, rate) VALUES (5, 80);
+ALTER SEQUENCE billing.commission_rate_group_group_id_seq RESTART WITH 6;
 
 INSERT INTO billing.commission (commission_id, stockist_id, start_date, end_date, rate_group, inserted_at) VALUES (1, 1, '2019-08-23', '2019-11-23', 1, '2019-08-23 17:36:24');
 INSERT INTO billing.commission (commission_id, stockist_id, start_date, end_date, rate_group, inserted_at) VALUES (2, 2, '2019-02-25', '2019-05-25', 3, '2019-02-25 17:36:24');
@@ -37,3 +39,4 @@ INSERT INTO billing.commission (commission_id, stockist_id, start_date, end_date
 INSERT INTO billing.commission (commission_id, stockist_id, start_date, end_date, rate_group, inserted_at) VALUES (8, 8, '2019-01-11', '2019-04-11', 5, '2019-01-11 17:36:24');
 INSERT INTO billing.commission (commission_id, stockist_id, start_date, end_date, rate_group, inserted_at) VALUES (9, 9, '2019-08-10', '2019-11-10', 3, '2019-08-10 17:36:24');
 INSERT INTO billing.commission (commission_id, stockist_id, start_date, end_date, rate_group, inserted_at) VALUES (10, 10, '2019-07-21', '2019-10-21', 5, '2019-07-21 17:36:24');
+ALTER SEQUENCE billing.commission_commission_id_seq RESTART WITH 11;

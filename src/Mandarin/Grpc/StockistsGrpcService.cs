@@ -6,6 +6,7 @@ using Grpc.Core;
 using Mandarin.Api.Stockists;
 using Mandarin.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using static Mandarin.Api.Stockists.Stockists;
 
 namespace Mandarin.Grpc
@@ -16,16 +17,19 @@ namespace Mandarin.Grpc
     {
         private readonly IStockistService stockistService;
         private readonly IMapper mapper;
+        private readonly ILogger<StockistsGrpcService> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StockistsGrpcService"/> class.
         /// </summary>
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public StockistsGrpcService(IStockistService stockistService, IMapper mapper)
+        /// <param name="logger">The application logger.</param>
+        public StockistsGrpcService(IStockistService stockistService, IMapper mapper, ILogger<StockistsGrpcService> logger)
         {
             this.stockistService = stockistService;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <inheritdoc />
@@ -65,6 +69,7 @@ namespace Mandarin.Grpc
             }
             catch (Exception ex)
             {
+                this.logger.LogError(ex, "Failed to save stockist.");
                 return new SaveStockistResponse
                 {
                     Successful = false,
