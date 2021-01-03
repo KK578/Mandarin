@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mandarin.Models.Stockists;
 
-namespace Mandarin.Database.Stockists
+namespace Mandarin.Stockists
 {
     /// <summary>
     /// Represents a repository that can retrieve and update details about <see cref="Stockist"/>.

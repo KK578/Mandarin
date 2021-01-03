@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using DbUp.Engine.Output;
+using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
 using Mandarin.Database.Converters;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
+using Mandarin.Stockists;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

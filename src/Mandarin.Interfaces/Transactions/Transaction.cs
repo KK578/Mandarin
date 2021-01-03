@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Mandarin.Models.Transactions
+namespace Mandarin.Transactions
 {
     /// <summary>
     /// Represents a the details of a completed transaction, with details for the individual products sold within it.

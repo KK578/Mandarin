@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
-using Mandarin.Models.Inventory;
-using Mandarin.Models.Stockists;
+using Mandarin.Commissions;
+using Mandarin.Common;
+using Mandarin.Inventory;
+using Mandarin.Stockists;
 
 namespace Mandarin.Tests.Data.Extensions
 {

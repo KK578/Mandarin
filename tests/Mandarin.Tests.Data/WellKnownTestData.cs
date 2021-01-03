@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
-using Mandarin.Models.Stockists;
+using Mandarin.Commissions;
+using Mandarin.Common;
+using Mandarin.Stockists;
 using Newtonsoft.Json;
 using Square.Models;
 

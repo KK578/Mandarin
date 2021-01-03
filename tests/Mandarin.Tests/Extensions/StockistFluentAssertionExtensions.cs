@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using FluentAssertions.Primitives;
-using Mandarin.Models.Stockists;
+using Mandarin.Stockists;
 
 namespace Mandarin.Tests.Extensions
 {

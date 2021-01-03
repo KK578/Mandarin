@@ -1,6 +1,6 @@
 ﻿using System;
 using Square.Models;
-using Transaction = Mandarin.Models.Transactions.Transaction;
+using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Services.Square
 {

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Services;
+using Mandarin.Stockists;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Extensions;
 using Mandarin.Tests.Helpers;

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mandarin.Models.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
+using Mandarin.Emails;
 using Microsoft.AspNetCore.Http;
 
 namespace Mandarin.ViewModels.Commissions
 {
-    /// <inheritdoc cref="Mandarin.ViewModels.Commissions.IArtistRecordOfSalesViewModel" />
+    /// <inheritdoc cref="IArtistRecordOfSalesViewModel" />
     internal class ArtistRecordOfSalesViewModel : ViewModelBase, IArtistRecordOfSalesViewModel
     {
         private readonly IEmailService emailService;

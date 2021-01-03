@@ -14,13 +14,13 @@ namespace Mandarin.Grpc.Converters
         /// </summary>
         public MandarinGrpcMapperProfile()
         {
-            this.CreateMap<Models.Common.StatusMode, Api.Common.StatusMode>().ReverseMap();
-            this.CreateMap<Models.Commissions.CommissionRateGroup, Api.Commissions.CommissionRateGroup>().ReverseMap();
-            this.CreateMap<Models.Commissions.Commission, Api.Commissions.Commission>().ReverseMap();
-            this.CreateMap<Models.Commissions.RecordOfSales, Api.Commissions.RecordOfSales>().ReverseMap();
-            this.CreateMap<Models.Commissions.Sale, Api.Commissions.Sale>().ReverseMap();
-            this.CreateMap<Models.Stockists.Stockist, Api.Stockists.Stockist>().ReverseMap();
-            this.CreateMap<Models.Stockists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
+            this.CreateMap<Common.StatusMode, Api.Common.StatusMode>().ReverseMap();
+            this.CreateMap<Commissions.CommissionRateGroup, Api.Commissions.CommissionRateGroup>().ReverseMap();
+            this.CreateMap<Commissions.Commission, Api.Commissions.Commission>().ReverseMap();
+            this.CreateMap<Commissions.RecordOfSales, Api.Commissions.RecordOfSales>().ReverseMap();
+            this.CreateMap<Commissions.Sale, Api.Commissions.Sale>().ReverseMap();
+            this.CreateMap<Stockists.Stockist, Api.Stockists.Stockist>().ReverseMap();
+            this.CreateMap<Stockists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
 
             this.CreateMap<DateTime, Timestamp>().ConstructUsing(d => Timestamp.FromDateTime(DateTime.SpecifyKind(d, DateTimeKind.Utc)))
                 .ReverseMap().ConstructUsing(t => t.ToDateTime());

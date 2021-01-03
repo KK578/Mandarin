@@ -1,12 +1,11 @@
 ﻿@page "/artists/edit/{stockistCode}"
 @page "/artists/new"
-@using Mandarin.Services
 @using System.IO
 @using Bashi.Core.Extensions
 @using Bashi.Core.Utils
-@using Mandarin.Models.Commissions
-@using Mandarin.Models.Common
-@using Mandarin.Models.Stockists
+@using Mandarin.Commissions
+@using Mandarin.Common
+@using Mandarin.Stockists
 @inject IStockistService StockistService;
 @inject ICommissionService CommissionService;
 @inject NavigationManager NavigationManager;

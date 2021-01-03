@@ -1,9 +1,14 @@
 ﻿using System;
+using Mandarin.Commissions;
+using Mandarin.Emails;
+using Mandarin.Inventory;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
 using Mandarin.Services.Stockists;
+using Mandarin.Stockists;
+using Mandarin.Transactions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendGrid;

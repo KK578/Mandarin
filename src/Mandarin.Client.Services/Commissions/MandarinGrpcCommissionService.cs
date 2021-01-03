@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using Mandarin.Api.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
 using static Mandarin.Api.Commissions.Commissions;
-using CommissionRateGroup = Mandarin.Models.Commissions.CommissionRateGroup;
-using RecordOfSales = Mandarin.Models.Commissions.RecordOfSales;
+using CommissionRateGroup = Mandarin.Commissions.CommissionRateGroup;
+using RecordOfSales = Mandarin.Commissions.RecordOfSales;
 
 namespace Mandarin.Client.Services.Commissions
 {

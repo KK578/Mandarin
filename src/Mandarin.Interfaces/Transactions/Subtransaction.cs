@@ -1,6 +1,6 @@
-﻿using Mandarin.Models.Inventory;
+﻿using Mandarin.Inventory;
 
-namespace Mandarin.Models.Transactions
+namespace Mandarin.Transactions
 {
     /// <summary>
     /// Represents the purchase details of a particular product.

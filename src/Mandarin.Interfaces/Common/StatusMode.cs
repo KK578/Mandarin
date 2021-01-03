@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Mandarin.Models.Common
+namespace Mandarin.Common
 {
     /// <summary>
     /// Represents the status of a user or item.

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Inventory;
+using Mandarin.Commissions;
 
-namespace Mandarin.Services
+namespace Mandarin.Inventory
 {
     /// <summary>
     /// Represents a service that can retrieve details about products and inventory.

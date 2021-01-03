@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
 using Mandarin.Database.Stockists;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Stockists;
+using Mandarin.Stockists;
 
 namespace Mandarin.Database.Converters
 {

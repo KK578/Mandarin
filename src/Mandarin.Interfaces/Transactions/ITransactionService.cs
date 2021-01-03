@@ -1,7 +1,6 @@
 ﻿using System;
-using Mandarin.Models.Transactions;
 
-namespace Mandarin.Services
+namespace Mandarin.Transactions
 {
     /// <summary>
     /// Represents a service that can retrieve details about retail transactions.

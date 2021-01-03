@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Mandarin.Models.Stockists;
+using Mandarin.Stockists;
 
-namespace Mandarin.Models.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents an agreed commission period with a stockist.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
-using Mandarin.Models.Stockists;
+using Mandarin.Stockists;
 
 namespace Mandarin.Database.Stockists
 {

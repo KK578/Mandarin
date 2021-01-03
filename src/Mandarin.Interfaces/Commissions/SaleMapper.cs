@@ -1,6 +1,6 @@
-﻿using Mandarin.Models.Transactions;
+﻿using Mandarin.Transactions;
 
-namespace Mandarin.Models.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Maps objects to <see cref="Sale"/>.

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
+using Mandarin.Commissions;
+using Mandarin.Common;
 
-namespace Mandarin.Models.Stockists
+namespace Mandarin.Stockists
 {
     /// <summary>
     /// Represents a stockist who is a person provides stock/products with The Little Mandarin.

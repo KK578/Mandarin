@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Mandarin.Models.Commissions;
-using Mandarin.Services.Objects;
+using Mandarin.Commissions;
 
-namespace Mandarin.Services
+namespace Mandarin.Emails
 {
     /// <summary>
     /// Represents a service that can send emails.

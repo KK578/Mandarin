@@ -1,4 +1,4 @@
-﻿namespace Mandarin.Models.Inventory
+﻿namespace Mandarin.Inventory
 {
     /// <summary>
     /// Represents a Product sold by The Little Mandarin.

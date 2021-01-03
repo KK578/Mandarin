@@ -13,7 +13,7 @@ using Moq;
 using Square;
 using Square.Models;
 using Xunit;
-using Transaction = Mandarin.Models.Transactions.Transaction;
+using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Services.Tests.Square
 {

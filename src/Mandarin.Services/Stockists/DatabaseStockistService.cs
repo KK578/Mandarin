@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Mandarin.Database;
-using Mandarin.Database.Commissions;
-using Mandarin.Database.Stockists;
-using Mandarin.Models.Stockists;
+using Mandarin.Commissions;
+using Mandarin.Stockists;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Services.Stockists
@@ -20,12 +18,10 @@ namespace Mandarin.Services.Stockists
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseStockistService"/> class.
         /// </summary>
-        /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="stockistRepository">The application repository for interacting with stockists.</param>
         /// <param name="commissionRepository">The application repository for interacting with commissions.</param>
         /// <param name="logger">The application logger.</param>
-        public DatabaseStockistService(MandarinDbContext mandarinDbContext,
-                                       IStockistRepository stockistRepository,
+        public DatabaseStockistService(IStockistRepository stockistRepository,
                                        ICommissionRepository commissionRepository,
                                        ILogger<DatabaseStockistService> logger)
         {

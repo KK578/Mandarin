@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mandarin.Converters;
 using Newtonsoft.Json;
 
-namespace Mandarin.Models.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents a summary of the sales for the specified artist (by code), with customizations for the Record of Sales email.

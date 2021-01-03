@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Mandarin.Api.Emails;
-using Mandarin.Models.Commissions;
-using Mandarin.Services;
-using Mandarin.Services.Objects;
+using Mandarin.Commissions;
+using Mandarin.Emails;
 using static Mandarin.Api.Emails.Emails;
 
 namespace Mandarin.Client.Services.Emails

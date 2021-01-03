@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
-using Mandarin.Models.Commissions;
+using Mandarin.Commissions;
 
 namespace Mandarin.Database.Commissions
 {

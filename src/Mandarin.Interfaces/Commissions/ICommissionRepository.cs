@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mandarin.Models.Commissions;
 
-namespace Mandarin.Database.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents a repository that can retrieve and update details about <see cref="Commission"/>.

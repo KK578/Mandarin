@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mandarin.Models.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents a specific commission rate shared by a group of commission periods.

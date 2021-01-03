@@ -2,15 +2,16 @@
 using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Emails;
-using Mandarin.Models.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
+using Mandarin.Emails;
 using Microsoft.AspNetCore.Authorization;
+using static Mandarin.Api.Emails.Emails;
 
 namespace Mandarin.Grpc
 {
     /// <inheritdoc />
     [Authorize]
-    internal sealed class EmailGrpcService : Emails.EmailsBase
+    internal sealed class EmailGrpcService : EmailsBase
     {
         private readonly IEmailService emailService;
         private readonly IMapper mapper;

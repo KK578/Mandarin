@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Mandarin.ViewModels.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// The names of templates available for use in the Record of Sales.

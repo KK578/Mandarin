@@ -1,7 +1,7 @@
 ﻿using Mandarin.Converters;
 using Newtonsoft.Json;
 
-namespace Mandarin.Models.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents all sales for a specific product, with commission and sale amounts.

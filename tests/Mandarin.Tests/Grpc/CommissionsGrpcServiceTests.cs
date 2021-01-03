@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Mandarin.Services;
+using Mandarin.Commissions;
 using Mandarin.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;

@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Models.Commissions;
-using Mandarin.Services;
-using Mandarin.Services.Objects;
+using Mandarin.Commissions;
+using Mandarin.Emails;
 using Mandarin.ViewModels.Commissions;
 using Microsoft.AspNetCore.Http;
 using Moq;

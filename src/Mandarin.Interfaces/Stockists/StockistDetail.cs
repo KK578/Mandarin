@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mandarin.Models.Stockists
+namespace Mandarin.Stockists
 {
     /// <summary>
     /// Represents a stockist's personal information.

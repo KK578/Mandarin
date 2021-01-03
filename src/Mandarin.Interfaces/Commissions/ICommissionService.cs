@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Stockists;
+using Mandarin.Stockists;
 
-namespace Mandarin.Services
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents a service that can retrieve commission breakdowns by stockists.

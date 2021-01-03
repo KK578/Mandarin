@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Mandarin.Models.Commissions
+namespace Mandarin.Commissions
 {
     /// <summary>
     /// Represents a partial amount on a sales that has a fixed portion of the sale as a separate fixed commission amount.

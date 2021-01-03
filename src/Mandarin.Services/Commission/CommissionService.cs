@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using Mandarin.Database.Commissions;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
-using Mandarin.Models.Stockists;
-using Mandarin.Models.Transactions;
+using Mandarin.Commissions;
+using Mandarin.Common;
 using Mandarin.Services.Square;
+using Mandarin.Stockists;
+using Mandarin.Transactions;
 
 namespace Mandarin.Services.Commission
 {

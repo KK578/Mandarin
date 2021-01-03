@@ -1,4 +1,4 @@
-﻿namespace Mandarin.Services.Objects
+﻿namespace Mandarin.Emails
 {
     /// <summary>
     /// Represents the status response of sending a new email.

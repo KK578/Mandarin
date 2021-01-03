@@ -4,14 +4,17 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
 using Microsoft.AspNetCore.Authorization;
+using static Mandarin.Api.Commissions.Commissions;
+using CommissionRateGroup = Mandarin.Api.Commissions.CommissionRateGroup;
+using RecordOfSales = Mandarin.Api.Commissions.RecordOfSales;
 
 namespace Mandarin.Grpc
 {
     /// <inheritdoc />
     [Authorize]
-    internal sealed class CommissionsGrpcService : Commissions.CommissionsBase
+    internal sealed class CommissionsGrpcService : CommissionsBase
     {
         private readonly ICommissionService commissionService;
         private readonly IMapper mapper;

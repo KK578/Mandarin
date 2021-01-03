@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Stockists;
-using Mandarin.Services;
+using Mandarin.Stockists;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using static Mandarin.Api.Stockists.Stockists;
+using Stockist = Mandarin.Api.Stockists.Stockist;
 
 namespace Mandarin.Grpc
 {
@@ -59,7 +60,7 @@ namespace Mandarin.Grpc
         {
             try
             {
-                var stockist = this.mapper.Map<Models.Stockists.Stockist>(request.Stockist);
+                var stockist = this.mapper.Map<Stockists.Stockist>(request.Stockist);
                 await this.stockistService.SaveStockistAsync(stockist);
 
                 return new SaveStockistResponse

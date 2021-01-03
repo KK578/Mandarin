@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mandarin.Models.Stockists;
 
-namespace Mandarin.Services
+namespace Mandarin.Stockists
 {
     /// <summary>
     /// Represents a service that can retrieve and update details about <see cref="Stockist"/>.
