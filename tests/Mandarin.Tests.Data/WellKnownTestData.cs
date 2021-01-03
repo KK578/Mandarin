@@ -78,8 +78,6 @@ namespace Mandarin.Tests.Data
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
-                    // INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_handle, facebook_handle, website_url, image_url,
-                    // tumblr_handle, email_address, description, full_display_name, short_display_name, thumbnail_image_url)
                     StockistId = 4,
                     TwitterHandle = "ropfer3",
                     InstagramHandle = "ropfer3",
@@ -106,7 +104,7 @@ namespace Mandarin.Tests.Data
                         RateGroup = new CommissionRateGroup
                         {
                             GroupId = 2,
-                            Rate = 20,
+                            Rate = 40,
                         },
                     },
                 },
@@ -142,7 +140,7 @@ namespace Mandarin.Tests.Data
                         RateGroup = new CommissionRateGroup
                         {
                             GroupId = 3,
-                            Rate = 40,
+                            Rate = 20,
                         },
                     },
                 },
