@@ -1,5 +1,5 @@
-﻿@page "/edit/{stockistCode}"
-@page "/new"
+﻿@page "/artists/edit/{stockistCode}"
+@page "/artists/new"
 @using Mandarin.Services
 @using System.IO
 @using Bashi.Core.Extensions
@@ -321,7 +321,7 @@ else
     }
 
     await StockistService.SaveStockistAsync(this.Stockist);
-    NavigationManager.NavigateTo($"/admin/artists/edit/{this.Stockist.StockistCode}");
+    NavigationManager.NavigateTo($"/artists/edit/{this.Stockist.StockistCode}");
     validations.ClearAll();
     validations.ClearAll();
     isNew = false;
