@@ -6,7 +6,7 @@ using Mandarin.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc.Commissions
+namespace Mandarin.Tests.Grpc
 {
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public class CommissionsGrpcServiceTests : MandarinGrpcIntegrationTestsBase

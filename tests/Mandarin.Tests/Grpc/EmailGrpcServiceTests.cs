@@ -13,7 +13,7 @@ using SendGrid.Helpers.Mail;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc.Emails
+namespace Mandarin.Tests.Grpc
 {
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public class EmailGrpcServiceTests : MandarinGrpcIntegrationTestsBase

@@ -3,11 +3,12 @@ using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Services;
 using Mandarin.Tests.Data;
+using Mandarin.Tests.Extensions;
 using Mandarin.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc.Stockists
+namespace Mandarin.Tests.Grpc
 {
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public class StockistsGrpcServiceTests : MandarinGrpcIntegrationTestsBase

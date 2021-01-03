@@ -2,7 +2,7 @@
 using FluentAssertions.Primitives;
 using Mandarin.Models.Stockists;
 
-namespace Mandarin.Tests.Grpc.Stockists
+namespace Mandarin.Tests.Extensions
 {
     internal static class StockistFluentAssertionExtensions
     {
