@@ -21,11 +21,16 @@ namespace Mandarin.Tests.Grpc
         private IStockistService Subject => this.Resolve<IStockistService>();
 
         [Fact]
-        public async Task ShouldBeAbleToRetrieveAStockist()
+        public async Task ShouldBeAbleToRetrieveWellKnownStockists()
         {
-            var stockistCode = WellKnownTestData.Stockists.KelbyTynan.StockistCode;
-            var stockist = await this.Subject.GetStockistByCodeAsync(stockistCode);
-            stockist.Should().MatchStockist(WellKnownTestData.Stockists.KelbyTynan);
+            await VerifyStockist(WellKnownTestData.Stockists.KelbyTynan);
+            await VerifyStockist(WellKnownTestData.Stockists.OthilieMapples);
+
+            async Task VerifyStockist(Stockist expected)
+            {
+                var actual = await this.Subject.GetStockistByCodeAsync(expected.StockistCode);
+                actual.Should().MatchStockist(expected);
+            }
         }
 
         [Fact]

@@ -18,8 +18,10 @@ namespace Mandarin.Tests.Helpers.Database
         {
             using var connection = mandarinDbContext.GetConnection();
             connection.Open();
-            await connection.ExecuteAsync(@"TRUNCATE TABLE billing.commission_rate_group, billing.commission, inventory.stockist_detail, inventory.stockist RESTART IDENTITY");
-            await connection.ExecuteAsync(@"TRUNCATE TABLE public.schemaversions");
+            await connection.ExecuteAsync("DROP TABLE billing.commission");
+            await connection.ExecuteAsync("DROP TABLE inventory.stockist_detail");
+            await connection.ExecuteAsync("DROP TABLE inventory.stockist");
+            await connection.ExecuteAsync("TRUNCATE TABLE public.schemaversions");
         }
     }
 }

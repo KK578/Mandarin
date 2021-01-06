@@ -58,13 +58,8 @@ namespace Mandarin.Tests.Data
                         StockistId = 1,
                         StartDate = new DateTime(2019, 08, 23),
                         EndDate = new DateTime(2019, 11, 23),
-                        RateGroupId = 1,
+                        Rate = 10,
                         InsertedAt = new DateTime(2019, 08, 23, 17, 36, 24, DateTimeKind.Utc),
-                        RateGroup = new CommissionRateGroup
-                        {
-                            GroupId = 1,
-                            Rate = 10,
-                        },
                     },
                 },
             };
@@ -99,13 +94,8 @@ namespace Mandarin.Tests.Data
                         StockistId = 4,
                         StartDate = new DateTime(2019, 01, 16),
                         EndDate = new DateTime(2019, 04, 16),
-                        RateGroupId = 2,
+                        Rate = 40,
                         InsertedAt = new DateTime(2019, 01, 16, 17, 36, 24, DateTimeKind.Utc),
-                        RateGroup = new CommissionRateGroup
-                        {
-                            GroupId = 2,
-                            Rate = 40,
-                        },
                     },
                 },
             };
@@ -136,12 +126,7 @@ namespace Mandarin.Tests.Data
                     {
                         StartDate = new DateTime(2019, 11, 28),
                         EndDate = new DateTime(2020, 06, 09),
-                        RateGroupId = 3,
-                        RateGroup = new CommissionRateGroup
-                        {
-                            GroupId = 3,
-                            Rate = 20,
-                        },
+                        Rate = 20,
                     },
                 },
             };

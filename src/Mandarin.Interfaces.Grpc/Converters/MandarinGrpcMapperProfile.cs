@@ -15,7 +15,6 @@ namespace Mandarin.Grpc.Converters
         public MandarinGrpcMapperProfile()
         {
             this.CreateMap<Common.StatusMode, Api.Common.StatusMode>().ReverseMap();
-            this.CreateMap<Commissions.CommissionRateGroup, Api.Commissions.CommissionRateGroup>().ReverseMap();
             this.CreateMap<Commissions.Commission, Api.Commissions.Commission>().ReverseMap();
             this.CreateMap<Commissions.RecordOfSales, Api.Commissions.RecordOfSales>().ReverseMap();
             this.CreateMap<Commissions.Sale, Api.Commissions.Sale>().ReverseMap();

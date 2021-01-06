@@ -16,9 +16,7 @@ namespace Mandarin.Database.Commissions
         public int stockist_id { get; init; }
         public DateTime start_date { get; init; }
         public DateTime end_date { get; init; }
-        public int rate_group { get; init; }
+        public int rate { get; init; }
         public DateTime inserted_at { get; init; }
-
-        public CommissionRateGroupRecord CommissionRateGroup { get; init; }
     }
 }

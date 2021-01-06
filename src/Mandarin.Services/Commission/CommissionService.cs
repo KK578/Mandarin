@@ -34,12 +34,6 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
-        {
-            return this.commissionRepository.GetCommissionRateGroups();
-        }
-
-        /// <inheritdoc />
         public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
         {
             var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
@@ -66,7 +60,7 @@ namespace Mandarin.Services.Commission
             RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)
             {
                 var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(stockist.StockistCode)).ToList();
-                var rate = decimal.Divide(stockist.Commissions.Last().RateGroup.Rate ?? 0, 100);
+                var rate = decimal.Divide(stockist.Commissions.Last().Rate, 100);
 
                 if (stockistsSubtransactions.Count == 0)
                 {

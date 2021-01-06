@@ -38,10 +38,7 @@ namespace Mandarin.Tests.Data.Extensions
                     {
                         StartDate = model.Commissions.First().StartDate,
                         EndDate = model.Commissions.First().EndDate,
-                        RateGroup = new CommissionRateGroup
-                        {
-                            Rate = 10,
-                        },
+                        Rate = 10,
                     },
                 },
                 StatusCode = model.StatusCode,

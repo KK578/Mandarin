@@ -64,7 +64,6 @@ namespace Mandarin.Stockists
         /// <summary>
         /// Gets or sets the history of all commissions related to this stockist.
         /// </summary>
-        [InverseProperty(nameof(Commission.Stockist))]
         public virtual ICollection<Commission> Commissions { get; set; }
     }
 }

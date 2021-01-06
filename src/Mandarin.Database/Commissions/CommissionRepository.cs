@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -26,31 +25,15 @@ namespace Mandarin.Database.Commissions
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroups()
-        {
-            using var connection = this.mandarinDbContext.GetConnection();
-
-            const string sql = "SELECT * FROM billing.commission_rate_group ORDER BY rate";
-            var groupRecords = await connection.QueryAsync<CommissionRateGroupRecord>(sql);
-
-            var groups = this.mapper.Map<List<CommissionRateGroup>>(groupRecords).AsReadOnly();
-            return groups;
-        }
-
-        /// <inheritdoc/>
         public async Task<Commission> GetCommissionByStockist(int stockistId)
         {
             using var connection = this.mandarinDbContext.GetConnection();
 
-            const string sql = @"SELECT c.*, crg.*
+            const string sql = @"SELECT *
                                  FROM billing.commission c
-                                 INNER JOIN billing.commission_rate_group crg on crg.group_id = c.rate_group
                                  WHERE stockist_id = @stockist_id
                                  ORDER BY commission_id DESC";
-            var commissionRecord = await connection.QueryAsync<CommissionRecord, CommissionRateGroupRecord, CommissionRecord>(sql,
-                (c, crg) => c with { CommissionRateGroup = crg },
-                new { stockist_id = stockistId },
-                splitOn: "stockist_id,group_id");
+            var commissionRecord = await connection.QueryAsync<CommissionRecord>(sql, new { stockist_id = stockistId });
 
             var commission = this.mapper.Map<Commission>(commissionRecord.FirstOrDefault());
             return commission;
@@ -80,18 +63,18 @@ namespace Mandarin.Database.Commissions
 
         private static async Task InsertCommissionAsync(IDbConnection db, CommissionRecord commissionRecord)
         {
-            var sql = @"INSERT INTO billing.commission (stockist_id, start_date, end_date, rate_group)
-                        VALUES (@stockist_id, @start_date, @end_date, @rate_group)";
+            const string sql = @"INSERT INTO billing.commission (stockist_id, start_date, end_date, rate)
+                                 VALUES (@stockist_id, @start_date, @end_date, @rate)";
             await db.ExecuteAsync(sql, commissionRecord);
         }
 
         private static async Task UpdateCommissionAsync(IDbConnection db, CommissionRecord commissionRecord)
         {
-            var sql = @"UPDATE billing.commission
-                        SET start_date = @start_date,
-                            end_date = @end_date,
-                            rate_group = @rate_group
-                        WHERE stockist_id = @stockist_id";
+            const string sql = @"UPDATE billing.commission
+                                 SET start_date = @start_date,
+                                     end_date = @end_date,
+                                     rate = @rate
+                                 WHERE stockist_id = @stockist_id";
             await db.ExecuteAsync(sql, commissionRecord);
         }
     }

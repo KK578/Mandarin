@@ -4,7 +4,7 @@ CREATE SCHEMA IF NOT EXISTS billing;
 CREATE TABLE IF NOT EXISTS billing.commission_rate_group
 (
     group_id SERIAL PRIMARY KEY,
-    rate     INT -- TODO: NOT NULL CHECK (rate BETWEEN 0 AND 100)
+    rate     INT
 );
 
 CREATE TABLE IF NOT EXISTS inventory.stockist

@@ -7,7 +7,6 @@ using Mandarin.Api.Commissions;
 using Mandarin.Commissions;
 using Microsoft.AspNetCore.Authorization;
 using static Mandarin.Api.Commissions.Commissions;
-using CommissionRateGroup = Mandarin.Api.Commissions.CommissionRateGroup;
 using RecordOfSales = Mandarin.Api.Commissions.RecordOfSales;
 
 namespace Mandarin.Grpc
@@ -28,17 +27,6 @@ namespace Mandarin.Grpc
         {
             this.commissionService = commissionService;
             this.mapper = mapper;
-        }
-
-        /// <inheritdoc/>
-        public override async Task<GetCommissionRateGroupsResponse> GetCommissionRateGroups(GetCommissionRateGroupsRequest request, ServerCallContext context)
-        {
-            var commissionRateGroups = await this.commissionService.GetCommissionRateGroupsAsync();
-
-            return new GetCommissionRateGroupsResponse
-            {
-                RateGroups = { this.mapper.Map<List<CommissionRateGroup>>(commissionRateGroups) },
-            };
         }
 
         /// <inheritdoc/>

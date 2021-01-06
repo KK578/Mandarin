@@ -11,12 +11,6 @@ namespace Mandarin.Commissions
     public interface ICommissionService
     {
         /// <summary>
-        /// Gets all currently available commission rate groups.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of all commission rate groups.</returns>
-        Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync();
-
-        /// <summary>
         /// Gets the <see cref="RecordOfSales"/> for each active <see cref="Stockist"/>.
         /// The included sales are limited to those between the specified dates.
         /// </summary>

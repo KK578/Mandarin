@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Mandarin.Commissions
 {
@@ -8,12 +7,6 @@ namespace Mandarin.Commissions
     /// </summary>
     public interface ICommissionRepository
     {
-        /// <summary>
-        /// Gets all currently available commission rate groups.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of all commission rate groups.</returns>
-        Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroups();
-
         /// <summary>
         /// Gets the latest commission for the stockist by their database id.
         /// </summary>

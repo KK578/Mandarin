@@ -228,12 +228,9 @@ else
                 <AddonLabel Class="w-12">%</AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <Select TValue="int?" SelectedValue="@Commission.RateGroupId" SelectedValueChanged="@OnRateGroupSelected" Disabled="@(!isEditing)">
-                  @foreach (var group in rateGroups)
-                  {
-                    <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
-                  }
-                </Select>
+                <NumericEdit Min="0" Max="100" @bind-Value="@Commission.Rate" Disabled="@(!isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </NumericEdit>
               </Addon>
             </Addons>
           </Field>
@@ -267,8 +264,6 @@ else
   private Commission Commission => Stockist.Commissions.Last();
   private bool StockistIsDisplayed => Stockist.StatusCode == StatusMode.Active;
 
-  private IReadOnlyList<CommissionRateGroup> rateGroups;
-
   private Validations validations;
   private bool isNew;
   private bool isEditing;
@@ -277,8 +272,6 @@ else
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
-
-    rateGroups = await CommissionService.GetCommissionRateGroupsAsync();
 
     if (string.IsNullOrEmpty(StockistCode))
     {
@@ -291,8 +284,7 @@ else
       };
       Stockist.Commissions.Add(new Commission
       {
-        RateGroupId = rateGroups.First().GroupId,
-        RateGroup = rateGroups.First(),
+        Rate = 100,
         StartDate = DateTime.Now.Date,
         EndDate = DateTime.Now.AddDays(90).Date,
       });
@@ -370,15 +362,6 @@ else
       await file.WriteToStreamAsync(fs);
     }
     this.Stockist.Details.BannerImageUrl = "https://thelittlemandarin.co.uk/" + filename;
-    StateHasChanged();
-  }
-
-  private void OnRateGroupSelected(int? selectedId)
-  {
-    var value = rateGroups.FirstOrDefault(group => group.GroupId == selectedId) ?? rateGroups.First();
-    Commission.RateGroup = value;
-    Commission.RateGroupId = value.GroupId;
-
     StateHasChanged();
   }
 

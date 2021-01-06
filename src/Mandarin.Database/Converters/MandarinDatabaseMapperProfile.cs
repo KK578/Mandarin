@@ -26,13 +26,7 @@ namespace Mandarin.Database.Converters
                 .ForMember(x => x.BannerImageUrl, o => o.MapFrom(src => src.image_url))
                 .ReverseMap();
 
-            this.CreateMap<CommissionRecord, Commission>()
-                .ForMember(x => x.RateGroup, o => o.MapFrom(src => src.CommissionRateGroup))
-                .ForMember(x => x.RateGroupId, o => o.MapFrom(src => src.rate_group))
-                .ReverseMap()
-                .ForMember(x => x.CommissionRateGroup, o => o.MapFrom(src => src.RateGroup))
-                .ForMember(x => x.rate_group, o => o.MapFrom(src => src.RateGroupId));
-            this.CreateMap<CommissionRateGroupRecord, CommissionRateGroup>().ReverseMap();
+            this.CreateMap<CommissionRecord, Commission>().ReverseMap();
         }
     }
 }
