@@ -17,9 +17,9 @@ namespace Mandarin.Tests.Extensions
                                       o => o.IgnoringCyclicReferences()
                                             .Excluding(x => x.StockistId)
                                             .Excluding(x => x.Details.StockistId)
-                                            .Excluding(x => Regex.IsMatch(x.SelectedMemberPath, @"Commissions\[0\].StockistId"))
-                                            .Excluding(x => Regex.IsMatch(x.SelectedMemberPath, @"Commissions\[0\].CommissionId"))
-                                            .Excluding(x => Regex.IsMatch(x.SelectedMemberPath, @"Commissions\[0\].InsertedAt")));
+                                            .Excluding(x => x.Commission.StockistId)
+                                            .Excluding(x => x.Commission.CommissionId)
+                                            .Excluding(x => x.Commission.InsertedAt));
         }
     }
 }
