@@ -60,7 +60,7 @@ namespace Mandarin.Services.Commission
             RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)
             {
                 var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(stockist.StockistCode)).ToList();
-                var rate = decimal.Divide(stockist.Commissions.Last().Rate, 100);
+                var rate = decimal.Divide(stockist.Commission.Rate, 100);
 
                 if (stockistsSubtransactions.Count == 0)
                 {

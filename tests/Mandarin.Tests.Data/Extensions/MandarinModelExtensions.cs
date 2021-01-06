@@ -18,7 +18,7 @@ namespace Mandarin.Tests.Data.Extensions
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Details = model.Details,
-                Commissions = model.Commissions,
+                Commission = model.Commission,
                 StatusCode = statusMode,
             };
         }
@@ -32,14 +32,11 @@ namespace Mandarin.Tests.Data.Extensions
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Details = model.Details,
-                Commissions = new List<Commission>
+                Commission = new Commission
                 {
-                    new()
-                    {
-                        StartDate = model.Commissions.First().StartDate,
-                        EndDate = model.Commissions.First().EndDate,
-                        Rate = 10,
-                    },
+                    StartDate = model.Commission.StartDate,
+                    EndDate = model.Commission.EndDate,
+                    Rate = 10,
                 },
                 StatusCode = model.StatusCode,
             };
@@ -54,7 +51,7 @@ namespace Mandarin.Tests.Data.Extensions
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Details = model.Details,
-                Commissions = model.Commissions,
+                Commission = model.Commission,
                 StatusCode = model.StatusCode,
             };
         }

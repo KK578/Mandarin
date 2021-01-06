@@ -261,7 +261,7 @@ else
   public string StockistCode { get; set; }
 
   private Stockist Stockist { get; set; }
-  private Commission Commission => Stockist.Commissions.Last();
+  private Commission Commission => Stockist.Commission;
   private bool StockistIsDisplayed => Stockist.StatusCode == StatusMode.Active;
 
   private Validations validations;
@@ -282,12 +282,12 @@ else
         StatusCode = StatusMode.Active,
         Details = new StockistDetail(),
       };
-      Stockist.Commissions.Add(new Commission
+      Stockist.Commission = new Commission
       {
         Rate = 100,
         StartDate = DateTime.Now.Date,
         EndDate = DateTime.Now.AddDays(90).Date,
-      });
+      };
     }
     else
     {

@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
@@ -33,9 +32,9 @@ namespace Mandarin.Database.Commissions
                                  FROM billing.commission c
                                  WHERE stockist_id = @stockist_id
                                  ORDER BY commission_id DESC";
-            var commissionRecord = await connection.QueryAsync<CommissionRecord>(sql, new { stockist_id = stockistId });
+            var commissionRecord = await connection.QueryFirstAsync<CommissionRecord>(sql, new { stockist_id = stockistId });
 
-            var commission = this.mapper.Map<Commission>(commissionRecord.FirstOrDefault());
+            var commission = this.mapper.Map<Commission>(commissionRecord);
             return commission;
         }
 

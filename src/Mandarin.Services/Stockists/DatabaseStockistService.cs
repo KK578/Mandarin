@@ -35,11 +35,7 @@ namespace Mandarin.Services.Stockists
         {
             this.logger.LogDebug("Fetching stockist '{StockistCode}'.", stockistCode);
             var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
-            var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
-            if (commission != null)
-            {
-                stockist.Commissions.Add(commission);
-            }
+            stockist.Commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
 
             return stockist;
         }
@@ -48,7 +44,14 @@ namespace Mandarin.Services.Stockists
         public async Task<IReadOnlyList<Stockist>> GetStockistsAsync()
         {
             this.logger.LogInformation("Fetching all stockists.");
-            return await this.stockistRepository.GetAllStockists();
+            var stockists = await this.stockistRepository.GetAllStockists();
+            foreach (var stockist in stockists)
+            {
+                // TODO: This should not be done on this endpoint.
+                stockist.Commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
+            }
+
+            return stockists;
         }
 
         /// <inheritdoc/>
@@ -58,7 +61,7 @@ namespace Mandarin.Services.Stockists
             try
             {
                 var stockistId = await this.stockistRepository.SaveStockistAsync(stockist);
-                await this.commissionRepository.SaveCommissionAsync(stockistId, stockist.Commissions.First());
+                await this.commissionRepository.SaveCommissionAsync(stockistId, stockist.Commission);
             }
             catch (Exception ex)
             {
