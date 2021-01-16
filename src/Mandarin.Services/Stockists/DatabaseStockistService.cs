@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Mandarin.Commissions;
 using Mandarin.Stockists;
@@ -34,24 +33,40 @@ namespace Mandarin.Services.Stockists
         public async Task<Stockist> GetStockistByCodeAsync(string stockistCode)
         {
             this.logger.LogDebug("Fetching stockist '{StockistCode}'.", stockistCode);
-            var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
-            stockist.Commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
-
-            return stockist;
+            try
+            {
+                var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
+                await this.PopulateCommissionAsync(stockist);
+                this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", nameof(Stockist.StockistId), stockist);
+                return stockist;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Failed to fetch stockist (StockistCode={StockistCode}).", stockistCode);
+                throw;
+            }
         }
 
         /// <inheritdoc/>
         public async Task<IReadOnlyList<Stockist>> GetStockistsAsync()
         {
-            this.logger.LogInformation("Fetching all stockists.");
-            var stockists = await this.stockistRepository.GetAllStockists();
-            foreach (var stockist in stockists)
+            this.logger.LogDebug("Fetching all stockists.");
+            try
             {
-                // TODO: This should not be done on this endpoint.
-                stockist.Commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
-            }
+                var stockists = await this.stockistRepository.GetAllStockists();
+                foreach (var stockist in stockists)
+                {
+                    await this.PopulateCommissionAsync(stockist);
+                }
 
-            return stockists;
+                this.logger.LogInformation("Successfully fetched {Count} stockist(s).", stockists.Count);
+                return stockists;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Failed to fetch all stockists.");
+                throw;
+            }
         }
 
         /// <inheritdoc/>
@@ -62,12 +77,19 @@ namespace Mandarin.Services.Stockists
             {
                 var stockistId = await this.stockistRepository.SaveStockistAsync(stockist);
                 await this.commissionRepository.SaveCommissionAsync(stockistId, stockist.Commission);
+                this.logger.LogInformation("Successfully saved stockist {StockistCode}", stockist.StockistCode);
             }
             catch (Exception ex)
             {
                 this.logger.LogError(ex, "Failed to save the stockist {@Stockist}.", stockist);
                 throw;
             }
+        }
+
+        private async Task PopulateCommissionAsync(Stockist stockist)
+        {
+            // TODO: Should most likely not bother populating this unless explicitly requested.
+            stockist.Commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
         }
     }
 }

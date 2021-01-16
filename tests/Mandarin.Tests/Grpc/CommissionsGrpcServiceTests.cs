@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Tests.Helpers;
 using Xunit;
@@ -16,12 +18,12 @@ namespace Mandarin.Tests.Grpc
 
         private ICommissionService Subject => this.Resolve<ICommissionService>();
 
-        [Fact(Skip = "Test not yet implemented.")]
-        public Task ShouldReceiveCommissionRateGroupsInAscendingOrder()
+        [Fact]
+        public async Task ShouldBeAbleToRetrieveEntriesForRecordsOfSales()
         {
-            // TODO: Add RecordOfSales tests.
-            var unused = this.Subject;
-            return Task.CompletedTask;
+            // TODO: Assertions required. This test only verifies a round-trip via Sandbox.
+            var recordOfSales = await this.Subject.GetRecordOfSalesForPeriodAsync(new DateTime(2020, 06, 16), new DateTime(2020, 07, 17));
+            recordOfSales.Should().HaveCount(5);
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Mandarin.Tests.Helpers
                 { "ConnectionStrings:MandarinConnection", "Host=localhost;Port=5555;Database=postgres;Username=postgres;Password=password;Include Error Detail=true" },
                 { "SendGrid:ServiceEmail", "ServiceEmail@example.com" },
                 { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },
+                { "Square:Environment", "Sandbox" },
             });
         }
 
