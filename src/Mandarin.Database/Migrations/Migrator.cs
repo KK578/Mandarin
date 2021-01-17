@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -27,6 +28,7 @@ namespace Mandarin.Database.Migrations
                                               .WithScriptsEmbeddedInAssemblies(assemblies.ToArray())
                                               .WithTransactionPerScript()
                                               .WithScriptNameComparer(new MigrationIdComparer())
+                                              .WithVariable("FixedCommissionAmountJson", Migrator.GetFixedCommissionAmountJson(configuration))
                                               .LogTo(upgradeLog)
                                               .Build();
         }
@@ -39,6 +41,17 @@ namespace Mandarin.Database.Migrations
             {
                 throw new InvalidOperationException($"Failed to run database migrations ({result.ErrorScript}).", result.Error);
             }
+        }
+
+        private static string GetFixedCommissionAmountJson(IConfiguration configuration)
+        {
+            var path = configuration["Mandarin:FixedCommissionAmountFilePath"];
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return "[]";
+            }
+
+            return File.ReadAllText(path);
         }
 
         private class MigrationIdComparer : IComparer<string>
