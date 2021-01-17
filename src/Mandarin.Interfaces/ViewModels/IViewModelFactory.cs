@@ -1,5 +1,4 @@
-﻿using Mandarin.Models.Commissions;
-using Mandarin.ViewModels.Commissions;
+﻿using Mandarin.Commissions;
 
 namespace Mandarin.ViewModels
 {

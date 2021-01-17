@@ -1,6 +1,5 @@
 ﻿syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "Commissions.proto";
 import "Common.proto";
@@ -66,7 +65,7 @@ message Stockist {
   google.protobuf.StringValue lastName = 4;
   StatusMode statusCode = 5;
   StockistDetail details = 6;
-  repeated Commission commissions = 7;
+  Commission commission = 7;
 }
 
 message StockistDetail {

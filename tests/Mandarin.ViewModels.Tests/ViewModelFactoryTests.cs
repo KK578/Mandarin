@@ -1,7 +1,7 @@
 ﻿using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Models.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
+using Mandarin.Emails;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Newtonsoft.Json.Linq;

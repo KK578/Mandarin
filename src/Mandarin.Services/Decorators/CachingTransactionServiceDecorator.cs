@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using LazyCache;
-using Mandarin.Models.Transactions;
+using Mandarin.Transactions;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Services.Decorators

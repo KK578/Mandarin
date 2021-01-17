@@ -1,50 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Mandarin.Database;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
-using Mandarin.Models.Inventory;
-using Mandarin.Models.Stockists;
-using Mandarin.Models.Transactions;
+using Mandarin.Commissions;
+using Mandarin.Common;
+using Mandarin.Inventory;
 using Mandarin.Services.Commission;
+using Mandarin.Stockists;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Data.Extensions;
+using Mandarin.Transactions;
 using Moq;
-using Moq.EntityFrameworkCore;
 using Xunit;
 
 namespace Mandarin.Services.Tests.Commission
 {
     public class CommissionServiceTests
     {
+        private readonly Mock<ICommissionRepository> commissionRepository;
         private readonly Mock<IStockistService> stockistService;
         private readonly Mock<ITransactionService> transactionService;
-        private readonly Mock<MandarinDbContext> mandarinDbContext;
 
         protected CommissionServiceTests()
         {
+            this.commissionRepository = new Mock<ICommissionRepository>();
             this.stockistService = new Mock<IStockistService>();
             this.transactionService = new Mock<ITransactionService>();
-            this.mandarinDbContext = new Mock<MandarinDbContext>();
         }
 
         private ICommissionService Subject =>
-            new CommissionService(this.stockistService.Object,
-                                  this.transactionService.Object,
-                                  this.mandarinDbContext.Object);
-
-        private void GivenCommissionRateGroups(params int[] rates)
-        {
-            var data = rates.Select((rate, i) => new CommissionRateGroup { GroupId = i, Rate = rate });
-            this.mandarinDbContext.Setup(x => x.CommissionRateGroup).ReturnsDbSet(data);
-        }
+            new CommissionService(this.commissionRepository.Object,
+                                  this.stockistService.Object,
+                                  this.transactionService.Object);
 
         private void GivenTlmStockistExists()
         {
@@ -78,25 +69,6 @@ namespace Mandarin.Services.Tests.Commission
 
             this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(transactions.ToObservable());
-        }
-
-        public class GetCommissionRateGroupsTests : CommissionServiceTests
-        {
-            [Fact]
-            public async Task ShouldReturnAllEntries()
-            {
-                this.GivenCommissionRateGroups(10, 20, 30);
-                var actual = await this.Subject.GetCommissionRateGroupsAsync();
-                actual.Should().HaveCount(3);
-            }
-
-            [Fact]
-            public async Task ShouldReturnEntriesInAscendingOrderByRate()
-            {
-                this.GivenCommissionRateGroups(40, 20, 10, 50, 30, 100);
-                var actual = await this.Subject.GetCommissionRateGroupsAsync();
-                actual.Select(x => x.Rate).Should().HaveCount(6).And.BeInAscendingOrder();
-            }
         }
 
         public class GetRecordOfSalesForPeriodAsyncTests : CommissionServiceTests

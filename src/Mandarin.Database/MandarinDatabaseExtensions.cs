@@ -1,4 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using DbUp.Engine.Output;
+using Mandarin.Commissions;
+using Mandarin.Database.Commissions;
+using Mandarin.Database.Converters;
+using Mandarin.Database.Migrations;
+using Mandarin.Database.Stockists;
+using Mandarin.Stockists;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,8 +24,15 @@ namespace Mandarin.Database
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddEntityFrameworkNpgsql();
-            services.AddDbContext<MandarinDbContext>((s, o) => o.UseNpgsql(configuration.GetConnectionString("MandarinConnection")).UseInternalServiceProvider(s).EnableSensitiveDataLogging());
+            services.AddSingleton(typeof(Migrator).Assembly);
+            services.AddTransient<IUpgradeLog, DbUpLogger>();
+            services.AddSingleton<IMigrator, Migrator>();
+            services.AddTransient<MandarinDbContext>();
+
+            SqlMapper.AddTypeHandler(new DateTimeUtcHandler());
+
+            services.AddTransient<IStockistRepository, StockistRepository>();
+            services.AddTransient<ICommissionRepository, CommissionRepository>();
 
             return services;
         }

@@ -1,9 +1,14 @@
 ﻿using System;
+using Mandarin.Commissions;
+using Mandarin.Emails;
+using Mandarin.Inventory;
 using Mandarin.Services.Commission;
 using Mandarin.Services.Decorators;
 using Mandarin.Services.SendGrid;
 using Mandarin.Services.Square;
 using Mandarin.Services.Stockists;
+using Mandarin.Stockists;
+using Mandarin.Transactions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendGrid;
@@ -56,7 +61,7 @@ namespace Mandarin.Services
 
         private static void AddStockistServices(this IServiceCollection services)
         {
-            services.AddScoped<IStockistService, EntityFrameworkStockistService>();
+            services.AddScoped<IStockistService, StockistService>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)

@@ -4,6 +4,7 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
 using Mandarin.Database;
+using Mandarin.Database.Converters;
 using Mandarin.Extensions;
 using Mandarin.Grpc;
 using Mandarin.Grpc.Converters;
@@ -12,7 +13,6 @@ using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -70,7 +70,11 @@ namespace Mandarin
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinDatabase(this.configuration);
-            services.AddAutoMapper(options => { options.AddProfile<MandarinMapperProfile>(); });
+            services.AddAutoMapper(options =>
+            {
+                options.AddProfile<MandarinDatabaseMapperProfile>();
+                options.AddProfile<MandarinGrpcMapperProfile>();
+            });
             services.AddMandarinServices(this.configuration);
             services.AddMandarinViewModels();
         }
@@ -87,7 +91,7 @@ namespace Mandarin
         /// <param name="mandarinDbContext">The application database context.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
-            mandarinDbContext.Database.Migrate();
+            mandarinDbContext.RunMigrations();
 
             if (env.IsDevelopment())
             {

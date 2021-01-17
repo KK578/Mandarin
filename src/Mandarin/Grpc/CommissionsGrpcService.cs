@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
 using Microsoft.AspNetCore.Authorization;
+using static Mandarin.Api.Commissions.Commissions;
+using RecordOfSales = Mandarin.Api.Commissions.RecordOfSales;
 
 namespace Mandarin.Grpc
 {
     /// <inheritdoc />
     [Authorize]
-    internal sealed class CommissionsGrpcService : Commissions.CommissionsBase
+    internal sealed class CommissionsGrpcService : CommissionsBase
     {
         private readonly ICommissionService commissionService;
         private readonly IMapper mapper;
@@ -27,17 +30,6 @@ namespace Mandarin.Grpc
         }
 
         /// <inheritdoc/>
-        public override async Task<GetCommissionRateGroupsResponse> GetCommissionRateGroups(GetCommissionRateGroupsRequest request, ServerCallContext context)
-        {
-            var commissionRateGroups = await this.commissionService.GetCommissionRateGroupsAsync();
-
-            return new GetCommissionRateGroupsResponse
-            {
-                RateGroups = { this.mapper.Map<CommissionRateGroup>(commissionRateGroups) },
-            };
-        }
-
-        /// <inheritdoc/>
         public override async Task<GetRecordOfSalesForPeriodResponse> GetRecordOfSalesForPeriod(GetRecordOfSalesForPeriodRequest request, ServerCallContext context)
         {
             var startDate = this.mapper.Map<DateTime>(request.StartDate);
@@ -46,7 +38,7 @@ namespace Mandarin.Grpc
 
             return new GetRecordOfSalesForPeriodResponse
             {
-                Sales = { this.mapper.Map<RecordOfSales>(recordOfSales) },
+                Sales = { this.mapper.Map<List<RecordOfSales>>(recordOfSales) },
             };
         }
     }

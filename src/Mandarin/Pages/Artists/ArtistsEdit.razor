@@ -1,12 +1,11 @@
-﻿@page "/edit/{stockistCode}"
-@page "/new"
-@using Mandarin.Services
+﻿@page "/artists/edit/{stockistCode}"
+@page "/artists/new"
 @using System.IO
 @using Bashi.Core.Extensions
 @using Bashi.Core.Utils
-@using Mandarin.Models.Commissions
-@using Mandarin.Models.Common
-@using Mandarin.Models.Stockists
+@using Mandarin.Commissions
+@using Mandarin.Common
+@using Mandarin.Stockists
 @inject IStockistService StockistService;
 @inject ICommissionService CommissionService;
 @inject NavigationManager NavigationManager;
@@ -229,12 +228,9 @@ else
                 <AddonLabel Class="w-12">%</AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
-                <Select TValue="int?" SelectedValue="@Commission.RateGroupId" SelectedValueChanged="@OnRateGroupSelected" Disabled="@(!isEditing)">
-                  @foreach (var group in rateGroups)
-                  {
-                    <SelectItem TValue="int?" Value="@(group.GroupId)">@(group.Rate)%</SelectItem>
-                  }
-                </Select>
+                <NumericEdit Min="0" Max="100" @bind-Value="@Commission.Rate" Disabled="@(!isEditing)">
+                  <Feedback><ValidationError /></Feedback>
+                </NumericEdit>
               </Addon>
             </Addons>
           </Field>
@@ -265,10 +261,8 @@ else
   public string StockistCode { get; set; }
 
   private Stockist Stockist { get; set; }
-  private Commission Commission => Stockist.Commissions.Last();
+  private Commission Commission => Stockist.Commission;
   private bool StockistIsDisplayed => Stockist.StatusCode == StatusMode.Active;
-
-  private IReadOnlyList<CommissionRateGroup> rateGroups;
 
   private Validations validations;
   private bool isNew;
@@ -279,8 +273,6 @@ else
   {
     await base.OnInitializedAsync();
 
-    rateGroups = await CommissionService.GetCommissionRateGroupsAsync();
-
     if (string.IsNullOrEmpty(StockistCode))
     {
       this.isNew = true;
@@ -290,13 +282,12 @@ else
         StatusCode = StatusMode.Active,
         Details = new StockistDetail(),
       };
-      Stockist.Commissions.Add(new Commission
+      Stockist.Commission = new Commission
       {
-        RateGroupId = rateGroups.First().GroupId,
-        RateGroup = rateGroups.First(),
+        Rate = 100,
         StartDate = DateTime.Now.Date,
         EndDate = DateTime.Now.AddDays(90).Date,
-      });
+      };
     }
     else
     {
@@ -321,7 +312,7 @@ else
     }
 
     await StockistService.SaveStockistAsync(this.Stockist);
-    NavigationManager.NavigateTo($"/admin/artists/edit/{this.Stockist.StockistCode}");
+    NavigationManager.NavigateTo($"/artists/edit/{this.Stockist.StockistCode}");
     validations.ClearAll();
     validations.ClearAll();
     isNew = false;
@@ -371,15 +362,6 @@ else
       await file.WriteToStreamAsync(fs);
     }
     this.Stockist.Details.BannerImageUrl = "https://thelittlemandarin.co.uk/" + filename;
-    StateHasChanged();
-  }
-
-  private void OnRateGroupSelected(int? selectedId)
-  {
-    var value = rateGroups.FirstOrDefault(group => group.GroupId == selectedId) ?? rateGroups.First();
-    Commission.RateGroup = value;
-    Commission.RateGroupId = value.GroupId;
-
     StateHasChanged();
   }
 

@@ -3,44 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Mandarin.Database;
-using Mandarin.Database.Extensions;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
-using Mandarin.Models.Stockists;
-using Mandarin.Models.Transactions;
+using Mandarin.Commissions;
+using Mandarin.Common;
 using Mandarin.Services.Square;
+using Mandarin.Stockists;
+using Mandarin.Transactions;
 
 namespace Mandarin.Services.Commission
 {
     /// <inheritdoc />
     public class CommissionService : ICommissionService
     {
+        private readonly ICommissionRepository commissionRepository;
         private readonly IStockistService stockistService;
         private readonly ITransactionService transactionService;
-        private readonly MandarinDbContext mandarinDbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
+        /// <param name="commissionRepository">The application repository for interacting with commissions.</param>
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="transactionService">The transaction service.</param>
-        /// <param name="mandarinDbContext">The application database context.</param>
-        public CommissionService(IStockistService stockistService,
-                                 ITransactionService transactionService,
-                                 MandarinDbContext mandarinDbContext)
+        public CommissionService(ICommissionRepository commissionRepository,
+                                 IStockistService stockistService,
+                                 ITransactionService transactionService)
         {
+            this.commissionRepository = commissionRepository;
             this.stockistService = stockistService;
             this.transactionService = transactionService;
-            this.mandarinDbContext = mandarinDbContext;
-        }
-
-        /// <inheritdoc />
-        public Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
-        {
-            return this.mandarinDbContext.CommissionRateGroup
-                       .OrderBy(x => x.Rate)
-                       .ToReadOnlyListAsync();
         }
 
         /// <inheritdoc />
@@ -70,7 +60,7 @@ namespace Mandarin.Services.Commission
             RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)
             {
                 var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(stockist.StockistCode)).ToList();
-                var rate = decimal.Divide(stockist.Commissions.Last().RateGroup.Rate ?? 0, 100);
+                var rate = decimal.Divide(stockist.Commission.Rate, 100);
 
                 if (stockistsSubtransactions.Count == 0)
                 {

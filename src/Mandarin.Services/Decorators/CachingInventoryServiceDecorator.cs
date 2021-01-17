@@ -5,8 +5,8 @@ using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LazyCache;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Inventory;
+using Mandarin.Commissions;
+using Mandarin.Inventory;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Services.Decorators

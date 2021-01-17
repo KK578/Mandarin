@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Mandarin.Models.Commissions;
-using Mandarin.Services.Objects;
+using Mandarin.Commissions;
+using Mandarin.Emails;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;

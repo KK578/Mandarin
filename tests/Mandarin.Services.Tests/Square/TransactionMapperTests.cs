@@ -5,15 +5,15 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
+using Mandarin.Commissions;
 using Mandarin.Configuration;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Inventory;
+using Mandarin.Inventory;
 using Mandarin.Services.Square;
 using Microsoft.Extensions.Options;
 using Moq;
 using Square.Models;
 using Xunit;
-using Transaction = Mandarin.Models.Transactions.Transaction;
+using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Services.Tests.Square
 {

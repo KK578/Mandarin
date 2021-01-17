@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Common;
-using Mandarin.Models.Inventory;
-using Mandarin.Models.Stockists;
+using Mandarin.Commissions;
+using Mandarin.Common;
+using Mandarin.Inventory;
+using Mandarin.Stockists;
 
 namespace Mandarin.Tests.Data.Extensions
 {
@@ -18,7 +18,7 @@ namespace Mandarin.Tests.Data.Extensions
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Details = model.Details,
-                Commissions = model.Commissions,
+                Commission = model.Commission,
                 StatusCode = statusMode,
             };
         }
@@ -32,18 +32,26 @@ namespace Mandarin.Tests.Data.Extensions
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Details = model.Details,
-                Commissions = new List<Commission>
+                Commission = new Commission
                 {
-                    new()
-                    {
-                        StartDate = model.Commissions.First().StartDate,
-                        EndDate = model.Commissions.First().EndDate,
-                        RateGroup = new CommissionRateGroup
-                        {
-                            Rate = 10,
-                        },
-                    },
+                    StartDate = model.Commission.StartDate,
+                    EndDate = model.Commission.EndDate,
+                    Rate = 10,
                 },
+                StatusCode = model.StatusCode,
+            };
+        }
+
+        public static Stockist WithoutCommission(this Stockist model)
+        {
+            return new()
+            {
+                StockistId = model.StockistId,
+                StockistCode = model.StockistCode,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Details = model.Details,
+                Commission = null,
                 StatusCode = model.StatusCode,
             };
         }
@@ -57,7 +65,7 @@ namespace Mandarin.Tests.Data.Extensions
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Details = model.Details,
-                Commissions = model.Commissions,
+                Commission = model.Commission,
                 StatusCode = model.StatusCode,
             };
         }

@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Models.Commissions;
+using Mandarin.Commissions;
 using Mandarin.Tests.Data;
 using Newtonsoft.Json;
 using Xunit;

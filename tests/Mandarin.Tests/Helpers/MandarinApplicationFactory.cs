@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using Mandarin.Database;
 using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,16 +17,6 @@ namespace Mandarin.Tests.Helpers
     public class MandarinApplicationFactory : WebApplicationFactory<MandarinStartup>
     {
         public ITestOutputHelper TestOutputHelper { get; set; } = new TestOutputHelper();
-
-        protected override void Dispose(bool disposing)
-        {
-            using var scope = this.Services.CreateScope();
-            var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
-            var migrator = mandarinDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
-            migrator.Migrate("0");
-
-            base.Dispose(disposing);
-        }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -45,6 +32,7 @@ namespace Mandarin.Tests.Helpers
 
         protected virtual void ConfigureTestServices(IServiceCollection services)
         {
+            services.AddSingleton(this.GetType().Assembly);
         }
 
         private static void AddTestConfiguration(WebHostBuilderContext host, IConfigurationBuilder configurationBuilder)
@@ -57,6 +45,7 @@ namespace Mandarin.Tests.Helpers
                 { "ConnectionStrings:MandarinConnection", "Host=localhost;Port=5555;Database=postgres;Username=postgres;Password=password;Include Error Detail=true" },
                 { "SendGrid:ServiceEmail", "ServiceEmail@example.com" },
                 { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },
+                { "Square:Environment", "Sandbox" },
             });
         }
 
@@ -76,7 +65,6 @@ namespace Mandarin.Tests.Helpers
             c.MinimumLevel.Verbose()
              .MinimumLevel.Override("Elastic.Apm", LogEventLevel.Error)
              .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
              .WriteTo.TestOutput(this.TestOutputHelper, outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
         }
     }

@@ -10,23 +10,11 @@ package uk.co.thelittlemandarin;
 
 // The commission service definition.
 service Commissions {
-  // Gets the stockist with the matching stockist code.
-  rpc GetCommissionRateGroups (GetCommissionRateGroupsRequest) returns (GetCommissionRateGroupsResponse);
-
   // Gets the RecordOfSales for each active Stockist.
   // The included sales are limited to those between the specified dates.
   rpc GetRecordOfSalesForPeriod (GetRecordOfSalesForPeriodRequest) returns (GetRecordOfSalesForPeriodResponse);
 }
 
-
-// The request message for getting all commission rate groups.
-message GetCommissionRateGroupsRequest {
-}
-
-// The response message containing all commission rate groups.
-message GetCommissionRateGroupsResponse {
-  repeated CommissionRateGroup RateGroups = 1; // The list of all commission rate groups.
-}
 
 // The request message for getting record of sales for the selected period.
 message GetRecordOfSalesForPeriodRequest {
@@ -46,15 +34,8 @@ message Commission {
   int32 stockistId = 2; // Gets the related stockist ID related to this commission.
   google.protobuf.Timestamp startDate = 3; // Gets the start date for this commission.
   google.protobuf.Timestamp endDate = 4; // Gets the end date for this commission.
-  google.protobuf.Int32Value rateGroupId = 5; //  Gets the agreed commission rate group for this commission.
+  google.protobuf.Int32Value rate = 5; //  Gets the agreed commission rate in percentage as an integer.
   google.protobuf.Timestamp insertedAt = 6; // Gets the time that this commission was created at.
-  CommissionRateGroup rateGroup = 7; // Gets the related commission rate group for this commission.
-}
-
-// Represents a specific commission rate shared by a group of commission periods.
-message CommissionRateGroup {
-  int32 groupId = 1; // The commission rate group's unique id.
-  int32 rate = 2; // The commission rate as a percentage.
 }
 
 // Represents a summary of the sales for the specified artist (by code), with customizations for the Record of Sales email.

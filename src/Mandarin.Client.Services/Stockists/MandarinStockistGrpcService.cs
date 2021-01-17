@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Mandarin.Api.Stockists;
-using Mandarin.Services;
+using Mandarin.Stockists;
 using static Mandarin.Api.Stockists.Stockists;
-using Stockist = Mandarin.Models.Stockists.Stockist;
+using Stockist = Mandarin.Stockists.Stockist;
 
 namespace Mandarin.Client.Services.Stockists
 {

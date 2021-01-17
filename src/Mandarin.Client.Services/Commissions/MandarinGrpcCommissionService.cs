@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using Mandarin.Api.Commissions;
-using Mandarin.Services;
+using Mandarin.Commissions;
 using static Mandarin.Api.Commissions.Commissions;
-using CommissionRateGroup = Mandarin.Models.Commissions.CommissionRateGroup;
-using RecordOfSales = Mandarin.Models.Commissions.RecordOfSales;
+using RecordOfSales = Mandarin.Commissions.RecordOfSales;
 
 namespace Mandarin.Client.Services.Commissions
 {
@@ -26,14 +25,6 @@ namespace Mandarin.Client.Services.Commissions
         {
             this.commissionsClient = commissionsClient;
             this.mapper = mapper;
-        }
-
-        /// <inheritdoc/>
-        public async Task<IReadOnlyList<CommissionRateGroup>> GetCommissionRateGroupsAsync()
-        {
-            var request = new GetCommissionRateGroupsRequest();
-            var response = await this.commissionsClient.GetCommissionRateGroupsAsync(request);
-            return this.mapper.Map<List<CommissionRateGroup>>(response).AsReadOnly();
         }
 
         /// <inheritdoc/>

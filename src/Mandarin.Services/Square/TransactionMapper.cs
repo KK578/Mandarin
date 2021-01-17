@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Mandarin.Commissions;
 using Mandarin.Configuration;
-using Mandarin.Models.Commissions;
-using Mandarin.Models.Inventory;
-using Mandarin.Models.Transactions;
+using Mandarin.Inventory;
+using Mandarin.Transactions;
 using Microsoft.Extensions.Options;
 using Square.Models;
-using Transaction = Mandarin.Models.Transactions.Transaction;
+using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Services.Square
 {

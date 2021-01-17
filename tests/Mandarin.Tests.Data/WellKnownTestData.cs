@@ -1,6 +1,9 @@
-﻿using System.IO;
-using Mandarin.Models.Common;
-using Mandarin.Models.Stockists;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Mandarin.Commissions;
+using Mandarin.Common;
+using Mandarin.Stockists;
 using Newtonsoft.Json;
 using Square.Models;
 
@@ -25,66 +28,97 @@ namespace Mandarin.Tests.Data
 
         public static class Stockists
         {
-            public static readonly Stockist InactiveStockist = new()
+            public static readonly Stockist KelbyTynan = new()
             {
-                StockistCode = "IA1",
-                FirstName = "Inactive",
-                LastName = "Artist",
+                StockistId = 1,
+                StockistCode = "KT20",
+                FirstName = "Kelby",
+                LastName = "Tynan",
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = nameof(Stockists.InactiveStockist),
-                    FullDisplayName = nameof(Stockists.InactiveStockist),
-                    Description = "Artist's Description.",
-                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
+                    StockistId = 1,
+                    TwitterHandle = "jharrowing0",
+                    InstagramHandle = "jharrowing0",
+                    FacebookHandle = null,
+                    WebsiteUrl = "https://hhs.gov/velit.png",
+                    BannerImageUrl = "http://dummyimage.com/600x200.png/cc0000/ffffff",
+                    TumblrHandle = null,
+                    EmailAddress = "ccareless0@homestead.com",
+                    Description = "integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor sed tristique",
+                    FullDisplayName = "Kelby Tynan",
+                    ShortDisplayName = "Kelby Tynan",
+                    ThumbnailImageUrl = "http://dummyimage.com/200x200.png/cc0000/ffffff",
                 },
-            };
-
-            public static readonly Stockist MinimalStockist = new()
-            {
-                StockistCode = "MA1",
-                FirstName = "Minimal",
-                LastName = "Artist",
-                StatusCode = StatusMode.Active,
-                Details = new StockistDetail
+                Commission = new Commission
                 {
-                    ShortDisplayName = nameof(Stockists.MinimalStockist),
-                    FullDisplayName = nameof(Stockists.MinimalStockist),
-                    Description = "Artist's Description.",
-                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
+                    CommissionId = 1,
+                    StockistId = 1,
+                    StartDate = new DateTime(2019, 08, 23),
+                    EndDate = new DateTime(2019, 11, 23),
+                    Rate = 10,
+                    InsertedAt = new DateTime(2019, 08, 23, 17, 36, 24, DateTimeKind.Utc),
                 },
             };
 
-            public static readonly Stockist HiddenStockist = new()
+            public static readonly Stockist OthilieMapples = new()
             {
-                StockistCode = "HA1",
-                FirstName = "Hidden",
-                LastName = "Artist",
+                StockistId = 4,
+                StockistCode = "OM19",
+                FirstName = "Othilie",
+                LastName = "Mapples",
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = nameof(Stockists.HiddenStockist),
-                    FullDisplayName = nameof(Stockists.HiddenStockist),
-                    Description = "Artist's Description.",
-                    BannerImageUrl = "https://localhost/static/images/artist1.jpg",
+                    StockistId = 4,
+                    TwitterHandle = "ropfer3",
+                    InstagramHandle = "ropfer3",
+                    FacebookHandle = null,
+                    WebsiteUrl = "http://mtv.com/non/mauris/morbi.jsp",
+                    BannerImageUrl = "http://dummyimage.com/600x200.png/cc0000/ffffff",
+                    TumblrHandle = null,
+                    EmailAddress = "jgunny3@unicef.org",
+                    Description = "nibh in lectus pellentesque at nulla suspendisse potenti cras in purus eu magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum",
+                    FullDisplayName = "Othilie Mapples",
+                    ShortDisplayName = "Othilie Mapples",
+                    ThumbnailImageUrl = "http://dummyimage.com/200x200.png/ff4444/ffffff",
+                },
+                Commission = new Commission
+                {
+                    CommissionId = 4,
+                    StockistId = 4,
+                    StartDate = new DateTime(2019, 01, 16),
+                    EndDate = new DateTime(2019, 04, 16),
+                    Rate = 40,
+                    InsertedAt = new DateTime(2019, 01, 16, 17, 36, 24, DateTimeKind.Utc),
                 },
             };
 
-            public static readonly Stockist TheLittleMandarinStockist = new()
+            public static readonly Stockist ArlueneWoodes = new()
             {
-                StockistId = 1,
-                StockistCode = "TLM",
-                FirstName = "Little",
-                LastName = "Mandarin",
+                StockistCode = "AW20",
+                FirstName = "Arluene",
+                LastName = "Woodes",
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
-                    ShortDisplayName = "The Little Mandarin",
-                    FullDisplayName = "The Little Mandarin",
-                    Description = "The Little Mandarin in-house art team!",
-                    InstagramHandle = "thelittlemandarin_e17",
-                    WebsiteUrl = "https://thelittlemandarin.co.uk/",
-                    BannerImageUrl = "https://thelittlemandarin.co.uk/static/images/artists/TLM.jpeg",
+                    TwitterHandle = "fokennavain0",
+                    InstagramHandle = null,
+                    FacebookHandle = null,
+                    WebsiteUrl = "https://amazon.co.jp/integer/aliquet/massa/id/lobortis/convallis.png",
+                    BannerImageUrl = "http://dummyimage.com/600x200.png/5fa2dd/ffffff",
+                    TumblrHandle = null,
+                    EmailAddress = "emorrieson0@amazon.de",
+                    Description = "elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus",
+                    FullDisplayName = "Arluene Woodes",
+                    ShortDisplayName = "Arluene Woodes",
+                    ThumbnailImageUrl = "http://dummyimage.com/200x200.png/ff4444/ffffff",
+                },
+                Commission = new Commission
+                {
+                    StartDate = new DateTime(2019, 11, 28),
+                    EndDate = new DateTime(2020, 06, 09),
+                    Rate = 20,
                 },
             };
         }
