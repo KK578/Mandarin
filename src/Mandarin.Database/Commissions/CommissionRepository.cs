@@ -85,7 +85,7 @@ namespace Mandarin.Database.Commissions
                 // TODO: CommissionId should probably be nullable.
                 if (commissionRecord.commission_id == 0)
                 {
-                    this.logger.LogDebug("Inserting as new Commission entry for StockistId={StockistId}.", stockistId);
+                    this.logger.LogDebug("Inserting as new Commission entry for StockistId={StockistId}", stockistId);
                     await CommissionRepository.InsertCommissionAsync(db, commissionRecord);
                     transaction.Commit();
                 }

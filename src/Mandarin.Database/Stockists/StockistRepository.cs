@@ -28,36 +28,32 @@ namespace Mandarin.Database.Stockists
             ORDER BY stockist_code";
 
         private const string InsertStockistSql = @"
-            INSERT INTO inventory.stockist (stockist_code, stockist_status, first_name, last_name)
-            VALUES (@stockist_code, @stockist_Status, @first_name, @last_name)
+            INSERT INTO inventory.stockist (stockist_code, stockist_status)
+            VALUES (@stockist_code, @stockist_Status)
             RETURNING stockist_id";
 
         private const string InsertStockistDetailSql = @"
-            INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_handle, facebook_handle, website_url, image_url, tumblr_handle, email_address, description, full_display_name, short_display_name, thumbnail_image_url)
-            VALUES (@stockist_id, @twitter_handle, @instagram_handle, @facebook_handle, @website_url, @image_url, @tumblr_handle, @email_address, @description, @full_display_name, @short_display_name, @thumbnail_image_url)";
+            INSERT INTO inventory.stockist_detail (stockist_id, first_name, last_name, short_display_name, twitter_handle, instagram_handle, facebook_handle, website_url, tumblr_handle, email_address)
+            VALUES (@stockist_id, @first_name, @last_name, @short_display_name, @twitter_handle, @instagram_handle, @facebook_handle, @website_url, @tumblr_handle, @email_address)";
 
         private const string UpdateStockistSql = @"
             UPDATE inventory.stockist
             SET stockist_code = @stockist_code,
-                stockist_status = @stockist_status,
-                first_name = @first_name,
-                last_name = @last_name
+                stockist_status = @stockist_status
             WHERE stockist_id = @stockist_id";
 
         private const string UpdateStockistDetailSql = @"
             UPDATE inventory.stockist_detail
             SET stockist_id = @stockist_id,
+                first_name = @first_name,
+                last_name = @last_name,
+                short_display_name = @short_display_name,
                 twitter_handle = @twitter_handle,
                 instagram_handle = @instagram_handle,
                 facebook_handle = @facebook_handle,
                 website_url = @website_url,
-                image_url = @image_url,
                 tumblr_handle = @tumblr_handle,
-                email_address = @email_address,
-                description = @description,
-                full_display_name = @full_display_name,
-                short_display_name = @short_display_name,
-                thumbnail_image_url = @thumbnail_image_url
+                email_address = @email_address
             WHERE stockist_id = @stockist_id";
 
         private readonly MandarinDbContext mandarinDbContext;
