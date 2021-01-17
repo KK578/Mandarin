@@ -67,8 +67,8 @@ namespace Mandarin.Services.Commission
                     return new RecordOfSales
                     {
                         StockistCode = stockist.StockistCode,
-                        FirstName = stockist.FirstName,
-                        Name = stockist.Details.ShortDisplayName,
+                        FirstName = stockist.Details.FirstName,
+                        Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
                         StartDate = start,
@@ -89,8 +89,8 @@ namespace Mandarin.Services.Commission
                     return new RecordOfSales
                     {
                         StockistCode = stockist.StockistCode,
-                        FirstName = stockist.FirstName,
-                        Name = stockist.Details.ShortDisplayName,
+                        FirstName = stockist.Details.FirstName,
+                        Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
                         StartDate = start,

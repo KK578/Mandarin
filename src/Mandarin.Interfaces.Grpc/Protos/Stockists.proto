@@ -61,8 +61,6 @@ message SaveStockistResponse {
 message Stockist {
   int32 stockistId = 1;
   string stockistCode = 2;
-  google.protobuf.StringValue firstName = 3;
-  google.protobuf.StringValue lastName = 4;
   StatusMode statusCode = 5;
   StockistDetail details = 6;
   Commission commission = 7;
@@ -70,15 +68,13 @@ message Stockist {
 
 message StockistDetail {
   int32 stockistId = 1;
-  string shortDisplayName = 2;
-  string fullDisplayName = 3;
-  google.protobuf.StringValue description = 4;
+  google.protobuf.StringValue firstName = 13;
+  google.protobuf.StringValue lastName = 14;
+  string displayName = 2;
   google.protobuf.StringValue twitterHandle = 5;
   google.protobuf.StringValue instagramHandle = 6;
   google.protobuf.StringValue facebookHandle = 7;
   google.protobuf.StringValue websiteUrl = 8;
-  google.protobuf.StringValue thumbnailImageUrl = 9;
-  google.protobuf.StringValue bannerImageUrl = 10;
   google.protobuf.StringValue tumblrHandle = 11;
   google.protobuf.StringValue emailAddress = 12;
 }

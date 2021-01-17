@@ -27,7 +27,7 @@ else
 {
   <Card>
     <CardHeader>
-        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.ShortDisplayName}")</CardTitle>
+        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.DisplayName}")</CardTitle>
       <CardActions Float="Float.Right">
         @if (isEditing)
         {
@@ -56,7 +56,7 @@ else
           <Validation>
             <Field ColumnSize="ColumnSize.Is6">
               <FieldLabel>First Name</FieldLabel>
-              <TextEdit @bind-Text="@Stockist.FirstName" Disabled="@(!isEditing)">
+              <TextEdit @bind-Text="@Stockist.Details.FirstName" Disabled="@(!isEditing)">
                 <Feedback><ValidationError /></Feedback>
               </TextEdit>
             </Field>
@@ -64,12 +64,21 @@ else
           <Validation>
             <Field ColumnSize="ColumnSize.Is6">
               <FieldLabel>Last Name</FieldLabel>
-              <TextEdit @bind-Text="@Stockist.LastName" Disabled="@(!isEditing)">
+              <TextEdit @bind-Text="@Stockist.Details.LastName" Disabled="@(!isEditing)">
                 <Feedback><ValidationError /></Feedback>
               </TextEdit>
             </Field>
           </Validation>
         </Fields>
+
+        <Validation>
+          <Field>
+            <FieldLabel>Full/Display Name</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.Details.DisplayName" Disabled="@(!isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
 
         <Validation>
           <Field>
@@ -97,55 +106,7 @@ else
 
         <Divider />
 
-        <FieldLabel>Artists Page Details</FieldLabel>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Grid Display Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName" Disabled="@(!isEditing)">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Banner Display Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.Details.FullDisplayName" Disabled="@(!isEditing)">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Description</FieldLabel>
-            <MemoEdit @bind-Text="@Stockist.Details.Description" Rows="5" Disabled="@(!StockistIsDisplayed || !isEditing)">
-              <Feedback><ValidationError /></Feedback>
-            </MemoEdit>
-          </Field>
-        </Validation>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Grid Image</FieldLabel>
-            <FileEdit Filter="image/*" Disabled="@(!StockistIsDisplayed || !isEditing)" Changed="OnThumbnailImageChanged">
-              <Feedback><ValidationError /></Feedback>
-            </FileEdit>
-            <img class="mt-6" src="@Stockist.Details.ThumbnailImageUrl" />
-          </Field>
-        </Validation>
-
-
-        <Validation>
-          <Field>
-            <FieldLabel>Banner Image</FieldLabel>
-            <FileEdit Filter="image/*" Disabled="@(!StockistIsDisplayed || !isEditing)" Changed="OnBannerImageChanged">
-              <Feedback><ValidationError /></Feedback>
-            </FileEdit>
-            <img class="mt-6" src="@Stockist.Details.BannerImageUrl" />
-          </Field>
-        </Validation>
+        <FieldLabel>Artist Social Media</FieldLabel>
 
         <Validation>
           <Field>
@@ -337,32 +298,6 @@ else
   private void OnCloseClicked()
   {
     NavigationManager.NavigateTo("/artists");
-  }
-
-  private async Task OnThumbnailImageChanged(FileChangedEventArgs arg)
-  {
-    var file = arg.Files.FirstOrDefault();
-    Directory.CreateDirectory("wwwroot/static/images/artists/thumbs");
-    var filename = $"static/images/artists/thumbs/{file.Name}";
-    await using (var fs = File.Create("wwwroot/" + filename))
-    {
-      await file.WriteToStreamAsync(fs);
-    }
-    this.Stockist.Details.ThumbnailImageUrl = "https://thelittlemandarin.co.uk/" + filename;
-    StateHasChanged();
-  }
-
-  private async Task OnBannerImageChanged(FileChangedEventArgs arg)
-  {
-    var file = arg.Files.FirstOrDefault();
-    Directory.CreateDirectory("wwwroot/static/images/artists");
-    var filename = $"static/images/artists/{file.Name}";
-    await using (var fs = File.Create("wwwroot/" + filename))
-    {
-      await file.WriteToStreamAsync(fs);
-    }
-    this.Stockist.Details.BannerImageUrl = "https://thelittlemandarin.co.uk/" + filename;
-    StateHasChanged();
   }
 
 }

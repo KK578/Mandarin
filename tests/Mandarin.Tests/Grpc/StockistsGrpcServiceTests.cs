@@ -55,7 +55,7 @@ namespace Mandarin.Tests.Grpc
             existing.Should().MatchStockistIgnoringIds(WellKnownTestData.Stockists.KelbyTynan);
 
             existing.Details.EmailAddress = TestData.NextString();
-            existing.Details.Description = "New Description";
+            existing.Details.FirstName = "New Name";
 
             await this.Subject.SaveStockistAsync(existing);
 

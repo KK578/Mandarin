@@ -59,7 +59,7 @@ namespace Mandarin.Database.Commissions
                 using var connection = this.mandarinDbContext.GetConnection();
                 var commissionRecord = await connection.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetCommissionByStockistSql, parameters);
                 var commission = this.mapper.Map<Commission>(commissionRecord);
-                this.logger.LogInformation("Fetched Commission entry for StockistId={stockistId}: (@{Commission})", stockistId, commission);
+                this.logger.LogInformation("Fetched Commission entry for StockistId={stockistId}: {@Commission}", stockistId, commission);
                 return commission;
             }
             catch (Exception ex)

@@ -1,5 +1,8 @@
-﻿ALTER TABLE billing.commission
-ADD COLUMN IF NOT EXISTS rate INT CHECK (rate BETWEEN 0 AND 100);
+﻿-- BASHI-101: Migrate from Entity Framework to Dapper
+--
+-- This script inlines the commission_rate_group's rate onto the commission table.
+-- This simplifies the SQL required to map Commissions using Dapper.
+ALTER TABLE billing.commission ADD COLUMN IF NOT EXISTS rate INT CHECK (rate BETWEEN 0 AND 100);
 
 UPDATE billing.commission c1
 SET rate = crg.rate

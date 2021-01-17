@@ -14,8 +14,6 @@ namespace Mandarin.Database.Stockists
     internal sealed record StockistRecord
     {
         public int stockist_id { get; init; }
-        public string first_name { get; init; }
-        public string last_name { get; init; }
         public string stockist_code { get; init; }
         public string stockist_status { get; init; }
 
