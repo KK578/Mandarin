@@ -42,6 +42,20 @@ namespace Mandarin.Tests.Data.Extensions
             };
         }
 
+        public static Stockist WithoutCommission(this Stockist model)
+        {
+            return new()
+            {
+                StockistId = model.StockistId,
+                StockistCode = model.StockistCode,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Details = model.Details,
+                Commission = null,
+                StatusCode = model.StatusCode,
+            };
+        }
+
         public static Stockist WithTlmStockistCode(this Stockist model)
         {
             return new()
