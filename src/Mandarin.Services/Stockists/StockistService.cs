@@ -8,21 +8,21 @@ using Microsoft.Extensions.Logging;
 namespace Mandarin.Services.Stockists
 {
     /// <inheritdoc />
-    internal sealed class DatabaseStockistService : IStockistService
+    internal sealed class StockistService : IStockistService
     {
         private readonly IStockistRepository stockistRepository;
         private readonly ICommissionRepository commissionRepository;
-        private readonly ILogger<DatabaseStockistService> logger;
+        private readonly ILogger<StockistService> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DatabaseStockistService"/> class.
+        /// Initializes a new instance of the <see cref="StockistService"/> class.
         /// </summary>
         /// <param name="stockistRepository">The application repository for interacting with stockists.</param>
         /// <param name="commissionRepository">The application repository for interacting with commissions.</param>
         /// <param name="logger">The application logger.</param>
-        public DatabaseStockistService(IStockistRepository stockistRepository,
-                                       ICommissionRepository commissionRepository,
-                                       ILogger<DatabaseStockistService> logger)
+        public StockistService(IStockistRepository stockistRepository,
+                               ICommissionRepository commissionRepository,
+                               ILogger<StockistService> logger)
         {
             this.stockistRepository = stockistRepository;
             this.commissionRepository = commissionRepository;
