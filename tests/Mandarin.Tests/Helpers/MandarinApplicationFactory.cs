@@ -65,7 +65,6 @@ namespace Mandarin.Tests.Helpers
             c.MinimumLevel.Verbose()
              .MinimumLevel.Override("Elastic.Apm", LogEventLevel.Error)
              .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
              .WriteTo.TestOutput(this.TestOutputHelper, outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
         }
     }

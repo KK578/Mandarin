@@ -1,6 +1,5 @@
 ﻿syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "Commissions.proto";
 import "Common.proto";
