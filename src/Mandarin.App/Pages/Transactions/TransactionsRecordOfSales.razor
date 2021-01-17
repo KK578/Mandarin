@@ -1,8 +1,9 @@
 ﻿@page "/transactions/record-of-sales"
-@using Bashi.Core.Extensions
-@using Bashi.Core.Utils
 @using Mandarin.Commissions
+@using Mandarin.Configuration
 @using Mandarin.ViewModels
+@using Microsoft.Extensions.Options
+@inject IOptions<MandarinConfiguration> Configuration;
 @inject ICommissionService CommissionService;
 @inject IViewModelFactory ViewModelFactory;
 
@@ -98,9 +99,9 @@
                   <Dropdown RightAligned="true">
                     <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
                     <DropdownMenu>
-                      @foreach (var option in EnumUtil.GetValues<RecordOfSalesTemplateKey>())
+                      @foreach (var template in Configuration.Value.Templates)
                       {
-                        <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplate(option))">@(option.GetDescription())</DropdownItem>
+                        <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplateAsync(template))">@(template.Name)</DropdownItem>
                       }
                     </DropdownMenu>
                   </Dropdown>

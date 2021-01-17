@@ -10,7 +10,6 @@ namespace Mandarin.ViewModels.Commissions
     internal class ArtistRecordOfSalesViewModel : ViewModelBase, IArtistRecordOfSalesViewModel
     {
         private readonly IEmailService emailService;
-        private readonly PageContentModel pageContentModel;
         private readonly AuthenticationStateProvider authenticationStateProvider;
 
         private bool sendInProgress;
@@ -23,13 +22,11 @@ namespace Mandarin.ViewModels.Commissions
         /// Initializes a new instance of the <see cref="ArtistRecordOfSalesViewModel"/> class.
         /// </summary>
         /// <param name="emailService">The application service for sending emails.</param>
-        /// <param name="pageContentModel">The website content model.</param>
         /// <param name="authenticationStateProvider">The service which provides access to the current authentication state..</param>
         /// <param name="recordOfSales">The artist commission breakdown.</param>
-        public ArtistRecordOfSalesViewModel(IEmailService emailService, PageContentModel pageContentModel, AuthenticationStateProvider authenticationStateProvider, RecordOfSales recordOfSales)
+        public ArtistRecordOfSalesViewModel(IEmailService emailService, AuthenticationStateProvider authenticationStateProvider, RecordOfSales recordOfSales)
         {
             this.emailService = emailService;
-            this.pageContentModel = pageContentModel;
             this.authenticationStateProvider = authenticationStateProvider;
             this.RecordOfSales = recordOfSales;
         }
@@ -53,12 +50,11 @@ namespace Mandarin.ViewModels.Commissions
         public string CustomMessage { get => this.customMessage; set => this.RaiseAndSetPropertyChanged(ref this.customMessage, value); }
 
         /// <inheritdoc/>
-        public async Task SetMessageFromTemplate(RecordOfSalesTemplateKey templateKey)
+        public async Task SetMessageFromTemplateAsync(RecordOfSalesMessageTemplate template)
         {
             var authenticationState = await this.authenticationStateProvider.GetAuthenticationStateAsync();
             var name = authenticationState?.User?.Identity?.Name;
-            var templateFormat = this.pageContentModel.Get<string>("Admin", "RecordOfSales", "Templates", templateKey.ToString());
-            this.CustomMessage = string.Format(templateFormat, this.RecordOfSales.FirstName ?? this.RecordOfSales.Name, name);
+            this.CustomMessage = string.Format(template.TemplateFormat, this.RecordOfSales.FirstName ?? this.RecordOfSales.Name, name);
         }
 
         /// <inheritdoc/>
