@@ -70,7 +70,7 @@ message StockistDetail {
   int32 stockistId = 1;
   google.protobuf.StringValue firstName = 13;
   google.protobuf.StringValue lastName = 14;
-  string shortDisplayName = 2;
+  string displayName = 2;
   google.protobuf.StringValue twitterHandle = 5;
   google.protobuf.StringValue instagramHandle = 6;
   google.protobuf.StringValue facebookHandle = 7;

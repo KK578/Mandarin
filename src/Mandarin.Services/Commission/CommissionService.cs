@@ -68,7 +68,7 @@ namespace Mandarin.Services.Commission
                     {
                         StockistCode = stockist.StockistCode,
                         FirstName = stockist.Details.FirstName,
-                        Name = stockist.Details.ShortDisplayName,
+                        Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
                         StartDate = start,
@@ -90,7 +90,7 @@ namespace Mandarin.Services.Commission
                     {
                         StockistCode = stockist.StockistCode,
                         FirstName = stockist.Details.FirstName,
-                        Name = stockist.Details.ShortDisplayName,
+                        Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
                         StartDate = start,

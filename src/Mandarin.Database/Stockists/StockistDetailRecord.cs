@@ -14,7 +14,7 @@ namespace Mandarin.Database.Stockists
         public int stockist_id { get; init; }
         public string first_name { get; init; }
         public string last_name { get; init; }
-        public string short_display_name { get; init; }
+        public string display_name { get; init; }
         public string twitter_handle { get; init; }
         public string instagram_handle { get; init; }
         public string facebook_handle { get; init; }

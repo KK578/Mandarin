@@ -33,8 +33,8 @@ namespace Mandarin.Database.Stockists
             RETURNING stockist_id";
 
         private const string InsertStockistDetailSql = @"
-            INSERT INTO inventory.stockist_detail (stockist_id, first_name, last_name, short_display_name, twitter_handle, instagram_handle, facebook_handle, website_url, tumblr_handle, email_address)
-            VALUES (@stockist_id, @first_name, @last_name, @short_display_name, @twitter_handle, @instagram_handle, @facebook_handle, @website_url, @tumblr_handle, @email_address)";
+            INSERT INTO inventory.stockist_detail (stockist_id, first_name, last_name, display_name, twitter_handle, instagram_handle, facebook_handle, website_url, tumblr_handle, email_address)
+            VALUES (@stockist_id, @first_name, @last_name, @display_name, @twitter_handle, @instagram_handle, @facebook_handle, @website_url, @tumblr_handle, @email_address)";
 
         private const string UpdateStockistSql = @"
             UPDATE inventory.stockist
@@ -47,7 +47,7 @@ namespace Mandarin.Database.Stockists
             SET stockist_id = @stockist_id,
                 first_name = @first_name,
                 last_name = @last_name,
-                short_display_name = @short_display_name,
+                display_name = @display_name,
                 twitter_handle = @twitter_handle,
                 instagram_handle = @instagram_handle,
                 facebook_handle = @facebook_handle,

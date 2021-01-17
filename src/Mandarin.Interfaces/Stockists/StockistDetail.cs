@@ -26,11 +26,11 @@ namespace Mandarin.Stockists
         public string LastName { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's name.
+        /// Gets or sets the Stockist's artist/display name.
         /// </summary>
         [Required]
         [StringLength(250)]
-        public string ShortDisplayName { get; set; }
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// Gets or sets the stockist's twitter handle.

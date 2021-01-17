@@ -9,6 +9,7 @@ FROM inventory.stockist s
 INNER JOIN inventory.stockist_detail sd2 ON sd2.stockist_id = s.stockist_id
 WHERE sd1.stockist_id = sd2.stockist_id;
 
+ALTER TABLE inventory.stockist_detail RENAME COLUMN short_display_name TO display_name;
 ALTER TABLE inventory.stockist_detail DROP COLUMN full_display_name;
 ALTER TABLE inventory.stockist_detail DROP COLUMN image_url;
 ALTER TABLE inventory.stockist_detail DROP COLUMN thumbnail_image_url;

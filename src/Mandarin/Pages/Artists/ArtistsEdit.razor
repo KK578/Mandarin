@@ -27,7 +27,7 @@ else
 {
   <Card>
     <CardHeader>
-        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.ShortDisplayName}")</CardTitle>
+        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.DisplayName}")</CardTitle>
       <CardActions Float="Float.Right">
         @if (isEditing)
         {
@@ -73,6 +73,15 @@ else
 
         <Validation>
           <Field>
+            <FieldLabel>Full/Display Name</FieldLabel>
+            <TextEdit @bind-Text="@Stockist.Details.DisplayName" Disabled="@(!isEditing)">
+              <Feedback><ValidationError /></Feedback>
+            </TextEdit>
+          </Field>
+        </Validation>
+
+        <Validation>
+          <Field>
             <FieldLabel>Email Address</FieldLabel>
             <TextEdit Role="@TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress" Disabled="@(!isEditing)">
               <Feedback><ValidationError /></Feedback>
@@ -97,16 +106,7 @@ else
 
         <Divider />
 
-        <FieldLabel>Artists Page Details</FieldLabel>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Grid Display Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.Details.ShortDisplayName" Disabled="@(!isEditing)">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
+        <FieldLabel>Artist Social Media</FieldLabel>
 
         <Validation>
           <Field>
