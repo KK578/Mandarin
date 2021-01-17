@@ -1,4 +1,7 @@
-﻿CREATE SCHEMA IF NOT EXISTS inventory;
+﻿-- BASHI-101: Migrate from Entity Framework to Dapper
+--
+-- This script is the initial setup for the tables at the time of moving from EntityFramework to Dapper.
+CREATE SCHEMA IF NOT EXISTS inventory;
 CREATE SCHEMA IF NOT EXISTS billing;
 
 CREATE TABLE IF NOT EXISTS billing.commission_rate_group
@@ -12,8 +15,8 @@ CREATE TABLE IF NOT EXISTS inventory.stockist
     stockist_id     SERIAL PRIMARY KEY,
     stockist_code   VARCHAR(6)  NOT NULL UNIQUE,
     stockist_status VARCHAR(25) NOT NULL, -- TODO: Consider ENUM?
-    first_name      VARCHAR(100),         -- TODO: Move to stockist_detail
-    last_name       VARCHAR(100)          -- TODO: Move to stockist_detail
+    first_name      VARCHAR(100),
+    last_name       VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS inventory.stockist_detail
