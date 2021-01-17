@@ -16,18 +16,6 @@ namespace Mandarin.Stockists
         public int StockistId { get; set; }
 
         /// <summary>
-        /// Gets or sets the Stockist's first name.
-        /// </summary>
-        [StringLength(100)]
-        public string FirstName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Stockist's last name.
-        /// </summary>
-        [StringLength(100)]
-        public string LastName { get; set; }
-
-        /// <summary>
         /// Gets or sets the Stockist's user-friendly code.
         /// </summary>
         [Required]

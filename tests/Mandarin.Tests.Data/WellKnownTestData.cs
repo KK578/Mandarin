@@ -32,23 +32,19 @@ namespace Mandarin.Tests.Data
             {
                 StockistId = 1,
                 StockistCode = "KT20",
-                FirstName = "Kelby",
-                LastName = "Tynan",
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
                     StockistId = 1,
+                    FirstName = "Kelby",
+                    LastName = "Tynan",
+                    ShortDisplayName = "Kelby Tynan",
                     TwitterHandle = "jharrowing0",
                     InstagramHandle = "jharrowing0",
                     FacebookHandle = null,
                     WebsiteUrl = "https://hhs.gov/velit.png",
-                    BannerImageUrl = "http://dummyimage.com/600x200.png/cc0000/ffffff",
                     TumblrHandle = null,
                     EmailAddress = "ccareless0@homestead.com",
-                    Description = "integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor sed tristique",
-                    FullDisplayName = "Kelby Tynan",
-                    ShortDisplayName = "Kelby Tynan",
-                    ThumbnailImageUrl = "http://dummyimage.com/200x200.png/cc0000/ffffff",
                 },
                 Commission = new Commission
                 {
@@ -65,23 +61,19 @@ namespace Mandarin.Tests.Data
             {
                 StockistId = 4,
                 StockistCode = "OM19",
-                FirstName = "Othilie",
-                LastName = "Mapples",
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
                     StockistId = 4,
+                    FirstName = "Othilie",
+                    LastName = "Mapples",
+                    ShortDisplayName = "Othilie Mapples",
                     TwitterHandle = "ropfer3",
                     InstagramHandle = "ropfer3",
                     FacebookHandle = null,
                     WebsiteUrl = "http://mtv.com/non/mauris/morbi.jsp",
-                    BannerImageUrl = "http://dummyimage.com/600x200.png/cc0000/ffffff",
                     TumblrHandle = null,
                     EmailAddress = "jgunny3@unicef.org",
-                    Description = "nibh in lectus pellentesque at nulla suspendisse potenti cras in purus eu magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum",
-                    FullDisplayName = "Othilie Mapples",
-                    ShortDisplayName = "Othilie Mapples",
-                    ThumbnailImageUrl = "http://dummyimage.com/200x200.png/ff4444/ffffff",
                 },
                 Commission = new Commission
                 {
@@ -97,22 +89,18 @@ namespace Mandarin.Tests.Data
             public static readonly Stockist ArlueneWoodes = new()
             {
                 StockistCode = "AW20",
-                FirstName = "Arluene",
-                LastName = "Woodes",
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
                     TwitterHandle = "fokennavain0",
+                    FirstName = "Arluene",
+                    LastName = "Woodes",
+                    ShortDisplayName = "Arluene Woodes",
                     InstagramHandle = null,
                     FacebookHandle = null,
                     WebsiteUrl = "https://amazon.co.jp/integer/aliquet/massa/id/lobortis/convallis.png",
-                    BannerImageUrl = "http://dummyimage.com/600x200.png/5fa2dd/ffffff",
                     TumblrHandle = null,
                     EmailAddress = "emorrieson0@amazon.de",
-                    Description = "elit proin risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus",
-                    FullDisplayName = "Arluene Woodes",
-                    ShortDisplayName = "Arluene Woodes",
-                    ThumbnailImageUrl = "http://dummyimage.com/200x200.png/ff4444/ffffff",
                 },
                 Commission = new Commission
                 {

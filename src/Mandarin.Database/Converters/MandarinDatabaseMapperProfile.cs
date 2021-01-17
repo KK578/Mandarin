@@ -22,9 +22,7 @@ namespace Mandarin.Database.Converters
                 .ForMember(x => x.StatusCode, o => o.MapFrom(src => src.stockist_status))
                 .ReverseMap()
                 .ForMember(x => x.stockist_status, o => o.MapFrom(src => src.StatusCode));
-            this.CreateMap<StockistDetailRecord, StockistDetail>()
-                .ForMember(x => x.BannerImageUrl, o => o.MapFrom(src => src.image_url))
-                .ReverseMap();
+            this.CreateMap<StockistDetailRecord, StockistDetail>().ReverseMap();
 
             this.CreateMap<CommissionRecord, Commission>().ReverseMap();
         }
