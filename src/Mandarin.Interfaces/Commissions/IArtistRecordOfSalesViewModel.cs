@@ -42,7 +42,8 @@ namespace Mandarin.Commissions
         /// Updates <see cref="CustomMessage"/> from a well known templated message, populated with the current record of sales information.
         /// </summary>
         /// <param name="templateKey">The name of the template to be used.</param>
-        void SetMessageFromTemplate(RecordOfSalesTemplateKey templateKey);
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SetMessageFromTemplate(RecordOfSalesTemplateKey templateKey);
 
         /// <summary>
         /// Forces the state of the <see cref="SendSuccessful"/> flag to be toggled.

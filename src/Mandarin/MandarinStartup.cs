@@ -42,10 +42,9 @@ namespace Mandarin
         /// Currently this includes:
         /// <list type="bullet">
         /// <item><term>Razor Pages</term></item>
-        /// <item><term>Server Side Blazor</term></item>
+        /// <item><term>gRPC Endpoints</term></item>
         /// <item><term>Authentication</term></item>
         /// <item><term>Application Services</term></item>
-        /// <item><term>View Models</term></item>
         /// </list>
         ///
         /// <remarks>
@@ -57,16 +56,8 @@ namespace Mandarin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
             services.AddGrpc();
-            services.AddHttpContextAccessor();
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = _ => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinDatabase(this.configuration);
@@ -76,7 +67,6 @@ namespace Mandarin
                 options.AddProfile<MandarinGrpcMapperProfile>();
             });
             services.AddMandarinServices(this.configuration);
-            services.AddMandarinViewModels();
         }
 
         /// <summary>
@@ -96,6 +86,7 @@ namespace Mandarin
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseWebAssemblyDebugging();
             }
             else
             {
@@ -106,6 +97,7 @@ namespace Mandarin
             app.SafeUseAllElasticApm(this.configuration);
             app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.AddLegacyRedirect("/static/logo-300.png", "/static/images/logo.png");
@@ -118,19 +110,14 @@ namespace Mandarin
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.ApplicationServices.UseBootstrapProviders().UseBootstrapProviders();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
                 endpoints.MapGrpcService<CommissionsGrpcService>();
                 endpoints.MapGrpcService<EmailGrpcService>();
                 endpoints.MapGrpcService<FixedCommissionsGrpcService>();
                 endpoints.MapGrpcService<ProductsGrpcService>();
                 endpoints.MapGrpcService<StockistsGrpcService>();
-                endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

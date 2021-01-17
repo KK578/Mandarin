@@ -1,0 +1,50 @@
+@inject NavigationManager NavigationManager;
+
+<CascadingAuthenticationState>
+  <Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+      <AuthorizeRouteView DefaultLayout="@typeof(MainLayout)" RouteData="@routeData">
+        <Authorizing>
+          <Card>
+            <CardHeader>Authenticating...</CardHeader>
+            <CardBody>
+              <MandarinProgressBar>Just a moment...</MandarinProgressBar>
+            </CardBody>
+          </Card>
+        </Authorizing>
+        <NotAuthorized>
+          <Card>
+            <CardHeader>Unauthorized</CardHeader>
+            <CardBody>
+              <CardText>You are not authorized to access this resource.</CardText>
+              <CardActions Float="Float.Right" Margin="Margin.Is3.FromTop">
+                <Button Clicked="@NavigateToLogin">Log In</Button>
+              </CardActions>
+            </CardBody>
+          </Card>
+        </NotAuthorized>
+      </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+      <LayoutView Layout="@typeof(MainLayout)">
+        <Card>
+          <CardHeader>Not Found!</CardHeader>
+          <CardBody>
+            <CardText>Sorry, there's nothing at this address.</CardText>
+          </CardBody>
+        </Card>
+      </LayoutView>
+    </NotFound>
+  </Router>
+</CascadingAuthenticationState>
+
+@code
+{
+
+  private void NavigateToLogin()
+  {
+    var loginUrl = $"authentication/login?returnUrl={Uri.EscapeDataString(this.NavigationManager.Uri)}";
+    NavigationManager.NavigateTo(loginUrl);
+  }
+
+}

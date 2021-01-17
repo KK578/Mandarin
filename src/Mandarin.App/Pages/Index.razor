@@ -1,0 +1,42 @@
+﻿@page "/"
+@using System.Reflection
+@using Bashi.Core.Utils
+
+<Jumbotron Background="Background.Dark">
+  <Container Class="text-center">
+    <FigureImage Source="/static/images/logo.png" Margin="new FluentMargin().IsAuto" />
+    <JumbotronTitle Class="font-title text-gold" Size="JumbotronTitleSize.Is4">The Little Mandarin</JumbotronTitle>
+    <JumbotronSubtitle Class="text-white">Welcome to The Little Mandarin's Administrative tools page (version @Version)</JumbotronSubtitle>
+  </Container>
+  <Divider />
+  <Paragraph Color="TextColor.White50">
+    Use the sidebar to navigate to the different available tools.<br />
+    And now, a word from this page's random emoji: <br />
+    <Icon Name="Icon" />
+  </Paragraph>
+</Jumbotron>
+
+@code {
+
+  /// <inheritdoc />
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+
+    var random = new Random();
+    var choices = EnumUtil.GetValues<IconName>().ToList();
+    this.Icon = choices[random.Next(0, choices.Count)];
+    this.Version = Assembly.GetExecutingAssembly().GetName().Version;
+  }
+
+  /// <summary>
+  /// Gets the icon to be displayed in the header.
+  /// </summary>
+  public IconName Icon { get; set; }
+
+  /// <summary>
+  /// Gets the current version of the application.
+  /// </summary>
+  public Version Version { get; set; }
+
+}

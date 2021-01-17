@@ -20,7 +20,7 @@ namespace Mandarin.ViewModels
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
-            services.AddTransient<IViewModelFactory, ViewModelFactory>();
+            services.AddScoped<IViewModelFactory, ViewModelFactory>();
 
             services.AddTransient(MandarinViewModelsServiceCollectionExtensions.CreatePageContentModel);
 
