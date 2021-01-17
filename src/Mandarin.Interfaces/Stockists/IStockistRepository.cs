@@ -26,7 +26,7 @@ namespace Mandarin.Stockists
         /// This method will automatically detect if the stockist already exists and insert or update accordingly.
         /// </summary>
         /// <param name="stockist">The stockist to be saved.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <returns>A <see cref="Task{TResult}"/> containing the newly saved stockist's database id.</returns>
         Task<int> SaveStockistAsync(Stockist stockist);
     }
 }
