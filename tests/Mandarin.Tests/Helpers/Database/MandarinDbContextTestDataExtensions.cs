@@ -21,6 +21,7 @@ namespace Mandarin.Tests.Helpers.Database
             await connection.ExecuteAsync("DROP TABLE billing.commission");
             await connection.ExecuteAsync("DROP TABLE inventory.stockist_detail");
             await connection.ExecuteAsync("DROP TABLE inventory.stockist");
+            await connection.ExecuteAsync("DROP TABLE inventory.fixed_commission_amount");
             await connection.ExecuteAsync("TRUNCATE TABLE public.schemaversions");
         }
     }
