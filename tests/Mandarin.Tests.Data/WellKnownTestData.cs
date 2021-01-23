@@ -23,6 +23,7 @@ namespace Mandarin.Tests.Data
 
         public static class Commissions
         {
+            public const string FixedCommissions = "TestData/Commissions/FixedCommissions.json";
             public const string RecordOfSalesTLM = "TestData/Commissions/RecordOfSales.TLM.json";
         }
 
