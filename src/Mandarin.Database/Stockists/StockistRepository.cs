@@ -5,13 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
+using Mandarin.Database.Common;
 using Mandarin.Stockists;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Database.Stockists
 {
-    /// <inheritdoc />
-    internal sealed class StockistRepository : IStockistRepository
+    /// <inheritdoc cref="Mandarin.Stockists.IStockistRepository" />
+    internal sealed class StockistRepository : DatabaseRepositoryBase<Stockist, StockistRecord>,
+                                               IStockistRepository
     {
         private const string GetStockistByCodeSql = @"
             SELECT s.*, sd.*
@@ -56,8 +58,6 @@ namespace Mandarin.Database.Stockists
                 email_address = @email_address
             WHERE stockist_id = @stockist_id";
 
-        private readonly MandarinDbContext mandarinDbContext;
-        private readonly IMapper mapper;
         private readonly ILogger<StockistRepository> logger;
 
         /// <summary>
@@ -67,110 +67,75 @@ namespace Mandarin.Database.Stockists
         /// <param name="mapper">The mapper to translate between different object types.</param>
         /// <param name="logger">The application logger.</param>
         public StockistRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<StockistRepository> logger)
+            : base(mandarinDbContext, mapper, logger)
         {
-            this.mandarinDbContext = mandarinDbContext;
-            this.mapper = mapper;
             this.logger = logger;
         }
 
         /// <inheritdoc/>
-        public async Task<Stockist> GetStockistByCode(string stockistCode)
+        public Task<Stockist> GetStockistByCode(string stockistCode)
         {
-            this.logger.LogDebug("Fetching Stockist entry for StockistCode={StockistCode}.", stockistCode);
+            return this.Get(stockistCode,
+                            async (db) =>
+                            {
+                                var records = await db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(
+                                 StockistRepository.GetStockistByCodeSql,
+                                 (s, sd) => s with { Details = sd },
+                                 new { stockist_code = stockistCode },
+                                 splitOn: "stockist_id,stockist_id");
 
-            try
-            {
-                using var connection = this.mandarinDbContext.GetConnection();
-
-                var stockistRecords = await connection.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(
-                 StockistRepository.GetStockistByCodeSql,
-                 (s, sd) => s with { Details = sd },
-                 new { stockist_code = stockistCode },
-                 splitOn: "stockist_id,stockist_id");
-
-                var stockist = this.mapper.Map<Stockist>(stockistRecords.SingleOrDefault());
-                this.logger.LogInformation("Successfully fetched Stockist entry for StockistCode={StockistCode}: {@Stockist}",
-                                           stockistCode,
-                                           stockist);
-                return stockist;
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Failed to fetch Stockist entry for StockistCode={StockistCode}.", stockistCode);
-                throw;
-            }
+                                return records.First();
+                            });
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyList<Stockist>> GetAllStockists()
+        public Task<IReadOnlyList<Stockist>> GetAllStockists()
         {
-            this.logger.LogDebug("Fetching all Stockist entries.");
-            try
-            {
-                using var db = this.mandarinDbContext.GetConnection();
-
-                var stockistRecords = await db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(
-                 StockistRepository.GetAllStockistsSql,
-                 (s, sd) => s with { Details = sd },
-                 splitOn: "stockist_id,stockist_id");
-
-                var stockists = this.mapper.Map<List<Stockist>>(stockistRecords).AsReadOnly();
-                this.logger.LogInformation("Successfully fetched {Count} Stockist entries.", stockists.Count);
-                return stockists;
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Failed to fetch all Stockist entries.");
-                throw;
-            }
+            return this.GetAllAsync();
         }
 
         /// <inheritdoc/>
-        public async Task<int> SaveStockistAsync(Stockist stockist)
+        public Task<Stockist> SaveStockistAsync(Stockist stockist)
         {
-            this.logger.LogDebug("Saving Stockist entry for StockistCode={StockistCode}: @{Stockist}", stockist.StockistCode, stockist);
-            try
-            {
-                var stockistRecord = this.mapper.Map<StockistRecord>(stockist);
-
-                using var db = this.mandarinDbContext.GetConnection();
-                db.Open();
-                using var transaction = db.BeginTransaction();
-
-                // TODO: StockistId should probably be nullable.
-                if (stockist.StockistId == 0)
-                {
-                    this.logger.LogDebug("Inserting as new Stockist entry for StockistCode={StockistCode}.", stockist.StockistCode);
-                    var stockistId = await StockistRepository.InsertStockistAsync(db, stockistRecord);
-                    transaction.Commit();
-                    return stockistId;
-                }
-                else
-                {
-                    this.logger.LogDebug("Updating existing Stockist entry for StockistCode={StockistCode}.", stockist.StockistCode);
-                    await StockistRepository.UpdateStockistAsync(db, stockistRecord);
-                    transaction.Commit();
-                    return stockist.StockistId;
-                }
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Failed to save Stockist for StockistCode={StockistCode}.", stockist.StockistCode);
-                throw;
-            }
+            return this.UpsertAsync(stockist);
         }
 
-        private static async Task<int> InsertStockistAsync(IDbConnection db, StockistRecord stockistRecord)
+        /// <inheritdoc/>
+        protected override string ExtractDisplayKey(Stockist value) => value.StockistCode;
+
+        /// <inheritdoc/>
+        protected override Task<IEnumerable<StockistRecord>> GetAllRecords(IDbConnection db)
         {
-            var stockistId = await db.ExecuteScalarAsync<int>(StockistRepository.InsertStockistSql, stockistRecord);
-            await db.ExecuteAsync(StockistRepository.InsertStockistDetailSql, stockistRecord.Details with { stockist_id = stockistId });
-            return stockistId;
+            return db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllStockistsSql,
+                                                                                       (s, sd) => s with { Details = sd },
+                                                                                       splitOn: "stockist_id,stockist_id");
         }
 
-        private static async Task UpdateStockistAsync(IDbConnection db, StockistRecord stockistRecord)
+        /// <inheritdoc/>
+        protected override async Task<StockistRecord> UpsertRecordAsync(IDbConnection db, StockistRecord value)
         {
-            await db.ExecuteAsync(StockistRepository.UpdateStockistSql, stockistRecord);
-            await db.ExecuteAsync(StockistRepository.UpdateStockistDetailSql, stockistRecord.Details);
+            db.Open();
+            using var transaction = db.BeginTransaction();
+
+            if (value.stockist_id == 0)
+            {
+                this.logger.LogDebug("Inserting as new Stockist entry for StockistCode={StockistCode}.", value.stockist_code);
+                var stockistId = await db.ExecuteScalarAsync<int>(StockistRepository.InsertStockistSql, value);
+                value = value with
+                {
+                    stockist_id = stockistId,
+                    Details = value.Details with { stockist_id = stockistId },
+                };
+                await db.ExecuteAsync(StockistRepository.InsertStockistDetailSql, value.Details);
+                transaction.Commit();
+                return value with { stockist_id = stockistId };
+            }
+
+            this.logger.LogDebug("Updating existing Stockist entry for StockistCode={StockistCode}.", value.stockist_code);
+            await db.ExecuteAsync(StockistRepository.UpdateStockistSql, value);
+            await db.ExecuteAsync(StockistRepository.UpdateStockistDetailSql, value.Details);
+            transaction.Commit();
+            return value;
         }
     }
 }

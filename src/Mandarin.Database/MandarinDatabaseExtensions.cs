@@ -3,8 +3,10 @@ using DbUp.Engine.Output;
 using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
 using Mandarin.Database.Converters;
+using Mandarin.Database.Inventory;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
+using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,8 +33,9 @@ namespace Mandarin.Database
 
             SqlMapper.AddTypeHandler(new DateTimeUtcHandler());
 
-            services.AddTransient<IStockistRepository, StockistRepository>();
             services.AddTransient<ICommissionRepository, CommissionRepository>();
+            services.AddTransient<IFixedCommissionAmountRepository, FixedCommissionAmountRepository>();
+            services.AddTransient<IStockistRepository, StockistRepository>();
 
             return services;
         }

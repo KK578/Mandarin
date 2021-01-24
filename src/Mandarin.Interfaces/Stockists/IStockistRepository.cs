@@ -9,11 +9,11 @@ namespace Mandarin.Stockists
     public interface IStockistRepository
     {
         /// <summary>
-        /// Gets the specified artist by their stockist id.
+        /// Gets the specified artist by their stockist code.
         /// </summary>
-        /// <param name="stockistId">The stockist id of the stockist.</param>
+        /// <param name="stockistCode">The stockist code of the stockist.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous fetch operation of the requested stockist.</returns>
-        Task<Stockist> GetStockistByCode(string stockistId);
+        Task<Stockist> GetStockistByCode(string stockistCode);
 
         /// <summary>
         /// Gets a list of all known stockists.
@@ -27,6 +27,6 @@ namespace Mandarin.Stockists
         /// </summary>
         /// <param name="stockist">The stockist to be saved.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing the newly saved stockist's database id.</returns>
-        Task<int> SaveStockistAsync(Stockist stockist);
+        Task<Stockist> SaveStockistAsync(Stockist stockist);
     }
 }

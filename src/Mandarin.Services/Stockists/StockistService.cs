@@ -76,8 +76,8 @@ namespace Mandarin.Services.Stockists
             try
             {
                 // TODO: Transactionality is broken here, there should be one transaction shared across both Stockist and Commission repositories.
-                var stockistId = await this.stockistRepository.SaveStockistAsync(stockist);
-                await this.commissionRepository.SaveCommissionAsync(stockistId, stockist.Commission);
+                stockist = await this.stockistRepository.SaveStockistAsync(stockist);
+                await this.commissionRepository.SaveCommissionAsync(stockist.StockistId, stockist.Commission);
                 this.logger.LogInformation("Successfully saved stockist {StockistCode}", stockist.StockistCode);
             }
             catch (Exception ex)
