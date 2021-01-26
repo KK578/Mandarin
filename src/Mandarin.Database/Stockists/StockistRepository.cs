@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,7 +75,7 @@ namespace Mandarin.Database.Stockists
         public Task<Stockist> GetStockistByCode(string stockistCode)
         {
             return this.Get(stockistCode,
-                            async (db) =>
+                            async db =>
                             {
                                 var records = await db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(
                                  StockistRepository.GetStockistByCodeSql,

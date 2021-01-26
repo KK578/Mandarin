@@ -26,9 +26,9 @@ namespace Mandarin.Database.Inventory
                 UPDATE SET amount = @amount";
 
         private const string GetAllSql = @"
-                SELECT *
-                FROM inventory.fixed_commission_amount
-                ORDER BY product_code";
+            SELECT *
+            FROM inventory.fixed_commission_amount
+            ORDER BY product_code";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionAmountRepository"/> class.
@@ -45,7 +45,7 @@ namespace Mandarin.Database.Inventory
         public Task<FixedCommissionAmount> GetFixedCommissionAmountByProductCode(string productCode)
         {
             return this.Get(productCode,
-                            (db) =>
+                            db =>
                             {
                                 var parameters = new { product_code = productCode };
                                 return db.QueryFirstAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetByProductCodeSql, parameters);

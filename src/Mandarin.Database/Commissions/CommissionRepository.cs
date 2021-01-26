@@ -46,7 +46,7 @@ namespace Mandarin.Database.Commissions
         public Task<Commission> GetCommissionByStockist(int stockistId)
         {
             return this.Get(stockistId,
-                       (db) =>
+                       db =>
                        {
                            var parameters = new { stockist_id = stockistId, };
                            return db.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetByStockistIdSql, parameters);
