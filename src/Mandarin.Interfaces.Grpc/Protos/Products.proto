@@ -1,0 +1,45 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Mandarin.Api.Products";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.products";
+
+package uk.co.thelittlemandarin;
+
+// The product service definition.
+service Products {
+  rpc GetAllProducts (GetAllProductsRequest) returns (GetAllProductsResponse);
+  rpc GetProduct (GetProductRequest) returns (GetProductResponse);
+}
+
+message GetAllProductsRequest {
+}
+
+message GetAllProductsResponse {
+  repeated Product product = 1;
+}
+
+message GetProductRequest {
+  string squareId = 1;
+  string productCode = 2;
+  string productName = 3;
+}
+
+message GetProductResponse {
+  Product product = 1;
+}
+
+
+message FixedCommissionAmount {
+  string productCode = 1;
+  google.protobuf.DoubleValue amount = 2;
+}
+
+message Product {
+  string squareId = 1;
+  string productCode = 2;
+  string productName = 3;
+  string description = 4;
+  google.protobuf.DoubleValue unitPrice = 5;
+}
