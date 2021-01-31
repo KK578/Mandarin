@@ -59,7 +59,7 @@ namespace Mandarin.Services.Square
                        .ToObservable()
                        .SelectMany(product =>
                        {
-                           return this.inventoryService.GetFixedCommissionAmount(product)
+                           return this.inventoryService.GetFixedCommissionAmount(product.ProductCode)
                                       .ToObservable()
                                       .SelectMany(fixedCommissionAmount => Create(product, fixedCommissionAmount));
                        });

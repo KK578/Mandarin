@@ -7,6 +7,7 @@ using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Configuration;
+using Mandarin.Inventory;
 using Mandarin.Services.Square;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;

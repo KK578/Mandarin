@@ -19,11 +19,11 @@ message GetAllFixedCommissionsRequest {
 }
 
 message GetAllFixedCommissionsResponse {
-  repeated FixedCommissionAmount fixedCommission = 1;
+  repeated FixedCommissionAmount fixedCommissions = 1;
 }
 
 message GetFixedCommissionRequest {
-  string productName = 1;
+  string productCode = 1;
 }
 
 message GetFixedCommissionResponse {
@@ -38,7 +38,7 @@ message SaveFixedCommissionResponse {
 }
 
 message DeleteFixedCommissionRequest {
-  string productName = 1;
+  string productCode = 1;
 }
 
 message DeleteFixedCommissionResponse {

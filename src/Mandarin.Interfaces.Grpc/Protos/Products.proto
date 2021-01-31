@@ -17,13 +17,13 @@ message GetAllProductsRequest {
 }
 
 message GetAllProductsResponse {
-  repeated Product product = 1;
+  repeated Product products = 1;
 }
 
 message GetProductRequest {
-  string squareId = 1;
-  string productCode = 2;
-  string productName = 3;
+  google.protobuf.StringValue squareId = 1;
+  google.protobuf.StringValue productCode = 2;
+  google.protobuf.StringValue productName = 3;
 }
 
 message GetProductResponse {

@@ -62,9 +62,9 @@ namespace Mandarin.Services.Decorators
         }
 
         /// <inheritdoc/>
-        public Task<FixedCommissionAmount> GetFixedCommissionAmount(Product product)
+        public Task<FixedCommissionAmount> GetFixedCommissionAmount(string productCode)
         {
-            return this.GetFixedCommissionAmounts().FirstOrDefaultAsync(x => x.ProductCode == product.ProductCode).ToTask();
+            return this.GetFixedCommissionAmounts().FirstOrDefaultAsync(x => x.ProductCode == productCode).ToTask();
         }
 
         /// <inheritdoc/>

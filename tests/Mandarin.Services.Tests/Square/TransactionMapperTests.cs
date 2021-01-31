@@ -122,7 +122,7 @@ namespace Mandarin.Services.Tests.Square
         private void GivenInventoryServiceSetUpWithFixedCommission(Product product, FixedCommissionAmount fixedCommissionAmount)
         {
             this.inventoryService ??= new Mock<IQueryableInventoryService>();
-            this.inventoryService.Setup(x => x.GetFixedCommissionAmount(product)).ReturnsAsync(fixedCommissionAmount);
+            this.inventoryService.Setup(x => x.GetFixedCommissionAmount(product.ProductCode)).ReturnsAsync(fixedCommissionAmount);
         }
 
 

@@ -52,9 +52,9 @@ namespace Mandarin.Inventory
         /// Gets the fixed commission amount for the requested product.
         /// If a fixed commission amount does not exist, then the result will be null.
         /// </summary>
-        /// <param name="product">The product to a fixed commission amount for.</param>
+        /// <param name="productCode">The product code to search for.</param>
         /// <returns>A task representing the asynchronous retrieval of the fixed commission amount.</returns>
-        Task<FixedCommissionAmount> GetFixedCommissionAmount(Product product);
+        Task<FixedCommissionAmount> GetFixedCommissionAmount(string productCode);
 
         /// <summary>
         /// Finds the singular product that matches the provided Square product ID.
