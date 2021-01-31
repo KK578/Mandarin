@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Mandarin.Client.Services;
 using Mandarin.Grpc.Converters;
 using Mandarin.Tests.Helpers;
 using Mandarin.Tests.Helpers.Auth;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc
+namespace Mandarin.Client.Services.Tests
 {
     public abstract class MandarinGrpcIntegrationTestsBase : MandarinIntegrationTestsBase
     {

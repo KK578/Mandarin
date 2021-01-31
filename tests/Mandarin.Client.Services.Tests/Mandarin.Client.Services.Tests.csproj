@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bashi.Tests.Framework" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mandarin.Tests\Mandarin.Tests.csproj" />
+    <ProjectReference Include="..\..\src\Mandarin.Client.Services\Mandarin.Client.Services.csproj" />
+  </ItemGroup>
+
+</Project>

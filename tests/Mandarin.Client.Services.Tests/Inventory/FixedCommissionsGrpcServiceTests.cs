@@ -6,9 +6,9 @@ using Mandarin.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc
+namespace Mandarin.Client.Services.Tests.Inventory
 {
-    [Collection(nameof(MandarinTestsCollectionFixture))]
+    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class FixedCommissionsGrpcServiceTests : MandarinGrpcIntegrationTestsBase
     {
         public FixedCommissionsGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)

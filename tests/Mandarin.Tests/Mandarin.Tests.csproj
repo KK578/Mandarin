@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin\Mandarin.csproj" />
-    <ProjectReference Include="..\..\src\Mandarin.Client.Services\Mandarin.Client.Services.csproj" />
     <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
     <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
   </ItemGroup>

@@ -13,9 +13,9 @@ using SendGrid.Helpers.Mail;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc
+namespace Mandarin.Client.Services.Tests.Emails
 {
-    [Collection(nameof(MandarinTestsCollectionFixture))]
+    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class EmailGrpcServiceTests : MandarinGrpcIntegrationTestsBase
     {
         public EmailGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace Mandarin.Tests.Helpers.Auth
 {
-    internal sealed class TestAuthAccessTokenProvider : IAccessTokenProvider
+    public sealed class TestAuthAccessTokenProvider : IAccessTokenProvider
     {
         public ValueTask<AccessTokenResult> RequestAccessToken()
         {

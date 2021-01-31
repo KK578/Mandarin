@@ -1,7 +1,7 @@
 ﻿using FluentAssertions.Primitives;
 using Mandarin.Stockists;
 
-namespace Mandarin.Tests.Extensions
+namespace Mandarin.Client.Services.Tests.Extensions
 {
     internal static class StockistFluentAssertionExtensions
     {

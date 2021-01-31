@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
+using Mandarin.Client.Services.Tests.Extensions;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
-using Mandarin.Tests.Extensions;
 using Mandarin.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Grpc
+namespace Mandarin.Client.Services.Tests.Stockists
 {
-    [Collection(nameof(MandarinTestsCollectionFixture))]
+    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class StockistsGrpcServiceTests : MandarinGrpcIntegrationTestsBase
     {
         public StockistsGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
