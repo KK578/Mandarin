@@ -1,6 +1,4 @@
 ﻿@page "/inventory"
-@using System.Reactive.Linq
-@using System.Reactive.Threading.Tasks
 @using Mandarin.Inventory
 @inject IProductService ProductService;
 
@@ -36,8 +34,8 @@
   {
     await base.OnInitializedAsync();
 
-    Data = await ProductService.GetAllProducts().Catch((Exception ex) => Observable.Empty<Product>()).ToList().ToTask();
+    Data = await ProductService.GetAllProductsAsync();
   }
 
-  private IList<Product> Data { get; set; }
+  private IReadOnlyList<Product> Data { get; set; }
 }

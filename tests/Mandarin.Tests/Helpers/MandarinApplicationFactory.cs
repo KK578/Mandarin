@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Mandarin.Services;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Authentication;
@@ -49,6 +50,7 @@ namespace Mandarin.Tests.Helpers
                 { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },
                 { "Square:Environment", "Sandbox" },
             });
+            configurationBuilder.AddUserSecrets(typeof(MandarinApplicationFactory).Assembly);
         }
 
         private static void ConfigureTestAuthentication(IServiceCollection services)

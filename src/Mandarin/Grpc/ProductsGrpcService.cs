@@ -33,7 +33,7 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetAllProductsResponse> GetAllProducts(GetAllProductsRequest request, ServerCallContext context)
         {
-            var products = await this.productService.GetAllProducts().ToList();
+            var products = await this.productService.GetAllProductsAsync();
             return new GetAllProductsResponse
             {
                 Products = { this.mapper.Map<IEnumerable<Product>>(products) },

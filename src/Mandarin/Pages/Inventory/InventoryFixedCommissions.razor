@@ -93,7 +93,7 @@
   private Modal modalRef;
   private EventCallback modalConfirm;
   private IList<FixedCommissionRowModel> fixedCommissionAmountViewModels = new List<FixedCommissionRowModel>();
-  private IList<Product> products = new List<Product>();
+  private IReadOnlyList<Product> products = new List<Product>();
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
@@ -105,7 +105,7 @@
       .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
       .ToList()
       .AsReadOnly();
-    products = await ProductService.GetAllProducts().ToList();
+    products = await ProductService.GetAllProductsAsync();
   }
 
   private Task AddNewCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)

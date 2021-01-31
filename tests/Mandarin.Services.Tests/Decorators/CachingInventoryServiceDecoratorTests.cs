@@ -35,15 +35,15 @@ namespace Mandarin.Services.Tests.Decorators
 
         private void GivenServiceReturnsData()
         {
-            this.inventoryService.Setup(x => x.GetAllProducts())
-                .Returns(TestData.Create<List<Product>>().ToObservable())
+            this.inventoryService.Setup(x => x.GetAllProductsAsync())
+                .ReturnsAsync(TestData.Create<List<Product>>().AsReadOnly())
                 .Verifiable();
         }
 
         private void GivenServiceThrowsException()
         {
-            this.inventoryService.Setup(x => x.GetAllProducts())
-                .Returns(() => Observable.Throw<Product>(new Exception("Service failure.")))
+            this.inventoryService.Setup(x => x.GetAllProductsAsync())
+                .ThrowsAsync(new Exception("Service failure."))
                 .Verifiable();
         }
 
@@ -66,16 +66,16 @@ namespace Mandarin.Services.Tests.Decorators
             public async Task ShouldAttemptToPopulateTheCacheIfAnExceptionOccurredPreviously()
             {
                 this.GivenServiceThrowsException();
-                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetAllProducts());
-                this.inventoryService.Verify(x => x.GetAllProducts(), Times.Exactly(5));
+                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetAllProductsAsync());
+                this.inventoryService.Verify(x => x.GetAllProductsAsync(), Times.Exactly(5));
             }
 
             [Fact]
             public async Task ShouldNotCallTheServiceIfCacheIsAlreadyPopulated()
             {
                 this.GivenServiceReturnsData();
-                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetAllProducts());
-                this.inventoryService.Verify(x => x.GetAllProducts(), Times.Once());
+                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetAllProductsAsync());
+                this.inventoryService.Verify(x => x.GetAllProductsAsync(), Times.Once());
             }
         }
     }

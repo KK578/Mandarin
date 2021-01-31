@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Mandarin.Api.Inventory;
@@ -29,11 +26,11 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public IObservable<Product> GetAllProducts()
+        public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
         {
             var request = new GetAllProductsRequest();
-            return this.productsClient.GetAllProductsAsync(request).ResponseAsync.ToObservable()
-                       .SelectMany(x => this.mapper.Map<List<Product>>(x.Products));
+            var response = await this.productsClient.GetAllProductsAsync(request);
+            return this.mapper.Map<List<Product>>(response.Products).AsReadOnly();
         }
 
         /// <inheritdoc/>

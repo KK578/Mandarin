@@ -16,9 +16,9 @@ using Xunit.Abstractions;
 namespace Mandarin.Client.Services.Tests.Emails
 {
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class EmailGrpcServiceTests : MandarinGrpcIntegrationTestsBase
+    public class MandarinGrpcEmailServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        public EmailGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcEmailServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

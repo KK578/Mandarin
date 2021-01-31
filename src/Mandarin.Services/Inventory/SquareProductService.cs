@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,13 +35,16 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public IObservable<Product> GetAllProducts()
+        public Task<IReadOnlyList<Product>> GetAllProductsAsync()
         {
             return Observable.Create<CatalogObject>(ListFullCatalog)
                              .ToList()
                              .SelectMany(SquareProductService.MergeCatalogItems)
                              .SelectMany(SquareProductService.MapToProduct)
-                             .Where(x => x != null);
+                             .Where(x => x != null)
+                             .ToList()
+                             .Select(x => (IReadOnlyList<Product>)x.ToList().AsReadOnly())
+                             .ToTask();
 
             async Task ListFullCatalog(IObserver<CatalogObject> o, CancellationToken ct)
             {

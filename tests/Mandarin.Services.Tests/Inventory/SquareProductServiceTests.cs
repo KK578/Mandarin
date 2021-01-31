@@ -22,7 +22,7 @@ namespace Mandarin.Services.Tests.Inventory
             var squareClient = this.GivenSquareClientCatalogApiWaitsToContinue(out var waitHandle);
             var cts = new CancellationTokenSource();
             var subject = new SquareProductService(NullLogger<SquareTransactionService>.Instance, squareClient);
-            var task = subject.GetAllProducts().ToList().ToTask(cts.Token);
+            var task = subject.GetAllProductsAsync();
             cts.Cancel();
             waitHandle.Set();
 
@@ -34,7 +34,7 @@ namespace Mandarin.Services.Tests.Inventory
         {
             var squareClient = this.GivenSquareClientCatalogApiReturnsData();
             var subject = new SquareProductService(NullLogger<SquareTransactionService>.Instance, squareClient);
-            var catalogObjects = await subject.GetAllProducts().ToList().ToTask((CancellationToken)default);
+            var catalogObjects = await subject.GetAllProductsAsync();
 
             catalogObjects.Should().HaveCount(2);
             catalogObjects[0].ProductCode.Should().Be("ID-1");

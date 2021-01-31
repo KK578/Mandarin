@@ -9,9 +9,9 @@ using Xunit.Abstractions;
 namespace Mandarin.Client.Services.Tests.Inventory
 {
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class FixedCommissionsGrpcServiceTests : MandarinGrpcIntegrationTestsBase
+    public class MandarinGrpcFixedCommissionServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        public FixedCommissionsGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcFixedCommissionServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

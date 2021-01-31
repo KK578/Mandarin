@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Mandarin.Inventory
@@ -12,7 +13,7 @@ namespace Mandarin.Inventory
         /// Gets an observable sequence of all known products.
         /// </summary>
         /// <returns>An observable sequence containing all known products.</returns>
-        IObservable<Product> GetAllProducts();
+        Task<IReadOnlyList<Product>> GetAllProductsAsync();
     }
 
     /// <summary>

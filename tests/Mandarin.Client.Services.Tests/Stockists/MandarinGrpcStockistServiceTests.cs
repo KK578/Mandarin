@@ -11,9 +11,9 @@ using Xunit.Abstractions;
 namespace Mandarin.Client.Services.Tests.Stockists
 {
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class StockistsGrpcServiceTests : MandarinGrpcIntegrationTestsBase
+    public class MandarinGrpcStockistServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        public StockistsGrpcServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcStockistServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

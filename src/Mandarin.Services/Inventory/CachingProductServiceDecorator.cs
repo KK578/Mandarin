@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using LazyCache;
@@ -31,38 +30,47 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public IObservable<Product> GetAllProducts()
+        public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
         {
-            var key = CachingProductServiceDecorator.CreateCacheKey();
-            return this.GetOrAddAsync(key, () => this.productService.GetAllProducts().ToList().ToTask<IEnumerable<Product>>())
-                       .ToObservable()
-                       .Catch((Exception ex) => Observable.Empty<IEnumerable<Product>>())
-                       .SelectMany(x => x);
+            try
+            {
+                var key = CachingProductServiceDecorator.CreateCacheKey();
+                return await this.GetOrAddAsync(key, GetAllProducts);
+            }
+            catch
+            {
+                return new List<Product>().AsReadOnly();
+            }
+
+            async Task<IEnumerable<Product>> GetAllProducts() => await this.productService.GetAllProductsAsync();
         }
 
         /// <inheritdoc/>
-        public Task<Product> GetProductBySquareIdAsync(string squareId)
+        public async Task<Product> GetProductBySquareIdAsync(string squareId)
         {
-            return this.GetAllProducts().FirstOrDefaultAsync(x => x.SquareId == squareId).ToTask();
+            var products = await this.GetAllProductsAsync();
+            return products.FirstOrDefault(x => x.SquareId == squareId);
         }
 
         /// <inheritdoc/>
-        public Task<Product> GetProductByProductCodeAsync(string productCode)
+        public async Task<Product> GetProductByProductCodeAsync(string productCode)
         {
-            return this.GetAllProducts().FirstOrDefaultAsync(x => x.ProductCode == productCode).ToTask();
+            var products = await this.GetAllProductsAsync();
+            return products.FirstOrDefault(x => x.ProductCode == productCode);
         }
 
         /// <inheritdoc/>
-        public Task<Product> GetProductByNameAsync(string productName)
+        public async Task<Product> GetProductByNameAsync(string productName)
         {
             // TODO: Move this to a config-based lookup. And move it out of the decorator!
             if (string.Equals(productName, "eGift Card", StringComparison.OrdinalIgnoreCase))
             {
-                return Task.FromResult(new Product("TLM-GC", "TLM-GC", productName, "eGift Card", null));
+                return new Product("TLM-GC", "TLM-GC", productName, "eGift Card", null);
             }
             else
             {
-                return this.GetAllProducts().FirstOrDefaultAsync(x => x.ProductName.Contains(productName, StringComparison.OrdinalIgnoreCase)).ToTask();
+                var products = await this.GetAllProductsAsync();
+                return products.FirstOrDefault(x => x.ProductName.Contains(productName, StringComparison.OrdinalIgnoreCase));
             }
         }
 
