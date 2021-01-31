@@ -2,7 +2,7 @@
 @using Mandarin.Inventory
 @using System.Reactive.Linq
 @inject IProductService ProductService;
-@inject IFixedCommissionAmountService FixedCommissionAmountService;
+@inject IFixedCommissionService FixedCommissionService;
 
 <Card>
   <CardHeader>
@@ -100,7 +100,7 @@
   {
     await base.OnInitializedAsync();
 
-    var fixedCommissionAmounts = await FixedCommissionAmountService.GetFixedCommissionAmounts();
+    var fixedCommissionAmounts = await FixedCommissionService.GetFixedCommissionAsync();
     fixedCommissionAmountViewModels = fixedCommissionAmounts
       .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
       .ToList()
@@ -111,18 +111,18 @@
   private Task AddNewCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
     var insert = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
-    return FixedCommissionAmountService.AddFixedCommissionAmount(insert);
+    return FixedCommissionService.SaveFixedCommissionAsync(insert);
   }
 
   private Task UpdateFixedCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
     var update = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
-    return FixedCommissionAmountService.UpdateFixedCommissionAmount(update);
+    return FixedCommissionService.SaveFixedCommissionAsync(update);
   }
 
   private Task DeleteCommission(FixedCommissionRowModel arg)
   {
-    return FixedCommissionAmountService.DeleteFixedCommissionAmount(arg.ProductCode);
+    return FixedCommissionService.DeleteFixedCommissionAsync(arg.ProductCode);
   }
 
   private void ShowModal(CommandContext<FixedCommissionRowModel> commandContext)

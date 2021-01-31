@@ -16,24 +16,24 @@ namespace Mandarin.Grpc
     [Authorize]
     internal sealed class ProductsGrpcService : ProductsBase
     {
-        private readonly IQueryableInventoryService inventoryService;
+        private readonly IQueryableProductService productService;
         private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductsGrpcService"/> class.
         /// </summary>
-        /// <param name="inventoryService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="productService">The application service for interacting with commissions and records of sales.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public ProductsGrpcService(IQueryableInventoryService inventoryService, IMapper mapper)
+        public ProductsGrpcService(IQueryableProductService productService, IMapper mapper)
         {
-            this.inventoryService = inventoryService;
+            this.productService = productService;
             this.mapper = mapper;
         }
 
         /// <inheritdoc/>
         public override async Task<GetAllProductsResponse> GetAllProducts(GetAllProductsRequest request, ServerCallContext context)
         {
-            var products = await this.inventoryService.GetInventory().ToList();
+            var products = await this.productService.GetAllProducts().ToList();
             return new GetAllProductsResponse
             {
                 Products = { this.mapper.Map<IEnumerable<Product>>(products) },
@@ -47,15 +47,15 @@ namespace Mandarin.Grpc
 
             if (request.SquareId != null)
             {
-                product = await this.inventoryService.GetProductBySquareIdAsync(request.SquareId);
+                product = await this.productService.GetProductBySquareIdAsync(request.SquareId);
             }
             else if (request.ProductCode != null)
             {
-                product = await this.inventoryService.GetProductByProductCodeAsync(request.ProductCode);
+                product = await this.productService.GetProductByProductCodeAsync(request.ProductCode);
             }
             else if (request.ProductName != null)
             {
-                product = await this.inventoryService.GetProductByNameAsync(request.ProductName);
+                product = await this.productService.GetProductByNameAsync(request.ProductName);
             }
             else
             {

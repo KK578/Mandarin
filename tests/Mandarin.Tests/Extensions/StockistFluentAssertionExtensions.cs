@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using FluentAssertions.Primitives;
+﻿using FluentAssertions.Primitives;
 using Mandarin.Stockists;
 
 namespace Mandarin.Tests.Extensions

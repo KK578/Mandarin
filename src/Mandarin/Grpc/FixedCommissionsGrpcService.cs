@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
@@ -15,24 +14,24 @@ namespace Mandarin.Grpc
     [Authorize]
     internal sealed class FixedCommissionsGrpcService : FixedCommissionsBase
     {
-        private readonly IQueryableInventoryService inventoryService;
+        private readonly IFixedCommissionService fixedCommissionService;
         private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionsGrpcService"/> class.
         /// </summary>
-        /// <param name="inventoryService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public FixedCommissionsGrpcService(IQueryableInventoryService inventoryService, IMapper mapper)
+        public FixedCommissionsGrpcService(IFixedCommissionService fixedCommissionService, IMapper mapper)
         {
-            this.inventoryService = inventoryService;
+            this.fixedCommissionService = fixedCommissionService;
             this.mapper = mapper;
         }
 
         /// <inheritdoc/>
         public override async Task<GetAllFixedCommissionsResponse> GetAllFixedCommissions(GetAllFixedCommissionsRequest request, ServerCallContext context)
         {
-            var fixedCommissions = await this.inventoryService.GetFixedCommissionAmounts().ToList();
+            var fixedCommissions = await this.fixedCommissionService.GetFixedCommissionAsync();
             return new GetAllFixedCommissionsResponse
             {
                 FixedCommissions = { this.mapper.Map<IEnumerable<FixedCommissionAmount>>(fixedCommissions) },
@@ -42,7 +41,7 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetFixedCommissionResponse> GetFixedCommission(GetFixedCommissionRequest request, ServerCallContext context)
         {
-            var fixedCommission = await this.inventoryService.GetFixedCommissionAmount(request.ProductCode);
+            var fixedCommission = await this.fixedCommissionService.GetFixedCommissionAsync(request.ProductCode);
             return new GetFixedCommissionResponse
             {
                 FixedCommission = this.mapper.Map<FixedCommissionAmount>(fixedCommission),
@@ -53,15 +52,7 @@ namespace Mandarin.Grpc
         public override async Task<SaveFixedCommissionResponse> SaveFixedCommission(SaveFixedCommissionRequest request, ServerCallContext context)
         {
             var fixedCommission = this.mapper.Map<Inventory.FixedCommissionAmount>(request.FixedCommission);
-            var existing = await this.inventoryService.GetFixedCommissionAmount(fixedCommission.ProductCode);
-            if (existing == null)
-            {
-                await this.inventoryService.AddFixedCommissionAmount(fixedCommission);
-            }
-            else
-            {
-                await this.inventoryService.UpdateFixedCommissionAmount(fixedCommission);
-            }
+            await this.fixedCommissionService.SaveFixedCommissionAsync(fixedCommission);
 
             return new SaveFixedCommissionResponse();
         }
@@ -69,7 +60,7 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<DeleteFixedCommissionResponse> DeleteFixedCommission(DeleteFixedCommissionRequest request, ServerCallContext context)
         {
-            await this.inventoryService.DeleteFixedCommissionAmount(request.ProductCode);
+            await this.fixedCommissionService.DeleteFixedCommissionAsync(request.ProductCode);
             return new DeleteFixedCommissionResponse();
         }
     }

@@ -21,13 +21,13 @@ namespace Mandarin.Services.Tests.Transactions
 
         private readonly Mock<IQueryableProductService> productService;
         private readonly MandarinConfiguration configuration;
-        private readonly Mock<IFixedCommissionAmountService> fixedCommissionAmountService;
+        private readonly Mock<IFixedCommissionService> fixedCommissionAmountService;
 
         public TransactionMapperTests()
         {
             this.productService = new Mock<IQueryableProductService>();
             this.configuration = new MandarinConfiguration();
-            this.fixedCommissionAmountService = new Mock<IFixedCommissionAmountService>();
+            this.fixedCommissionAmountService = new Mock<IFixedCommissionService>();
         }
 
         private ITransactionMapper Subject =>
@@ -45,7 +45,7 @@ namespace Mandarin.Services.Tests.Transactions
 
         private void GivenFixedCommissionAmountExists(Product product, FixedCommissionAmount fixedCommissionAmount)
         {
-            this.fixedCommissionAmountService.Setup(x => x.GetFixedCommissionAmount(product.ProductCode)).ReturnsAsync(fixedCommissionAmount);
+            this.fixedCommissionAmountService.Setup(x => x.GetFixedCommissionAsync(product.ProductCode)).ReturnsAsync(fixedCommissionAmount);
         }
 
         private void GivenConfigurationWithMappings(Product product, Product mappedProduct)

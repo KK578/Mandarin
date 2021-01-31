@@ -67,7 +67,7 @@ namespace Mandarin.Services
             services.AddTransient<IProductService, SquareProductService>();
             services.Decorate<IProductService, CachingProductServiceDecorator>();
             services.AddTransient(s => (IQueryableProductService)s.GetRequiredService<IProductService>());
-            services.AddTransient<IFixedCommissionAmountService, FixedCommissionAmountService>();
+            services.AddTransient<IFixedCommissionService, FixedCommissionService>();
         }
 
         private static void AddStockistServices(this IServiceCollection services)
