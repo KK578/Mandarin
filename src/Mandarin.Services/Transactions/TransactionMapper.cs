@@ -3,30 +3,35 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
-using Mandarin.Commissions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
+using Mandarin.Services.Common;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Options;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Square
+namespace Mandarin.Services.Transactions
 {
     /// <inheritdoc />
     internal sealed class TransactionMapper : ITransactionMapper
     {
-        private readonly IQueryableInventoryService inventoryService;
+        private readonly IQueryableProductService productService;
+        private readonly IFixedCommissionAmountService fixedCommissionAmountService;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
         /// </summary>
-        /// <param name="inventoryService">The inventory service.</param>
+        /// <param name="productService">The inventory service.</param>
+        /// <param name="fixedCommissionAmountService">The fixed commission amount service.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
-        public TransactionMapper(IQueryableInventoryService inventoryService, IOptions<MandarinConfiguration> mandarinConfiguration)
+        public TransactionMapper(IQueryableProductService productService,
+                                 IFixedCommissionAmountService fixedCommissionAmountService,
+                                 IOptions<MandarinConfiguration> mandarinConfiguration)
         {
-            this.inventoryService = inventoryService;
+            this.productService = productService;
+            this.fixedCommissionAmountService = fixedCommissionAmountService;
             this.mandarinConfiguration = mandarinConfiguration;
         }
 
@@ -59,7 +64,7 @@ namespace Mandarin.Services.Square
                        .ToObservable()
                        .SelectMany(product =>
                        {
-                           return this.inventoryService.GetFixedCommissionAmount(product)
+                           return this.fixedCommissionAmountService.GetFixedCommissionAmount(product.ProductCode)
                                       .ToObservable()
                                       .SelectMany(fixedCommissionAmount => Create(product, fixedCommissionAmount));
                        });
@@ -129,12 +134,12 @@ namespace Mandarin.Services.Square
         {
             if (squareId != null)
             {
-                var product = await this.inventoryService.GetProductBySquareIdAsync(squareId);
+                var product = await this.productService.GetProductBySquareIdAsync(squareId);
                 return await MapProduct(product);
             }
             else if (name != null)
             {
-                var product = await this.inventoryService.GetProductByNameAsync(name);
+                var product = await this.productService.GetProductByNameAsync(name);
                 return await MapProduct(product);
             }
             else
@@ -149,7 +154,7 @@ namespace Mandarin.Services.Square
                 {
                     if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode))
                     {
-                        return this.inventoryService.GetProductByProductCodeAsync(mapping.Mappings[originalProduct.ProductCode]);
+                        return this.productService.GetProductByProductCodeAsync(mapping.Mappings[originalProduct.ProductCode]);
                     }
                 }
 

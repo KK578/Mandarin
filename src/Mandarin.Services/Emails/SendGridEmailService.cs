@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Mandarin.Services.SendGrid
+namespace Mandarin.Services.Emails
 {
     /// <inheritdoc />
     internal sealed class SendGridEmailService : IEmailService

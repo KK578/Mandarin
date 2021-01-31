@@ -1,9 +1,8 @@
 ﻿@page "/inventory/fixed-commission-amounts"
-@using System.Reactive.Linq
-@using System.Reactive.Threading.Tasks
-@using Mandarin.Commissions
 @using Mandarin.Inventory
-@inject IInventoryService InventoryService;
+@using System.Reactive.Linq
+@inject IProductService ProductService;
+@inject IFixedCommissionAmountService FixedCommissionAmountService;
 
 <Card>
   <CardHeader>
@@ -101,29 +100,29 @@
   {
     await base.OnInitializedAsync();
 
-    var fixedCommissionAmounts = await InventoryService.GetFixedCommissionAmounts().ToList();
+    var fixedCommissionAmounts = await FixedCommissionAmountService.GetFixedCommissionAmounts();
     fixedCommissionAmountViewModels = fixedCommissionAmounts
       .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
       .ToList()
       .AsReadOnly();
-    products = await InventoryService.GetInventory().ToList().ToTask();
+    products = await ProductService.GetAllProducts().ToList();
   }
 
   private Task AddNewCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
     var insert = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
-    return InventoryService.AddFixedCommissionAmount(insert);
+    return FixedCommissionAmountService.AddFixedCommissionAmount(insert);
   }
 
   private Task UpdateFixedCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
     var update = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
-    return InventoryService.UpdateFixedCommissionAmount(update);
+    return FixedCommissionAmountService.UpdateFixedCommissionAmount(update);
   }
 
   private Task DeleteCommission(FixedCommissionRowModel arg)
   {
-    return InventoryService.DeleteFixedCommissionAmount(arg.ProductCode);
+    return FixedCommissionAmountService.DeleteFixedCommissionAmount(arg.ProductCode);
   }
 
   private void ShowModal(CommandContext<FixedCommissionRowModel> commandContext)

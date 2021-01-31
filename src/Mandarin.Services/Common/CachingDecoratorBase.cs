@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LazyCache;
-using Mandarin.Services.Square;
 using Microsoft.Extensions.Logging;
 
-namespace Mandarin.Services.Decorators
+namespace Mandarin.Services.Common
 {
     /// <summary>
     /// Represents common functionality shared by all caching decorators.

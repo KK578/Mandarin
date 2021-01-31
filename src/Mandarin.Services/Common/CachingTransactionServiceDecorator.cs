@@ -7,7 +7,7 @@ using LazyCache;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Logging;
 
-namespace Mandarin.Services.Decorators
+namespace Mandarin.Services.Common
 {
     /// <summary>
     /// Implementation of <see cref="ITransactionService"/> that caches results to speed up subsequent requests.

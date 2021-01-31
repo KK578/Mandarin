@@ -13,18 +13,18 @@ namespace Mandarin.Database.Commissions
     /// <inheritdoc cref="Mandarin.Commissions.ICommissionRepository" />
     internal sealed class CommissionRepository : DatabaseRepositoryBase<Commission, CommissionRecord>, ICommissionRepository
     {
-        private const string GetByStockistIdSql = @"
-                SELECT * 
-                FROM billing.commission c 
-                WHERE stockist_id = @stockist_id
-                ORDER BY commission_id DESC";
+        private const string GetCommissionByStockistIdSql = @"
+            SELECT * 
+            FROM billing.commission c 
+            WHERE stockist_id = @stockist_id
+            ORDER BY commission_id DESC";
 
-        private const string InsertSql = @"
+        private const string InsertCommissionSql = @"
             INSERT INTO billing.commission (stockist_id, start_date, end_date, rate)
             VALUES (@stockist_id, @start_date, @end_date, @rate)
             RETURNING commission_id";
 
-        private const string UpdateSql = @"
+        private const string UpdateCommissionSql = @"
             UPDATE billing.commission
             SET start_date = @start_date,
                 end_date = @end_date,
@@ -49,7 +49,7 @@ namespace Mandarin.Database.Commissions
                        db =>
                        {
                            var parameters = new { stockist_id = stockistId, };
-                           return db.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetByStockistIdSql, parameters);
+                           return db.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetCommissionByStockistIdSql, parameters);
                        });
         }
 
@@ -57,7 +57,7 @@ namespace Mandarin.Database.Commissions
         public Task<Commission> SaveCommissionAsync(int stockistId, Commission commission)
         {
             commission.StockistId = stockistId;
-            return this.UpsertAsync(commission);
+            return this.Upsert(commission);
         }
 
         /// <inheritdoc/>
@@ -74,11 +74,11 @@ namespace Mandarin.Database.Commissions
         {
             if (value.commission_id == 0)
             {
-                var commissionId = await db.ExecuteScalarAsync<int>(CommissionRepository.InsertSql, value);
+                var commissionId = await db.ExecuteScalarAsync<int>(CommissionRepository.InsertCommissionSql, value);
                 return value with { commission_id = commissionId };
             }
 
-            await db.ExecuteAsync(CommissionRepository.UpdateSql, value);
+            await db.ExecuteAsync(CommissionRepository.UpdateCommissionSql, value);
             return value;
         }
     }

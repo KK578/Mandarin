@@ -2,7 +2,7 @@
 @using System.Reactive.Linq
 @using System.Reactive.Threading.Tasks
 @using Mandarin.Inventory
-@inject IInventoryService InventoryService;
+@inject IProductService ProductService;
 
 <Card>
   <CardHeader>
@@ -36,7 +36,7 @@
   {
     await base.OnInitializedAsync();
 
-    Data = await InventoryService.GetInventory().Catch((Exception ex) => Observable.Empty<Product>()).ToList().ToTask();
+    Data = await ProductService.GetAllProducts().Catch((Exception ex) => Observable.Empty<Product>()).ToList().ToTask();
   }
 
   private IList<Product> Data { get; set; }

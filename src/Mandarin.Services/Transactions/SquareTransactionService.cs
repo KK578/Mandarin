@@ -11,7 +11,7 @@ using Square;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Square
+namespace Mandarin.Services.Transactions
 {
     /// <inheritdoc />
     internal sealed class SquareTransactionService : ITransactionService

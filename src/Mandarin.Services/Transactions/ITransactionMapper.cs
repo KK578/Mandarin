@@ -2,7 +2,7 @@
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Square
+namespace Mandarin.Services.Transactions
 {
     /// <summary>
     /// Represents the converter between Square DTOs to Domain models.

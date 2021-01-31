@@ -13,22 +13,26 @@ namespace Mandarin.Database.Inventory
     internal sealed class FixedCommissionAmountRepository : DatabaseRepositoryBase<FixedCommissionAmount, FixedCommissionAmountRecord>,
                                                             IFixedCommissionAmountRepository
     {
-        private const string GetByProductCodeSql = @"
+        private const string GetCommissionByProductCodeSql = @"
             SELECT *
             FROM inventory.fixed_commission_amount
             WHERE product_code = @product_code
             LIMIT 1";
 
-        private const string UpsertSql = @"
+        private const string GetAllCommissionsSql = @"
+            SELECT *
+            FROM inventory.fixed_commission_amount
+            ORDER BY product_code";
+
+        private const string UpsertCommissionSql = @"
             INSERT INTO inventory.fixed_commission_amount (product_code, amount)
             VALUES (@product_code, @amount)
             ON CONFLICT (product_code) DO
                 UPDATE SET amount = @amount";
 
-        private const string GetAllSql = @"
-            SELECT *
-            FROM inventory.fixed_commission_amount
-            ORDER BY product_code";
+        private const string DeleteCommissionSql = @"
+            DELETE FROM inventory.fixed_commission_amount
+            WHERE product_code = @product_code";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionAmountRepository"/> class.
@@ -42,20 +46,33 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FixedCommissionAmount> GetFixedCommissionAmountByProductCode(string productCode)
+        public Task<FixedCommissionAmount> GetByProductCodeAsync(string productCode)
         {
             return this.Get(productCode,
                             db =>
                             {
                                 var parameters = new { product_code = productCode };
-                                return db.QueryFirstAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetByProductCodeSql, parameters);
+                                return db.QueryFirstAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetCommissionByProductCodeSql, parameters);
                             });
         }
 
         /// <inheritdoc/>
-        public Task<FixedCommissionAmount> SaveFixedCommissionAmountAsync(FixedCommissionAmount fixedCommissionAmount)
+        public Task<IReadOnlyList<FixedCommissionAmount>> GetAllAsync()
         {
-            return this.UpsertAsync(fixedCommissionAmount);
+            return this.GetAll();
+        }
+
+        /// <inheritdoc/>
+        public Task<FixedCommissionAmount> SaveAsync(FixedCommissionAmount fixedCommissionAmount)
+        {
+            return this.Upsert(fixedCommissionAmount);
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteByProductCodeAsync(string productCode)
+        {
+            var parameters = new { product_code = productCode };
+            return this.Delete(FixedCommissionAmountRepository.DeleteCommissionSql, parameters);
         }
 
         /// <inheritdoc/>
@@ -64,13 +81,13 @@ namespace Mandarin.Database.Inventory
         /// <inheritdoc/>
         protected override Task<IEnumerable<FixedCommissionAmountRecord>> GetAllRecords(IDbConnection db)
         {
-            return db.QueryAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetAllSql);
+            return db.QueryAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetAllCommissionsSql);
         }
 
         /// <inheritdoc/>
         protected override async Task<FixedCommissionAmountRecord> UpsertRecordAsync(IDbConnection db, FixedCommissionAmountRecord record)
         {
-            await db.ExecuteAsync(FixedCommissionAmountRepository.UpsertSql, record);
+            await db.ExecuteAsync(FixedCommissionAmountRepository.UpsertCommissionSql, record);
             return record;
         }
     }

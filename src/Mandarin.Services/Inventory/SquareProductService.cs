@@ -1,92 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Mandarin.Commissions;
-using Mandarin.Configuration;
 using Mandarin.Inventory;
+using Mandarin.Services.Transactions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Square;
 using Square.Models;
 
-namespace Mandarin.Services.Square
+namespace Mandarin.Services.Inventory
 {
     /// <inheritdoc />
-    internal sealed class SquareInventoryService : IInventoryService
+    internal sealed class SquareProductService : IProductService
     {
         private static readonly Regex HyphenSeparatedProductNameRegex = new("^.* - (?<name>.*)$");
         private static readonly Regex SquareBracketProductNameRegex = new("^\\[.*\\] (?<name>.*)$");
 
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
-        private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SquareInventoryService"/> class.
+        /// Initializes a new instance of the <see cref="SquareProductService"/> class.
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
-        /// <param name="mandarinConfiguration">The application configuration wrapped in an <see cref="IOptions{TOptions}"/>.</param>
-        public SquareInventoryService(ILogger<SquareTransactionService> logger,
-                                      ISquareClient squareClient,
-                                      IOptions<MandarinConfiguration> mandarinConfiguration)
+        public SquareProductService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
         {
             this.logger = logger;
             this.squareClient = squareClient;
-            this.mandarinConfiguration = mandarinConfiguration;
-        }
-
-        /// <inheritdoc />
-        public Task AddFixedCommissionAmount(FixedCommissionAmount commission)
-        {
-            return this.CommitData(this.GetFixedCommissionAmounts().Append(commission));
         }
 
         /// <inheritdoc/>
-        public Task UpdateFixedCommissionAmount(FixedCommissionAmount commission)
-        {
-            return this.CommitData(this.GetFixedCommissionAmounts().Select(x => x.ProductCode == commission.ProductCode ? commission : x));
-        }
-
-        /// <inheritdoc/>
-        public Task DeleteFixedCommissionAmount(string productCode)
-        {
-            return this.CommitData(this.GetFixedCommissionAmounts().Where(x => x.ProductCode != productCode));
-        }
-
-        /// <inheritdoc />
-        public IObservable<FixedCommissionAmount> GetFixedCommissionAmounts()
-        {
-            return Observable.FromAsync(ReadDataFromFile)
-                             .SelectMany(JsonConvert.DeserializeObject<List<FixedCommissionAmount>>);
-
-            Task<string> ReadDataFromFile()
-            {
-                var file = this.mandarinConfiguration.Value.FixedCommissionAmountFilePath;
-                if (string.IsNullOrWhiteSpace(file) || !File.Exists(file))
-                {
-                    this.logger.LogWarning("Cannot read Fixed Commission Amounts from file: '{FileName}", file);
-                    return Task.FromResult("[]");
-                }
-
-                return File.ReadAllTextAsync(file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public IObservable<Product> GetInventory()
+        public IObservable<Product> GetAllProducts()
         {
             return Observable.Create<CatalogObject>(ListFullCatalog)
                              .ToList()
-                             .SelectMany(SquareInventoryService.MergeCatalogItems)
-                             .SelectMany(SquareInventoryService.MapToProduct)
+                             .SelectMany(SquareProductService.MergeCatalogItems)
+                             .SelectMany(SquareProductService.MapToProduct)
                              .Where(x => x != null);
 
             async Task ListFullCatalog(IObserver<CatalogObject> o, CancellationToken ct)
@@ -94,7 +47,7 @@ namespace Mandarin.Services.Square
                 var requestBuilder = new SearchCatalogObjectsRequest.Builder()
                                      .ObjectTypes(new List<string> { "ITEM", "ITEM_VARIATION" })
                                      .IncludeDeletedObjects(true);
-                SearchCatalogObjectsResponse response = null;
+                SearchCatalogObjectsResponse response;
                 do
                 {
                     response = await this.squareClient.CatalogApi.SearchCatalogObjectsAsync(requestBuilder.Build(), ct);
@@ -132,7 +85,7 @@ namespace Mandarin.Services.Square
                 yield break;
             }
 
-            var productName = GetProductName(catalogItem.Name);
+            var productName = SquareProductService.GetProductName(catalogItem.Name);
             var description = catalogItem.Description;
 
             foreach (var variation in catalogItem.Variations)
@@ -148,29 +101,19 @@ namespace Mandarin.Services.Square
 
         private static string GetProductName(string catalogItemName)
         {
-            var squareBracketMatch = SquareInventoryService.SquareBracketProductNameRegex.Match(catalogItemName);
+            var squareBracketMatch = SquareProductService.SquareBracketProductNameRegex.Match(catalogItemName);
             if (squareBracketMatch.Success)
             {
                 return squareBracketMatch.Groups["name"].ToString();
             }
 
-            var hyphenMatch = SquareInventoryService.HyphenSeparatedProductNameRegex.Match(catalogItemName);
+            var hyphenMatch = SquareProductService.HyphenSeparatedProductNameRegex.Match(catalogItemName);
             if (hyphenMatch.Success)
             {
                 return hyphenMatch.Groups["name"].ToString();
             }
 
             return catalogItemName;
-        }
-
-        private async Task CommitData(IObservable<FixedCommissionAmount> dataObservable)
-        {
-            var data = await dataObservable.ToList().ToTask();
-            var fs = File.Create(this.mandarinConfiguration.Value.FixedCommissionAmountFilePath);
-            await using var writer = new StreamWriter(fs);
-            using var jsonWriter = new JsonTextWriter(writer);
-
-            JsonSerializer.CreateDefault().Serialize(jsonWriter, data);
         }
     }
 }

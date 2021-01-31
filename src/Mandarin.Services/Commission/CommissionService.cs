@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Mandarin.Commissions;
 using Mandarin.Common;
-using Mandarin.Services.Square;
+using Mandarin.Services.Common;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 

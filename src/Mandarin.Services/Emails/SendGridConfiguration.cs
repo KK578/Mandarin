@@ -1,4 +1,4 @@
-﻿namespace Mandarin.Services.SendGrid
+﻿namespace Mandarin.Services.Emails
 {
     /// <summary>
     /// Application configuration for the SendGrid API Client.

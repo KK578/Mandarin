@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Mandarin.Services.Square
+namespace Mandarin.Services.Common
 {
     /// <summary>
     /// Additional Extensions for <see cref="IEnumerable{T}"/>.

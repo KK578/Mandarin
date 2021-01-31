@@ -3,10 +3,11 @@ using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Inventory;
 using Mandarin.Services.Commission;
-using Mandarin.Services.Decorators;
-using Mandarin.Services.SendGrid;
-using Mandarin.Services.Square;
+using Mandarin.Services.Common;
+using Mandarin.Services.Emails;
+using Mandarin.Services.Inventory;
 using Mandarin.Services.Stockists;
+using Mandarin.Services.Transactions;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Configuration;
@@ -34,8 +35,10 @@ namespace Mandarin.Services
         {
             services.AddLazyCache();
             services.AddMandarinDomainServices();
-            services.AddSendGridServices(configuration);
+            services.AddEmailServices(configuration);
+            services.AddInventoryServices();
             services.AddStockistServices();
+            services.AddTransactionServices();
             services.AddSquareServices(configuration);
 
             return services;
@@ -47,7 +50,7 @@ namespace Mandarin.Services
             services.AddTransient<ICommissionService, CommissionService>();
         }
 
-        private static void AddSendGridServices(this IServiceCollection services, IConfiguration configuration)
+        private static void AddEmailServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSendGrid(ConfigureSendGrid);
             services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
@@ -59,26 +62,35 @@ namespace Mandarin.Services
             }
         }
 
+        private static void AddInventoryServices(this IServiceCollection services)
+        {
+            services.AddTransient<IProductService, SquareProductService>();
+            services.Decorate<IProductService, CachingProductServiceDecorator>();
+            services.AddTransient(s => (IQueryableProductService)s.GetRequiredService<IProductService>());
+            services.AddTransient<IFixedCommissionAmountService, FixedCommissionAmountService>();
+        }
+
         private static void AddStockistServices(this IServiceCollection services)
         {
-            services.AddScoped<IStockistService, StockistService>();
+            services.AddTransient<IStockistService, StockistService>();
+        }
+
+        private static void AddTransactionServices(this IServiceCollection services)
+        {
+            services.AddTransient<ITransactionService, SquareTransactionService>();
+            services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(ConfigureSquareClient);
-            services.AddTransient<ITransactionService, SquareTransactionService>();
-            services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
-            services.AddTransient<IInventoryService, SquareInventoryService>();
-            services.Decorate<IInventoryService, CachingInventoryServiceDecorator>();
-            services.AddTransient(s => (IQueryableInventoryService)s.GetRequiredService<IInventoryService>());
 
             ISquareClient ConfigureSquareClient(IServiceProvider provider)
             {
                 return new SquareClient.Builder()
-                                .Environment(configuration.GetValue<Environment>("Square:Environment"))
-                                .AccessToken(configuration.GetValue<string>("Square:ApiKey"))
-                                .Build();
+                       .Environment(configuration.GetValue<Environment>("Square:Environment"))
+                       .AccessToken(configuration.GetValue<string>("Square:ApiKey"))
+                       .Build();
             }
         }
     }

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Services.Square;
+using Mandarin.Services.Transactions;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -15,7 +15,7 @@ using Square.Models;
 using Xunit;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Tests.Square
+namespace Mandarin.Services.Tests.Transactions
 {
     public class SquareTransactionServiceTests
     {

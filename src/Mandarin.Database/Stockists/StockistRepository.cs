@@ -90,13 +90,13 @@ namespace Mandarin.Database.Stockists
         /// <inheritdoc/>
         public Task<IReadOnlyList<Stockist>> GetAllStockists()
         {
-            return this.GetAllAsync();
+            return this.GetAll();
         }
 
         /// <inheritdoc/>
         public Task<Stockist> SaveStockistAsync(Stockist stockist)
         {
-            return this.UpsertAsync(stockist);
+            return this.Upsert(stockist);
         }
 
         /// <inheritdoc/>
