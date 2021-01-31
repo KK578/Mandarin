@@ -2,8 +2,8 @@
 
 import "google/protobuf/wrappers.proto";
 
-option csharp_namespace = "Mandarin.Api.Products";
-option java_package = "uk.co.thelittlemandarin.mandarin.api.products";
+option csharp_namespace = "Mandarin.Api.Inventory";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.inventory";
 
 package uk.co.thelittlemandarin;
 
@@ -30,11 +30,6 @@ message GetProductResponse {
   Product product = 1;
 }
 
-
-message FixedCommissionAmount {
-  string productCode = 1;
-  google.protobuf.DoubleValue amount = 2;
-}
 
 message Product {
   string squareId = 1;
