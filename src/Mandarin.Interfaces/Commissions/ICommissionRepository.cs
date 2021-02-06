@@ -15,12 +15,12 @@ namespace Mandarin.Commissions
         Task<Commission> GetCommissionByStockist(int stockistId);
 
         /// <summary>
-        /// Saves the provided commission details.
-        /// This method will automatically detect if the commission already exists and insert or update accordingly.
+        /// Saves the provided <see cref="Commission"/>, and returns the new version of the <see cref="Commission"/> after it has been saved
+        /// successfully.
         /// </summary>
         /// <param name="stockistId">The stockist's database id.</param>
         /// <param name="commission">The commission details to be saved.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SaveCommissionAsync(int stockistId, Commission commission);
+        Task<Commission> SaveCommissionAsync(int stockistId, Commission commission);
     }
 }

@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
 using Mandarin.Commissions;
+using Mandarin.Database.Common;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Database.Commissions
 {
-    /// <inheritdoc />
-    internal sealed class CommissionRepository : ICommissionRepository
+    /// <inheritdoc cref="Mandarin.Commissions.ICommissionRepository" />
+    internal sealed class CommissionRepository : DatabaseRepositoryBase<Commission, CommissionRecord>, ICommissionRepository
     {
-        private const string GetCommissionByStockistSql = @"
+        private const string GetCommissionByStockistIdSql = @"
             SELECT * 
             FROM billing.commission c 
             WHERE stockist_id = @stockist_id
@@ -19,7 +21,8 @@ namespace Mandarin.Database.Commissions
 
         private const string InsertCommissionSql = @"
             INSERT INTO billing.commission (stockist_id, start_date, end_date, rate)
-            VALUES (@stockist_id, @start_date, @end_date, @rate)";
+            VALUES (@stockist_id, @start_date, @end_date, @rate)
+            RETURNING commission_id";
 
         private const string UpdateCommissionSql = @"
             UPDATE billing.commission
@@ -28,10 +31,6 @@ namespace Mandarin.Database.Commissions
                 rate = @rate
             WHERE stockist_id = @stockist_id";
 
-        private readonly MandarinDbContext mandarinDbContext;
-        private readonly IMapper mapper;
-        private readonly ILogger<CommissionRepository> logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionRepository"/> class.
         /// </summary>
@@ -39,80 +38,48 @@ namespace Mandarin.Database.Commissions
         /// <param name="mapper">The mapper to translate between different object types.</param>
         /// <param name="logger">The application logger.</param>
         public CommissionRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<CommissionRepository> logger)
+            : base(mandarinDbContext, mapper, logger)
         {
-            this.mandarinDbContext = mandarinDbContext;
-            this.mapper = mapper;
-            this.logger = logger;
         }
 
         /// <inheritdoc/>
-        public async Task<Commission> GetCommissionByStockist(int stockistId)
+        public Task<Commission> GetCommissionByStockist(int stockistId)
         {
-            var parameters = new
-            {
-                stockist_id = stockistId,
-            };
-
-            this.logger.LogDebug("Fetching Commission entry for StockistId={StockistId}", stockistId);
-            try
-            {
-                using var connection = this.mandarinDbContext.GetConnection();
-                var commissionRecord = await connection.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetCommissionByStockistSql, parameters);
-                var commission = this.mapper.Map<Commission>(commissionRecord);
-                this.logger.LogInformation("Fetched Commission entry for StockistId={stockistId}: {@Commission}", stockistId, commission);
-                return commission;
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Failed to fetch Commission entry for StockistId={StockistId}", stockistId);
-                throw;
-            }
+            return this.Get(stockistId,
+                       db =>
+                       {
+                           var parameters = new { stockist_id = stockistId, };
+                           return db.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetCommissionByStockistIdSql, parameters);
+                       });
         }
 
         /// <inheritdoc/>
-        public async Task SaveCommissionAsync(int stockistId, Commission commission)
+        public Task<Commission> SaveCommissionAsync(int stockistId, Commission commission)
         {
-            this.logger.LogDebug("Saving Commission entry for StockistId={StockistId}: {@Commission}", stockistId, commission);
-
-            try
-            {
-                var commissionRecord = this.mapper.Map<CommissionRecord>(commission) with { stockist_id = stockistId };
-
-                using var db = this.mandarinDbContext.GetConnection();
-                db.Open();
-                using var transaction = db.BeginTransaction();
-
-                // TODO: CommissionId should probably be nullable.
-                if (commissionRecord.commission_id == 0)
-                {
-                    this.logger.LogDebug("Inserting as new Commission entry for StockistId={StockistId}.", stockistId);
-                    await CommissionRepository.InsertCommissionAsync(db, commissionRecord);
-                    transaction.Commit();
-                }
-                else
-                {
-                    this.logger.LogDebug("Updating existing Commission entry for StockistId={StockistId}.", stockistId);
-                    await CommissionRepository.UpdateCommissionAsync(db, commissionRecord);
-                    transaction.Commit();
-                }
-
-                this.logger.LogInformation("Successfully saved Commission entry for StockistId={StockistId}.", stockistId);
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "Failed to save Commission entry for StockistId={StockistId}.", stockistId);
-                throw;
-            }
+            commission.StockistId = stockistId;
+            return this.Upsert(commission);
         }
 
-        private static async Task InsertCommissionAsync(IDbConnection db, CommissionRecord commissionRecord)
+        /// <inheritdoc/>
+        protected override string ExtractDisplayKey(Commission value) => value.CommissionId.ToString();
+
+        /// <inheritdoc/>
+        protected override Task<IEnumerable<CommissionRecord>> GetAllRecords(IDbConnection db)
         {
-            await db.ExecuteAsync(CommissionRepository.InsertCommissionSql, commissionRecord);
+            throw new NotImplementedException();
         }
 
-        private static async Task UpdateCommissionAsync(IDbConnection db, CommissionRecord commissionRecord)
+        /// <inheritdoc/>
+        protected override async Task<CommissionRecord> UpsertRecordAsync(IDbConnection db, CommissionRecord value)
         {
-            await db.ExecuteAsync(CommissionRepository.UpdateCommissionSql, commissionRecord);
+            if (value.commission_id == 0)
+            {
+                var commissionId = await db.ExecuteScalarAsync<int>(CommissionRepository.InsertCommissionSql, value);
+                return value with { commission_id = commissionId };
+            }
+
+            await db.ExecuteAsync(CommissionRepository.UpdateCommissionSql, value);
+            return value;
         }
     }
 }

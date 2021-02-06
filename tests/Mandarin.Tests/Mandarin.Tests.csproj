@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>3f0fc735-6e13-4ab9-85e8-0bf30131674a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Mandarin\Mandarin.csproj" />
-    <ProjectReference Include="..\..\src\Mandarin.Client.Services\Mandarin.Client.Services.csproj" />
     <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
     <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
   </ItemGroup>

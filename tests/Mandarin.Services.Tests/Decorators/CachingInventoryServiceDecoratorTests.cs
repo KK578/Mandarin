@@ -4,12 +4,10 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
-using FluentAssertions;
 using LazyCache;
 using LazyCache.Providers;
-using Mandarin.Commissions;
 using Mandarin.Inventory;
-using Mandarin.Services.Decorators;
+using Mandarin.Services.Inventory;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -20,107 +18,45 @@ namespace Mandarin.Services.Tests.Decorators
 {
     public class CachingInventoryServiceDecoratorTests
     {
-        private readonly Mock<IInventoryService> inventoryService;
+        private readonly Mock<IProductService> inventoryService;
         private readonly IAppCache appCache;
 
         protected CachingInventoryServiceDecoratorTests()
         {
-            this.inventoryService = new Mock<IInventoryService>();
+            this.inventoryService = new Mock<IProductService>();
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
             this.appCache = new CachingService(new MemoryCacheProvider(memoryCache));
         }
 
-        private IInventoryService Subject =>
-            new CachingInventoryServiceDecorator(this.inventoryService.Object,
+        private IProductService Subject =>
+            new CachingProductServiceDecorator(this.inventoryService.Object,
                                                  this.appCache,
-                                                 NullLogger<CachingInventoryServiceDecorator>.Instance);
+                                                 NullLogger<CachingProductServiceDecorator>.Instance);
 
         private void GivenServiceReturnsData()
         {
-            this.inventoryService.Setup(x => x.GetInventory())
-                .Returns(TestData.Create<List<Product>>().ToObservable())
-                .Verifiable();
-            this.inventoryService.Setup(x => x.GetFixedCommissionAmounts())
-                .Returns(TestData.Create<List<FixedCommissionAmount>>().ToObservable())
+            this.inventoryService.Setup(x => x.GetAllProductsAsync())
+                .ReturnsAsync(TestData.Create<List<Product>>().AsReadOnly())
                 .Verifiable();
         }
 
         private void GivenServiceThrowsException()
         {
-            this.inventoryService.Setup(x => x.GetInventory())
-                .Returns(() => Observable.Throw<Product>(new Exception("Service failure.")))
-                .Verifiable();
-            this.inventoryService.Setup(x => x.GetFixedCommissionAmounts())
-                .Returns(() => Observable.Throw<FixedCommissionAmount>(new Exception("Service failure.")))
+            this.inventoryService.Setup(x => x.GetAllProductsAsync())
+                .ThrowsAsync(new Exception("Service failure."))
                 .Verifiable();
         }
 
-        private void GivenFixedCommissionAmountsExist()
+        private Task WhenServiceIsCalledMultipleTimes<T>(int times, Func<IObservable<T>> action)
         {
-            this.appCache.Add("IInventoryService.GetFixedCommissionAmounts", TestData.Create<List<FixedCommissionAmount>>());
+            return this.WhenServiceIsCalledMultipleTimes(times, () => action().ToList().ToTask());
         }
 
-        private async Task WhenServiceIsCalledMultipleTimes<T>(int times, Func<IObservable<T>> action)
+        private async Task WhenServiceIsCalledMultipleTimes<T>(int times, Func<Task<T>> action)
         {
             for (var i = 0; i < times; i++)
             {
-                await action().ToList().ToTask();
-            }
-        }
-
-        public class FixedCommissionAmountTests : CachingInventoryServiceDecoratorTests
-        {
-            [Fact]
-            public async Task ShouldClearCacheOnUnderlyingAddingSuccessfully()
-            {
-                this.GivenFixedCommissionAmountsExist();
-                this.inventoryService.Setup(x => x.AddFixedCommissionAmount(It.IsAny<FixedCommissionAmount>()))
-                    .Returns(Task.CompletedTask);
-                await this.Subject.AddFixedCommissionAmount(TestData.Create<FixedCommissionAmount>());
-                this.ThenFixedCommissionAmountCacheIsCleared();
-            }
-
-            [Fact]
-            public async Task ShouldClearCacheOnUnderlyingUpdatingSuccessfully()
-            {
-                this.GivenFixedCommissionAmountsExist();
-                this.inventoryService.Setup(x => x.UpdateFixedCommissionAmount(It.IsAny<FixedCommissionAmount>()))
-                    .Returns(Task.CompletedTask);
-                await this.Subject.UpdateFixedCommissionAmount(TestData.Create<FixedCommissionAmount>());
-                this.ThenFixedCommissionAmountCacheIsCleared();
-            }
-
-            [Fact]
-            public async Task ShouldClearCacheOnUnderlyingDeletingSuccessfully()
-            {
-                this.GivenFixedCommissionAmountsExist();
-                this.inventoryService.Setup(x => x.DeleteFixedCommissionAmount(It.IsAny<string>()))
-                    .Returns(Task.CompletedTask);
-                await this.Subject.DeleteFixedCommissionAmount(It.IsAny<string>());
-                this.ThenFixedCommissionAmountCacheIsCleared();
-            }
-
-            [Fact]
-            public async Task ShouldAttemptToPopulateTheCacheIfAnExceptionOccurredPreviously()
-            {
-                this.GivenServiceThrowsException();
-                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetFixedCommissionAmounts());
-                this.inventoryService.Verify(x => x.GetFixedCommissionAmounts(), Times.Exactly(5));
-            }
-
-            [Fact]
-            public async Task ShouldNotCallTheServiceIfCacheIsAlreadyPopulated()
-            {
-                this.GivenServiceReturnsData();
-                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetFixedCommissionAmounts());
-                this.inventoryService.Verify(x => x.GetFixedCommissionAmounts(), Times.Once());
-            }
-
-            private void ThenFixedCommissionAmountCacheIsCleared()
-            {
-                this.appCache.Get<List<FixedCommissionAmount>>("IInventoryService.GetFixedCommissionAmounts")
-                    .Should()
-                    .BeNull();
+                await action();
             }
         }
 
@@ -130,16 +66,16 @@ namespace Mandarin.Services.Tests.Decorators
             public async Task ShouldAttemptToPopulateTheCacheIfAnExceptionOccurredPreviously()
             {
                 this.GivenServiceThrowsException();
-                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetInventory());
-                this.inventoryService.Verify(x => x.GetInventory(), Times.Exactly(5));
+                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetAllProductsAsync());
+                this.inventoryService.Verify(x => x.GetAllProductsAsync(), Times.Exactly(5));
             }
 
             [Fact]
             public async Task ShouldNotCallTheServiceIfCacheIsAlreadyPopulated()
             {
                 this.GivenServiceReturnsData();
-                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetInventory());
-                this.inventoryService.Verify(x => x.GetInventory(), Times.Once());
+                await this.WhenServiceIsCalledMultipleTimes(5, () => this.Subject.GetAllProductsAsync());
+                this.inventoryService.Verify(x => x.GetAllProductsAsync(), Times.Once());
             }
         }
     }

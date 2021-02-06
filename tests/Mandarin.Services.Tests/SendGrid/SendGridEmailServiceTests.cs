@@ -8,7 +8,7 @@ using Bashi.Tests.Framework.Logging;
 using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
-using Mandarin.Services.SendGrid;
+using Mandarin.Services.Emails;
 using Microsoft.Extensions.Options;
 using Moq;
 using SendGrid;

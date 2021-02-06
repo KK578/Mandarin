@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using LazyCache;
 using LazyCache.Providers;
-using Mandarin.Services.Decorators;
+using Mandarin.Services.Common;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;

@@ -1,9 +1,8 @@
 ﻿@page "/inventory/fixed-commission-amounts"
-@using System.Reactive.Linq
-@using System.Reactive.Threading.Tasks
-@using Mandarin.Commissions
 @using Mandarin.Inventory
-@inject IInventoryService InventoryService;
+@using System.Reactive.Linq
+@inject IProductService ProductService;
+@inject IFixedCommissionService FixedCommissionService;
 
 <Card>
   <CardHeader>
@@ -94,36 +93,36 @@
   private Modal modalRef;
   private EventCallback modalConfirm;
   private IList<FixedCommissionRowModel> fixedCommissionAmountViewModels = new List<FixedCommissionRowModel>();
-  private IList<Product> products = new List<Product>();
+  private IReadOnlyList<Product> products = new List<Product>();
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
 
-    var fixedCommissionAmounts = await InventoryService.GetFixedCommissionAmounts().ToList();
+    var fixedCommissionAmounts = await FixedCommissionService.GetFixedCommissionAsync();
     fixedCommissionAmountViewModels = fixedCommissionAmounts
       .Select(x => new FixedCommissionRowModel { ProductCode = x.ProductCode, Amount = x.Amount })
       .ToList()
       .AsReadOnly();
-    products = await InventoryService.GetInventory().ToList().ToTask();
+    products = await ProductService.GetAllProductsAsync();
   }
 
   private Task AddNewCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
     var insert = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
-    return InventoryService.AddFixedCommissionAmount(insert);
+    return FixedCommissionService.SaveFixedCommissionAsync(insert);
   }
 
   private Task UpdateFixedCommission(SavedRowItem<FixedCommissionRowModel, Dictionary<string, object>> model)
   {
     var update = new FixedCommissionAmount(model.Item.ProductCode, model.Item.Amount);
-    return InventoryService.UpdateFixedCommissionAmount(update);
+    return FixedCommissionService.SaveFixedCommissionAsync(update);
   }
 
   private Task DeleteCommission(FixedCommissionRowModel arg)
   {
-    return InventoryService.DeleteFixedCommissionAmount(arg.ProductCode);
+    return FixedCommissionService.DeleteFixedCommissionAsync(arg.ProductCode);
   }
 
   private void ShowModal(CommandContext<FixedCommissionRowModel> commandContext)

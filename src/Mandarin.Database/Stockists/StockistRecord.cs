@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Mandarin.Database.Commissions;
 
 namespace Mandarin.Database.Stockists
@@ -18,6 +17,6 @@ namespace Mandarin.Database.Stockists
         public string stockist_status { get; init; }
 
         public StockistDetailRecord Details { get; init; }
-        public IReadOnlyList<CommissionRecord> Commissions { get; init; }
+        public CommissionRecord Commission { get; init; }
     }
 }

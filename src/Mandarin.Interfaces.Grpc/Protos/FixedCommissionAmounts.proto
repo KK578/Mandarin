@@ -1,0 +1,51 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Mandarin.Api.Inventory";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.inventory";
+
+package uk.co.thelittlemandarin;
+
+// The product service definition.
+service FixedCommissions {
+  rpc GetAllFixedCommissions (GetAllFixedCommissionsRequest) returns (GetAllFixedCommissionsResponse);
+  rpc GetFixedCommission (GetFixedCommissionRequest) returns (GetFixedCommissionResponse);
+  rpc SaveFixedCommission (SaveFixedCommissionRequest) returns (SaveFixedCommissionResponse);
+  rpc DeleteFixedCommission (DeleteFixedCommissionRequest) returns (DeleteFixedCommissionResponse);
+}
+
+message GetAllFixedCommissionsRequest {
+}
+
+message GetAllFixedCommissionsResponse {
+  repeated FixedCommissionAmount fixedCommissions = 1;
+}
+
+message GetFixedCommissionRequest {
+  string productCode = 1;
+}
+
+message GetFixedCommissionResponse {
+  FixedCommissionAmount fixedCommission = 1;
+}
+
+message SaveFixedCommissionRequest {
+  FixedCommissionAmount fixedCommission = 1;
+}
+
+message SaveFixedCommissionResponse {
+}
+
+message DeleteFixedCommissionRequest {
+  string productCode = 1;
+}
+
+message DeleteFixedCommissionResponse {
+}
+
+
+message FixedCommissionAmount {
+  string productCode = 1;
+  google.protobuf.DoubleValue amount = 2;
+}
