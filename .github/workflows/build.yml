@@ -76,6 +76,8 @@ jobs:
 
       - name: "[Test] Run Tests"
         run: dotnet test --no-build --configuration Release
+        env:
+          Square__ApiKey: ${{ secrets.SQUARE__APIKEY }}
 
       - name: "[Deploy] Publish build"
         run: |
