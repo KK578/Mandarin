@@ -26,6 +26,14 @@ namespace Mandarin.App
         /// <returns>A <see cref="Task"/> representing the application running state.</returns>
         public static Task Main(string[] args)
         {
+            // Default settings HttpClientHandler creates a new Activity anytime a request is made.
+            // The resulting activity is then attached to outbound requests with DistributedTracingData set.
+            // The traceparent header set at the time will then configure Elastic APM on the server side to NOT record the trace.
+            // Can't find the settings to change it to enable tracing, so in the meantime, we're configuring the hidden flag
+            //  so that HttpClientHandler will not attach the traceparent onto the HttpClient call.
+            // Hopefully in the future, this can be replaced by some sort of Elastic APM variant to show interactions from a single page application.
+            AppContext.SetSwitch("System.Net.Http.EnableActivityPropagation", false);
+
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
