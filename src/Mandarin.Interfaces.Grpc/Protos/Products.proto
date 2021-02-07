@@ -33,8 +33,8 @@ message GetProductResponse {
 
 message Product {
   string squareId = 1;
-  string productCode = 2;
+  google.protobuf.StringValue productCode = 2;
   string productName = 3;
-  string description = 4;
+  google.protobuf.StringValue description = 4;
   google.protobuf.DoubleValue unitPrice = 5;
 }
