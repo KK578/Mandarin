@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using AutoMapper;
 using Blazorise;
@@ -26,6 +27,9 @@ namespace Mandarin.App
         /// <returns>A <see cref="Task"/> representing the application running state.</returns>
         public static Task Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
+
             // Default settings HttpClientHandler creates a new Activity anytime a request is made.
             // The resulting activity is then attached to outbound requests with DistributedTracingData set.
             // The traceparent header set at the time will then configure Elastic APM on the server side to NOT record the trace.
