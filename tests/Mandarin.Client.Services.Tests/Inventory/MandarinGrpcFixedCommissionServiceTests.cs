@@ -40,8 +40,10 @@ namespace Mandarin.Client.Services.Tests.Inventory
         {
             await this.Subject.DeleteFixedCommissionAsync("KT20-001F");
 
-            await this.Subject.Invoking(x => x.GetFixedCommissionAsync("KT20-001F")).Should().ThrowAsync<RpcException>();
-            await this.Subject.Awaiting(x => x.GetFixedCommissionAsync("KT20-002F")).Should().NotThrowAsync();
+            var deletedCommission = await this.Subject.GetFixedCommissionAsync("KT20-001F");
+            deletedCommission.Should().BeNull();
+            var existingCommission = await this.Subject.GetFixedCommissionAsync("KT20-002F");
+            existingCommission.Should().NotBeNull();
         }
     }
 }
