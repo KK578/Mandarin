@@ -9,6 +9,11 @@ namespace Mandarin.Configuration
     public sealed class MandarinConfiguration
     {
         /// <summary>
+        /// Gets or sets the schema for the Authorization header.
+        /// </summary>
+        public string AuthenticationHeaderScheme { get; set; }
+
+        /// <summary>
         /// Gets or sets the directory path to the fixed commission amount JSON file.
         /// </summary>
         public string FixedCommissionAmountFilePath { get; set; }

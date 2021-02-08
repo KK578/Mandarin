@@ -7,7 +7,7 @@ namespace Mandarin.Tests.Helpers.Auth
     {
         public ValueTask<AccessTokenResult> RequestAccessToken()
         {
-            var token = new AccessToken { Value = "AuthorizedToken" };
+            var token = new AccessToken { Value = TestAuthHandler.AuthorizedToken.Parameter };
             var result = new AccessTokenResult(AccessTokenResultStatus.Success, token, null);
             return ValueTask.FromResult(result);
         }

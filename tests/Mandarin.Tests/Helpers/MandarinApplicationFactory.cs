@@ -34,6 +34,7 @@ namespace Mandarin.Tests.Helpers
 
         protected virtual void ConfigureTestServices(IServiceCollection services)
         {
+            // For detecting assemblies with Database migration scripts.
             services.AddSingleton(this.GetType().Assembly);
         }
 
