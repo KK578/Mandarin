@@ -50,7 +50,7 @@ namespace Mandarin.Database.Common
                 using var db = this.mandarinDbContext.GetConnection();
                 var record = await recordFunc(db);
                 var value = this.mapper.Map<TDomain>(record);
-                this.logger.LogInformation($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
+                this.logger.LogTrace($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
                 return value;
             }
             catch (Exception ex)
@@ -73,7 +73,7 @@ namespace Mandarin.Database.Common
                 using var db = this.mandarinDbContext.GetConnection();
                 var records = await this.GetAllRecords(db);
                 var values = this.mapper.Map<List<TDomain>>(records).AsReadOnly();
-                this.logger.LogInformation($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
+                this.logger.LogTrace($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
                 return values;
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace Mandarin.Database.Common
                 using var db = this.mandarinDbContext.GetConnection();
                 var newRecord = await this.UpsertRecordAsync(db, record);
                 var newValue = this.mapper.Map<TDomain>(newRecord);
-                this.logger.LogInformation($"Successfully saved {this.typeName} entry for Key={{Key}}.", key);
+                this.logger.LogTrace($"Successfully saved {this.typeName} entry for Key={{Key}}.", key);
                 return newValue;
             }
             catch (Exception ex)
