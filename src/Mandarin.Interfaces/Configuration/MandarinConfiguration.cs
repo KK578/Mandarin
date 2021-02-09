@@ -26,6 +26,6 @@ namespace Mandarin.Configuration
         /// <summary>
         /// Gets or sets the list of all available <see cref="RecordOfSalesMessageTemplate"/>s.
         /// </summary>
-        public List<RecordOfSalesMessageTemplate> Templates { get; set; } = new();
+        public List<RecordOfSalesMessageTemplate> RecordOfSaleMessageTemplates { get; set; } = new();
     }
 }

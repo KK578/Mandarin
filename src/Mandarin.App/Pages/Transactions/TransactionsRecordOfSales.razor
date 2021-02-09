@@ -99,7 +99,7 @@
                   <Dropdown RightAligned="true">
                     <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
                     <DropdownMenu>
-                      @foreach (var template in Configuration.Value.Templates)
+                      @foreach (var template in Configuration.Value.RecordOfSaleMessageTemplates)
                       {
                         <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplateAsync(template))">@(template.Name)</DropdownItem>
                       }
