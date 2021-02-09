@@ -43,7 +43,7 @@ message RecordOfSales {
   string stockistCode = 1; // Gets the artist's stockist code.
   string firstName = 2; // Gets the artist's first name.
   string name = 3; // Gets the artist's name.
-  string emailAddress = 4; // Gets the email address to send the Record of Sales to.
+  google.protobuf.StringValue emailAddress = 4; // Gets the email address to send the Record of Sales to.
   string customMessage = 5; // Gets the custom message to attach to the Record of Sales.
   google.protobuf.Timestamp startDate = 6; // Gets the start date of transactions included in the Record of Sales.
   google.protobuf.Timestamp endDate = 7; // Gets the end date of transactions included in the Record of Sales.

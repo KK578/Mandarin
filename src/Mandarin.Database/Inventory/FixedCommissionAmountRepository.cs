@@ -52,7 +52,7 @@ namespace Mandarin.Database.Inventory
                             db =>
                             {
                                 var parameters = new { product_code = productCode };
-                                return db.QueryFirstAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetCommissionByProductCodeSql, parameters);
+                                return db.QueryFirstOrDefaultAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetCommissionByProductCodeSql, parameters);
                             });
         }
 

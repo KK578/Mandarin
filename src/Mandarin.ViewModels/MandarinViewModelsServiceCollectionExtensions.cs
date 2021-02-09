@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using Mandarin.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.ViewModels
 {
@@ -20,21 +14,8 @@ namespace Mandarin.ViewModels
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
-            services.AddTransient<IViewModelFactory, ViewModelFactory>();
-
-            services.AddTransient(MandarinViewModelsServiceCollectionExtensions.CreatePageContentModel);
-
+            services.AddScoped<IViewModelFactory, ViewModelFactory>();
             return services;
-        }
-
-        private static PageContentModel CreatePageContentModel(IServiceProvider provider)
-        {
-            var configuration = provider.GetService<IOptions<MandarinConfiguration>>();
-            using var fileStream = File.OpenRead(configuration.Value.PageContentFilePath);
-            using var streamReader = new StreamReader(fileStream);
-            using var jsonReader = new JsonTextReader(streamReader);
-            var token = JToken.Load(jsonReader);
-            return new PageContentModel(token);
         }
     }
 }

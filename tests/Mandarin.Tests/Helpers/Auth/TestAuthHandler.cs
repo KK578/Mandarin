@@ -9,9 +9,9 @@ using Microsoft.Extensions.Options;
 
 namespace Mandarin.Tests.Helpers.Auth
 {
-    internal class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        public const string AuthenticationScheme = "Bearer";
+        public const string AuthenticationScheme = "Test";
 
         public static readonly AuthenticationHeaderValue AuthorizedToken = new(TestAuthHandler.AuthenticationScheme, "AuthorizedToken");
 

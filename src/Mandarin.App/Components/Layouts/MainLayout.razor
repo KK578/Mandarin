@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
 
 <Layout Sider="true">
   <LayoutSider>
@@ -7,7 +9,17 @@
       <Bar Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" ThemeContrast="ThemeContrast.Dark">
         <BarBrand>
           <BarItem>
-            <BarLink To="/"><BarIcon IconName="IconName.Home" />@Message!</BarLink>
+            <AuthorizeView>
+              <Authorized>
+                <BarLink To="/"><BarIcon IconName="IconName.Home" />Hello, @(context.User.Identity?.Name)!</BarLink>
+              </Authorized>
+              <Authorizing>
+                <BarLink To="/">Checking Login...</BarLink>
+              </Authorizing>
+              <NotAuthorized>
+                <BarLink Clicked="OnLogin"><BarIcon IconName="IconName.Lock" />Login</BarLink>
+              </NotAuthorized>
+            </AuthorizeView>
           </BarItem>
         </BarBrand>
 
@@ -31,18 +43,7 @@
               <BarDropdown>
                 <BarDropdownToggle><BarIcon IconName="IconName.DollarSign" />Payments</BarDropdownToggle>
                 <BarDropdownMenu>
-                  <BarDropdownItem To="/transactions">Transactions</BarDropdownItem>
                   <BarDropdownItem To="/transactions/record-of-sales">Records of Sales</BarDropdownItem>
-                  <BarDropdownItem To="/transactions/packaging">Packaging Preparation</BarDropdownItem>
-                </BarDropdownMenu>
-              </BarDropdown>
-            </BarItem>
-
-            <BarItem>
-              <BarDropdown>
-                <BarDropdownToggle><BarIcon IconName="IconName.Wrench" />Maintenance</BarDropdownToggle>
-                <BarDropdownMenu>
-                  <BarDropdownItem To="/maintenance/cache">Inspect Caches</BarDropdownItem>
                 </BarDropdownMenu>
               </BarDropdown>
             </BarItem>
@@ -50,7 +51,11 @@
 
           <BarEnd>
             <BarItem>
-              <BarLink To="/logout"><BarIcon IconName="IconName.Unlock" />Logout</BarLink>
+              <AuthorizeView>
+                <Authorized>
+                  <BarLink Clicked="@OnLogOut"><BarIcon IconName="IconName.Unlock" />Logout</BarLink>
+                </Authorized>
+              </AuthorizeView>
             </BarItem>
           </BarEnd>
         </BarMenu>
@@ -59,22 +64,23 @@
   </LayoutSider>
   <Layout>
     <LayoutContent>
-      <Container Padding="new FluentPadding().Is3">@Body</Container>
+      <Container Padding="Padding.Is3">@Body</Container>
     </LayoutContent>
   </Layout>
 </Layout>
 
 @code
 {
-  /// <summary>
-  /// Gets the message to display in the top corner.
-  /// </summary>
-  public string Message { get; set; }
 
-  /// <inheritdoc />
-  protected override async Task OnInitializedAsync()
+  private void OnLogin()
   {
-    var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    Message = state.User.Identity.IsAuthenticated ? $"Hello, {state.User.Identity.Name}" : "Login Please!";
+    Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
   }
+
+  private async Task OnLogOut()
+  {
+    await SignOutManager.SetSignOutState();
+    Navigation.NavigateTo("authentication/logout");
+  }
+
 }

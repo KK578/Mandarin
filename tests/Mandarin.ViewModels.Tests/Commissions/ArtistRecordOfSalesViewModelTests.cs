@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.ViewModels.Commissions;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -17,25 +18,25 @@ namespace Mandarin.ViewModels.Tests.Commissions
         private const string CurrentUserName = "Fred";
 
         private readonly Mock<IEmailService> emailService;
-        private readonly PageContentModel pageContentModel;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly Mock<AuthenticationStateProvider> authenticationStateProvider;
 
         private readonly RecordOfSales recordOfSales;
 
         protected ArtistRecordOfSalesViewModelTests()
         {
-            var data = new { Admin = new { RecordOfSales = new { Templates = new { Sales = "For {0} there are sales. {1}" } } } };
-
             this.emailService = new Mock<IEmailService>();
-            this.pageContentModel = new PageContentModel(JToken.FromObject(data));
-            this.httpContextAccessor = Mock.Of<IHttpContextAccessor>(x => x.HttpContext.User.Identity.Name == ArtistRecordOfSalesViewModelTests.CurrentUserName);
+
+            var claims = new[] { new Claim(ClaimTypes.Name, ArtistRecordOfSalesViewModelTests.CurrentUserName) };
+            var identity = new ClaimsIdentity(claims, "MandarinTestIdentity");
+            var principal = new ClaimsPrincipal(identity);
+            this.authenticationStateProvider = new Mock<AuthenticationStateProvider>();
+            this.authenticationStateProvider.Setup(x => x.GetAuthenticationStateAsync()).ReturnsAsync(new AuthenticationState(principal));
             this.recordOfSales = TestData.Create<RecordOfSales>();
         }
 
         private IArtistRecordOfSalesViewModel Subject =>
             new ArtistRecordOfSalesViewModel(this.emailService.Object,
-                                             this.pageContentModel,
-                                             this.httpContextAccessor,
+                                             this.authenticationStateProvider.Object,
                                              this.recordOfSales);
 
         public class GeneralTests : ArtistRecordOfSalesViewModelTests
@@ -76,7 +77,7 @@ namespace Mandarin.ViewModels.Tests.Commissions
             [Fact]
             public void ShouldReturnStatusToNullIfPreviouslyIgnored()
             {
-                var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, null, TestData.Create<RecordOfSales>());
+                var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, TestData.Create<RecordOfSales>());
                 subject.ToggleSentFlag();
                 subject.ToggleSentFlag();
 
@@ -119,10 +120,16 @@ namespace Mandarin.ViewModels.Tests.Commissions
         public class SetMessageFromTemplateTests : ArtistRecordOfSalesViewModelTests
         {
             [Fact]
-            public void ShouldSetTheCustomMessageToFormattedTemplateString()
+            public async Task ShouldSetTheCustomMessageToFormattedTemplateString()
             {
                 var subject = this.Subject;
-                subject.SetMessageFromTemplate(RecordOfSalesTemplateKey.Sales);
+                var template = new RecordOfSalesMessageTemplate
+                {
+                    Name = "Sales",
+                    TemplateFormat = "For {0} there are sales. {1}",
+                };
+
+                await subject.SetMessageFromTemplateAsync(template);
 
                 subject.CustomMessage.Should().Be($"For {this.recordOfSales.FirstName} there are sales. {ArtistRecordOfSalesViewModelTests.CurrentUserName}");
             }

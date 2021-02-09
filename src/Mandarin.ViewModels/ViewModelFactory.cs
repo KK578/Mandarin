@@ -1,7 +1,7 @@
 ﻿using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.ViewModels.Commissions;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Mandarin.ViewModels
 {
@@ -9,26 +9,23 @@ namespace Mandarin.ViewModels
     internal sealed class ViewModelFactory : IViewModelFactory
     {
         private readonly IEmailService emailService;
-        private readonly PageContentModel pageContentModel;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly AuthenticationStateProvider authenticationStateProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewModelFactory"/> class.
         /// </summary>
         /// <param name="emailService">The application service for sending emails.</param>
-        /// <param name="pageContentModel">The website content model.</param>
-        /// <param name="httpContextAccessor">The HttpContext accessor.</param>
-        public ViewModelFactory(IEmailService emailService, PageContentModel pageContentModel, IHttpContextAccessor httpContextAccessor)
+        /// <param name="authenticationStateProvider">The service which provides access to the current authentication state..</param>
+        public ViewModelFactory(IEmailService emailService, AuthenticationStateProvider authenticationStateProvider)
         {
             this.emailService = emailService;
-            this.pageContentModel = pageContentModel;
-            this.httpContextAccessor = httpContextAccessor;
+            this.authenticationStateProvider = authenticationStateProvider;
         }
 
         /// <inheritdoc/>
         public IArtistRecordOfSalesViewModel CreateArtistRecordOfSalesViewModel(RecordOfSales recordOfSales)
         {
-            return new ArtistRecordOfSalesViewModel(this.emailService, this.pageContentModel, this.httpContextAccessor, recordOfSales);
+            return new ArtistRecordOfSalesViewModel(this.emailService, this.authenticationStateProvider, recordOfSales);
         }
     }
 }

@@ -7,13 +7,9 @@
     <CardTitle>Show Square Inventory</CardTitle>
   </CardHeader>
   <CardBody>
-    @if (Data == null || Data.Count == 0)
+    @if (Data == null)
     {
-      <Progress Size="Size.Medium">
-        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(Data == null ? Background.Primary : Background.Danger)">
-          @(Data == null ? "Fetching inventory..." : "No inventory data received.")
-        </ProgressBar>
-      </Progress>
+      <MandarinProgressBar>Fetching inventory...</MandarinProgressBar>
     }
     else
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Grpc.Core;
 using Grpc.Net.Client.Web;
 using Mandarin.Client.Services.Authentication;
 using Mandarin.Client.Services.Commissions;
@@ -58,12 +59,13 @@ namespace Mandarin.Client.Services
             services.AddTransient<IEmailService, MandarinGrpcEmailService>();
             services.AddTransient<IFixedCommissionService, MandarinGrpcFixedCommissionService>();
             services.AddTransient<IQueryableProductService, MandarinGrpcProductService>();
+            services.AddTransient<IProductService>(s => s.GetService<IQueryableProductService>());
             services.AddTransient<IStockistService, MandarinStockistGrpcService>();
 
             return services;
 
             void AddMandarinGrpcClient<T>()
-                where T : class
+                where T : ClientBase
             {
                 services.AddGrpcClient<T>(options => { options.Address = baseAddress; })
                         .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText, handlerFunc()))

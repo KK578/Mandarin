@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Mandarin.Configuration;
 using Mandarin.Grpc.Converters;
 using Mandarin.Tests.Helpers;
 using Mandarin.Tests.Helpers.Auth;
@@ -19,6 +20,7 @@ namespace Mandarin.Client.Services.Tests
             var handler = server.CreateHandler();
 
             var services = new ServiceCollection();
+            services.Configure<MandarinConfiguration>(x => x.AuthenticationHeaderScheme = TestAuthHandler.AuthenticationScheme);
             services.AddMandarinClientServices(server.BaseAddress, () => handler);
             services.AddSingleton<IAccessTokenProvider, TestAuthAccessTokenProvider>();
             services.AddAutoMapper(options => { options.AddProfile<MandarinGrpcMapperProfile>(); });

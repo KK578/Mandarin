@@ -12,13 +12,9 @@
     </CardActions>
   </CardHeader>
   <CardBody>
-    @if (data == null || data.Count == 0)
+    @if (data == null)
     {
-      <Progress Size="Size.Medium">
-        <ProgressBar Striped="true" Animated="true" Min="0" Max="100" Value="100" Background="@(data == null ? Background.Primary : Background.Danger)">
-          @(data == null ? "Fetching artists..." : "No artist data received.")
-        </ProgressBar>
-      </Progress>
+      <MandarinProgressBar>Fetching artists...</MandarinProgressBar>
     }
     else
     {

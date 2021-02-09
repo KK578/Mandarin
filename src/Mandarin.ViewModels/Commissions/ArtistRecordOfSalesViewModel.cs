@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Mandarin.Commissions;
 using Mandarin.Emails;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Mandarin.ViewModels.Commissions
 {
@@ -10,8 +10,7 @@ namespace Mandarin.ViewModels.Commissions
     internal class ArtistRecordOfSalesViewModel : ViewModelBase, IArtistRecordOfSalesViewModel
     {
         private readonly IEmailService emailService;
-        private readonly PageContentModel pageContentModel;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly AuthenticationStateProvider authenticationStateProvider;
 
         private bool sendInProgress;
         private bool sendSuccessful;
@@ -23,14 +22,12 @@ namespace Mandarin.ViewModels.Commissions
         /// Initializes a new instance of the <see cref="ArtistRecordOfSalesViewModel"/> class.
         /// </summary>
         /// <param name="emailService">The application service for sending emails.</param>
-        /// <param name="pageContentModel">The website content model.</param>
-        /// <param name="httpContextAccessor">The http context accessor.</param>
+        /// <param name="authenticationStateProvider">The service which provides access to the current authentication state..</param>
         /// <param name="recordOfSales">The artist commission breakdown.</param>
-        public ArtistRecordOfSalesViewModel(IEmailService emailService, PageContentModel pageContentModel, IHttpContextAccessor httpContextAccessor, RecordOfSales recordOfSales)
+        public ArtistRecordOfSalesViewModel(IEmailService emailService, AuthenticationStateProvider authenticationStateProvider, RecordOfSales recordOfSales)
         {
             this.emailService = emailService;
-            this.pageContentModel = pageContentModel;
-            this.httpContextAccessor = httpContextAccessor;
+            this.authenticationStateProvider = authenticationStateProvider;
             this.RecordOfSales = recordOfSales;
         }
 
@@ -53,11 +50,11 @@ namespace Mandarin.ViewModels.Commissions
         public string CustomMessage { get => this.customMessage; set => this.RaiseAndSetPropertyChanged(ref this.customMessage, value); }
 
         /// <inheritdoc/>
-        public void SetMessageFromTemplate(RecordOfSalesTemplateKey templateKey)
+        public async Task SetMessageFromTemplateAsync(RecordOfSalesMessageTemplate template)
         {
-            var name = this.httpContextAccessor.HttpContext.User.Identity.Name;
-            var templateFormat = this.pageContentModel.Get<string>("Admin", "RecordOfSales", "Templates", templateKey.ToString());
-            this.CustomMessage = string.Format(templateFormat, this.RecordOfSales.FirstName ?? this.RecordOfSales.Name, name);
+            var authenticationState = await this.authenticationStateProvider.GetAuthenticationStateAsync();
+            var name = authenticationState?.User?.Identity?.Name;
+            this.CustomMessage = string.Format(template.TemplateFormat, this.RecordOfSales.FirstName ?? this.RecordOfSales.Name, name);
         }
 
         /// <inheritdoc/>
