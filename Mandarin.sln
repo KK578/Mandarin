@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D4D802A2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Client.Services.Tests", "tests\Mandarin.Client.Services.Tests\Mandarin.Client.Services.Tests.csproj", "{32959544-86EB-4B0C-AB2E-8AD54B1FBBD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.App", "src\Mandarin.App\Mandarin.App.csproj", "{3EF913C7-F1AA-4D48-98C6-A50B2FAE8AE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Client", "src\Mandarin.Client\Mandarin.Client.csproj", "{3EF913C7-F1AA-4D48-98C6-A50B2FAE8AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

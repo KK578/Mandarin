@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mandarin.App
+namespace Mandarin.Client
 {
     /// <summary>
     /// Application entrypoint for Mandarin WebAssembly App.
