@@ -3,12 +3,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
+using Mandarin.Client.ViewModels.Commissions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
-using Mandarin.Client.ViewModels.Commissions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Commissions
