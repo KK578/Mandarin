@@ -5,13 +5,13 @@ using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
-using Mandarin.ViewModels.Commissions;
+using Mandarin.Client.ViewModels.Commissions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Mandarin.ViewModels.Tests.Commissions
+namespace Mandarin.Client.ViewModels.Tests.Commissions
 {
     public class ArtistRecordOfSalesViewModelTests
     {

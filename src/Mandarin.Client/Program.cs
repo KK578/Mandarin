@@ -8,7 +8,7 @@ using Blazorise.Icons.FontAwesome;
 using Mandarin.Client.Services;
 using Mandarin.Configuration;
 using Mandarin.Grpc.Converters;
-using Mandarin.ViewModels;
+using Mandarin.Client.ViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
 using Xunit;
 
-namespace Mandarin.ViewModels.Tests
+namespace Mandarin.Client.ViewModels.Tests
 {
     public class ViewModelFactoryTests
     {

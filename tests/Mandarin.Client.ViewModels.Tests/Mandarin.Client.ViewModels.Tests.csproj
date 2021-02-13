@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Mandarin.ViewModels\Mandarin.ViewModels.csproj" />
+    <ProjectReference Include="..\..\src\Mandarin.Client.ViewModels\Mandarin.Client.ViewModels.csproj" />
     <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
   </ItemGroup>
 

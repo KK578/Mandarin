@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
+using Mandarin.ViewModels;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.Client.ViewModels
 {
     /// <summary>
     /// Implements the basic functionality for all <see cref="IViewModel"/> classes.

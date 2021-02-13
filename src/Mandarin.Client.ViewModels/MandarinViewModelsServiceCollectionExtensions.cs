@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Mandarin.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.Client.ViewModels
 {
     /// <summary>
     /// Extensions to <see cref="IServiceCollection"/> to register all services in this assembly.
