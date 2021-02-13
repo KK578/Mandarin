@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.Client.ViewModels
 {
     /// <summary>
     /// Represents that the user can be notified of PropertyChange events.

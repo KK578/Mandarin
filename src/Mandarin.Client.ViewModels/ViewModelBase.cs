@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
-using Mandarin.ViewModels;
 
 namespace Mandarin.Client.ViewModels
 {

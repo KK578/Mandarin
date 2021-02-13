@@ -1,7 +1,6 @@
 ﻿using Mandarin.Client.ViewModels.Commissions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
-using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Mandarin.Client.ViewModels

@@ -1,6 +1,7 @@
-﻿using Mandarin.Commissions;
+﻿using Mandarin.Client.ViewModels.Commissions;
+using Mandarin.Commissions;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.Client.ViewModels
 {
     /// <summary>
     /// Provides the ability to create various ViewModels.

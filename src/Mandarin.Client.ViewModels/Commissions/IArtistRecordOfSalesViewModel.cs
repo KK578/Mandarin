@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Mandarin.ViewModels;
+using Mandarin.Commissions;
 
-namespace Mandarin.Commissions
+namespace Mandarin.Client.ViewModels.Commissions
 {
     /// <summary>
     /// Represents the component content for an artist's own record of sales (commission breakdown).

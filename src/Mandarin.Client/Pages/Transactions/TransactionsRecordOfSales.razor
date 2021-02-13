@@ -1,8 +1,9 @@
 ﻿@page "/transactions/record-of-sales"
 @using Mandarin.Commissions
 @using Mandarin.Configuration
-@using Mandarin.ViewModels
 @using Microsoft.Extensions.Options
+@using Mandarin.Client.ViewModels.Commissions
+@using Mandarin.Client.ViewModels
 @inject IOptions<MandarinConfiguration> configuration;
 @inject ICommissionService commissionService;
 @inject IViewModelFactory viewModelFactory;
