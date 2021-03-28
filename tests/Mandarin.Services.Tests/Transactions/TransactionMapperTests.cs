@@ -111,7 +111,7 @@ namespace Mandarin.Services.Tests.Transactions
         public class MapToTransactionTests : TransactionMapperTests
         {
             [Fact]
-            public async Task MapToTransaction_GivenOrderWithLineItems_ShouldMapCorrectly()
+            public async Task ShouldConvertLineItemsToATransaction()
             {
                 var product = TestData.Create<Product>();
                 this.GivenInventoryServiceSetUpWithProduct(product);
@@ -127,7 +127,7 @@ namespace Mandarin.Services.Tests.Transactions
             }
 
             [Fact]
-            public async Task MapToTransaction_GivenOrderWithLineItems_WhenConfigurationMapsProduct_ShouldMapCorrectly()
+            public async Task ShouldPrioritiseProductMappingsIfApplicationToAProduct()
             {
                 var product = TestData.Create<Product>();
                 var mappedProduct = TestData.Create<Product>();
@@ -141,7 +141,7 @@ namespace Mandarin.Services.Tests.Transactions
             }
 
             [Fact]
-            public async Task MapToTransaction_GivenOrderWithFixedCommission_ShouldMapCorrectly()
+            public async Task ShouldIncludeTheFixedCommissionAmountsAsATransaction()
             {
                 var product = TestData.Create<Product>();
                 var fixedCommission = new FixedCommissionAmount(product.ProductCode, 1.00m);
@@ -164,7 +164,7 @@ namespace Mandarin.Services.Tests.Transactions
             }
 
             [Fact]
-            public async Task MapToTransaction_GivenOrderWithDiscount_ShouldMapCorrectly()
+            public async Task ShouldMapDiscountsToATransaction()
             {
                 var product = TestData.Create<Product>();
                 this.GivenInventoryServiceSetUpWithProduct(product);
@@ -179,7 +179,7 @@ namespace Mandarin.Services.Tests.Transactions
             }
 
             [Fact]
-            public async Task MapToTransaction_GivenOrderWithReturn_ShouldMapCorrectly()
+            public async Task ShouldConvertReturnsToTransactions()
             {
                 var product = TestData.Create<Product>();
                 this.GivenInventoryServiceSetUpWithProduct(product);
@@ -191,6 +191,45 @@ namespace Mandarin.Services.Tests.Transactions
                 transactions[0].Subtransactions[0].Quantity.Should().Be(-3);
                 transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(-15.00m);
+            }
+
+            [Fact]
+            public async Task ShouldIncludeDeliveryFeesAsAnItem()
+            {
+                var product = new Product("CatalogId", "HC20W-003", "The Trickster", TestData.NextString(), 11.00m);
+                this.GivenInventoryServiceSetUpWithProduct(product);
+                var order = new Order.Builder("Location")
+                            .LineItems(new List<OrderLineItem>
+                            {
+                                new OrderLineItem.Builder("1")
+                                    .CatalogObjectId("CatalogId")
+                                    .Name("[HC20W-003] The Trickster")
+                                    .BasePriceMoney(new Money(1100, "GBP"))
+                                    .TotalMoney(new Money(1100, "GBP"))
+                                    .Build(),
+                            })
+                            .ServiceCharges(new List<OrderServiceCharge>
+                            {
+                                new OrderServiceCharge.Builder()
+                                    .Name("Shipping")
+                                    .AmountMoney(new Money(500, "GBP"))
+                                    .TotalMoney(new Money(500, "GBP"))
+                                    .Build(),
+                            })
+                            .CreatedAt(this.orderDate.ToString("O"))
+                            .TotalMoney(new Money(1600, "GBP"))
+                            .Build();
+
+                var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
+                transactions.Should().HaveCount(1);
+                transactions[0].TotalAmount.Should().Be(16.00m);
+                transactions[0].Subtransactions.Should().HaveCount(2);
+                transactions[0].Subtransactions[0].Quantity.Should().Be(1);
+                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(11.00m);
+                transactions[0].Subtransactions[0].Subtotal.Should().Be(11.00m);
+                transactions[0].Subtransactions[1].Quantity.Should().Be(500);
+                transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(0.01m);
+                transactions[0].Subtransactions[1].Subtotal.Should().Be(5.00m);
             }
         }
     }
