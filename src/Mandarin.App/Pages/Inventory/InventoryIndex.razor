@@ -1,6 +1,6 @@
 ﻿@page "/inventory"
 @using Mandarin.Inventory
-@inject IProductService ProductService;
+@inject IProductService productService;
 
 <Card>
   <CardHeader>
@@ -30,7 +30,7 @@
   {
     await base.OnInitializedAsync();
 
-    Data = await ProductService.GetAllProductsAsync();
+    Data = await productService.GetAllProductsAsync();
   }
 
   private IReadOnlyList<Product> Data { get; set; }

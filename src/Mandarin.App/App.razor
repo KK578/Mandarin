@@ -1,4 +1,4 @@
-@inject NavigationManager NavigationManager;
+@inject NavigationManager navigationManager;
 
 <CascadingAuthenticationState>
   <Router AppAssembly="@typeof(Program).Assembly">
@@ -43,8 +43,8 @@
 
   private void NavigateToLogin()
   {
-    var loginUrl = $"authentication/login?returnUrl={Uri.EscapeDataString(this.NavigationManager.Uri)}";
-    NavigationManager.NavigateTo(loginUrl);
+    var loginUrl = $"authentication/login?returnUrl={Uri.EscapeDataString(this.navigationManager.Uri)}";
+    navigationManager.NavigateTo(loginUrl);
   }
 
 }

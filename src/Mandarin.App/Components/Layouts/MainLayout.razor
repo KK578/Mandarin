@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager Navigation
-@inject SignOutSessionStateManager SignOutManager
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigation
+@inject SignOutSessionStateManager signOutManager
 
 <Layout Sider="true">
   <LayoutSider>
@@ -74,13 +74,13 @@
 
   private void OnLogin()
   {
-    Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+    navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(navigation.Uri)}");
   }
 
   private async Task OnLogOut()
   {
-    await SignOutManager.SetSignOutState();
-    Navigation.NavigateTo("authentication/logout");
+    await signOutManager.SetSignOutState();
+    navigation.NavigateTo("authentication/logout");
   }
 
 }

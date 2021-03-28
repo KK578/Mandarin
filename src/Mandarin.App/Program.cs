@@ -56,7 +56,6 @@ namespace Mandarin.App
             });
 
             var host = builder.Build();
-            host.Services.UseBootstrapProviders().UseFontAwesomeIcons();
             return host.RunAsync();
         }
     }

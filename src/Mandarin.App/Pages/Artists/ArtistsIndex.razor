@@ -1,8 +1,8 @@
 ﻿@page "/artists"
 @using Bashi.Core.Extensions
 @using Mandarin.Stockists
-@inject IStockistService StockistService;
-@inject NavigationManager NavigationManager;
+@inject IStockistService stockistService;
+@inject NavigationManager navigationManager;
 
 <Card>
   <CardHeader>
@@ -41,16 +41,16 @@
   {
     await base.OnInitializedAsync();
 
-    data = await StockistService.GetStockistsAsync();
+    data = await stockistService.GetStockistsAsync();
   }
 
   private void OnNewClicked()
   {
-    NavigationManager.NavigateTo("/artists/new");
+    navigationManager.NavigateTo("/artists/new");
   }
 
   private void OnStockistSelected(Stockist selectedStockist)
   {
-    NavigationManager.NavigateTo($"/artists/edit/{selectedStockist.StockistCode}");
+    navigationManager.NavigateTo($"/artists/edit/{selectedStockist.StockistCode}");
   }
 }
