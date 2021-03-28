@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bashi.Core.Extensions;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Logging;
 using Square;
