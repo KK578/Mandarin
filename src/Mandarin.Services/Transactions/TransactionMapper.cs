@@ -55,7 +55,8 @@ namespace Mandarin.Services.Transactions
             var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(orderLineItem => this.CreateSubtransaction(orderLineItem, orderDate));
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
             var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));
-            return Observable.Merge(lineItems, discounts, returns).ToList();
+            var fees = order.ServiceCharges.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromFee);
+            return Observable.Merge(lineItems, discounts, returns, fees).ToList();
         }
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, DateTime orderDate)
@@ -128,6 +129,24 @@ namespace Mandarin.Services.Transactions
                                   var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
                                   return new Subtransaction(product, quantity, subtotal);
                               });
+        }
+
+        private IObservable<Subtransaction> CreateSubtransactionFromFee(OrderServiceCharge serviceCharge)
+        {
+            Product product;
+            if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                product = new Product("TLM-DELIVERY", "TLM-DELIVERY", "Shipping Fees", "Delivery costs charged to customers.", 0.01m);
+            }
+            else
+            {
+                product = new Product("TLM-FEES", "TLM-" + serviceCharge.Name, serviceCharge.Name, "Unknown Fee.", 0.01m);
+            }
+
+            var quantity = serviceCharge.TotalMoney.Amount ?? 0;
+            var amount = decimal.Divide(quantity, 100);
+            var transaction = new Subtransaction(product, (int)quantity, amount);
+            return Observable.Return(transaction);
         }
 
         private async Task<Product> GetProductAsync(string squareId, string name, DateTime orderDate)
