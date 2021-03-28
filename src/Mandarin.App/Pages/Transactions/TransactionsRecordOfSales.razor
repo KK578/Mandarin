@@ -3,9 +3,9 @@
 @using Mandarin.Configuration
 @using Mandarin.ViewModels
 @using Microsoft.Extensions.Options
-@inject IOptions<MandarinConfiguration> Configuration;
-@inject ICommissionService CommissionService;
-@inject IViewModelFactory ViewModelFactory;
+@inject IOptions<MandarinConfiguration> configuration;
+@inject ICommissionService commissionService;
+@inject IViewModelFactory viewModelFactory;
 
 <EditForm EditContext="@DatePickerEditContext">
   <Card Class="mb-4">
@@ -99,7 +99,7 @@
                   <Dropdown RightAligned="true">
                     <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
                     <DropdownMenu>
-                      @foreach (var template in Configuration.Value.RecordOfSaleMessageTemplates)
+                      @foreach (var template in configuration.Value.RecordOfSaleMessageTemplates)
                       {
                         <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplateAsync(template))">@(template.Name)</DropdownItem>
                       }
@@ -168,8 +168,8 @@
     try
     {
       IsLoading = true;
-      var recordOfSales = await CommissionService.GetRecordOfSalesForPeriodAsync(StartDate, EndDate);
-      RecordOfSales = recordOfSales.Select(x => ViewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
+      var recordOfSales = await commissionService.GetRecordOfSalesForPeriodAsync(StartDate, EndDate);
+      RecordOfSales = recordOfSales.Select(x => viewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
     }
     finally
     {

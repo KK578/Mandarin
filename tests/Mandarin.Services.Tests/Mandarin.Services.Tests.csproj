@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bashi.Tests.Framework" Version="2.0.0" />
-    <PackageReference Include="Moq" Version="4.15.2" />
+    <PackageReference Include="Moq" Version="4.16.1" />
   </ItemGroup>
 
   <ItemGroup>
