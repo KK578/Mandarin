@@ -67,9 +67,9 @@ namespace Mandarin.Services.Transactions
                 {
                     var request = builder.Cursor(response?.Cursor).Build();
                     response = await this.squareClient.OrdersApi.SearchOrdersAsync(request, ct);
-                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Order(s).",
-                                               response.Orders.Count);
-                    foreach (var order in response.Orders)
+                    var orders = response.Orders.NullToEmpty().ToList();
+                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Order(s).", orders.Count);
+                    foreach (var order in orders)
                     {
                         o.OnNext(order);
                     }
