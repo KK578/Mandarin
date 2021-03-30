@@ -69,10 +69,11 @@
 </Card>
 
 <Modal @ref="modalRef">
+  <ModalBackdrop />
   <ModalContent IsCentered="true">
     <ModalHeader>
       <ModalTitle>Are you sure you want to delete?</ModalTitle>
-      <CloseButton />
+      <CloseButton Clicked="@HideModal" />
     </ModalHeader>
     <ModalBody>
       <Button Clicked="@HideModal">Cancel</Button>
