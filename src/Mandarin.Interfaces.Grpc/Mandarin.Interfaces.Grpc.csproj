@@ -8,7 +8,7 @@
   <ItemGroup>
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Protobuf Include="Protos/*.proto" CopyToOutputDirectory="PreserveNewest" ProtoRoot="Protos/" />
   </ItemGroup>

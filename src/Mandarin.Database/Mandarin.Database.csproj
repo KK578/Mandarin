@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <EmbeddedResource Include="Migrations/*.sql" />
   </ItemGroup>
