@@ -84,7 +84,7 @@ jobs:
           dotnet publish src/Mandarin/Mandarin.csproj \
             --no-restore \
             --no-build \
-            --output publish \
+            --output ./publish \
             --configuration Release \
             /p:VersionPrefix=$GitVersion_MajorMinorPatch \
             /p:VersionSuffix=$GitVersion_PreReleaseLabel \
