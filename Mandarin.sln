@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Interfaces", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Services", "src\Mandarin.Services\Mandarin.Services.csproj", "{6283E8CA-D9F6-485B-8283-BF80786B35D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.ViewModels", "src\Mandarin.ViewModels\Mandarin.ViewModels.csproj", "{5487E7C1-8BC2-419F-A7E0-89629A376403}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Client.ViewModels", "src\Mandarin.Client.ViewModels\Mandarin.Client.ViewModels.csproj", "{5487E7C1-8BC2-419F-A7E0-89629A376403}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5E228764-3B22-4EB1-950E-718CD5D28FF8}"
 EndProject
@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Interfaces.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Services.Tests", "tests\Mandarin.Services.Tests\Mandarin.Services.Tests.csproj", "{860D91F1-4DB3-417F-9985-BD968C1D6C6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.ViewModels.Tests", "tests\Mandarin.ViewModels.Tests\Mandarin.ViewModels.Tests.csproj", "{2DA98B6D-3373-4F17-B3A3-EBC8B7D0DF83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Client.ViewModels.Tests", "tests\Mandarin.Client.ViewModels.Tests\Mandarin.Client.ViewModels.Tests.csproj", "{2DA98B6D-3373-4F17-B3A3-EBC8B7D0DF83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Database", "src\Mandarin.Database\Mandarin.Database.csproj", "{7EAA2457-E83B-4617-A8C1-892D55F7057C}"
 EndProject
@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D4D802A2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Client.Services.Tests", "tests\Mandarin.Client.Services.Tests\Mandarin.Client.Services.Tests.csproj", "{32959544-86EB-4B0C-AB2E-8AD54B1FBBD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.App", "src\Mandarin.App\Mandarin.App.csproj", "{3EF913C7-F1AA-4D48-98C6-A50B2FAE8AE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandarin.Client", "src\Mandarin.Client\Mandarin.Client.csproj", "{3EF913C7-F1AA-4D48-98C6-A50B2FAE8AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,7 +105,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{269208F2-749E-4E75-95D4-0CA5A8477462} = {5E228764-3B22-4EB1-950E-718CD5D28FF8}
-		{2DA98B6D-3373-4F17-B3A3-EBC8B7D0DF83} = {5E228764-3B22-4EB1-950E-718CD5D28FF8}
 		{860D91F1-4DB3-417F-9985-BD968C1D6C6D} = {5E228764-3B22-4EB1-950E-718CD5D28FF8}
 		{4739F825-79D2-4A65-81BF-4CDF333694CF} = {5E228764-3B22-4EB1-950E-718CD5D28FF8}
 		{5E228764-3B22-4EB1-950E-718CD5D28FF8} = {AEA2C426-10E9-4636-BD9F-991907E35E52}
@@ -121,5 +120,6 @@ Global
 		{D4D802A2-8886-4869-ACD9-441EEF0B19E6} = {CC300859-9DEB-4B86-A329-DE13F1B0B5EB}
 		{32959544-86EB-4B0C-AB2E-8AD54B1FBBD1} = {D4D802A2-8886-4869-ACD9-441EEF0B19E6}
 		{3EF913C7-F1AA-4D48-98C6-A50B2FAE8AE8} = {CC300859-9DEB-4B86-A329-DE13F1B0B5EB}
+		{2DA98B6D-3373-4F17-B3A3-EBC8B7D0DF83} = {D4D802A2-8886-4869-ACD9-441EEF0B19E6}
 	EndGlobalSection
 EndGlobal

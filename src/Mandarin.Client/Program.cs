@@ -6,14 +6,14 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Mandarin.Client.Services;
+using Mandarin.Client.ViewModels;
 using Mandarin.Configuration;
 using Mandarin.Grpc.Converters;
-using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mandarin.App
+namespace Mandarin.Client
 {
     /// <summary>
     /// Application entrypoint for Mandarin WebAssembly App.

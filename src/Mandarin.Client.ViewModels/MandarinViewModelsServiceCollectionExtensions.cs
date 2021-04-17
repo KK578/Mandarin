@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Mandarin.Client.ViewModels.Index;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.Client.ViewModels
 {
     /// <summary>
     /// Extensions to <see cref="IServiceCollection"/> to register all services in this assembly.
@@ -14,6 +15,8 @@ namespace Mandarin.ViewModels
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
+            services.AddTransient<IIndexViewModel, IndexViewModel>();
+
             services.AddScoped<IViewModelFactory, ViewModelFactory>();
             return services;
         }

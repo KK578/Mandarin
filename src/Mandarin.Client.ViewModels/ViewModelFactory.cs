@@ -1,9 +1,9 @@
-﻿using Mandarin.Commissions;
+﻿using Mandarin.Client.ViewModels.Commissions;
+using Mandarin.Commissions;
 using Mandarin.Emails;
-using Mandarin.ViewModels.Commissions;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Mandarin.ViewModels
+namespace Mandarin.Client.ViewModels
 {
     /// <inheritdoc />
     internal sealed class ViewModelFactory : IViewModelFactory

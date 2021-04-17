@@ -1,7 +1,4 @@
 using AutoMapper;
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Database.Converters;
@@ -9,10 +6,8 @@ using Mandarin.Extensions;
 using Mandarin.Grpc;
 using Mandarin.Grpc.Converters;
 using Mandarin.Services;
-using Mandarin.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

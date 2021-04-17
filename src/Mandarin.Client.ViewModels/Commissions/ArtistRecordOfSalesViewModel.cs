@@ -4,7 +4,7 @@ using Mandarin.Commissions;
 using Mandarin.Emails;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Mandarin.ViewModels.Commissions
+namespace Mandarin.Client.ViewModels.Commissions
 {
     /// <inheritdoc cref="IArtistRecordOfSalesViewModel" />
     internal class ArtistRecordOfSalesViewModel : ViewModelBase, IArtistRecordOfSalesViewModel
