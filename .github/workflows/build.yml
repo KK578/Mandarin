@@ -40,7 +40,7 @@ jobs:
       - name: "[Setup] Install .NET Core"
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 6.0.0-preview.3
 
       - name: "[Setup] Install node"
         uses: actions/setup-node@v1
