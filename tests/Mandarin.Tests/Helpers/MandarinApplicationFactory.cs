@@ -51,7 +51,7 @@ namespace Mandarin.Tests.Helpers
                 { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },
                 { "Square:Environment", "Sandbox" },
             });
-            configurationBuilder.AddUserSecrets(typeof(MandarinApplicationFactory).Assembly);
+            configurationBuilder.AddUserSecrets(typeof(MandarinApplicationFactory).Assembly, true);
         }
 
         private static void ConfigureTestAuthentication(IServiceCollection services)
