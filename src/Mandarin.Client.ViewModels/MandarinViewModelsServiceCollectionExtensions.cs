@@ -1,4 +1,5 @@
 ﻿using Mandarin.Client.ViewModels.Index;
+using Mandarin.Client.ViewModels.Inventory.FixedCommissions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.Client.ViewModels
@@ -16,6 +17,7 @@ namespace Mandarin.Client.ViewModels
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
             services.AddTransient<IIndexViewModel, IndexViewModel>();
+            services.AddTransient<IFixedCommissionAmountIndexViewModel, FixedCommissionAmountIndexViewModel>();
 
             services.AddScoped<IViewModelFactory, ViewModelFactory>();
             return services;

@@ -20,7 +20,7 @@ namespace Mandarin.Services.Inventory
         /// <summary>
         /// Initializes a new instance of the <see cref="CachingProductServiceDecorator"/> class.
         /// </summary>
-        /// <param name="productService">The inventory service to be decorated.</param>
+        /// <param name="productService">The application service for interacting with products to be decorated.</param>
         /// <param name="appCache">The application memory cache.</param>
         /// <param name="logger">The application logger.</param>
         public CachingProductServiceDecorator(IProductService productService, IAppCache appCache, ILogger<CachingProductServiceDecorator> logger)

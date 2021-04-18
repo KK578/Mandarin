@@ -22,7 +22,7 @@ namespace Mandarin.Grpc
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductsGrpcService"/> class.
         /// </summary>
-        /// <param name="productService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
         public ProductsGrpcService(IQueryableProductService productService, IMapper mapper)
         {
