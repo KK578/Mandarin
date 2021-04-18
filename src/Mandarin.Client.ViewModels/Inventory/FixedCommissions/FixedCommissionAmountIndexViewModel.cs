@@ -17,8 +17,9 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         private readonly IFixedCommissionService fixedCommissionService;
         private readonly IQueryableProductService productService;
 
-        private readonly ObservableCollection<IFixedCommissionAmountGridRowViewModel> rows;
         private readonly ObservableAsPropertyHelper<bool> isLoading;
+        private readonly ObservableCollection<IFixedCommissionAmountGridRowViewModel> rows;
+        private IFixedCommissionAmountGridRowViewModel selectedRow;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionAmountIndexViewModel"/> class.
@@ -47,6 +48,13 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 
         /// <inheritdoc/>
         public ReadOnlyObservableCollection<IFixedCommissionAmountGridRowViewModel> Rows { get; }
+
+        /// <inheritdoc/>
+        public IFixedCommissionAmountGridRowViewModel SelectedRow
+        {
+            get => this.selectedRow;
+            set => this.RaiseAndSetIfChanged(ref this.selectedRow, value);
+        }
 
         private IObservable<IReadOnlyCollection<IFixedCommissionAmountGridRowViewModel>> LoadDataAsync()
         {

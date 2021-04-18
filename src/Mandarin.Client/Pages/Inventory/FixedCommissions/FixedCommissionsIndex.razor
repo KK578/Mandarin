@@ -15,7 +15,7 @@
     {
       <DataGrid TItem="IFixedCommissionAmountGridRowViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
                 ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="15"
-                RowSelectable="@(_ => true)">
+                RowSelectable="@(_ => true)" @bind-SelectedRow="@ViewModel!.SelectedRow">
         <DataGridColumn TItem="IFixedCommissionAmountGridRowViewModel" Caption="Product Code" Field="@(nameof(IFixedCommissionAmountGridRowViewModel.ProductCode))" TextAlignment="TextAlignment.Left" />
         <DataGridColumn TItem="IFixedCommissionAmountGridRowViewModel" Caption="Product Name" Field="@(nameof(IFixedCommissionAmountGridRowViewModel.ProductName))" TextAlignment="TextAlignment.Left" />
         <DataGridNumericColumn TItem="IFixedCommissionAmountGridRowViewModel" Caption="Retail Price" Field="@(nameof(IFixedCommissionAmountGridRowViewModel.RetailPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />

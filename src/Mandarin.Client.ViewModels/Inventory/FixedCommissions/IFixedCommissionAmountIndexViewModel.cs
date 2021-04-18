@@ -24,5 +24,10 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         /// Gets the collection of all Fixed Commission Amounts for display.
         /// </summary>
         ReadOnlyObservableCollection<IFixedCommissionAmountGridRowViewModel> Rows { get; }
+
+        /// <summary>
+        /// Gets or sets the selected Fixed Commission Amount.
+        /// </summary>
+        IFixedCommissionAmountGridRowViewModel SelectedRow { get; set; }
     }
 }
