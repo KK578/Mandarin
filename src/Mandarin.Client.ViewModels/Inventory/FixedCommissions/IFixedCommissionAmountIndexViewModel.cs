@@ -21,6 +21,16 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         ReactiveCommand<Unit, IReadOnlyCollection<IFixedCommissionAmountGridRowViewModel>> LoadData { get; }
 
         /// <summary>
+        /// Gets the command to create a new Fixed Commission Amount.
+        /// </summary>
+        ReactiveCommand<Unit, Unit> CreateNew { get; }
+
+        /// <summary>
+        /// Gets the command to edit the selected Fixed Commission Amount.
+        /// </summary>
+        ReactiveCommand<Unit, Unit> EditSelected { get; }
+
+        /// <summary>
         /// Gets the collection of all Fixed Commission Amounts for display.
         /// </summary>
         ReadOnlyObservableCollection<IFixedCommissionAmountGridRowViewModel> Rows { get; }

@@ -5,6 +5,10 @@
 <Card>
   <CardHeader>
     <CardTitle>Fixed Commission Amounts</CardTitle>
+      <CardActions Float="Float.Right">
+        <Button Color="Color.Secondary" Command="@ViewModel!.EditSelected">Edit</Button>
+        <Button Color="Color.Primary" Command="@ViewModel!.CreateNew">New</Button>
+      </CardActions>
   </CardHeader>
   <CardBody>
     @if (ViewModel!.IsLoading)
