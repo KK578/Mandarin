@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 
 namespace Mandarin.Client.Components.Reactive
@@ -27,7 +30,7 @@ namespace Mandarin.Client.Components.Reactive
         {
             base.OnInitialized();
 
-            this.Clicked = EventCallback.Factory.Create(this, () => this.ReactiveCommand.Execute());
+            this.Clicked = EventCallback.Factory.Create(this, () => this.ReactiveCommand.Execute().ToTask());
             this.ReactiveCommand.CanExecute
                 .Zip(this.ReactiveCommand.IsExecuting)
                 .Subscribe(tuple =>
