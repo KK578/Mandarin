@@ -17,7 +17,7 @@ namespace Mandarin.Client.ViewModels
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
             services.AddTransient<IIndexViewModel, IndexViewModel>();
-            services.AddTransient<IFixedCommissionAmountIndexViewModel, FixedCommissionAmountIndexViewModel>();
+            services.AddTransient<IFixedCommissionsIndexViewModel, FixedCommissionsIndexViewModel>();
             services.AddTransient<IFixedCommissionsNewViewModel, FixedCommissionsNewViewModel>();
 
             services.AddScoped<IViewModelFactory, ViewModelFactory>();

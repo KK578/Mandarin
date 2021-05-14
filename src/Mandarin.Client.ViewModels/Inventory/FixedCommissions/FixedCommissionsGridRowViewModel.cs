@@ -3,18 +3,18 @@ using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 {
-    /// <inheritdoc cref="IFixedCommissionAmountGridRowViewModel" />
-    internal sealed class FixedCommissionAmountGridRowViewModel : ReactiveObject, IFixedCommissionAmountGridRowViewModel
+    /// <inheritdoc cref="IFixedCommissionsGridRowViewModel" />
+    internal sealed class FixedCommissionsGridRowViewModel : ReactiveObject, IFixedCommissionsGridRowViewModel
     {
         private readonly FixedCommissionAmount fixedCommissionAmount;
         private readonly Product product;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionAmountGridRowViewModel"/> class.
+        /// Initializes a new instance of the <see cref="FixedCommissionsGridRowViewModel"/> class.
         /// </summary>
         /// <param name="fixedCommissionAmount">The domain model for the Fixed Commission Amount.</param>
         /// <param name="product">The domain model for the Product underlying the Fixed Commission Amount.</param>
-        public FixedCommissionAmountGridRowViewModel(FixedCommissionAmount fixedCommissionAmount, Product product)
+        public FixedCommissionsGridRowViewModel(FixedCommissionAmount fixedCommissionAmount, Product product)
         {
             this.fixedCommissionAmount = fixedCommissionAmount;
             this.product = product;

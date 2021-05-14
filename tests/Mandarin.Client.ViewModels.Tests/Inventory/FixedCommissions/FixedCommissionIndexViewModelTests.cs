@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
 {
-    public class FixedCommissionAmountIndexViewModelTests
+    public class FixedCommissionIndexViewModelTests
     {
         private static readonly FixedCommissionAmount FixedCommissionAmount = new("TLM-001", 15.00M);
         private static readonly Product Product = new("SquareId", "TLM-001", "Mandarin", "It's a Mandarin!", 45.00M);
@@ -20,10 +20,10 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
         private readonly Mock<IQueryableProductService> productService = new();
         private readonly MockNavigationManager navigationManager = new();
 
-        private IFixedCommissionAmountIndexViewModel Subject =>
-            new FixedCommissionAmountIndexViewModel(this.fixedCommissionService.Object, this.productService.Object, this.navigationManager);
+        private IFixedCommissionsIndexViewModel Subject =>
+            new FixedCommissionsIndexViewModel(this.fixedCommissionService.Object, this.productService.Object, this.navigationManager);
 
-        public class IsLoadingTests : FixedCommissionAmountIndexViewModelTests
+        public class IsLoadingTests : FixedCommissionIndexViewModelTests
         {
             [Fact]
             public void ShouldBeFalseOnConstruction()
@@ -56,7 +56,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class RowsTests : FixedCommissionAmountIndexViewModelTests
+        public class RowsTests : FixedCommissionIndexViewModelTests
         {
             [Fact]
             public void ShouldNotBeNullOnConstruction()
@@ -67,11 +67,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             [Fact]
             public async Task ShouldBePresentAfterLoadDataIsExecuted()
             {
-                var data = new List<FixedCommissionAmount> { FixedCommissionAmountIndexViewModelTests.FixedCommissionAmount };
+                var data = new List<FixedCommissionAmount> { FixedCommissionIndexViewModelTests.FixedCommissionAmount };
                 this.fixedCommissionService.Setup(x => x.GetFixedCommissionAsync()).ReturnsAsync(data);
                 this.productService
-                    .Setup(x => x.GetProductByProductCodeAsync(FixedCommissionAmountIndexViewModelTests.FixedCommissionAmount.ProductCode))
-                    .ReturnsAsync(FixedCommissionAmountIndexViewModelTests.Product);
+                    .Setup(x => x.GetProductByProductCodeAsync(FixedCommissionIndexViewModelTests.FixedCommissionAmount.ProductCode))
+                    .ReturnsAsync(FixedCommissionIndexViewModelTests.Product);
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute();
@@ -80,7 +80,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class CreateNewTests : FixedCommissionAmountIndexViewModelTests
+        public class CreateNewTests : FixedCommissionIndexViewModelTests
         {
             [Fact]
             public async Task ShouldBeExecutableOnConstruction()
@@ -97,7 +97,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class EditSelectedTests : FixedCommissionAmountIndexViewModelTests
+        public class EditSelectedTests : FixedCommissionIndexViewModelTests
         {
             [Fact]
             public async Task ShouldNotBeExecutableOnConstruction()
@@ -110,7 +110,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldBeExecutableOnceARowIsSelected()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFixedCommissionAmountGridRowViewModel>();
+                subject.SelectedRow = Mock.Of<IFixedCommissionsGridRowViewModel>();
                 var result = await subject.EditSelected.CanExecute.FirstAsync();
                 result.Should().BeTrue();
             }
@@ -119,7 +119,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldRedirectOnExecute()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFixedCommissionAmountGridRowViewModel>(x => x.ProductCode == "TLM-001");
+                subject.SelectedRow = Mock.Of<IFixedCommissionsGridRowViewModel>(x => x.ProductCode == "TLM-001");
                 await subject.EditSelected.Execute();
                 this.navigationManager.Uri.Should().Contain("/inventory/fixed-commissions/edit/TLM-001");
             }

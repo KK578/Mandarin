@@ -5,7 +5,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
     /// <summary>
     /// Represents a <see cref="FixedCommissionAmount"/> for display in a grid.
     /// </summary>
-    public interface IFixedCommissionAmountGridRowViewModel
+    public interface IFixedCommissionsGridRowViewModel
     {
         /// <summary>
         /// Gets the code of the product associated to the Fixed Commission Amount.

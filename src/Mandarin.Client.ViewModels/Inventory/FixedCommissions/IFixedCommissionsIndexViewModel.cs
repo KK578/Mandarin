@@ -8,7 +8,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
     /// <summary>
     /// Represents the ViewModel for the Fixed Commission Amounts Index page.
     /// </summary>
-    public interface IFixedCommissionAmountIndexViewModel : IReactiveObject
+    public interface IFixedCommissionsIndexViewModel : IReactiveObject
     {
         /// <summary>
         /// Gets a value indicating whether gets whether the ViewModel has finished initialisation.
@@ -18,7 +18,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         /// <summary>
         /// Gets the command to populate the ViewModel with data.
         /// </summary>
-        ReactiveCommand<Unit, IReadOnlyCollection<IFixedCommissionAmountGridRowViewModel>> LoadData { get; }
+        ReactiveCommand<Unit, IReadOnlyCollection<IFixedCommissionsGridRowViewModel>> LoadData { get; }
 
         /// <summary>
         /// Gets the command to create a new Fixed Commission Amount.
@@ -33,11 +33,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         /// <summary>
         /// Gets the collection of all Fixed Commission Amounts for display.
         /// </summary>
-        ReadOnlyObservableCollection<IFixedCommissionAmountGridRowViewModel> Rows { get; }
+        ReadOnlyObservableCollection<IFixedCommissionsGridRowViewModel> Rows { get; }
 
         /// <summary>
         /// Gets or sets the selected Fixed Commission Amount.
         /// </summary>
-        IFixedCommissionAmountGridRowViewModel SelectedRow { get; set; }
+        IFixedCommissionsGridRowViewModel SelectedRow { get; set; }
     }
 }

@@ -12,30 +12,30 @@ using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 {
-    /// <inheritdoc cref="IFixedCommissionAmountIndexViewModel" />
-    internal sealed class FixedCommissionAmountIndexViewModel : ReactiveObject, IFixedCommissionAmountIndexViewModel
+    /// <inheritdoc cref="IFixedCommissionsIndexViewModel" />
+    internal sealed class FixedCommissionsIndexViewModel : ReactiveObject, IFixedCommissionsIndexViewModel
     {
         private readonly IFixedCommissionService fixedCommissionService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
-        private IFixedCommissionAmountGridRowViewModel selectedRow;
+        private IFixedCommissionsGridRowViewModel selectedRow;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionAmountIndexViewModel"/> class.
+        /// Initializes a new instance of the <see cref="FixedCommissionsIndexViewModel"/> class.
         /// </summary>
         /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FixedCommissionAmountIndexViewModel(IFixedCommissionService fixedCommissionService, IQueryableProductService productService, NavigationManager navigationManager)
+        public FixedCommissionsIndexViewModel(IFixedCommissionService fixedCommissionService, IQueryableProductService productService, NavigationManager navigationManager)
         {
             this.fixedCommissionService = fixedCommissionService;
             this.productService = productService;
             this.navigationManager = navigationManager;
 
-            var rows = new ObservableCollection<IFixedCommissionAmountGridRowViewModel>();
-            this.Rows = new ReadOnlyObservableCollection<IFixedCommissionAmountGridRowViewModel>(rows);
+            var rows = new ObservableCollection<IFixedCommissionsGridRowViewModel>();
+            this.Rows = new ReadOnlyObservableCollection<IFixedCommissionsGridRowViewModel>(rows);
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
             this.CreateNew = ReactiveCommand.Create(this.OnCreateNew);
@@ -49,7 +49,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         public bool IsLoading => this.isLoading.Value;
 
         /// <inheritdoc/>
-        public ReactiveCommand<Unit, IReadOnlyCollection<IFixedCommissionAmountGridRowViewModel>> LoadData { get; }
+        public ReactiveCommand<Unit, IReadOnlyCollection<IFixedCommissionsGridRowViewModel>> LoadData { get; }
 
         /// <inheritdoc/>
         public ReactiveCommand<Unit, Unit> CreateNew { get; }
@@ -58,28 +58,28 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         public ReactiveCommand<Unit, Unit> EditSelected { get; }
 
         /// <inheritdoc/>
-        public ReadOnlyObservableCollection<IFixedCommissionAmountGridRowViewModel> Rows { get; }
+        public ReadOnlyObservableCollection<IFixedCommissionsGridRowViewModel> Rows { get; }
 
         /// <inheritdoc/>
-        public IFixedCommissionAmountGridRowViewModel SelectedRow
+        public IFixedCommissionsGridRowViewModel SelectedRow
         {
             get => this.selectedRow;
             set => this.RaiseAndSetIfChanged(ref this.selectedRow, value);
         }
 
-        private IObservable<IReadOnlyCollection<IFixedCommissionAmountGridRowViewModel>> OnLoadData()
+        private IObservable<IReadOnlyCollection<IFixedCommissionsGridRowViewModel>> OnLoadData()
         {
             return this.fixedCommissionService.GetFixedCommissionAsync()
                        .ToObservable()
                        .SelectMany(x => x)
                        .SelectMany(CreateViewModel)
                        .ToList()
-                       .Select(x => new ReadOnlyCollection<IFixedCommissionAmountGridRowViewModel>(x));
+                       .Select(x => new ReadOnlyCollection<IFixedCommissionsGridRowViewModel>(x));
 
-            async Task<IFixedCommissionAmountGridRowViewModel> CreateViewModel(FixedCommissionAmount x)
+            async Task<IFixedCommissionsGridRowViewModel> CreateViewModel(FixedCommissionAmount x)
             {
                 var product = await this.productService.GetProductByProductCodeAsync(x.ProductCode);
-                return new FixedCommissionAmountGridRowViewModel(x, product);
+                return new FixedCommissionsGridRowViewModel(x, product);
             }
         }
 
