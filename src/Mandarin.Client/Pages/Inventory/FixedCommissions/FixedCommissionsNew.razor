@@ -14,63 +14,70 @@
     </CardActions>
   </CardHeader>
   <CardBody>
-    @* <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false"> *@
-    <Validation>
-      <Field>
-        <FieldLabel>Product Code</FieldLabel>
-        <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
-                      Placeholder="Start typing to search..." MinLength="2"
-                      TextField="@((Product item) => item.ProductCode)" ValueField="@((Product item) => item)"
-                      Filter="AutocompleteFilter.Contains"/>
+    @if (ViewModel!.IsLoading)
+    {
+      <MandarinProgressBar>Loading Data...</MandarinProgressBar>
+    }
+    else
+    {
+      @* <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false"> *@
+      <Validation>
+        <Field>
+          <FieldLabel>Product Code</FieldLabel>
+          <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
+                        Placeholder="Start typing to search..." MinLength="2"
+                        TextField="@((Product item) => item.ProductCode)" ValueField="@((Product item) => item)"
+                        Filter="AutocompleteFilter.Contains"/>
 
-      </Field>
-    </Validation>
-    <Validation>
-      <Field>
-        <FieldLabel>Product Name</FieldLabel>
-        <TextEdit Text="@ViewModel!.SelectedProduct?.ProductName" ReadOnly="true" Disabled="true"/>
-      </Field>
-    </Validation>
-    <Validation>
-      <Fields>
-        <Field ColumnSize="ColumnSize.Is4">
-          <FieldLabel>Frame Price</FieldLabel>
-          <Addons>
-            <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
-            <Addon AddonType="AddonType.Body">
-              <NumericEdit TValue="decimal" Min="0" @bind-Value="@ViewModel!.CommissionAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
-                <Feedback><ValidationError/></Feedback>
-              </NumericEdit>
-            </Addon>
-          </Addons>
         </Field>
+      </Validation>
+      <Validation>
+        <Field>
+          <FieldLabel>Product Name</FieldLabel>
+          <TextEdit Text="@ViewModel!.SelectedProduct?.ProductName" ReadOnly="true" Disabled="true"/>
+        </Field>
+      </Validation>
+      <Validation>
+        <Fields>
+          <Field ColumnSize="ColumnSize.Is4">
+            <FieldLabel>Frame Price</FieldLabel>
+            <Addons>
+              <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
+              <Addon AddonType="AddonType.Body">
+                <NumericEdit TValue="decimal" Min="0" @bind-Value="@ViewModel!.CommissionAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
+                  <Feedback><ValidationError/></Feedback>
+                </NumericEdit>
+              </Addon>
+            </Addons>
+          </Field>
 
-        <Field ColumnSize="ColumnSize.Is4">
-          <FieldLabel>Retail Price</FieldLabel>
-          <Addons>
-            <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
-            <Addon AddonType="AddonType.Body">
-              <NumericEdit TValue="decimal?" Value="@ViewModel!.ProductAmount" ReadOnly="true" Disabled="true">
-                <Feedback><ValidationError/></Feedback>
-              </NumericEdit>
-            </Addon>
-          </Addons>
-        </Field>
+          <Field ColumnSize="ColumnSize.Is4">
+            <FieldLabel>Retail Price</FieldLabel>
+            <Addons>
+              <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
+              <Addon AddonType="AddonType.Body">
+                <NumericEdit TValue="decimal?" Value="@ViewModel!.ProductAmount" ReadOnly="true" Disabled="true">
+                  <Feedback><ValidationError/></Feedback>
+                </NumericEdit>
+              </Addon>
+            </Addons>
+          </Field>
 
-        <Field ColumnSize="ColumnSize.Is4">
-          <FieldLabel>Artist Price</FieldLabel>
-          <Addons>
-            <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
-            <Addon AddonType="AddonType.Body">
-              <NumericEdit TValue="decimal?" Value="@ViewModel!.StockistAmount" ReadOnly="true" Disabled="true">
-                <Feedback><ValidationError/></Feedback>
-              </NumericEdit>
-            </Addon>
-          </Addons>
-        </Field>
-      </Fields>
-    </Validation>
-    @* </Validations> *@
+          <Field ColumnSize="ColumnSize.Is4">
+            <FieldLabel>Artist Price</FieldLabel>
+            <Addons>
+              <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
+              <Addon AddonType="AddonType.Body">
+                <NumericEdit TValue="decimal?" Value="@ViewModel!.StockistAmount" ReadOnly="true" Disabled="true">
+                  <Feedback><ValidationError/></Feedback>
+                </NumericEdit>
+              </Addon>
+            </Addons>
+          </Field>
+        </Fields>
+      </Validation>
+      @* </Validations> *@
+    }
   </CardBody>
 </Card>
 
