@@ -32,11 +32,11 @@ namespace Mandarin.Client.Components.Reactive
 
             this.Clicked = EventCallback.Factory.Create(this, () => this.ReactiveCommand.Execute().ToTask());
             this.ReactiveCommand.CanExecute
-                .Zip(this.ReactiveCommand.IsExecuting)
-                .Subscribe(tuple =>
+                .CombineLatest(this.ReactiveCommand.IsExecuting, (canExecute, isExecuting) => (canExecute, isExecuting))
+                .Select(x => x.isExecuting || !x.canExecute)
+                .Subscribe(value =>
                 {
-                    var (canExecute, isExecuting) = tuple;
-                    this.Disabled = isExecuting || !canExecute;
+                    this.Disabled = value;
                     this.InvokeAsync(this.StateHasChanged);
                 })
                 .DisposeWith(this.disposables);
