@@ -1,8 +1,6 @@
 ﻿@page "/inventory/fixed-commissions/new"
 @using Mandarin.Inventory
 @using System.Reactive.Linq
-@using Microsoft.Extensions.Logging
-@inject ILogger<FixedCommissionsNew> logger;
 @inherits ReactiveInjectableComponentBase<IFixedCommissionsNewViewModel>
 
 <Card>
@@ -95,11 +93,7 @@
   private object SelectedProduct
   {
     get => ViewModel!.SelectedProduct;
-    set
-    {
-      logger.LogInformation("Setting Selected Product to instance of {Type}: {Value}", value.GetType(), value);
-      ViewModel!.SelectedProduct = (Product) value;
-    }
+    set => ViewModel!.SelectedProduct = (Product) value;
   }
 
 }
