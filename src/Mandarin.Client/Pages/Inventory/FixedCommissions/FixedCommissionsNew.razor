@@ -21,18 +21,12 @@
       @* <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false"> *@
       <Validation>
         <Field>
-          <FieldLabel>Product Code</FieldLabel>
+          <FieldLabel>Product</FieldLabel>
           <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
                         Placeholder="Start typing to search..." MinLength="2"
-                        TextField="@((Product item) => item.ProductCode)" ValueField="@((Product item) => item)"
+                        TextField="@((Product item) => item.ToString())" ValueField="@((Product item) => item)"
                         Filter="AutocompleteFilter.Contains"/>
 
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <FieldLabel>Product Name</FieldLabel>
-          <TextEdit Text="@ViewModel!.SelectedProduct?.ProductName" ReadOnly="true" Disabled="true"/>
         </Field>
       </Validation>
       <Validation>
