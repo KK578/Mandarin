@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="4.15.0" />
+    <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="Square" Version="9.1.0" />
   </ItemGroup>
 
