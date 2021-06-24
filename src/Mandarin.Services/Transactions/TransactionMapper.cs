@@ -23,8 +23,8 @@ namespace Mandarin.Services.Transactions
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
         /// </summary>
-        /// <param name="productService">The inventory service.</param>
-        /// <param name="fixedCommissionService">The fixed commission amount service.</param>
+        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
         public TransactionMapper(IQueryableProductService productService,
                                  IFixedCommissionService fixedCommissionService,
