@@ -44,7 +44,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         /// <summary>
         /// Gets or sets the Fixed Commission Amount to apply to the selected product.
         /// </summary>
-        decimal CommissionAmount { get; set; }
+        decimal? CommissionAmount { get; set; }
 
         /// <summary>
         /// Gets the total cost of the product.

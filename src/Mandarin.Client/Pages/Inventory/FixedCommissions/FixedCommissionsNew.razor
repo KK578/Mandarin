@@ -26,7 +26,6 @@
                         Placeholder="Start typing to search..." MinLength="2"
                         TextField="@((Product item) => item.ToString())" ValueField="@((Product item) => item)"
                         Filter="AutocompleteFilter.Contains"/>
-
         </Field>
       </Validation>
       <Validation>
@@ -36,7 +35,7 @@
             <Addons>
               <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal" Min="0" @bind-Value="@ViewModel!.CommissionAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
+                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.CommissionAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
                   <Feedback><ValidationError/></Feedback>
                 </NumericEdit>
               </Addon>

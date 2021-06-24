@@ -23,7 +23,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         private readonly ObservableAsPropertyHelper<decimal?> productAmount;
         private readonly ObservableAsPropertyHelper<decimal?> stockistAmount;
         private Product selectedProduct;
-        private decimal amount;
+        private decimal? amount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionsNewViewModel"/> class.
@@ -41,7 +41,8 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
             this.Products = new ReadOnlyObservableCollection<Product>(products);
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
-            this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
+            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.SelectedProduct, vm => vm.CommissionAmount)
+                                                                        .Select(tuple => tuple.Item1 != null && tuple.Item2.HasValue));
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
             this.productAmount = this.WhenAnyValue(vm => vm.SelectedProduct).WhereNotNull().Select(p => p.UnitPrice).ToProperty(this, x => x.ProductAmount);
@@ -73,7 +74,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         }
 
         /// <inheritdoc/>
-        public decimal CommissionAmount
+        public decimal? CommissionAmount
         {
             get => this.amount;
             set => this.RaiseAndSetIfChanged(ref this.amount, value);
@@ -92,8 +93,10 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 
         private async Task OnSave()
         {
-            var fixedCommissionAmount = new FixedCommissionAmount(this.SelectedProduct.ProductCode, this.CommissionAmount);
+            var fixedCommissionAmount = new FixedCommissionAmount(this.SelectedProduct.ProductCode, this.CommissionAmount.Value);
             await this.fixedCommissionService.SaveFixedCommissionAsync(fixedCommissionAmount);
+
+            this.navigationManager.NavigateTo($"/inventory/fixed-commissions/edit/{this.selectedProduct.ProductCode}");
         }
 
         private void OnCancel() => this.navigationManager.NavigateTo("/inventory/fixed-commissions");
