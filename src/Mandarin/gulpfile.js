@@ -70,5 +70,4 @@ async function buildInformation() {
 }
 
 gulp.task(buildInformation);
-gulp.task(css);
-gulp.task("default", css);
+gulp.task("default", buildInformation);
