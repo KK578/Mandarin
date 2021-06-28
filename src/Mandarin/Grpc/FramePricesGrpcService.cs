@@ -12,17 +12,17 @@ namespace Mandarin.Grpc
 {
     /// <inheritdoc />
     [Authorize]
-    internal sealed class FixedCommissionsGrpcService : FramePricesBase
+    internal sealed class FramePricesGrpcService : FramePricesBase
     {
         private readonly IFramePricesService framePricesService;
         private readonly IMapper mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionsGrpcService"/> class.
+        /// Initializes a new instance of the <see cref="FramePricesGrpcService"/> class.
         /// </summary>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public FixedCommissionsGrpcService(IFramePricesService framePricesService, IMapper mapper)
+        public FramePricesGrpcService(IFramePricesService framePricesService, IMapper mapper)
         {
             this.framePricesService = framePricesService;
             this.mapper = mapper;
@@ -41,18 +41,18 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetFramePriceResponse> GetFramePrice(GetFramePriceRequest request, ServerCallContext context)
         {
-            var fixedCommission = await this.framePricesService.GetFramePriceAsync(request.ProductCode);
+            var framePrice = await this.framePricesService.GetFramePriceAsync(request.ProductCode);
             return new GetFramePriceResponse
             {
-                FramePrice = this.mapper.Map<FramePrice>(fixedCommission),
+                FramePrice = this.mapper.Map<FramePrice>(framePrice),
             };
         }
 
         /// <inheritdoc/>
         public override async Task<SaveFramePriceResponse> SaveFramePrice(SaveFramePriceRequest request, ServerCallContext context)
         {
-            var fixedCommission = this.mapper.Map<Inventory.FramePrice>(request.FramePrice);
-            await this.framePricesService.SaveFramePriceAsync(fixedCommission);
+            var framePrice = this.mapper.Map<Inventory.FramePrice>(request.FramePrice);
+            await this.framePricesService.SaveFramePriceAsync(framePrice);
 
             return new SaveFramePriceResponse();
         }

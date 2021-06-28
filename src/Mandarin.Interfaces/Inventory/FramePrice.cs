@@ -25,7 +25,7 @@ namespace Mandarin.Inventory
         public string ProductCode { get; }
 
         /// <summary>
-        /// Gets the product's fixed commission amount.
+        /// Gets the product's frame price.
         /// </summary>
         [JsonProperty("amount")]
         public decimal Amount { get; }

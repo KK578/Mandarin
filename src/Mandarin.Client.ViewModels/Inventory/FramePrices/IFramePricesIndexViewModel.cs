@@ -19,7 +19,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <summary>
         /// Gets the command to populate the ViewModel with data.
         /// </summary>
-        ReactiveCommand<Unit, IReadOnlyCollection<IFramePricesGridRowViewModel>> LoadData { get; }
+        ReactiveCommand<Unit, IReadOnlyCollection<IFramePriceGridRowViewModel>> LoadData { get; }
 
         /// <summary>
         /// Gets the command to create a new <see cref="FramePrice"/>.
@@ -34,11 +34,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <summary>
         /// Gets the collection of all known <see cref="FramePrice"/> instances.
         /// </summary>
-        ReadOnlyObservableCollection<IFramePricesGridRowViewModel> Rows { get; }
+        ReadOnlyObservableCollection<IFramePriceGridRowViewModel> Rows { get; }
 
         /// <summary>
         /// Gets or sets the selected <see cref="FramePrice"/>.
         /// </summary>
-        IFramePricesGridRowViewModel SelectedRow { get; set; }
+        IFramePriceGridRowViewModel SelectedRow { get; set; }
     }
 }

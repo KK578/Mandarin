@@ -30,12 +30,12 @@ namespace Mandarin.Client.Services.Tests.Inventory
             var framePrice = new FramePrice("OM19-001", 15.00M);
             await this.Subject.SaveFramePriceAsync(framePrice);
 
-            var newFixedCommissionAmount = await this.Subject.GetFramePriceAsync("OM19-001");
-            newFixedCommissionAmount.Should().BeEquivalentTo(framePrice);
+            var newFramePrice = await this.Subject.GetFramePriceAsync("OM19-001");
+            newFramePrice.Should().BeEquivalentTo(framePrice);
         }
 
         [Fact]
-        public async Task ShouldBeAbleToDeleteAFixedCommission()
+        public async Task ShouldBeAbleToDeleteAFramePrice()
         {
             await this.Subject.DeleteFramePriceAsync("KT20-001F");
 

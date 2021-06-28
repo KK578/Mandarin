@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a <see cref="Mandarin.Inventory.FramePrice"/> for display in a grid.
     /// </summary>
-    public interface IFramePricesGridRowViewModel
+    public interface IFramePriceGridRowViewModel
     {
         /// <summary>
         /// Gets the code of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.

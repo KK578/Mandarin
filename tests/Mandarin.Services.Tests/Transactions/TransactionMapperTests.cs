@@ -43,7 +43,7 @@ namespace Mandarin.Services.Tests.Transactions
             this.productService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
         }
 
-        private void GivenFixedCommissionAmountExists(Product product, FramePrice framePrice)
+        private void GivenFramePriceExists(Product product, FramePrice framePrice)
         {
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode)).ReturnsAsync(framePrice);
         }
@@ -141,12 +141,12 @@ namespace Mandarin.Services.Tests.Transactions
             }
 
             [Fact]
-            public async Task ShouldIncludeTheFixedCommissionAmountsAsATransaction()
+            public async Task ShouldIncludeTheFramePriceAsATransaction()
             {
                 var product = TestData.Create<Product>();
-                var fixedCommission = new FramePrice(product.ProductCode, 1.00m);
+                var framePrice = new FramePrice(product.ProductCode, 1.00m);
                 this.GivenInventoryServiceSetUpWithProduct(product);
-                this.GivenFixedCommissionAmountExists(product, fixedCommission);
+                this.GivenFramePriceExists(product, framePrice);
                 var order = this.GivenOrderProductAsLineItem(product);
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
 

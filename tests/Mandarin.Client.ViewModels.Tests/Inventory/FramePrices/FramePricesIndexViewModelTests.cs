@@ -9,9 +9,9 @@ using Mandarin.Inventory;
 using Moq;
 using Xunit;
 
-namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
+namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
-    public class FixedCommissionIndexViewModelTests
+    public class FramePricesIndexViewModelTests
     {
         private static readonly FramePrice FramePrice = new("TLM-001", 15.00M);
         private static readonly Product Product = new("SquareId", "TLM-001", "Mandarin", "It's a Mandarin!", 45.00M);
@@ -23,7 +23,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
         private IFramePricesIndexViewModel Subject =>
             new FramePricesIndexViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
 
-        public class IsLoadingTests : FixedCommissionIndexViewModelTests
+        public class IsLoadingTests : FramePricesIndexViewModelTests
         {
             [Fact]
             public void ShouldBeFalseOnConstruction()
@@ -56,7 +56,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class RowsTests : FixedCommissionIndexViewModelTests
+        public class RowsTests : FramePricesIndexViewModelTests
         {
             [Fact]
             public void ShouldNotBeNullOnConstruction()
@@ -67,11 +67,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             [Fact]
             public async Task ShouldBePresentAfterLoadDataIsExecuted()
             {
-                var data = new List<FramePrice> { FixedCommissionIndexViewModelTests.FramePrice };
+                var data = new List<FramePrice> { FramePricesIndexViewModelTests.FramePrice };
                 this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).ReturnsAsync(data);
                 this.productService
-                    .Setup(x => x.GetProductByProductCodeAsync(FixedCommissionIndexViewModelTests.FramePrice.ProductCode))
-                    .ReturnsAsync(FixedCommissionIndexViewModelTests.Product);
+                    .Setup(x => x.GetProductByProductCodeAsync(FramePricesIndexViewModelTests.FramePrice.ProductCode))
+                    .ReturnsAsync(FramePricesIndexViewModelTests.Product);
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute();
@@ -80,7 +80,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class CreateNewTests : FixedCommissionIndexViewModelTests
+        public class CreateNewTests : FramePricesIndexViewModelTests
         {
             [Fact]
             public async Task ShouldBeExecutableOnConstruction()
@@ -97,7 +97,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class EditSelectedTests : FixedCommissionIndexViewModelTests
+        public class EditSelectedTests : FramePricesIndexViewModelTests
         {
             [Fact]
             public async Task ShouldNotBeExecutableOnConstruction()
@@ -110,7 +110,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldBeExecutableOnceARowIsSelected()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFramePricesGridRowViewModel>();
+                subject.SelectedRow = Mock.Of<IFramePriceGridRowViewModel>();
                 var result = await subject.EditSelected.CanExecute.FirstAsync();
                 result.Should().BeTrue();
             }
@@ -119,7 +119,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldRedirectOnExecute()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFramePricesGridRowViewModel>(x => x.ProductCode == "TLM-001");
+                subject.SelectedRow = Mock.Of<IFramePriceGridRowViewModel>(x => x.ProductCode == "TLM-001");
                 await subject.EditSelected.Execute();
                 this.navigationManager.Uri.Should().Contain("/inventory/frame-prices/edit/TLM-001");
             }

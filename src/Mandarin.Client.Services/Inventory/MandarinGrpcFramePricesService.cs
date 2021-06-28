@@ -17,7 +17,7 @@ namespace Mandarin.Client.Services.Inventory
         /// <summary>
         /// Initializes a new instance of the <see cref="MandarinGrpcFramePricesService"/> class.
         /// </summary>
-        /// <param name="framePricesClient">The gRPC client to Mandarin API for FixedCommissions.</param>
+        /// <param name="framePricesClient">The gRPC client to Mandarin API for FramePrices.</param>
         /// <param name="mapper">The mapping service between CLR types.</param>
         public MandarinGrpcFramePricesService(FramePricesClient framePricesClient, IMapper mapper)
         {

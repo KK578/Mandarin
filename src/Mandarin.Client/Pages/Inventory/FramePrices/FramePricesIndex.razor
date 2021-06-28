@@ -4,7 +4,7 @@
 
 <Card>
   <CardHeader>
-    <CardTitle>Fixed Commission Amounts</CardTitle>
+    <CardTitle>Frame Prices</CardTitle>
     <CardActions Float="Float.Right">
       <ReactiveButton ReactiveCommand="@ViewModel!.EditSelected" Color="Color.Secondary">Edit</ReactiveButton>
       <ReactiveButton ReactiveCommand="@ViewModel!.CreateNew" Color="Color.Primary">New</ReactiveButton>
@@ -17,14 +17,14 @@
     }
     else
     {
-      <DataGrid TItem="IFramePricesGridRowViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
+      <DataGrid TItem="IFramePriceGridRowViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
                 ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="15"
                 RowSelectable="@(_ => true)" @bind-SelectedRow="@ViewModel!.SelectedRow">
-        <DataGridColumn TItem="IFramePricesGridRowViewModel" Caption="Product Code" Field="@(nameof(IFramePricesGridRowViewModel.ProductCode))" TextAlignment="TextAlignment.Left" />
-        <DataGridColumn TItem="IFramePricesGridRowViewModel" Caption="Product Name" Field="@(nameof(IFramePricesGridRowViewModel.ProductName))" TextAlignment="TextAlignment.Left" />
-        <DataGridNumericColumn TItem="IFramePricesGridRowViewModel" Caption="Retail Price" Field="@(nameof(IFramePricesGridRowViewModel.RetailPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
-        <DataGridNumericColumn TItem="IFramePricesGridRowViewModel" Caption="Frame Price" Field="@(nameof(IFramePricesGridRowViewModel.FramePrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
-        <DataGridNumericColumn TItem="IFramePricesGridRowViewModel" Caption="Artist Price" Field="@(nameof(IFramePricesGridRowViewModel.ArtistPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
+        <DataGridColumn TItem="IFramePriceGridRowViewModel" Caption="Product Code" Field="@(nameof(IFramePriceGridRowViewModel.ProductCode))" TextAlignment="TextAlignment.Left" />
+        <DataGridColumn TItem="IFramePriceGridRowViewModel" Caption="Product Name" Field="@(nameof(IFramePriceGridRowViewModel.ProductName))" TextAlignment="TextAlignment.Left" />
+        <DataGridNumericColumn TItem="IFramePriceGridRowViewModel" Caption="Retail Price" Field="@(nameof(IFramePriceGridRowViewModel.RetailPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
+        <DataGridNumericColumn TItem="IFramePriceGridRowViewModel" Caption="Frame Price" Field="@(nameof(IFramePriceGridRowViewModel.FramePrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
+        <DataGridNumericColumn TItem="IFramePriceGridRowViewModel" Caption="Artist Price" Field="@(nameof(IFramePriceGridRowViewModel.ArtistPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
       </DataGrid>
     }
   </CardBody>

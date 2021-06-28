@@ -67,23 +67,23 @@ namespace Mandarin.Services.Transactions
                        {
                            return this.framePricesService.GetFramePriceAsync(product.ProductCode)
                                       .ToObservable()
-                                      .SelectMany(fixedCommissionAmount => Create(product, fixedCommissionAmount));
+                                      .SelectMany(framePrice => Create(product, framePrice));
                        });
 
-            IEnumerable<Subtransaction> Create(Product product, FramePrice fixedCommissionAmount)
+            IEnumerable<Subtransaction> Create(Product product, FramePrice framePrice)
             {
-                if (fixedCommissionAmount != null)
+                if (framePrice != null)
                 {
                     var quantity = int.Parse(orderLineItem.Quantity);
-                    var commissionSubtotal = fixedCommissionAmount.Amount;
+                    var commissionSubtotal = framePrice.Amount;
                     var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
                     yield return new Subtransaction(product, quantity, subTotal);
-                    yield return new Subtransaction(new Product("TLM-" + fixedCommissionAmount.ProductCode,
-                                                                "TLM-" + fixedCommissionAmount.ProductCode,
-                                                                $"Frame for {fixedCommissionAmount.ProductCode}",
+                    yield return new Subtransaction(new Product("TLM-" + framePrice.ProductCode,
+                                                                "TLM-" + framePrice.ProductCode,
+                                                                $"Frame for {framePrice.ProductCode}",
                                                                 null,
-                                                                fixedCommissionAmount.Amount),
+                                                                framePrice.Amount),
                                                     quantity,
                                                     quantity * commissionSubtotal);
                 }

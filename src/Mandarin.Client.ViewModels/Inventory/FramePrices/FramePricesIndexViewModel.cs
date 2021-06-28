@@ -20,7 +20,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly NavigationManager navigationManager;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
-        private IFramePricesGridRowViewModel selectedRow;
+        private IFramePriceGridRowViewModel selectedRow;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesIndexViewModel"/> class.
@@ -34,8 +34,8 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             this.productService = productService;
             this.navigationManager = navigationManager;
 
-            var rows = new ObservableCollection<IFramePricesGridRowViewModel>();
-            this.Rows = new ReadOnlyObservableCollection<IFramePricesGridRowViewModel>(rows);
+            var rows = new ObservableCollection<IFramePriceGridRowViewModel>();
+            this.Rows = new ReadOnlyObservableCollection<IFramePriceGridRowViewModel>(rows);
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
             this.CreateNew = ReactiveCommand.Create(this.OnCreateNew);
@@ -49,7 +49,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         public bool IsLoading => this.isLoading.Value;
 
         /// <inheritdoc/>
-        public ReactiveCommand<Unit, IReadOnlyCollection<IFramePricesGridRowViewModel>> LoadData { get; }
+        public ReactiveCommand<Unit, IReadOnlyCollection<IFramePriceGridRowViewModel>> LoadData { get; }
 
         /// <inheritdoc/>
         public ReactiveCommand<Unit, Unit> CreateNew { get; }
@@ -58,28 +58,28 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         public ReactiveCommand<Unit, Unit> EditSelected { get; }
 
         /// <inheritdoc/>
-        public ReadOnlyObservableCollection<IFramePricesGridRowViewModel> Rows { get; }
+        public ReadOnlyObservableCollection<IFramePriceGridRowViewModel> Rows { get; }
 
         /// <inheritdoc/>
-        public IFramePricesGridRowViewModel SelectedRow
+        public IFramePriceGridRowViewModel SelectedRow
         {
             get => this.selectedRow;
             set => this.RaiseAndSetIfChanged(ref this.selectedRow, value);
         }
 
-        private IObservable<IReadOnlyCollection<IFramePricesGridRowViewModel>> OnLoadData()
+        private IObservable<IReadOnlyCollection<IFramePriceGridRowViewModel>> OnLoadData()
         {
             return this.framePricesService.GetAllFramePricesAsync()
                        .ToObservable()
                        .SelectMany(x => x)
                        .SelectMany(CreateViewModel)
                        .ToList()
-                       .Select(x => new ReadOnlyCollection<IFramePricesGridRowViewModel>(x));
+                       .Select(x => new ReadOnlyCollection<IFramePriceGridRowViewModel>(x));
 
-            async Task<IFramePricesGridRowViewModel> CreateViewModel(FramePrice x)
+            async Task<IFramePriceGridRowViewModel> CreateViewModel(FramePrice x)
             {
                 var product = await this.productService.GetProductByProductCodeAsync(x.ProductCode);
-                return new FramePricesGridRowViewModel(x, product);
+                return new FramePriceGridRowViewModel(x, product);
             }
         }
 
