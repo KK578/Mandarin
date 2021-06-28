@@ -33,7 +33,7 @@ namespace Mandarin.Database.Converters
 
         private void ConfigureMapForInventory()
         {
-            this.CreateMap<FixedCommissionAmountRecord, FramePrice>().ReverseMap();
+            this.CreateMap<FramePriceRecord, FramePrice>().ReverseMap();
         }
 
         private void ConfigureMapForStockists()

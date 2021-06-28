@@ -34,7 +34,7 @@ namespace Mandarin.Database
             SqlMapper.AddTypeHandler(new DateTimeUtcHandler());
 
             services.AddTransient<ICommissionRepository, CommissionRepository>();
-            services.AddTransient<IFixedCommissionAmountRepository, FixedCommissionAmountRepository>();
+            services.AddTransient<IFramePriceRepository, FramePriceRepository>();
             services.AddTransient<IStockistRepository, StockistRepository>();
 
             return services;

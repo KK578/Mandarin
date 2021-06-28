@@ -10,45 +10,45 @@ namespace Mandarin.Services.Inventory
     internal sealed class FramePricesService : IFramePricesService
     {
         private readonly ILogger<SquareTransactionService> logger;
-        private readonly IFixedCommissionAmountRepository fixedCommissionAmountRepository;
+        private readonly IFramePriceRepository framePriceRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesService"/> class.
         /// </summary>
         /// <param name="logger">The application logger.</param>
-        /// <param name="fixedCommissionAmountRepository">The application repository for interacting with fixed commission amounts.</param>
-        public FramePricesService(ILogger<SquareTransactionService> logger, IFixedCommissionAmountRepository fixedCommissionAmountRepository)
+        /// <param name="framePriceRepository">The application repository for interacting with frame prices.</param>
+        public FramePricesService(ILogger<SquareTransactionService> logger, IFramePriceRepository framePriceRepository)
         {
             this.logger = logger;
-            this.fixedCommissionAmountRepository = fixedCommissionAmountRepository;
+            this.framePriceRepository = framePriceRepository;
         }
 
         /// <inheritdoc />
         public Task<IReadOnlyList<FramePrice>> GetAllFramePricesAsync()
         {
             this.logger.LogDebug("Fetching all frame prices.");
-            return this.fixedCommissionAmountRepository.GetAllAsync();
+            return this.framePriceRepository.GetAllAsync();
         }
 
         /// <inheritdoc/>
         public Task<FramePrice> GetFramePriceAsync(string productCode)
         {
             this.logger.LogDebug("Fetching frame price for '{ProductCode}'.", productCode);
-            return this.fixedCommissionAmountRepository.GetByProductCodeAsync(productCode);
+            return this.framePriceRepository.GetByProductCodeAsync(productCode);
         }
 
         /// <inheritdoc />
         public Task SaveFramePriceAsync(FramePrice commission)
         {
             this.logger.LogInformation("Saving frame price for '{ProductCode}': {@Commission}", commission.ProductCode, commission);
-            return this.fixedCommissionAmountRepository.SaveAsync(commission);
+            return this.framePriceRepository.SaveAsync(commission);
         }
 
         /// <inheritdoc/>
         public Task DeleteFramePriceAsync(string productCode)
         {
             this.logger.LogInformation("Deleting frame price for '{ProductCode}'.", productCode);
-            return this.fixedCommissionAmountRepository.DeleteByProductCodeAsync(productCode);
+            return this.framePriceRepository.DeleteByProductCodeAsync(productCode);
         }
     }
 }

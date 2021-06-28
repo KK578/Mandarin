@@ -9,38 +9,37 @@ using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Database.Inventory
 {
-    /// <inheritdoc cref="IFixedCommissionAmountRepository" />
-    internal sealed class FixedCommissionAmountRepository : DatabaseRepositoryBase<FramePrice, FixedCommissionAmountRecord>,
-                                                            IFixedCommissionAmountRepository
+    /// <inheritdoc cref="IFramePriceRepository" />
+    internal sealed class FramePriceRepository : DatabaseRepositoryBase<FramePrice, FramePriceRecord>, IFramePriceRepository
     {
-        private const string GetCommissionByProductCodeSql = @"
+        private const string GetFramePriceByProductCodeSql = @"
             SELECT *
-            FROM inventory.fixed_commission_amount
+            FROM inventory.frame_price
             WHERE product_code = @product_code
             LIMIT 1";
 
-        private const string GetAllCommissionsSql = @"
+        private const string GetAllFramePricesSql = @"
             SELECT *
-            FROM inventory.fixed_commission_amount
+            FROM inventory.frame_price
             ORDER BY product_code";
 
-        private const string UpsertCommissionSql = @"
-            INSERT INTO inventory.fixed_commission_amount (product_code, amount)
+        private const string UpsertFramePriceSql = @"
+            INSERT INTO inventory.frame_price (product_code, amount)
             VALUES (@product_code, @amount)
             ON CONFLICT (product_code) DO
                 UPDATE SET amount = @amount";
 
-        private const string DeleteCommissionSql = @"
-            DELETE FROM inventory.fixed_commission_amount
+        private const string DeleteFramePriceSql = @"
+            DELETE FROM inventory.frame_price
             WHERE product_code = @product_code";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionAmountRepository"/> class.
+        /// Initializes a new instance of the <see cref="FramePriceRepository"/> class.
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
         /// <param name="logger">The application logger.</param>
-        public FixedCommissionAmountRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<FixedCommissionAmountRepository> logger)
+        public FramePriceRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<FramePriceRepository> logger)
             : base(mandarinDbContext, mapper, logger)
         {
         }
@@ -52,7 +51,7 @@ namespace Mandarin.Database.Inventory
                             db =>
                             {
                                 var parameters = new { product_code = productCode };
-                                return db.QueryFirstOrDefaultAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetCommissionByProductCodeSql, parameters);
+                                return db.QueryFirstOrDefaultAsync<FramePriceRecord>(FramePriceRepository.GetFramePriceByProductCodeSql, parameters);
                             });
         }
 
@@ -72,22 +71,22 @@ namespace Mandarin.Database.Inventory
         public Task DeleteByProductCodeAsync(string productCode)
         {
             var parameters = new { product_code = productCode };
-            return this.Delete(FixedCommissionAmountRepository.DeleteCommissionSql, parameters);
+            return this.Delete(FramePriceRepository.DeleteFramePriceSql, parameters);
         }
 
         /// <inheritdoc/>
         protected override string ExtractDisplayKey(FramePrice value) => value.ProductCode;
 
         /// <inheritdoc/>
-        protected override Task<IEnumerable<FixedCommissionAmountRecord>> GetAllRecords(IDbConnection db)
+        protected override Task<IEnumerable<FramePriceRecord>> GetAllRecords(IDbConnection db)
         {
-            return db.QueryAsync<FixedCommissionAmountRecord>(FixedCommissionAmountRepository.GetAllCommissionsSql);
+            return db.QueryAsync<FramePriceRecord>(FramePriceRepository.GetAllFramePricesSql);
         }
 
         /// <inheritdoc/>
-        protected override async Task<FixedCommissionAmountRecord> UpsertRecordAsync(IDbConnection db, FixedCommissionAmountRecord record)
+        protected override async Task<FramePriceRecord> UpsertRecordAsync(IDbConnection db, FramePriceRecord record)
         {
-            await db.ExecuteAsync(FixedCommissionAmountRepository.UpsertCommissionSql, record);
+            await db.ExecuteAsync(FramePriceRepository.UpsertFramePriceSql, record);
             return record;
         }
     }

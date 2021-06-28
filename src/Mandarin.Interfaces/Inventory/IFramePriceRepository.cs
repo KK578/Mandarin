@@ -6,7 +6,7 @@ namespace Mandarin.Inventory
     /// <summary>
     /// Represents a repository that can retrieve and update details about <see cref="FramePrice"/>.
     /// </summary>
-    public interface IFixedCommissionAmountRepository
+    public interface IFramePriceRepository
     {
         /// <summary>
         /// Gets the <see cref="FramePrice"/> corresponding to the given product code.
