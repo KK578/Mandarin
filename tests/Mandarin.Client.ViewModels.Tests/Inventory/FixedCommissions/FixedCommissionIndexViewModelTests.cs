@@ -13,15 +13,15 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
 {
     public class FixedCommissionIndexViewModelTests
     {
-        private static readonly FixedCommissionAmount FixedCommissionAmount = new("TLM-001", 15.00M);
+        private static readonly FramePrice FramePrice = new("TLM-001", 15.00M);
         private static readonly Product Product = new("SquareId", "TLM-001", "Mandarin", "It's a Mandarin!", 45.00M);
 
-        private readonly Mock<IFixedCommissionService> fixedCommissionService = new();
+        private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IQueryableProductService> productService = new();
         private readonly MockNavigationManager navigationManager = new();
 
         private IFixedCommissionsIndexViewModel Subject =>
-            new FixedCommissionsIndexViewModel(this.fixedCommissionService.Object, this.productService.Object, this.navigationManager);
+            new FixedCommissionsIndexViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
 
         public class IsLoadingTests : FixedCommissionIndexViewModelTests
         {
@@ -34,8 +34,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             [Fact]
             public void ShouldBeTrueWhilstExecuting()
             {
-                var tcs = new TaskCompletionSource<IReadOnlyList<FixedCommissionAmount>>();
-                this.fixedCommissionService.Setup(x => x.GetFixedCommissionAsync()).Returns(tcs.Task);
+                var tcs = new TaskCompletionSource<IReadOnlyList<FramePrice>>();
+                this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).Returns(tcs.Task);
 
                 var subject = this.Subject;
                 var executingTask = subject.LoadData.Execute().ToTask();
@@ -47,7 +47,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             [Fact]
             public async Task ShouldBeFalseAfterLoadingFinishes()
             {
-                this.fixedCommissionService.Setup(x => x.GetFixedCommissionAsync()).ReturnsAsync(new List<FixedCommissionAmount>());
+                this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).ReturnsAsync(new List<FramePrice>());
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute();
@@ -67,10 +67,10 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             [Fact]
             public async Task ShouldBePresentAfterLoadDataIsExecuted()
             {
-                var data = new List<FixedCommissionAmount> { FixedCommissionIndexViewModelTests.FixedCommissionAmount };
-                this.fixedCommissionService.Setup(x => x.GetFixedCommissionAsync()).ReturnsAsync(data);
+                var data = new List<FramePrice> { FixedCommissionIndexViewModelTests.FramePrice };
+                this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).ReturnsAsync(data);
                 this.productService
-                    .Setup(x => x.GetProductByProductCodeAsync(FixedCommissionIndexViewModelTests.FixedCommissionAmount.ProductCode))
+                    .Setup(x => x.GetProductByProductCodeAsync(FixedCommissionIndexViewModelTests.FramePrice.ProductCode))
                     .ReturnsAsync(FixedCommissionIndexViewModelTests.Product);
 
                 var subject = this.Subject;

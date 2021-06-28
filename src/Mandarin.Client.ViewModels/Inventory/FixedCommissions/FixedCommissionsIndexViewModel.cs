@@ -15,7 +15,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
     /// <inheritdoc cref="IFixedCommissionsIndexViewModel" />
     internal sealed class FixedCommissionsIndexViewModel : ReactiveObject, IFixedCommissionsIndexViewModel
     {
-        private readonly IFixedCommissionService fixedCommissionService;
+        private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
 
@@ -25,12 +25,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionsIndexViewModel"/> class.
         /// </summary>
-        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FixedCommissionsIndexViewModel(IFixedCommissionService fixedCommissionService, IQueryableProductService productService, NavigationManager navigationManager)
+        public FixedCommissionsIndexViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
         {
-            this.fixedCommissionService = fixedCommissionService;
+            this.framePricesService = framePricesService;
             this.productService = productService;
             this.navigationManager = navigationManager;
 
@@ -69,14 +69,14 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 
         private IObservable<IReadOnlyCollection<IFixedCommissionsGridRowViewModel>> OnLoadData()
         {
-            return this.fixedCommissionService.GetFixedCommissionAsync()
+            return this.framePricesService.GetAllFramePricesAsync()
                        .ToObservable()
                        .SelectMany(x => x)
                        .SelectMany(CreateViewModel)
                        .ToList()
                        .Select(x => new ReadOnlyCollection<IFixedCommissionsGridRowViewModel>(x));
 
-            async Task<IFixedCommissionsGridRowViewModel> CreateViewModel(FixedCommissionAmount x)
+            async Task<IFixedCommissionsGridRowViewModel> CreateViewModel(FramePrice x)
             {
                 var product = await this.productService.GetProductByProductCodeAsync(x.ProductCode);
                 return new FixedCommissionsGridRowViewModel(x, product);

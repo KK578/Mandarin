@@ -6,17 +6,17 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
     /// <inheritdoc cref="IFixedCommissionsGridRowViewModel" />
     internal sealed class FixedCommissionsGridRowViewModel : ReactiveObject, IFixedCommissionsGridRowViewModel
     {
-        private readonly FixedCommissionAmount fixedCommissionAmount;
+        private readonly FramePrice framePrice;
         private readonly Product product;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionsGridRowViewModel"/> class.
         /// </summary>
-        /// <param name="fixedCommissionAmount">The domain model for the Fixed Commission Amount.</param>
+        /// <param name="framePrice">The domain model for the Fixed Commission Amount.</param>
         /// <param name="product">The domain model for the Product underlying the Fixed Commission Amount.</param>
-        public FixedCommissionsGridRowViewModel(FixedCommissionAmount fixedCommissionAmount, Product product)
+        public FixedCommissionsGridRowViewModel(FramePrice framePrice, Product product)
         {
-            this.fixedCommissionAmount = fixedCommissionAmount;
+            this.framePrice = framePrice;
             this.product = product;
         }
 
@@ -30,7 +30,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         public decimal? RetailPrice => this.product?.UnitPrice;
 
         /// <inheritdoc/>
-        public decimal FramePrice => this.fixedCommissionAmount.Amount;
+        public decimal FramePrice => this.framePrice.Amount;
 
         /// <inheritdoc/>
         public decimal? ArtistPrice => this.RetailPrice - this.FramePrice;

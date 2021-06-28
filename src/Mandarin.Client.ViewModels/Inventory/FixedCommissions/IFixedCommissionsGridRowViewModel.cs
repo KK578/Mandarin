@@ -3,7 +3,7 @@
 namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 {
     /// <summary>
-    /// Represents a <see cref="FixedCommissionAmount"/> for display in a grid.
+    /// Represents a <see cref="Mandarin.Inventory.FramePrice"/> for display in a grid.
     /// </summary>
     public interface IFixedCommissionsGridRowViewModel
     {

@@ -57,7 +57,7 @@ namespace Mandarin.Client.Services
 
             services.AddTransient<ICommissionService, MandarinGrpcCommissionService>();
             services.AddTransient<IEmailService, MandarinGrpcEmailService>();
-            services.AddTransient<IFixedCommissionService, MandarinGrpcFixedCommissionService>();
+            services.AddTransient<IFramePricesService, MandarinGrpcFramePricesService>();
             services.AddTransient<IQueryableProductService, MandarinGrpcProductService>();
             services.AddTransient<IProductService>(s => s.GetService<IQueryableProductService>());
             services.AddTransient<IStockistService, MandarinStockistGrpcService>();

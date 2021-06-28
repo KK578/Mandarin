@@ -3,16 +3,16 @@
 namespace Mandarin.Inventory
 {
     /// <summary>
-    /// Represents a partial amount on a sales that has a fixed portion of the sale as a separate fixed commission amount.
+    /// Represents a partial amount on a sale of a framed product, where the frame price is considered as separate to the Artist's commission purposes.
     /// </summary>
-    public class FixedCommissionAmount
+    public class FramePrice
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionAmount"/> class.
+        /// Initializes a new instance of the <see cref="FramePrice"/> class.
         /// </summary>
         /// <param name="productCode">Product's unique item code.</param>
         /// <param name="amount">Monetary amount to be considered purely as commission.</param>
-        public FixedCommissionAmount(string productCode, decimal amount)
+        public FramePrice(string productCode, decimal amount)
         {
             this.ProductCode = productCode;
             this.Amount = amount;

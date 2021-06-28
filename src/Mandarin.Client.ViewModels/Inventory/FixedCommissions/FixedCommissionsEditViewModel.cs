@@ -11,7 +11,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
     /// <inheritdoc cref="IFixedCommissionsEditViewModel"/>
     internal sealed class FixedCommissionsEditViewModel : ReactiveObject, IFixedCommissionsEditViewModel
     {
-        private readonly IFixedCommissionService fixedCommissionService;
+        private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
 
@@ -24,12 +24,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionsEditViewModel"/> class.
         /// </summary>
-        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FixedCommissionsEditViewModel(IFixedCommissionService fixedCommissionService, IQueryableProductService productService, NavigationManager navigationManager)
+        public FixedCommissionsEditViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
         {
-            this.fixedCommissionService = fixedCommissionService;
+            this.framePricesService = framePricesService;
             this.productService = productService;
             this.navigationManager = navigationManager;
 
@@ -78,15 +78,15 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 
         private async Task OnLoadData(string productCode)
         {
-            var existingCommission = await this.fixedCommissionService.GetFixedCommissionAsync(productCode);
+            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode);
             this.Product = await this.productService.GetProductByProductCodeAsync(productCode);
-            this.CommissionAmount = existingCommission.Amount;
+            this.CommissionAmount = existingFramePrice.Amount;
         }
 
         private async Task OnSave()
         {
-            var fixedCommissionAmount = new FixedCommissionAmount(this.Product.ProductCode, this.CommissionAmount.Value);
-            await this.fixedCommissionService.SaveFixedCommissionAsync(fixedCommissionAmount);
+            var fixedCommissionAmount = new FramePrice(this.Product.ProductCode, this.CommissionAmount.Value);
+            await this.framePricesService.SaveFramePriceAsync(fixedCommissionAmount);
         }
 
         private void OnCancel() => this.navigationManager.NavigateTo("/inventory/fixed-commissions");

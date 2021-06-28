@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Mandarin.Database.Inventory
 {
     /// <inheritdoc cref="IFixedCommissionAmountRepository" />
-    internal sealed class FixedCommissionAmountRepository : DatabaseRepositoryBase<FixedCommissionAmount, FixedCommissionAmountRecord>,
+    internal sealed class FixedCommissionAmountRepository : DatabaseRepositoryBase<FramePrice, FixedCommissionAmountRecord>,
                                                             IFixedCommissionAmountRepository
     {
         private const string GetCommissionByProductCodeSql = @"
@@ -46,7 +46,7 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FixedCommissionAmount> GetByProductCodeAsync(string productCode)
+        public Task<FramePrice> GetByProductCodeAsync(string productCode)
         {
             return this.Get(productCode,
                             db =>
@@ -57,15 +57,15 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FixedCommissionAmount>> GetAllAsync()
+        public Task<IReadOnlyList<FramePrice>> GetAllAsync()
         {
             return this.GetAll();
         }
 
         /// <inheritdoc/>
-        public Task<FixedCommissionAmount> SaveAsync(FixedCommissionAmount fixedCommissionAmount)
+        public Task<FramePrice> SaveAsync(FramePrice framePrice)
         {
-            return this.Upsert(fixedCommissionAmount);
+            return this.Upsert(framePrice);
         }
 
         /// <inheritdoc/>
@@ -76,7 +76,7 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        protected override string ExtractDisplayKey(FixedCommissionAmount value) => value.ProductCode;
+        protected override string ExtractDisplayKey(FramePrice value) => value.ProductCode;
 
         /// <inheritdoc/>
         protected override Task<IEnumerable<FixedCommissionAmountRecord>> GetAllRecords(IDbConnection db)

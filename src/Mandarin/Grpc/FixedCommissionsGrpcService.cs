@@ -14,34 +14,34 @@ namespace Mandarin.Grpc
     [Authorize]
     internal sealed class FixedCommissionsGrpcService : FramePricesBase
     {
-        private readonly IFixedCommissionService fixedCommissionService;
+        private readonly IFramePricesService framePricesService;
         private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixedCommissionsGrpcService"/> class.
         /// </summary>
-        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public FixedCommissionsGrpcService(IFixedCommissionService fixedCommissionService, IMapper mapper)
+        public FixedCommissionsGrpcService(IFramePricesService framePricesService, IMapper mapper)
         {
-            this.fixedCommissionService = fixedCommissionService;
+            this.framePricesService = framePricesService;
             this.mapper = mapper;
         }
 
         /// <inheritdoc/>
         public override async Task<GetAllFramePricesResponse> GetAllFramePrices(GetAllFramePricesRequest request, ServerCallContext context)
         {
-            var fixedCommissions = await this.fixedCommissionService.GetFixedCommissionAsync();
+            var framePrices = await this.framePricesService.GetAllFramePricesAsync();
             return new GetAllFramePricesResponse
             {
-                FramePrices = { this.mapper.Map<IEnumerable<FramePrice>>(fixedCommissions) },
+                FramePrices = { this.mapper.Map<IEnumerable<FramePrice>>(framePrices) },
             };
         }
 
         /// <inheritdoc/>
         public override async Task<GetFramePriceResponse> GetFramePrice(GetFramePriceRequest request, ServerCallContext context)
         {
-            var fixedCommission = await this.fixedCommissionService.GetFixedCommissionAsync(request.ProductCode);
+            var fixedCommission = await this.framePricesService.GetFramePriceAsync(request.ProductCode);
             return new GetFramePriceResponse
             {
                 FramePrice = this.mapper.Map<FramePrice>(fixedCommission),
@@ -51,8 +51,8 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<SaveFramePriceResponse> SaveFramePrice(SaveFramePriceRequest request, ServerCallContext context)
         {
-            var fixedCommission = this.mapper.Map<Inventory.FixedCommissionAmount>(request.FramePrice);
-            await this.fixedCommissionService.SaveFixedCommissionAsync(fixedCommission);
+            var fixedCommission = this.mapper.Map<Inventory.FramePrice>(request.FramePrice);
+            await this.framePricesService.SaveFramePriceAsync(fixedCommission);
 
             return new SaveFramePriceResponse();
         }
@@ -60,7 +60,7 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<DeleteFramePriceResponse> DeleteFramePrice(DeleteFramePriceRequest request, ServerCallContext context)
         {
-            await this.fixedCommissionService.DeleteFixedCommissionAsync(request.ProductCode);
+            await this.framePricesService.DeleteFramePriceAsync(request.ProductCode);
             return new DeleteFramePriceResponse();
         }
     }
