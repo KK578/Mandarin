@@ -17,7 +17,7 @@
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.36.0" />
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.38.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
