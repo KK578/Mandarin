@@ -1,4 +1,4 @@
-using AutoMapper;
+using Elastic.Apm.NetCoreAll;
 using Mandarin.Configuration;
 using Mandarin.Database;
 using Mandarin.Database.Converters;
@@ -89,7 +89,7 @@ namespace Mandarin
                 app.UseHsts();
             }
 
-            app.SafeUseAllElasticApm(this.configuration);
+            app.UseAllElasticApm(this.configuration);
             app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
