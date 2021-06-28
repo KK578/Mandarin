@@ -1,0 +1,51 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Mandarin.Api.Inventory";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.inventory";
+
+package uk.co.thelittlemandarin;
+
+// The frame prices service definition.
+service FramePrices {
+  rpc GetAllFramePrices (GetAllFramePricesRequest) returns (GetAllFramePricesResponse);
+  rpc GetFramePrice (GetFramePriceRequest) returns (GetFramePriceResponse);
+  rpc SaveFramePrice (SaveFramePriceRequest) returns (SaveFramePriceResponse);
+  rpc DeleteFramePrice (DeleteFramePriceRequest) returns (DeleteFramePriceResponse);
+}
+
+message GetAllFramePricesRequest {
+}
+
+message GetAllFramePricesResponse {
+  repeated FramePrice framePrices = 1;
+}
+
+message GetFramePriceRequest {
+  string productCode = 1;
+}
+
+message GetFramePriceResponse {
+  FramePrice framePrice = 1;
+}
+
+message SaveFramePriceRequest {
+  FramePrice framePrice = 1;
+}
+
+message SaveFramePriceResponse {
+}
+
+message DeleteFramePriceRequest {
+  string productCode = 1;
+}
+
+message DeleteFramePriceResponse {
+}
+
+
+message FramePrice {
+  string productCode = 1;
+  google.protobuf.DoubleValue amount = 2;
+}

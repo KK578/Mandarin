@@ -109,7 +109,7 @@ namespace Mandarin
             {
                 endpoints.MapGrpcService<CommissionsGrpcService>();
                 endpoints.MapGrpcService<EmailGrpcService>();
-                endpoints.MapGrpcService<FixedCommissionsGrpcService>();
+                endpoints.MapGrpcService<FramePricesGrpcService>();
                 endpoints.MapGrpcService<ProductsGrpcService>();
                 endpoints.MapGrpcService<StockistsGrpcService>();
                 endpoints.MapFallbackToFile("index.html");

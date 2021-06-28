@@ -21,18 +21,18 @@ namespace Mandarin.Services.Tests.Transactions
 
         private readonly Mock<IQueryableProductService> productService;
         private readonly MandarinConfiguration configuration;
-        private readonly Mock<IFixedCommissionService> fixedCommissionAmountService;
+        private readonly Mock<IFramePricesService> framePricesService;
 
         public TransactionMapperTests()
         {
             this.productService = new Mock<IQueryableProductService>();
             this.configuration = new MandarinConfiguration();
-            this.fixedCommissionAmountService = new Mock<IFixedCommissionService>();
+            this.framePricesService = new Mock<IFramePricesService>();
         }
 
         private ITransactionMapper Subject =>
             new TransactionMapper(this.productService.Object,
-                                  this.fixedCommissionAmountService.Object,
+                                  this.framePricesService.Object,
                                   Options.Create(this.configuration));
 
 
@@ -43,9 +43,9 @@ namespace Mandarin.Services.Tests.Transactions
             this.productService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
         }
 
-        private void GivenFixedCommissionAmountExists(Product product, FixedCommissionAmount fixedCommissionAmount)
+        private void GivenFramePriceExists(Product product, FramePrice framePrice)
         {
-            this.fixedCommissionAmountService.Setup(x => x.GetFixedCommissionAsync(product.ProductCode)).ReturnsAsync(fixedCommissionAmount);
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode)).ReturnsAsync(framePrice);
         }
 
         private void GivenConfigurationWithMappings(Product product, Product mappedProduct)
@@ -141,12 +141,12 @@ namespace Mandarin.Services.Tests.Transactions
             }
 
             [Fact]
-            public async Task ShouldIncludeTheFixedCommissionAmountsAsATransaction()
+            public async Task ShouldIncludeTheFramePriceAsATransaction()
             {
                 var product = TestData.Create<Product>();
-                var fixedCommission = new FixedCommissionAmount(product.ProductCode, 1.00m);
+                var framePrice = new FramePrice(product.ProductCode, 1.00m);
                 this.GivenInventoryServiceSetUpWithProduct(product);
-                this.GivenFixedCommissionAmountExists(product, fixedCommission);
+                this.GivenFramePriceExists(product, framePrice);
                 var order = this.GivenOrderProductAsLineItem(product);
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
 

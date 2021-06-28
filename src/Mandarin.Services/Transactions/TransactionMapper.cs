@@ -17,21 +17,21 @@ namespace Mandarin.Services.Transactions
     internal sealed class TransactionMapper : ITransactionMapper
     {
         private readonly IQueryableProductService productService;
-        private readonly IFixedCommissionService fixedCommissionService;
+        private readonly IFramePricesService framePricesService;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
         /// </summary>
         /// <param name="productService">The application service for interacting with products.</param>
-        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
         public TransactionMapper(IQueryableProductService productService,
-                                 IFixedCommissionService fixedCommissionService,
+                                 IFramePricesService framePricesService,
                                  IOptions<MandarinConfiguration> mandarinConfiguration)
         {
             this.productService = productService;
-            this.fixedCommissionService = fixedCommissionService;
+            this.framePricesService = framePricesService;
             this.mandarinConfiguration = mandarinConfiguration;
         }
 
@@ -65,25 +65,25 @@ namespace Mandarin.Services.Transactions
                        .ToObservable()
                        .SelectMany(product =>
                        {
-                           return this.fixedCommissionService.GetFixedCommissionAsync(product.ProductCode)
+                           return this.framePricesService.GetFramePriceAsync(product.ProductCode)
                                       .ToObservable()
-                                      .SelectMany(fixedCommissionAmount => Create(product, fixedCommissionAmount));
+                                      .SelectMany(framePrice => Create(product, framePrice));
                        });
 
-            IEnumerable<Subtransaction> Create(Product product, FixedCommissionAmount fixedCommissionAmount)
+            IEnumerable<Subtransaction> Create(Product product, FramePrice framePrice)
             {
-                if (fixedCommissionAmount != null)
+                if (framePrice != null)
                 {
                     var quantity = int.Parse(orderLineItem.Quantity);
-                    var commissionSubtotal = fixedCommissionAmount.Amount;
+                    var commissionSubtotal = framePrice.Amount;
                     var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
                     yield return new Subtransaction(product, quantity, subTotal);
-                    yield return new Subtransaction(new Product("TLM-" + fixedCommissionAmount.ProductCode,
-                                                                "TLM-" + fixedCommissionAmount.ProductCode,
-                                                                $"Frame for {fixedCommissionAmount.ProductCode}",
+                    yield return new Subtransaction(new Product("TLM-" + framePrice.ProductCode,
+                                                                "TLM-" + framePrice.ProductCode,
+                                                                $"Frame for {framePrice.ProductCode}",
                                                                 null,
-                                                                fixedCommissionAmount.Amount),
+                                                                framePrice.Amount),
                                                     quantity,
                                                     quantity * commissionSubtotal);
                 }

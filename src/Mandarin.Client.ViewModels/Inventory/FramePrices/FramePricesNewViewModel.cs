@@ -10,12 +10,12 @@ using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
 using ReactiveUI;
 
-namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
+namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
-    /// <inheritdoc cref="IFixedCommissionsNewViewModel"/>
-    internal sealed class FixedCommissionsNewViewModel : ReactiveObject, IFixedCommissionsNewViewModel
+    /// <inheritdoc cref="IFramePricesNewViewModel"/>
+    internal sealed class FramePricesNewViewModel : ReactiveObject, IFramePricesNewViewModel
     {
-        private readonly IFixedCommissionService fixedCommissionService;
+        private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
 
@@ -23,17 +23,17 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         private readonly ObservableAsPropertyHelper<decimal?> productAmount;
         private readonly ObservableAsPropertyHelper<decimal?> stockistAmount;
         private Product selectedProduct;
-        private decimal? amount;
+        private decimal? frameAmount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionsNewViewModel"/> class.
+        /// Initializes a new instance of the <see cref="FramePricesNewViewModel"/> class.
         /// </summary>
-        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FixedCommissionsNewViewModel(IFixedCommissionService fixedCommissionService, IQueryableProductService productService, NavigationManager navigationManager)
+        public FramePricesNewViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
         {
-            this.fixedCommissionService = fixedCommissionService;
+            this.framePricesService = framePricesService;
             this.productService = productService;
             this.navigationManager = navigationManager;
 
@@ -41,12 +41,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
             this.Products = new ReadOnlyObservableCollection<Product>(products);
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
-            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.SelectedProduct, vm => vm.CommissionAmount)
+            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.SelectedProduct, vm => vm.FrameAmount)
                                                                         .Select(tuple => tuple.Item1 != null && tuple.Item2.HasValue));
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
             this.productAmount = this.WhenAnyValue(vm => vm.SelectedProduct).WhereNotNull().Select(p => p.UnitPrice).ToProperty(this, x => x.ProductAmount);
-            this.stockistAmount = this.WhenAnyValue(vm => vm.ProductAmount, vm => vm.CommissionAmount, (p, c) => p - c).ToProperty(this, x => x.StockistAmount);
+            this.stockistAmount = this.WhenAnyValue(vm => vm.ProductAmount, vm => vm.FrameAmount, (p, c) => p - c).ToProperty(this, x => x.StockistAmount);
             this.isLoading = this.LoadData.IsExecuting.ToProperty(this, x => x.IsLoading);
             this.LoadData.Subscribe(x => products.Reset(x));
         }
@@ -74,10 +74,10 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         }
 
         /// <inheritdoc/>
-        public decimal? CommissionAmount
+        public decimal? FrameAmount
         {
-            get => this.amount;
-            set => this.RaiseAndSetIfChanged(ref this.amount, value);
+            get => this.frameAmount;
+            set => this.RaiseAndSetIfChanged(ref this.frameAmount, value);
         }
 
         /// <inheritdoc/>
@@ -93,12 +93,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
 
         private async Task OnSave()
         {
-            var fixedCommissionAmount = new FixedCommissionAmount(this.SelectedProduct.ProductCode, this.CommissionAmount.Value);
-            await this.fixedCommissionService.SaveFixedCommissionAsync(fixedCommissionAmount);
+            var framePrice = new FramePrice(this.SelectedProduct.ProductCode, this.FrameAmount.Value);
+            await this.framePricesService.SaveFramePriceAsync(framePrice);
 
-            this.navigationManager.NavigateTo($"/inventory/fixed-commissions/edit/{this.selectedProduct.ProductCode}");
+            this.navigationManager.NavigateTo($"/inventory/frame-prices/edit/{this.selectedProduct.ProductCode}");
         }
 
-        private void OnCancel() => this.navigationManager.NavigateTo("/inventory/fixed-commissions");
+        private void OnCancel() => this.navigationManager.NavigateTo("/inventory/frame-prices");
     }
 }

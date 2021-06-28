@@ -3,7 +3,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using Mandarin.Client.ViewModels.Inventory.FixedCommissions;
+using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
 using Mandarin.Tests.Data.Extensions;
@@ -11,31 +11,29 @@ using Microsoft.AspNetCore.Components;
 using Moq;
 using Xunit;
 
-namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
+namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
-    public class FixedCommissionsEditViewModelTests
+    public class FramePricesEditViewModelTests
     {
         private readonly Fixture fixture = new();
-        private readonly Mock<IFixedCommissionService> fixedCommissionService = new();
+        private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IQueryableProductService> productService = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
 
-        private IFixedCommissionsEditViewModel Subject =>
-            new FixedCommissionsEditViewModel(this.fixedCommissionService.Object,
-                                             this.productService.Object,
-                                             this.navigationManager);
+        private IFramePricesEditViewModel Subject =>
+            new FramePricesEditViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
 
         private void GivenServicesReturnProduct(Product product, decimal? commission = null)
         {
             commission ??= this.fixture.Create<decimal>();
 
             this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-            this.fixedCommissionService.Setup(x => x.GetFixedCommissionAsync(product.ProductCode))
-                .ReturnsAsync(new FixedCommissionAmount(product.ProductCode, commission.Value));
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode))
+                .ReturnsAsync(new FramePrice(product.ProductCode, commission.Value));
         }
 
 
-        public class IsLoadingTests : FixedCommissionsEditViewModelTests
+        public class IsLoadingTests : FramePricesEditViewModelTests
         {
             [Fact]
             public void ShouldBeFalseOnConstruction()
@@ -61,8 +59,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             {
                 var product = this.fixture.Create<Product>();
                 this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-                this.fixedCommissionService.Setup(x => x.GetFixedCommissionAsync(product.ProductCode))
-                    .ReturnsAsync(this.fixture.Create<FixedCommissionAmount>());
+                this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode))
+                    .ReturnsAsync(this.fixture.Create<FramePrice>());
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute(product.ProductCode);
@@ -71,7 +69,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             }
         }
 
-        public class AmountTests : FixedCommissionsEditViewModelTests
+        public class AmountTests : FramePricesEditViewModelTests
         {
             [Fact]
             public void StockistAmountShouldAutomaticallyUpdateOnAmountChanging()
@@ -84,12 +82,12 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
                 subject.LoadData.Execute(product.ProductCode);
                 subject.StockistAmount.Should().Be(140.00M);
 
-                subject.CommissionAmount = 20.00M;
+                subject.FrameAmount = 20.00M;
                 subject.StockistAmount.Should().Be(130.00M);
             }
         }
 
-        public class CancelTests : FixedCommissionsEditViewModelTests
+        public class CancelTests : FramePricesEditViewModelTests
         {
             [Fact]
             public async Task ShouldBeExecutableOnConstruction()
@@ -102,11 +100,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldNavigateToIndexOnCancel()
             {
                 await this.Subject.Cancel.Execute();
-                this.navigationManager.Uri.Should().EndWith("/inventory/fixed-commissions");
+                this.navigationManager.Uri.Should().EndWith("/inventory/frame-prices");
             }
         }
 
-        public class SaveTests : FixedCommissionsEditViewModelTests
+        public class SaveTests : FramePricesEditViewModelTests
         {
             private readonly Product product;
 
@@ -129,7 +127,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute(this.product.ProductCode);
-                subject.CommissionAmount = this.fixture.Create<decimal>();
+                subject.FrameAmount = this.fixture.Create<decimal>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeTrue();
@@ -142,16 +140,16 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute(this.product.ProductCode);
-                subject.CommissionAmount = 20.00M;
+                subject.FrameAmount = 20.00M;
 
-                this.fixedCommissionService.Setup(x => x.SaveFixedCommissionAsync(It.IsAny<FixedCommissionAmount>()))
+                this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()))
                     .Returns(Task.CompletedTask)
                     .Verifiable();
 
                 await subject.Save.Execute();
-                this.fixedCommissionService.Verify(x => x.SaveFixedCommissionAsync(It.Is<FixedCommissionAmount>(amount =>
-                                                                                       amount.ProductCode == this.product.ProductCode &&
-                                                                                       amount.Amount == 20.00M)));
+                this.framePricesService.Verify(x => x.SaveFramePriceAsync(It.Is<FramePrice>(amount =>
+                                                                                                amount.ProductCode == this.product.ProductCode &&
+                                                                                                amount.Amount == 20.00M)));
             }
         }
     }

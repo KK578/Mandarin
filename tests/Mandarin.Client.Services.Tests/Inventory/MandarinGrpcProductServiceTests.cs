@@ -26,8 +26,8 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToRetrieveAllProducts()
         {
-            var fixedCommissionAmounts = await this.Subject.GetAllProductsAsync();
-            fixedCommissionAmounts.Should().HaveCount(4);
+            var products = await this.Subject.GetAllProductsAsync();
+            products.Should().HaveCount(4);
         }
 
         [Fact]

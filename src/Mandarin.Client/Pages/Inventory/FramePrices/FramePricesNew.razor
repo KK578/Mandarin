@@ -1,11 +1,11 @@
-﻿@page "/inventory/fixed-commissions/new"
+﻿@page "/inventory/frame-prices/new"
 @using Mandarin.Inventory
 @using System.Reactive.Linq
-@inherits ReactiveInjectableComponentBase<IFixedCommissionsNewViewModel>
+@inherits ReactiveInjectableComponentBase<IFramePricesNewViewModel>
 
 <Card>
   <CardHeader>
-    <CardTitle>New Fixed Commission</CardTitle>
+    <CardTitle>New Frame Price</CardTitle>
     <CardActions Float="Float.Right">
       <ReactiveButton ReactiveCommand="@ViewModel!.Save" Color="Color.Primary">Save</ReactiveButton>
       <ReactiveButton ReactiveCommand="@ViewModel!.Cancel" Color="Color.Danger">Cancel</ReactiveButton>
@@ -35,7 +35,7 @@
             <Addons>
               <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.CommissionAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
+                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.FrameAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
                   <Feedback><ValidationError/></Feedback>
                 </NumericEdit>
               </Addon>

@@ -10,32 +10,32 @@ using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
 using ReactiveUI;
 
-namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
+namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
-    /// <inheritdoc cref="IFixedCommissionsIndexViewModel" />
-    internal sealed class FixedCommissionsIndexViewModel : ReactiveObject, IFixedCommissionsIndexViewModel
+    /// <inheritdoc cref="IFramePricesIndexViewModel" />
+    internal sealed class FramePricesIndexViewModel : ReactiveObject, IFramePricesIndexViewModel
     {
-        private readonly IFixedCommissionService fixedCommissionService;
+        private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
-        private IFixedCommissionsGridRowViewModel selectedRow;
+        private IFramePriceGridRowViewModel selectedRow;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedCommissionsIndexViewModel"/> class.
+        /// Initializes a new instance of the <see cref="FramePricesIndexViewModel"/> class.
         /// </summary>
-        /// <param name="fixedCommissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FixedCommissionsIndexViewModel(IFixedCommissionService fixedCommissionService, IQueryableProductService productService, NavigationManager navigationManager)
+        public FramePricesIndexViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
         {
-            this.fixedCommissionService = fixedCommissionService;
+            this.framePricesService = framePricesService;
             this.productService = productService;
             this.navigationManager = navigationManager;
 
-            var rows = new ObservableCollection<IFixedCommissionsGridRowViewModel>();
-            this.Rows = new ReadOnlyObservableCollection<IFixedCommissionsGridRowViewModel>(rows);
+            var rows = new ObservableCollection<IFramePriceGridRowViewModel>();
+            this.Rows = new ReadOnlyObservableCollection<IFramePriceGridRowViewModel>(rows);
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
             this.CreateNew = ReactiveCommand.Create(this.OnCreateNew);
@@ -49,7 +49,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         public bool IsLoading => this.isLoading.Value;
 
         /// <inheritdoc/>
-        public ReactiveCommand<Unit, IReadOnlyCollection<IFixedCommissionsGridRowViewModel>> LoadData { get; }
+        public ReactiveCommand<Unit, IReadOnlyCollection<IFramePriceGridRowViewModel>> LoadData { get; }
 
         /// <inheritdoc/>
         public ReactiveCommand<Unit, Unit> CreateNew { get; }
@@ -58,33 +58,33 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         public ReactiveCommand<Unit, Unit> EditSelected { get; }
 
         /// <inheritdoc/>
-        public ReadOnlyObservableCollection<IFixedCommissionsGridRowViewModel> Rows { get; }
+        public ReadOnlyObservableCollection<IFramePriceGridRowViewModel> Rows { get; }
 
         /// <inheritdoc/>
-        public IFixedCommissionsGridRowViewModel SelectedRow
+        public IFramePriceGridRowViewModel SelectedRow
         {
             get => this.selectedRow;
             set => this.RaiseAndSetIfChanged(ref this.selectedRow, value);
         }
 
-        private IObservable<IReadOnlyCollection<IFixedCommissionsGridRowViewModel>> OnLoadData()
+        private IObservable<IReadOnlyCollection<IFramePriceGridRowViewModel>> OnLoadData()
         {
-            return this.fixedCommissionService.GetFixedCommissionAsync()
+            return this.framePricesService.GetAllFramePricesAsync()
                        .ToObservable()
                        .SelectMany(x => x)
                        .SelectMany(CreateViewModel)
                        .ToList()
-                       .Select(x => new ReadOnlyCollection<IFixedCommissionsGridRowViewModel>(x));
+                       .Select(x => new ReadOnlyCollection<IFramePriceGridRowViewModel>(x));
 
-            async Task<IFixedCommissionsGridRowViewModel> CreateViewModel(FixedCommissionAmount x)
+            async Task<IFramePriceGridRowViewModel> CreateViewModel(FramePrice x)
             {
                 var product = await this.productService.GetProductByProductCodeAsync(x.ProductCode);
-                return new FixedCommissionsGridRowViewModel(x, product);
+                return new FramePriceGridRowViewModel(x, product);
             }
         }
 
-        private void OnCreateNew() => this.navigationManager.NavigateTo("/inventory/fixed-commissions/new");
+        private void OnCreateNew() => this.navigationManager.NavigateTo("/inventory/frame-prices/new");
 
-        private void OnEditSelected() => this.navigationManager.NavigateTo($"/inventory/fixed-commissions/edit/{this.SelectedRow.ProductCode}");
+        private void OnEditSelected() => this.navigationManager.NavigateTo($"/inventory/frame-prices/edit/{this.SelectedRow.ProductCode}");
     }
 }

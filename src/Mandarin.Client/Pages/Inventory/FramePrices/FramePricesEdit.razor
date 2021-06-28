@@ -1,10 +1,10 @@
-﻿@page "/inventory/fixed-commissions/edit/{ProductCode}"
+﻿@page "/inventory/frame-prices/edit/{ProductCode}"
 @using System.Reactive.Linq
-@inherits ReactiveInjectableComponentBase<IFixedCommissionsEditViewModel>
+@inherits ReactiveInjectableComponentBase<IFramePricesEditViewModel>
 
 <Card>
   <CardHeader>
-    <CardTitle>Update Fixed Commission for @ProductCode</CardTitle>
+    <CardTitle>Update Frame Price for @ProductCode</CardTitle>
     <CardActions Float="Float.Right">
       <ReactiveButton ReactiveCommand="@ViewModel!.Save" Color="Color.Primary">Save</ReactiveButton>
       <ReactiveButton ReactiveCommand="@ViewModel!.Cancel" Color="Color.Danger">Cancel</ReactiveButton>
@@ -31,7 +31,7 @@
             <Addons>
               <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.CommissionAmount" Disabled="@(ViewModel!.Product == null)">
+                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.FrameAmount" Disabled="@(ViewModel!.Product == null)">
                   <Feedback><ValidationError/></Feedback>
                 </NumericEdit>
               </Addon>
