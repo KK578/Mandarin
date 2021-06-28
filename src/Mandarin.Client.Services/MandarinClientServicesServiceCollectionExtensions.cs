@@ -14,7 +14,7 @@ using Mandarin.Stockists;
 using Microsoft.Extensions.DependencyInjection;
 using static Mandarin.Api.Commissions.Commissions;
 using static Mandarin.Api.Emails.Emails;
-using static Mandarin.Api.Inventory.FixedCommissions;
+using static Mandarin.Api.Inventory.FramePrices;
 using static Mandarin.Api.Inventory.Products;
 using static Mandarin.Api.Stockists.Stockists;
 
@@ -51,7 +51,7 @@ namespace Mandarin.Client.Services
 
             AddMandarinGrpcClient<CommissionsClient>();
             AddMandarinGrpcClient<EmailsClient>();
-            AddMandarinGrpcClient<FixedCommissionsClient>();
+            AddMandarinGrpcClient<FramePricesClient>();
             AddMandarinGrpcClient<ProductsClient>();
             AddMandarinGrpcClient<StockistsClient>();
 
