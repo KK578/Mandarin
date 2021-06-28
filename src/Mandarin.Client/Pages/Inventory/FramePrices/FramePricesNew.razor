@@ -33,7 +33,7 @@
           <Field ColumnSize="ColumnSize.Is4">
             <FieldLabel>Frame Price</FieldLabel>
             <Addons>
-              <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
+              <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
                 <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.FrameAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
                   <Feedback><ValidationError/></Feedback>
@@ -45,7 +45,7 @@
           <Field ColumnSize="ColumnSize.Is4">
             <FieldLabel>Retail Price</FieldLabel>
             <Addons>
-              <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
+              <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
                 <NumericEdit TValue="decimal?" Value="@ViewModel!.ProductAmount" ReadOnly="true" Disabled="true">
                   <Feedback><ValidationError/></Feedback>
@@ -57,7 +57,7 @@
           <Field ColumnSize="ColumnSize.Is4">
             <FieldLabel>Artist Price</FieldLabel>
             <Addons>
-              <Addon AddonType="AddonType.Start"><AddonLabel Class="w-12">£</AddonLabel></Addon>
+              <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
                 <NumericEdit TValue="decimal?" Value="@ViewModel!.StockistAmount" ReadOnly="true" Disabled="true">
                   <Feedback><ValidationError/></Feedback>

@@ -109,7 +109,7 @@ else
           <Field>
             <Addons>
               <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
+                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
                 <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
@@ -123,7 +123,7 @@ else
           <Field>
             <Addons>
               <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
+                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
                 <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
@@ -137,7 +137,7 @@ else
           <Field>
             <Addons>
               <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
+                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
                 <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
@@ -151,7 +151,7 @@ else
           <Field>
             <Addons>
               <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12"><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
+                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
                 <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
@@ -165,7 +165,7 @@ else
           <Field>
             <Addons>
               <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12"><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
+                <AddonLabel><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
                 <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!StockistIsDisplayed || !isEditing)">
@@ -183,7 +183,7 @@ else
           <Field>
             <Addons>
               <Addon AddonType="AddonType.Start">
-                <AddonLabel Class="w-12">%</AddonLabel>
+                <AddonLabel>%</AddonLabel>
               </Addon>
               <Addon AddonType="AddonType.Body">
                 <NumericEdit Min="0" Max="100" @bind-Value="@Commission.Rate" Disabled="@(!isEditing)">
