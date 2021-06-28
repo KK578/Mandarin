@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Content Update="package.json" CopyToPublishDirectory="Never" />
+    <Content Update="package-lock.json" CopyToPublishDirectory="Never" />
     <None Include="wwwroot\css\Main.css" />
   </ItemGroup>
 
