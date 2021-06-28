@@ -19,8 +19,6 @@ BuildInformation.json
 *.sass.map
 *.scss.map
 
-**/wwwroot/css/
-
 ############################################
 # End of https://www.gitignore.io/api/sass #
 ############################################

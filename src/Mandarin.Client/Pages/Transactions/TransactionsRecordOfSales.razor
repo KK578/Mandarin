@@ -9,7 +9,7 @@
 @inject IViewModelFactory viewModelFactory;
 
 <EditForm EditContext="@DatePickerEditContext">
-  <Card Class="mb-4">
+  <Card Margin="Margin.Is2.FromBottom">
     <CardHeader>
       <CardTitle>Record of Sales - Select Month</CardTitle>
     </CardHeader>
@@ -31,12 +31,12 @@
 
 @if (RecordOfSales != null)
 {
-  <Card Class="mb-4">
+  <Card Margin="Margin.Is2.FromBottom">
     <CardHeader>
       <CardTitle>Sales by Artist Breakdown</CardTitle>
     </CardHeader>
     <CardBody>
-      <DataGrid Class="whitespace-no-wrap" Data="@RecordOfSales" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
+      <DataGrid Data="@RecordOfSales" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
         <DataGridCheckColumn TItem="IArtistRecordOfSalesViewModel" Field="SendSuccessful" Caption="Sent">
           <DisplayTemplate>
             <Check TValue="bool?" Checked="context.SendSuccessful" Disabled="true" ReadOnly="true" />
@@ -93,32 +93,28 @@
 
           <Validation>
             <Field>
-              <div class="flex flex-row items-center">
-                <FieldLabel>Custom Message:</FieldLabel>
-                <span class="flex-grow"></span>
-                <FieldLabel>
-                  <Dropdown RightAligned="true">
-                    <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
-                    <DropdownMenu>
-                      @foreach (var template in configuration.Value.RecordOfSaleMessageTemplates)
-                      {
-                        <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplateAsync(template))">@(template.Name)</DropdownItem>
-                      }
-                    </DropdownMenu>
-                  </Dropdown>
-                </FieldLabel>
-              </div>
+              <FieldLabel Float="Float.Left">Custom Message:</FieldLabel>
+              <FieldLabel Float="Float.Right">
+                <Dropdown RightAligned="true">
+                  <DropdownToggle Color="Color.Info">Select a Template...</DropdownToggle>
+                  <DropdownMenu>
+                    @foreach (var template in configuration.Value.RecordOfSaleMessageTemplates)
+                    {
+                      <DropdownItem Clicked="@(_ => RecordOfSalesModel.SetMessageFromTemplateAsync(template))">@(template.Name)</DropdownItem>
+                    }
+                  </DropdownMenu>
+                </Dropdown>
+              </FieldLabel>
               <MemoEdit Placeholder="Custom Message" Rows="10" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.CustomMessage" />
             </Field>
           </Validation>
         </Validations>
 
-        <CardActions Class="flex flex-row">
-          <Buttons>
-            <Button Clicked="@OnCloseSelectedCommission" Color="Color.Danger">Close</Button>
-            <Button Clicked="@RecordOfSalesModel.ToggleSentFlag" Color="Color.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</Button>
-          </Buttons>
-          <span class="flex-grow text-center self-center">@(RecordOfSalesModel.StatusMessage)</span>
+        <Alert Visible="@(!string.IsNullOrEmpty(RecordOfSalesModel.StatusMessage))" Color="Color.Secondary">@(RecordOfSalesModel.StatusMessage)</Alert>
+
+        <CardActions Float="Float.Right">
+          <Button Clicked="@OnCloseSelectedCommission" Color="Color.Danger">Close</Button>
+          <Button Clicked="@RecordOfSalesModel.ToggleSentFlag" Color="Color.Warning">@(RecordOfSalesModel.SendSuccessful ? "Unlock" : "Lock")</Button>
           <Button Type="@ButtonType.Submit" Color="Color.Primary" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)">Submit</Button>
         </CardActions>
       </CardBody>
