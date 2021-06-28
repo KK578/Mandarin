@@ -3,7 +3,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using Mandarin.Client.ViewModels.Inventory.FixedCommissions;
+using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
 using Mandarin.Tests.Data.Extensions;
@@ -20,8 +20,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
         private readonly Mock<IQueryableProductService> productService = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
 
-        private IFixedCommissionsEditViewModel Subject =>
-            new FixedCommissionsEditViewModel(this.framePricesService.Object,
+        private IFramePricesEditViewModel Subject =>
+            new FramePricesEditViewModel(this.framePricesService.Object,
                                              this.productService.Object,
                                              this.navigationManager);
 
@@ -84,7 +84,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
                 subject.LoadData.Execute(product.ProductCode);
                 subject.StockistAmount.Should().Be(140.00M);
 
-                subject.CommissionAmount = 20.00M;
+                subject.FrameAmount = 20.00M;
                 subject.StockistAmount.Should().Be(130.00M);
             }
         }
@@ -102,7 +102,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldNavigateToIndexOnCancel()
             {
                 await this.Subject.Cancel.Execute();
-                this.navigationManager.Uri.Should().EndWith("/inventory/fixed-commissions");
+                this.navigationManager.Uri.Should().EndWith("/inventory/frame-prices");
             }
         }
 
@@ -129,7 +129,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute(this.product.ProductCode);
-                subject.CommissionAmount = this.fixture.Create<decimal>();
+                subject.FrameAmount = this.fixture.Create<decimal>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeTrue();
@@ -142,7 +142,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute(this.product.ProductCode);
-                subject.CommissionAmount = 20.00M;
+                subject.FrameAmount = 20.00M;
 
                 this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()))
                     .Returns(Task.CompletedTask)

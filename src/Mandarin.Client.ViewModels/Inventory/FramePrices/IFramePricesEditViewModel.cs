@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Reactive;
+﻿using System.Reactive;
 using Mandarin.Inventory;
 using ReactiveUI;
 
-namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
+namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
     /// <summary>
-    /// Represents the ViewModel for the Fixed Commission Amounts Edit page.
+    /// Represents the ViewModel for editing an existing <see cref="FramePrice"/>.
     /// </summary>
-    public interface IFixedCommissionsEditViewModel : IReactiveObject
+    public interface IFramePricesEditViewModel : IReactiveObject
     {
         /// <summary>
         /// Gets a value indicating whether gets whether the ViewModel has finished initialisation.
@@ -22,24 +20,24 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         ReactiveCommand<string, Unit> LoadData { get; }
 
         /// <summary>
-        /// Gets the command to save the newly created Fixed Commission Amount.
+        /// Gets the command to save the updated <see cref="FramePrice"/>.
         /// </summary>
         ReactiveCommand<Unit, Unit> Save { get; }
 
         /// <summary>
-        /// Gets the command to cancel and go back to viewing existing Fixed Commission Amounts.
+        /// Gets the command to cancel and go back to viewing existing frame prices.
         /// </summary>
         ReactiveCommand<Unit, Unit> Cancel { get; }
 
         /// <summary>
-        /// Gets the product to apply this Fixed Commission Amount to.
+        /// Gets the product associates to the current <see cref="FramePrice"/> to.
         /// </summary>
         Product Product { get; }
 
         /// <summary>
-        /// Gets or sets the Fixed Commission Amount to apply to the selected product.
+        /// Gets or sets the frame price to be associated to the selected product.
         /// </summary>
-        decimal? CommissionAmount { get; set; }
+        decimal? FrameAmount { get; set; }
 
         /// <summary>
         /// Gets the total cost of the product.

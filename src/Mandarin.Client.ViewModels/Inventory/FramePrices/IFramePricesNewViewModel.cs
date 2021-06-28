@@ -4,12 +4,12 @@ using System.Reactive;
 using Mandarin.Inventory;
 using ReactiveUI;
 
-namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
+namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
     /// <summary>
-    /// Represents the ViewModel for the Fixed Commission Amounts New page.
+    /// Represents the ViewModel for creating a new <see cref="FramePrice"/>.
     /// </summary>
-    public interface IFixedCommissionsNewViewModel : IReactiveObject
+    public interface IFramePricesNewViewModel : IReactiveObject
     {
         /// <summary>
         /// Gets a value indicating whether gets whether the ViewModel has finished initialisation.
@@ -22,12 +22,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         ReactiveCommand<Unit, IReadOnlyList<Product>> LoadData { get; }
 
         /// <summary>
-        /// Gets the command to save the newly created Fixed Commission Amount.
+        /// Gets the command to save the newly created <see cref="FramePrice"/>.
         /// </summary>
         ReactiveCommand<Unit, Unit> Save { get; }
 
         /// <summary>
-        /// Gets the command to cancel and go back to viewing existing Fixed Commission Amounts.
+        /// Gets the command to cancel and go back to viewing existing frame prices.
         /// </summary>
         ReactiveCommand<Unit, Unit> Cancel { get; }
 
@@ -37,14 +37,14 @@ namespace Mandarin.Client.ViewModels.Inventory.FixedCommissions
         ReadOnlyObservableCollection<Product> Products { get; }
 
         /// <summary>
-        /// Gets or sets the selected product to apply this Fixed Commission Amount to.
+        /// Gets or sets the product to be associated to the new <see cref="FramePrice"/>.
         /// </summary>
         Product SelectedProduct { get; set; }
 
         /// <summary>
-        /// Gets or sets the Fixed Commission Amount to apply to the selected product.
+        /// Gets or sets the frame price to be associated to the selected product.
         /// </summary>
-        decimal? CommissionAmount { get; set; }
+        decimal? FrameAmount { get; set; }
 
         /// <summary>
         /// Gets the total cost of the product.

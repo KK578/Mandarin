@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Mandarin.Client.ViewModels.Inventory.FixedCommissions;
+using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Inventory;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
         [Fact]
         public void PropertiesShouldMatchExpected()
         {
-            var subject = new FixedCommissionsGridRowViewModel(FixedCommissionGridRowViewModelTests.FramePrice,
+            var subject = new FramePricesGridRowViewModel(FixedCommissionGridRowViewModelTests.FramePrice,
                                                                FixedCommissionGridRowViewModelTests.Product);
             subject.ProductCode.Should().Be("TLM-001");
             subject.ProductName.Should().Be("Mandarin");

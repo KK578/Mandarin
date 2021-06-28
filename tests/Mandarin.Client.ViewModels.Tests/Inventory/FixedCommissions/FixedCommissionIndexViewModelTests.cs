@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Mandarin.Client.ViewModels.Inventory.FixedCommissions;
+using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
 using Moq;
@@ -20,8 +20,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
         private readonly Mock<IQueryableProductService> productService = new();
         private readonly MockNavigationManager navigationManager = new();
 
-        private IFixedCommissionsIndexViewModel Subject =>
-            new FixedCommissionsIndexViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
+        private IFramePricesIndexViewModel Subject =>
+            new FramePricesIndexViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
 
         public class IsLoadingTests : FixedCommissionIndexViewModelTests
         {
@@ -93,7 +93,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldRedirectOnExecute()
             {
                 await this.Subject.CreateNew.Execute();
-                this.navigationManager.Uri.Should().Contain("/inventory/fixed-commissions/new");
+                this.navigationManager.Uri.Should().Contain("/inventory/frame-prices/new");
             }
         }
 
@@ -110,7 +110,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldBeExecutableOnceARowIsSelected()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFixedCommissionsGridRowViewModel>();
+                subject.SelectedRow = Mock.Of<IFramePricesGridRowViewModel>();
                 var result = await subject.EditSelected.CanExecute.FirstAsync();
                 result.Should().BeTrue();
             }
@@ -119,9 +119,9 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FixedCommissions
             public async Task ShouldRedirectOnExecute()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFixedCommissionsGridRowViewModel>(x => x.ProductCode == "TLM-001");
+                subject.SelectedRow = Mock.Of<IFramePricesGridRowViewModel>(x => x.ProductCode == "TLM-001");
                 await subject.EditSelected.Execute();
-                this.navigationManager.Uri.Should().Contain("/inventory/fixed-commissions/edit/TLM-001");
+                this.navigationManager.Uri.Should().Contain("/inventory/frame-prices/edit/TLM-001");
             }
         }
     }
