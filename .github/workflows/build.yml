@@ -43,14 +43,17 @@ jobs:
           dotnet-version: 5.0.100
 
       - name: "[Setup] Install node"
+        if: github.ref == 'refs/heads/develop'
         uses: actions/setup-node@v1
         with:
           node-version: '15.x'
 
       - name: "[Setup] Install gulp"
+        if: github.ref == 'refs/heads/develop'
         run: npm install -g gulp-cli
 
       - name: "[Build] npm install"
+        if: github.ref == 'refs/heads/develop'
         working-directory: src/Mandarin/
         run: npm install
 
@@ -76,6 +79,7 @@ jobs:
           Square__ApiKey: ${{ secrets.SQUARE__APIKEY }}
 
       - name: "[Deploy] Publish build"
+        if: github.ref == 'refs/heads/develop'
         run: |
           dotnet publish src/Mandarin/Mandarin.csproj \
             --no-restore \
@@ -92,12 +96,14 @@ jobs:
           echo $GitVersion_NuGetVersionV2 > publish/Version.txt
 
       - name: "[Deploy] Create Octopus BuildInformation.json"
+        if: github.ref == 'refs/heads/develop'
         working-directory: src/Mandarin/
         run: |
           gulp buildInformation
           mv BuildInformation.json ../../publish/
 
       - name: "[Deploy] Upload build artifact"
+        if: github.ref == 'refs/heads/develop'
         uses: actions/upload-artifact@v1
         with:
           name: Mandarin.Build
