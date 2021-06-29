@@ -23,6 +23,9 @@ namespace Mandarin.Database.Inventory
             FROM inventory.frame_price
             ORDER BY product_code";
 
+        private const string UpsertFramePriceSql = @"
+            CALL inventory.sp_frame_price_upsert(@product_code, @amount, @created_at)";
+
         private const string DeleteFramePriceSql = @"
             DELETE FROM inventory.frame_price
             WHERE product_code = @product_code";
@@ -80,12 +83,7 @@ namespace Mandarin.Database.Inventory
         /// <inheritdoc/>
         protected override async Task<FramePriceRecord> UpsertRecordAsync(IDbConnection db, FramePriceRecord record)
         {
-            var p = new DynamicParameters();
-            p.Add("product_code", record.product_code, DbType.String);
-            p.Add("amount", record.amount, DbType.VarNumeric);
-            p.Add("created_at", record.created_at, DbType.DateTime);
-
-            await db.ExecuteAsync("sp_frame_price_upsert", p, commandType: CommandType.StoredProcedure);
+            await db.ExecuteAsync(FramePriceRepository.UpsertFramePriceSql, record);
             return record;
         }
     }

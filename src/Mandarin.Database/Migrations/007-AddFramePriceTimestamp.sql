@@ -17,10 +17,10 @@ ALTER TABLE inventory.new_frame_price
     RENAME TO frame_price;
 
 
-CREATE OR REPLACE PROCEDURE sp_frame_price_upsert(
-    product_code varchar(12),
-    amount NUMERIC(6, 2),
-    created_at TIMESTAMP(3))
+CREATE OR REPLACE PROCEDURE inventory.sp_frame_price_upsert(
+    _product_code TEXT,
+    _amount NUMERIC,
+    _created_at TIMESTAMP)
     LANGUAGE plpgsql
 AS
 $$
