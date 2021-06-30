@@ -1,4 +1,5 @@
-﻿using System.Reactive.Linq;
+﻿using System;
+using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -29,7 +30,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 
             this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode))
-                .ReturnsAsync(new FramePrice(product.ProductCode, commission.Value));
+                .ReturnsAsync(new FramePrice
+                {
+                    ProductCode = product.ProductCode,
+                    Amount = commission.Value,
+                });
         }
 
 
@@ -120,6 +125,26 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 canExecute.Should().BeFalse();
             }
 
+            [Theory]
+            [InlineData(1)]
+            [InlineData(2)]
+            public async Task ShouldNotBeAbleToExecuteWhenAnyRequiredPropertiesIsNotSet(int i)
+            {
+                var subject = this.Subject;
+                if (i != 1)
+                {
+                    subject.FrameAmount = this.fixture.Create<decimal>();
+                }
+
+                if (i != 2)
+                {
+                    subject.CreatedAt = this.fixture.Create<DateTime>();
+                }
+
+                var canExecute = await subject.Save.CanExecute.FirstAsync();
+                canExecute.Should().BeFalse();
+            }
+
             [Fact]
             public async Task ShouldBeAbleToExecuteWhenProductAndCommissionAreSet()
             {
@@ -128,6 +153,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var subject = this.Subject;
                 await subject.LoadData.Execute(this.product.ProductCode);
                 subject.FrameAmount = this.fixture.Create<decimal>();
+                subject.CreatedAt = this.fixture.Create<DateTime>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeTrue();
@@ -141,15 +167,19 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var subject = this.Subject;
                 await subject.LoadData.Execute(this.product.ProductCode);
                 subject.FrameAmount = 20.00M;
+                subject.CreatedAt = new DateTime(2021, 06, 30);
 
                 this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()))
                     .Returns(Task.CompletedTask)
                     .Verifiable();
 
                 await subject.Save.Execute();
-                this.framePricesService.Verify(x => x.SaveFramePriceAsync(It.Is<FramePrice>(amount =>
-                                                                                                amount.ProductCode == this.product.ProductCode &&
-                                                                                                amount.Amount == 20.00M)));
+                this.framePricesService.Verify(x => x.SaveFramePriceAsync(new FramePrice
+                {
+                    ProductCode = this.product.ProductCode,
+                    Amount = 20.00M,
+                    CreatedAt = new DateTime(2021, 06, 30),
+                }));
             }
         }
     }

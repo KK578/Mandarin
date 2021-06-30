@@ -28,7 +28,12 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToAddAndRoundTripANewFramePrice()
         {
-            var framePrice = new FramePrice("OM19-001", 15.00M, new DateTime(2021, 06, 30));
+            var framePrice = new FramePrice
+            {
+                ProductCode = "OM19-001",
+                Amount = 15.00M,
+                CreatedAt = new DateTime(2021, 06, 30),
+            };
             await this.Subject.SaveFramePriceAsync(framePrice);
 
             var newFramePrice = await this.Subject.GetFramePriceAsync("OM19-001");
@@ -43,7 +48,12 @@ namespace Mandarin.Client.Services.Tests.Inventory
             existingFramePrice.CreatedAt.Should().Be(new DateTime(2019, 06, 01));
             existingFramePrice.ActiveUntil.Should().BeNull();
 
-            var newFramePrice = new FramePrice("KT20-001F", 25.00M, new DateTime(2021, 06, 30));
+            var newFramePrice = new FramePrice
+            {
+                ProductCode = "KT20-001F",
+                Amount = 25.00M,
+                CreatedAt = new DateTime(2021, 06, 30),
+            };
             await this.Subject.SaveFramePriceAsync(newFramePrice);
 
             existingFramePrice = await this.Subject.GetFramePriceAsync("KT20-001F");

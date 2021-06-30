@@ -144,7 +144,11 @@ namespace Mandarin.Services.Tests.Transactions
             public async Task ShouldIncludeTheFramePriceAsATransaction()
             {
                 var product = TestData.Create<Product>();
-                var framePrice = new FramePrice(product.ProductCode, 1.00m);
+                var framePrice = new FramePrice
+                {
+                    ProductCode = product.ProductCode,
+                    Amount = 1.00m,
+                };
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 this.GivenFramePriceExists(product, framePrice);
                 var order = this.GivenOrderProductAsLineItem(product);
