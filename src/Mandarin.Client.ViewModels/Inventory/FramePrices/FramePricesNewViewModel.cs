@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Blazorise.Utils;
 using Mandarin.Client.ViewModels.Extensions;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
@@ -40,6 +41,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
             var products = new ObservableCollection<Product>();
             this.Products = new ReadOnlyObservableCollection<Product>(products);
+            this.CreatedAt = DateTime.Now;
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.SelectedProduct,

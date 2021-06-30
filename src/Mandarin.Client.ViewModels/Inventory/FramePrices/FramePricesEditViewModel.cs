@@ -91,6 +91,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode);
             this.Product = await this.productService.GetProductByProductCodeAsync(productCode);
             this.FrameAmount = existingFramePrice.Amount;
+            this.CreatedAt = existingFramePrice.CreatedAt;
         }
 
         private async Task OnSave()

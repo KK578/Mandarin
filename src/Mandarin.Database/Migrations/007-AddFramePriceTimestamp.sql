@@ -25,7 +25,7 @@ CREATE OR REPLACE PROCEDURE inventory.sp_frame_price_upsert(
 AS
 $$
 DECLARE
-begin
+BEGIN
     UPDATE inventory.frame_price
     SET active_until = $3
     WHERE product_code = $1
@@ -33,5 +33,5 @@ begin
 
     INSERT INTO inventory.frame_price (product_code, amount, created_at)
     VALUES ($1, $2, $3);
-end;
+END
 $$

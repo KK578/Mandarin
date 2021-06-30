@@ -29,6 +29,14 @@
         </Field>
       </Validation>
       <Validation>
+        <Field>
+          <FieldLabel>Active From</FieldLabel>
+          <DateEdit TItem="DateTime?" @bind-Date="@(ViewModel!.CreatedAt)">
+            <Feedback><ValidationError/></Feedback>
+          </DateEdit>
+        </Field>
+      </Validation>
+      <Validation>
         <Fields>
           <Field ColumnSize="ColumnSize.Is4">
             <FieldLabel>Frame Price</FieldLabel>

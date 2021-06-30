@@ -103,27 +103,27 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 canExecute.Should().BeFalse();
             }
 
-            [Theory]
-            [InlineData(1)]
-            [InlineData(2)]
-            [InlineData(3)]
-            public async Task ShouldNotBeAbleToExecuteWhenAnyRequiredPropertiesIsNotSet(int i)
+            [Fact]
+            public void ShouldDefaultCreatedAtToToday()
+            {
+                this.Subject.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+            }
+
+            [Fact]
+            public async Task ShouldNotBeAbleToExecuteWhenProductIsNotYetSelected()
             {
                 var subject = this.Subject;
-                if (i != 1)
-                {
-                    subject.SelectedProduct = this.fixture.Create<Product>();
-                }
+                subject.FrameAmount = this.fixture.Create<decimal>();
 
-                if (i != 2)
-                {
-                    subject.FrameAmount = this.fixture.Create<decimal>();
-                }
+                var canExecute = await subject.Save.CanExecute.FirstAsync();
+                canExecute.Should().BeFalse();
+            }
 
-                if (i != 3)
-                {
-                    subject.CreatedAt = this.fixture.Create<DateTime>();
-                }
+            [Fact]
+            public async Task ShouldNotBeAbleToExecuteWhenCommissionAmountIsNotYetSelected()
+            {
+                var subject = this.Subject;
+                subject.SelectedProduct = this.fixture.Create<Product>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeFalse();

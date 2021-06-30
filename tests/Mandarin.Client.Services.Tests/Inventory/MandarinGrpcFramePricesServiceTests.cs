@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Grpc.Core;
 using Mandarin.Inventory;
 using Mandarin.Tests.Helpers;
 using Xunit;
