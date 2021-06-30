@@ -65,7 +65,7 @@ namespace Mandarin.Services.Transactions
                        .ToObservable()
                        .SelectMany(product =>
                        {
-                           return this.framePricesService.GetFramePriceAsync(product.ProductCode)
+                           return this.framePricesService.GetFramePriceAsync(product.ProductCode, orderDate)
                                       .ToObservable()
                                       .SelectMany(framePrice => Create(product, framePrice));
                        });

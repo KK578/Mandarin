@@ -13,7 +13,12 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePricesIndexViewModelTests
     {
-        private static readonly FramePrice FramePrice = new("TLM-001", 15.00M);
+        private static readonly FramePrice FramePrice = new()
+        {
+            ProductCode = "TLM-001",
+            Amount = 15.00M,
+        };
+
         private static readonly Product Product = new("SquareId", "TLM-001", "Mandarin", "It's a Mandarin!", 45.00M);
 
         private readonly Mock<IFramePricesService> framePricesService = new();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Mandarin.Inventory
@@ -19,8 +20,9 @@ namespace Mandarin.Inventory
         /// If a frame price does not exist, then the result will be null.
         /// </summary>
         /// <param name="productCode">The product code of the product to search for a frame price.</param>
+        /// <param name="transactionTime">The timestamp at which the transaction occurred.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous retrieval of the frame price.</returns>
-        Task<FramePrice> GetFramePriceAsync(string productCode);
+        Task<FramePrice> GetFramePriceAsync(string productCode, DateTime transactionTime);
 
         /// <summary>
         /// Saves all changes made to the <see cref="FramePrice"/>. Will automatically detect if it is a new <see cref="FramePrice"/>

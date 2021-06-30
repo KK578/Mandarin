@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Mandarin.Database.Inventory
 {
@@ -12,6 +13,8 @@ namespace Mandarin.Database.Inventory
     internal sealed record FramePriceRecord
     {
         public string product_code { get; init; }
-        public double amount { get; init; }
+        public decimal amount { get; init; }
+        public DateTime created_at { get; init; }
+        public DateTime? active_until { get; init; }
     }
 }

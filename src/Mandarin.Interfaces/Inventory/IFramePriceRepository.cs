@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Mandarin.Inventory
@@ -12,8 +13,9 @@ namespace Mandarin.Inventory
         /// Gets the <see cref="FramePrice"/> corresponding to the given product code.
         /// </summary>
         /// <param name="productCode">The product code to search for.</param>
+        /// <param name="activeSince">The timestamp at which the frame price must be active at.</param>
         /// <returns>A <see cref="Task"/> containing the <see cref="FramePrice"/> for the given product code.</returns>
-        Task<FramePrice> GetByProductCodeAsync(string productCode);
+        Task<FramePrice> GetByProductCodeAsync(string productCode, DateTime activeSince);
 
         /// <summary>
         /// Gets the list of all <see cref="FramePrice"/>.

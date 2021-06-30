@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using Mandarin.Inventory;
@@ -45,6 +46,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// Gets or sets the frame price to be associated to the selected product.
         /// </summary>
         decimal? FrameAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timestamp at which the frame price should be considered as active.
+        /// </summary>
+        DateTime? CreatedAt { get; set; }
 
         /// <summary>
         /// Gets the total cost of the product.

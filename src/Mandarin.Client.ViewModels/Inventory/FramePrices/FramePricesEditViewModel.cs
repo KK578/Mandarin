@@ -20,6 +20,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly ObservableAsPropertyHelper<decimal?> stockistAmount;
         private Product product;
         private decimal? frameAmount;
+        private DateTime? createdAt;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesEditViewModel"/> class.
@@ -34,8 +35,10 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             this.navigationManager = navigationManager;
 
             this.LoadData = ReactiveCommand.CreateFromTask<string>(this.OnLoadData);
-            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.Product, vm => vm.FrameAmount)
-                                                                        .Select(tuple => tuple.Item1 != null && tuple.Item2.HasValue));
+            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.Product,
+                                                                                      vm => vm.FrameAmount,
+                                                                                      vm => vm.CreatedAt,
+                                                                                      (p, f, c) => p != null && f.HasValue && c.HasValue));
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
             this.productAmount = this.WhenAnyValue(vm => vm.Product).WhereNotNull().Select(p => p.UnitPrice).ToProperty(this, x => x.ProductAmount);
@@ -71,6 +74,13 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         }
 
         /// <inheritdoc/>
+        public DateTime? CreatedAt
+        {
+            get => this.createdAt;
+            set => this.RaiseAndSetIfChanged(ref this.createdAt, value);
+        }
+
+        /// <inheritdoc/>
         public decimal? ProductAmount => this.productAmount.Value;
 
         /// <inheritdoc/>
@@ -78,14 +88,28 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
         private async Task OnLoadData(string productCode)
         {
-            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode);
+            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
             this.Product = await this.productService.GetProductByProductCodeAsync(productCode);
             this.FrameAmount = existingFramePrice.Amount;
+            this.CreatedAt = existingFramePrice.CreatedAt;
+            this.WhenAnyValue(vm => vm.FrameAmount)
+                .Select(amount => amount == existingFramePrice.Amount ? existingFramePrice.CreatedAt : DateTime.Now)
+                .Subscribe(date => this.CreatedAt = date);
         }
 
         private async Task OnSave()
         {
-            var framePrice = new FramePrice(this.Product.ProductCode, this.FrameAmount.Value);
+            if (!this.FrameAmount.HasValue || !this.CreatedAt.HasValue)
+            {
+                return;
+            }
+
+            var framePrice = new FramePrice
+            {
+                ProductCode = this.Product.ProductCode,
+                Amount = this.FrameAmount.Value,
+                CreatedAt = this.CreatedAt.Value,
+            };
             await this.framePricesService.SaveFramePriceAsync(framePrice);
         }
 

@@ -1,5 +1,6 @@
 ﻿syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 option csharp_namespace = "Mandarin.Api.Inventory";
@@ -24,6 +25,7 @@ message GetAllFramePricesResponse {
 
 message GetFramePriceRequest {
   string productCode = 1;
+  google.protobuf.Timestamp transactionTime = 4;
 }
 
 message GetFramePriceResponse {
@@ -48,4 +50,6 @@ message DeleteFramePriceResponse {
 message FramePrice {
   string productCode = 1;
   google.protobuf.DoubleValue amount = 2;
+  google.protobuf.Timestamp createdAt = 3;
+  google.protobuf.Timestamp activeUntil = 4;
 }

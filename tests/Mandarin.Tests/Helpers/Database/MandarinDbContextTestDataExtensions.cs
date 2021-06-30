@@ -23,6 +23,7 @@ namespace Mandarin.Tests.Helpers.Database
             await connection.ExecuteAsync("DROP TABLE IF EXISTS inventory.stockist");
             await connection.ExecuteAsync("DROP TABLE IF EXISTS inventory.fixed_commission_amount");
             await connection.ExecuteAsync("DROP TABLE IF EXISTS inventory.frame_price");
+            await connection.ExecuteAsync("DROP PROCEDURE IF EXISTS inventory.sp_frame_price_upsert(TEXT, NUMERIC, TIMESTAMP)");
             await connection.ExecuteAsync("TRUNCATE TABLE public.schemaversions");
         }
     }

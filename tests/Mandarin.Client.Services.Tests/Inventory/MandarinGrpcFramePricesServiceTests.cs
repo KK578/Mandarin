@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Grpc.Core;
 using Mandarin.Inventory;
 using Mandarin.Tests.Helpers;
 using Xunit;
@@ -27,11 +29,42 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToAddAndRoundTripANewFramePrice()
         {
-            var framePrice = new FramePrice("OM19-001", 15.00M);
+            var framePrice = new FramePrice
+            {
+                ProductCode = "OM19-001",
+                Amount = 15.00M,
+                CreatedAt = new DateTime(2021, 06, 30),
+            };
             await this.Subject.SaveFramePriceAsync(framePrice);
 
-            var newFramePrice = await this.Subject.GetFramePriceAsync("OM19-001");
+            var newFramePrice = await this.Subject.GetFramePriceAsync("OM19-001", DateTime.Now);
             newFramePrice.Should().BeEquivalentTo(framePrice);
+        }
+
+        [Fact]
+        public async Task ShouldBeAbleToUpdateAndRoundTripAFramePrice()
+        {
+            var expected = new FramePrice
+            {
+                ProductCode = "KT20-001F",
+                Amount = 50.00M,
+                CreatedAt = new DateTime(2019, 06, 01),
+                ActiveUntil = null,
+            };
+
+            (await this.Subject.GetFramePriceAsync("KT20-001F", DateTime.Now)).Should().Be(expected);
+
+            var today = new DateTime(2021, 06, 30);
+            var newFramePrice = new FramePrice
+            {
+                ProductCode = "KT20-001F",
+                Amount = 25.00M,
+                CreatedAt = today,
+            };
+            await this.Subject.SaveFramePriceAsync(newFramePrice);
+
+            (await this.Subject.GetFramePriceAsync("KT20-001F", new DateTime(2021, 05, 15))).Should().Be(expected with { ActiveUntil = today });
+            (await this.Subject.GetFramePriceAsync("KT20-001F", today)).Should().Be(newFramePrice);
         }
 
         [Fact]
@@ -39,9 +72,9 @@ namespace Mandarin.Client.Services.Tests.Inventory
         {
             await this.Subject.DeleteFramePriceAsync("KT20-001F");
 
-            var deletedFramePrice = await this.Subject.GetFramePriceAsync("KT20-001F");
+            var deletedFramePrice = await this.Subject.GetFramePriceAsync("KT20-001F", DateTime.Now);
             deletedFramePrice.Should().BeNull();
-            var existingFramePrice = await this.Subject.GetFramePriceAsync("KT20-002F");
+            var existingFramePrice = await this.Subject.GetFramePriceAsync("KT20-002F", DateTime.Now);
             existingFramePrice.Should().NotBeNull();
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
@@ -103,11 +104,38 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             }
 
             [Fact]
-            public async Task ShouldBeAbleToExecuteWhenProductAndCommissionAreSet()
+            public void ShouldDefaultCreatedAtToToday()
+            {
+                this.Subject.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+            }
+
+            [Fact]
+            public async Task ShouldNotBeAbleToExecuteWhenProductIsNotYetSelected()
+            {
+                var subject = this.Subject;
+                subject.FrameAmount = this.fixture.Create<decimal>();
+
+                var canExecute = await subject.Save.CanExecute.FirstAsync();
+                canExecute.Should().BeFalse();
+            }
+
+            [Fact]
+            public async Task ShouldNotBeAbleToExecuteWhenCommissionAmountIsNotYetSelected()
+            {
+                var subject = this.Subject;
+                subject.SelectedProduct = this.fixture.Create<Product>();
+
+                var canExecute = await subject.Save.CanExecute.FirstAsync();
+                canExecute.Should().BeFalse();
+            }
+
+            [Fact]
+            public async Task ShouldBeAbleToExecuteWhenRequiredPropertiesAreSet()
             {
                 var subject = this.Subject;
                 subject.SelectedProduct = this.fixture.Create<Product>();
                 subject.FrameAmount = this.fixture.Create<decimal>();
+                subject.CreatedAt = this.fixture.Create<DateTime>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeTrue();
@@ -120,15 +148,19 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var product = this.fixture.Create<Product>();
                 subject.SelectedProduct = product;
                 subject.FrameAmount = 20.00M;
+                subject.CreatedAt = new DateTime(2021, 06, 30);
 
                 this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()))
                     .Returns(Task.CompletedTask)
                     .Verifiable();
 
                 await subject.Save.Execute();
-                this.framePricesService.Verify(x => x.SaveFramePriceAsync(It.Is<FramePrice>(amount =>
-                                                                                       amount.ProductCode == product.ProductCode &&
-                                                                                       amount.Amount == 20.00M)));
+                this.framePricesService.Verify(x => x.SaveFramePriceAsync(new FramePrice
+                {
+                    ProductCode = product.ProductCode,
+                    Amount = 20.00M,
+                    CreatedAt = new DateTime(2021, 06, 30),
+                }));
             }
 
             [Fact]
@@ -138,6 +170,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var product = this.fixture.Create<Product>();
                 subject.SelectedProduct = product;
                 subject.FrameAmount = this.fixture.Create<decimal>();
+                subject.CreatedAt = this.fixture.Create<DateTime>();
 
                 await subject.Save.Execute();
 
