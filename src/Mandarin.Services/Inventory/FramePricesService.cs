@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
 using Mandarin.Services.Transactions;
@@ -31,10 +32,10 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FramePrice> GetFramePriceAsync(string productCode)
+        public Task<FramePrice> GetFramePriceAsync(string productCode, DateTime transactionTime)
         {
-            this.logger.LogDebug("Fetching frame price for '{ProductCode}'.", productCode);
-            return this.framePriceRepository.GetByProductCodeAsync(productCode);
+            this.logger.LogDebug("Fetching frame price for '{ProductCode}' @ '{TransactionTime}'.", productCode, transactionTime);
+            return this.framePriceRepository.GetByProductCodeAsync(productCode, transactionTime);
         }
 
         /// <inheritdoc />

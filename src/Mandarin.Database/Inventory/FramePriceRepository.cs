@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -16,6 +17,8 @@ namespace Mandarin.Database.Inventory
             SELECT *
             FROM inventory.frame_price
             WHERE product_code = @product_code
+              AND created_at <= @created_at
+              AND (active_until IS NULL OR active_until > @created_at)
             LIMIT 1";
 
         private const string GetAllFramePricesSql = @"
@@ -42,12 +45,12 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FramePrice> GetByProductCodeAsync(string productCode)
+        public Task<FramePrice> GetByProductCodeAsync(string productCode, DateTime activeSince)
         {
             return this.Get(productCode,
                             db =>
                             {
-                                var parameters = new { product_code = productCode };
+                                var parameters = new { product_code = productCode, created_at = activeSince };
                                 return db.QueryFirstOrDefaultAsync<FramePriceRecord>(FramePriceRepository.GetFramePriceByProductCodeSql, parameters);
                             });
         }

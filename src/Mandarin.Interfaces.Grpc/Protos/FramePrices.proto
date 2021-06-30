@@ -25,6 +25,7 @@ message GetAllFramePricesResponse {
 
 message GetFramePriceRequest {
   string productCode = 1;
+  google.protobuf.Timestamp transactionTime = 4;
 }
 
 message GetFramePriceResponse {

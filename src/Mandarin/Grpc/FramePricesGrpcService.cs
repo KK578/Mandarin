@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
@@ -41,7 +42,8 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetFramePriceResponse> GetFramePrice(GetFramePriceRequest request, ServerCallContext context)
         {
-            var framePrice = await this.framePricesService.GetFramePriceAsync(request.ProductCode);
+            var transactionTime = this.mapper.Map<DateTime>(request.TransactionTime);
+            var framePrice = await this.framePricesService.GetFramePriceAsync(request.ProductCode, transactionTime);
             return new GetFramePriceResponse
             {
                 FramePrice = this.mapper.Map<FramePrice>(framePrice),

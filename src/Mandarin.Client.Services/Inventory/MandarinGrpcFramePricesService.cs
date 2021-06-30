@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Mandarin.Api.Inventory;
 using Mandarin.Inventory;
 using static Mandarin.Api.Inventory.FramePrices;
@@ -34,9 +36,9 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<FramePrice> GetFramePriceAsync(string productCode)
+        public async Task<FramePrice> GetFramePriceAsync(string productCode, DateTime transactionTime)
         {
-            var request = new GetFramePriceRequest { ProductCode = productCode };
+            var request = new GetFramePriceRequest { ProductCode = productCode, TransactionTime = this.mapper.Map<Timestamp>(transactionTime) };
             var response = await this.framePricesClient.GetFramePriceAsync(request);
             return this.mapper.Map<FramePrice>(response.FramePrice);
         }

@@ -88,10 +88,13 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
         private async Task OnLoadData(string productCode)
         {
-            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode);
+            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
             this.Product = await this.productService.GetProductByProductCodeAsync(productCode);
             this.FrameAmount = existingFramePrice.Amount;
             this.CreatedAt = existingFramePrice.CreatedAt;
+            this.WhenAnyValue(vm => vm.FrameAmount)
+                .Select(amount => amount == existingFramePrice.Amount ? existingFramePrice.CreatedAt : DateTime.Now)
+                .Subscribe(date => this.CreatedAt = date);
         }
 
         private async Task OnSave()

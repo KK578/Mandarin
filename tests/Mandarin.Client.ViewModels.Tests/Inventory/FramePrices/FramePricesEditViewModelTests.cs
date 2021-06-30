@@ -16,6 +16,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePricesEditViewModelTests
     {
+        private static readonly DateTime OriginalCommissionDate = new(2021, 06, 10);
+
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IQueryableProductService> productService = new();
@@ -29,11 +31,12 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             commission ??= this.fixture.Create<decimal>();
 
             this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode))
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>()))
                 .ReturnsAsync(new FramePrice
                 {
                     ProductCode = product.ProductCode,
                     Amount = commission.Value,
+                    CreatedAt = FramePricesEditViewModelTests.OriginalCommissionDate,
                 });
         }
 
@@ -64,7 +67,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             {
                 var product = this.fixture.Create<Product>();
                 this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-                this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode))
+                this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>()))
                     .ReturnsAsync(this.fixture.Create<FramePrice>());
 
                 var subject = this.Subject;
@@ -89,6 +92,28 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 
                 subject.FrameAmount = 20.00M;
                 subject.StockistAmount.Should().Be(130.00M);
+            }
+        }
+
+        public class CreatedAtTests : FramePricesEditViewModelTests
+        {
+            [Fact]
+            public void CreatedAtShouldAutomaticallyUpdateOnChangingCommissionAmount()
+            {
+                var product = this.fixture.Create<Product>().WithUnitPrice(150.00M);
+                this.GivenServicesReturnProduct(product, 10.00M);
+
+                var subject = this.Subject;
+
+                subject.LoadData.Execute(product.ProductCode);
+                subject.CreatedAt.Should().BeCloseTo(FramePricesEditViewModelTests.OriginalCommissionDate);
+
+                subject.FrameAmount = 20.00M;
+                subject.CreatedAt.Should().NotBeCloseTo(FramePricesEditViewModelTests.OriginalCommissionDate);
+                subject.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+
+                subject.FrameAmount = 10.00M;
+                subject.CreatedAt.Should().BeCloseTo(FramePricesEditViewModelTests.OriginalCommissionDate);
             }
         }
 

@@ -45,7 +45,7 @@ namespace Mandarin.Services.Tests.Transactions
 
         private void GivenFramePriceExists(Product product, FramePrice framePrice)
         {
-            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode)).ReturnsAsync(framePrice);
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, this.orderDate)).ReturnsAsync(framePrice);
         }
 
         private void GivenConfigurationWithMappings(Product product, Product mappedProduct)
