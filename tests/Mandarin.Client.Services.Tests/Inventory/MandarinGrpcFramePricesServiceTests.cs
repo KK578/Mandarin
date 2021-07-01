@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Grpc.Core;
 using Mandarin.Inventory;
 using Mandarin.Tests.Helpers;
 using Xunit;
@@ -22,6 +21,22 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToRetrieveAllFramePrices()
         {
+            var framePrices = await this.Subject.GetAllFramePricesAsync();
+            framePrices.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task ShouldNotShowHistoricFramePrices()
+        {
+            var today = new DateTime(2021, 06, 30);
+            var newFramePrice = new FramePrice
+            {
+                ProductCode = "KT20-001F",
+                Amount = 25.00M,
+                CreatedAt = today,
+            };
+            await this.Subject.SaveFramePriceAsync(newFramePrice);
+
             var framePrices = await this.Subject.GetAllFramePricesAsync();
             framePrices.Should().HaveCount(2);
         }
