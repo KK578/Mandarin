@@ -24,6 +24,7 @@ namespace Mandarin.Database.Inventory
         private const string GetAllFramePricesSql = @"
             SELECT *
             FROM inventory.frame_price
+            WHERE active_until IS NULL
             ORDER BY product_code";
 
         private const string UpsertFramePriceSql = @"
