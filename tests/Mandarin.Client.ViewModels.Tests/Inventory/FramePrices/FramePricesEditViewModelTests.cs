@@ -206,6 +206,22 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                     CreatedAt = new DateTime(2021, 06, 30),
                 }));
             }
+
+            [Fact]
+            public async Task ShouldRedirectAfterSavingCommission()
+            {
+                this.GivenServicesReturnProduct(this.product);
+
+                var subject = this.Subject;
+                await subject.LoadData.Execute(this.product.ProductCode);
+                subject.FrameAmount = this.fixture.Create<decimal>();
+                subject.CreatedAt = this.fixture.Create<DateTime>();
+
+                this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>())).Returns(Task.CompletedTask);
+
+                await subject.Save.Execute();
+                this.navigationManager.Uri.Should().EndWith("/inventory/frame-prices");
+            }
         }
     }
 }

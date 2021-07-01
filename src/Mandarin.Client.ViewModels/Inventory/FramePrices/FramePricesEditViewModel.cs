@@ -111,6 +111,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
                 CreatedAt = this.CreatedAt.Value,
             };
             await this.framePricesService.SaveFramePriceAsync(framePrice);
+            this.navigationManager.NavigateTo("/inventory/frame-prices");
         }
 
         private void OnCancel() => this.navigationManager.NavigateTo("/inventory/frame-prices");
