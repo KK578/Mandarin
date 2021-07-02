@@ -1,4 +1,5 @@
-﻿using Mandarin.Client.ViewModels.Index;
+﻿using Mandarin.Client.ViewModels.Artists;
+using Mandarin.Client.ViewModels.Index;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +18,9 @@ namespace Mandarin.Client.ViewModels
         public static IServiceCollection AddMandarinViewModels(this IServiceCollection services)
         {
             services.AddTransient<IIndexViewModel, IndexViewModel>();
+
+            services.AddTransient<IArtistsIndexViewModel, ArtistsIndexViewModel>();
+
             services.AddTransient<IFramePricesIndexViewModel, FramePricesIndexViewModel>();
             services.AddTransient<IFramePricesEditViewModel, FramePricesEditViewModel>();
             services.AddTransient<IFramePricesNewViewModel, FramePricesNewViewModel>();

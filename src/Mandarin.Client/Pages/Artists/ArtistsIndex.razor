@@ -1,28 +1,30 @@
 ﻿@page "/artists"
 @using Bashi.Core.Extensions
-@using Mandarin.Stockists
-@inject IStockistService stockistService;
-@inject NavigationManager navigationManager;
+@using System.Reactive.Linq
+@inherits ReactiveInjectableComponentBase<IArtistsIndexViewModel>
 
 <Card>
   <CardHeader>
     <CardTitle>All Artists</CardTitle>
     <CardActions Float="Float.Right">
-      <Button Color="Color.Primary" Clicked="@OnNewClicked">New</Button>
+      <ReactiveButton ReactiveCommand="@ViewModel!.EditSelected" Color="Color.Secondary">Edit</ReactiveButton>
+      <ReactiveButton ReactiveCommand="@ViewModel!.CreateNew" Color="Color.Primary">New</ReactiveButton>
     </CardActions>
   </CardHeader>
   <CardBody>
-    @if (data == null)
+    @if (ViewModel!.IsLoading)
     {
       <MandarinProgressBar>Fetching artists...</MandarinProgressBar>
     }
     else
     {
-      <DataGrid TItem="Stockist" Data="@data" Filterable="true" ShowPager="true" PageSize="10" Striped="true" Responsive="true"
-                SelectedRowChanged="@OnStockistSelected">
-        <DataGridColumn TItem="Stockist" Field="StockistCode" Caption="Code" Width="75px" />
-        <DataGridColumn TItem="Stockist" Field="Details.DisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
-        <DataGridColumn TItem="Stockist" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
+      <DataGrid TItem="IArtistViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
+                ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="10"
+                Responsive="true"
+                RowSelectable="@(_ => true)" @bind-SelectedRow="@ViewModel!.SelectedRow">
+        <DataGridColumn TItem="IArtistViewModel" Field="StockistCode" Caption="Code" Width="75px" />
+        <DataGridColumn TItem="IArtistViewModel" Field="DisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="IArtistViewModel" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
           <DisplayTemplate>@context.StatusCode.GetDescription()</DisplayTemplate>
         </DataGridColumn>
       </DataGrid>
@@ -30,25 +32,13 @@
   </CardBody>
 </Card>
 
-@code
-{
-  private IReadOnlyList<Stockist> data;
+@code {
 
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
-
-    data = await stockistService.GetStockistsAsync();
+    await ViewModel!.LoadData.Execute();
   }
 
-  private void OnNewClicked()
-  {
-    navigationManager.NavigateTo("/artists/new");
-  }
-
-  private void OnStockistSelected(Stockist selectedStockist)
-  {
-    navigationManager.NavigateTo($"/artists/edit/{selectedStockist.StockistCode}");
-  }
 }
