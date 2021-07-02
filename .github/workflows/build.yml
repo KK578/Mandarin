@@ -130,17 +130,17 @@ jobs:
       - name: "[Deploy] Set Version Environment Variable"
         run: echo "GitVersion_NuGetVersionV2=$(cat Mandarin.Build/Version.txt)" >> $GITHUB_ENV
 
+      - name: "[Metadata] octo build-information"
+        uses: docker://octopusdeploy/octo:7.4.3275
+        with:
+          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/BuildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+
       - name: "[Deploy] octo pack"
-        uses: docker://octopusdeploy/octo:7.4.4
+        uses: docker://octopusdeploy/octo:7.4.3275
         with:
           args: pack --id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --format zip --basePath Mandarin.Build
 
       - name: "[Deploy] octo push"
-        uses: docker://octopusdeploy/octo:7.4.4
+        uses: docker://octopusdeploy/octo:7.4.3275
         with:
           args: push --package Mandarin.${{ env.GitVersion_NuGetVersionV2 }}.zip --replace-existing --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
-
-      - name: "[Metadata] octo build-information"
-        uses: docker://octopusdeploy/octo:7.4.4
-        with:
-          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/BuildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
