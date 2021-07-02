@@ -13,7 +13,7 @@ namespace Mandarin.Stockists
         /// </summary>
         /// <param name="stockistCode">The stockist code of the stockist.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous fetch operation of the requested stockist.</returns>
-        Task<Stockist> GetStockistByCode(string stockistCode);
+        Task<Stockist> GetStockistByCode(StockistCode stockistCode);
 
         /// <summary>
         /// Gets a list of all known stockists.

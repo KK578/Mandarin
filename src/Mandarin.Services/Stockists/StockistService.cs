@@ -30,7 +30,7 @@ namespace Mandarin.Services.Stockists
         }
 
         /// <inheritdoc/>
-        public async Task<Stockist> GetStockistByCodeAsync(string stockistCode)
+        public async Task<Stockist> GetStockistByCodeAsync(StockistCode stockistCode)
         {
             this.logger.LogDebug("Fetching stockist '{StockistCode}'.", stockistCode);
             try

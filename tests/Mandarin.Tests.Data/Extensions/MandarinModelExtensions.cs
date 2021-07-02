@@ -24,7 +24,7 @@ namespace Mandarin.Tests.Data.Extensions
             return new()
             {
                 StockistId = model.StockistId,
-                StockistCode = "TLM",
+                StockistCode = new StockistCode("TLM"),
                 Details = model.Details,
                 Commission = new Commission
                 {
@@ -53,7 +53,7 @@ namespace Mandarin.Tests.Data.Extensions
             return new()
             {
                 StockistId = model.StockistId,
-                StockistCode = "TLM",
+                StockistCode = new StockistCode("TLM"),
                 Details = model.Details,
                 Commission = model.Commission,
                 StatusCode = model.StatusCode,

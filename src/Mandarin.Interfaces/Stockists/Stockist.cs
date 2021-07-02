@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Bashi.Core.TinyTypes;
 using Mandarin.Commissions;
 using Mandarin.Common;
 
@@ -20,7 +21,7 @@ namespace Mandarin.Stockists
         /// </summary>
         [Required]
         [StringLength(6)]
-        public string StockistCode { get; set; }
+        public StockistCode StockistCode { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the stockist's current active status.

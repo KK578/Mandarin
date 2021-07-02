@@ -15,6 +15,8 @@ namespace Mandarin.Converters
         {
             this.CreateMap<int, StockistId>().ConstructUsing(x => new StockistId(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
+            this.CreateMap<string, StockistCode>().ConstructUsing(x => new StockistCode(x))
+                .ReverseMap().ConstructUsing(x => x.Value);
         }
     }
 }
