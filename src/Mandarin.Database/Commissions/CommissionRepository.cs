@@ -6,6 +6,7 @@ using AutoMapper;
 using Dapper;
 using Mandarin.Commissions;
 using Mandarin.Database.Common;
+using Mandarin.Stockists;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Database.Commissions
@@ -43,18 +44,18 @@ namespace Mandarin.Database.Commissions
         }
 
         /// <inheritdoc/>
-        public Task<Commission> GetCommissionByStockist(int stockistId)
+        public Task<Commission> GetCommissionByStockist(StockistId stockistId)
         {
             return this.Get(stockistId,
-                       db =>
-                       {
-                           var parameters = new { stockist_id = stockistId, };
-                           return db.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetCommissionByStockistIdSql, parameters);
-                       });
+                            db =>
+                            {
+                                var parameters = new { stockist_id = stockistId.Value, };
+                                return db.QueryFirstAsync<CommissionRecord>(CommissionRepository.GetCommissionByStockistIdSql, parameters);
+                            });
         }
 
         /// <inheritdoc/>
-        public Task<Commission> SaveCommissionAsync(int stockistId, Commission commission)
+        public Task<Commission> SaveCommissionAsync(StockistId stockistId, Commission commission)
         {
             commission.StockistId = stockistId;
             return this.Upsert(commission);

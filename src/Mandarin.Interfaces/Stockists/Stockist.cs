@@ -13,7 +13,7 @@ namespace Mandarin.Stockists
         /// Gets or sets the Stockist's unique ID.
         /// </summary>
         [Key]
-        public int StockistId { get; set; }
+        public StockistId StockistId { get; set; }
 
         /// <summary>
         /// Gets or sets the Stockist's user-friendly code.

@@ -37,7 +37,7 @@ namespace Mandarin.Services.Stockists
             {
                 var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
                 await this.PopulateCommissionAsync(stockist);
-                this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", nameof(Stockist.StockistId), stockist);
+                this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", stockist);
                 return stockist;
             }
             catch (Exception ex)

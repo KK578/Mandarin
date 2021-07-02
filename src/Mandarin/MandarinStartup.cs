@@ -1,5 +1,6 @@
 using Elastic.Apm.NetCoreAll;
 using Mandarin.Configuration;
+using Mandarin.Converters;
 using Mandarin.Database;
 using Mandarin.Database.Converters;
 using Mandarin.Extensions;
@@ -58,6 +59,7 @@ namespace Mandarin
             services.AddMandarinDatabase(this.configuration);
             services.AddAutoMapper(options =>
             {
+                options.AddProfile<MandarinTinyTypeMapperProfile>();
                 options.AddProfile<MandarinDatabaseMapperProfile>();
                 options.AddProfile<MandarinGrpcMapperProfile>();
             });

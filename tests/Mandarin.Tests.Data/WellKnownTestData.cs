@@ -30,7 +30,7 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Stockist KelbyTynan = new()
             {
-                StockistId = 1,
+                StockistId = new StockistId(1),
                 StockistCode = "KT20",
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
@@ -49,7 +49,7 @@ namespace Mandarin.Tests.Data
                 Commission = new Commission
                 {
                     CommissionId = 1,
-                    StockistId = 1,
+                    StockistId = new StockistId(1),
                     StartDate = new DateTime(2019, 08, 23),
                     EndDate = new DateTime(2019, 11, 23),
                     Rate = 10,
@@ -59,7 +59,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist OthilieMapples = new()
             {
-                StockistId = 4,
+                StockistId = new StockistId(4),
                 StockistCode = "OM19",
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
@@ -78,7 +78,7 @@ namespace Mandarin.Tests.Data
                 Commission = new Commission
                 {
                     CommissionId = 4,
-                    StockistId = 4,
+                    StockistId = new StockistId(4),
                     StartDate = new DateTime(2019, 01, 16),
                     EndDate = new DateTime(2019, 04, 16),
                     Rate = 40,
