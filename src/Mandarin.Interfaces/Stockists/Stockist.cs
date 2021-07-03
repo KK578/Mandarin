@@ -10,7 +10,7 @@ namespace Mandarin.Stockists
     public class Stockist
     {
         /// <summary>
-        /// Gets or sets the Database Stockist ID.
+        /// Gets or sets the Stockist's unique ID.
         /// </summary>
         [Key]
         public int StockistId { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Mandarin.Commissions;
 using Mandarin.Common;
 using Mandarin.Stockists;
 using ReactiveUI;
@@ -29,6 +30,7 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <param name="stockist">The pre-existing stockist to populate from.</param>
         public ArtistViewModel(Stockist stockist)
         {
+            this.StockistId = stockist.StockistId;
             this.stockistCode = stockist.StockistCode;
             this.statusCode = stockist.StatusCode;
             this.firstName = stockist.Details.FirstName;
@@ -40,10 +42,14 @@ namespace Mandarin.Client.ViewModels.Artists
             this.websiteUrl = stockist.Details.WebsiteUrl;
             this.tumblrHandle = stockist.Details.TumblrHandle;
             this.emailAddress = stockist.Details.EmailAddress;
+            this.CommissionId = stockist.Commission.CommissionId;
             this.startDate = stockist.Commission.StartDate;
             this.endDate = stockist.Commission.EndDate;
             this.rate = stockist.Commission.Rate;
         }
+
+        /// <inheritdoc />
+        public int StockistId { get; }
 
         /// <inheritdoc />
         public string StockistCode
@@ -122,6 +128,9 @@ namespace Mandarin.Client.ViewModels.Artists
             set => this.RaiseAndSetIfChanged(ref this.emailAddress, value);
         }
 
+        /// <inheritdoc/>
+        public int CommissionId { get; }
+
         /// <inheritdoc />
         public DateTime StartDate
         {
@@ -141,6 +150,39 @@ namespace Mandarin.Client.ViewModels.Artists
         {
             get => this.rate;
             set => this.RaiseAndSetIfChanged(ref this.rate, value);
+        }
+
+        /// <inheritdoc/>
+        public Stockist ToStockist()
+        {
+            return new Stockist
+            {
+                StockistId = this.StockistId,
+                StockistCode = this.stockistCode,
+                StatusCode = this.statusCode,
+                Details = new StockistDetail
+                {
+                    StockistId = this.StockistId,
+                    FirstName = this.FirstName,
+                    LastName = this.LastName,
+                    DisplayName = this.DisplayName,
+                    TwitterHandle = this.TwitterHandle,
+                    InstagramHandle = this.InstagramHandle,
+                    FacebookHandle = this.FacebookHandle,
+                    WebsiteUrl = this.WebsiteUrl,
+                    TumblrHandle = this.TumblrHandle,
+                    EmailAddress = this.EmailAddress,
+                },
+                Commission = new Commission
+                {
+                    CommissionId = this.CommissionId,
+                    StockistId = this.StockistId,
+                    Rate = this.Rate,
+                    StartDate = this.StartDate,
+                    EndDate = this.EndDate,
+                    InsertedAt = DateTime.Now,
+                },
+            };
         }
     }
 }

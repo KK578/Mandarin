@@ -29,7 +29,7 @@ namespace Mandarin.Client.Services.Tests.Stockists
             async Task VerifyStockist(Stockist expected)
             {
                 var actual = await this.Subject.GetStockistByCodeAsync(expected.StockistCode);
-                actual.Should().MatchStockist(expected);
+                actual.Should().BeEquivalentTo(expected);
             }
         }
 

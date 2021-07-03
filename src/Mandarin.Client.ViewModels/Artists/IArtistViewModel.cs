@@ -12,6 +12,11 @@ namespace Mandarin.Client.ViewModels.Artists
     public interface IArtistViewModel : IReactiveObject
     {
         /// <summary>
+        /// Gets the Stockist's unique ID.
+        /// </summary>
+        public int StockistId { get; }
+
+        /// <summary>
         /// Gets or sets the Stockist's user-friendly code.
         /// </summary>
         [Required]
@@ -81,6 +86,11 @@ namespace Mandarin.Client.ViewModels.Artists
         public string EmailAddress { get; set; }
 
         /// <summary>
+        /// Gets the stockist's latest commission id.
+        /// </summary>
+        public int CommissionId { get; }
+
+        /// <summary>
         /// Gets or sets the start date for this commission.
         /// </summary>
         [Required]
@@ -93,9 +103,15 @@ namespace Mandarin.Client.ViewModels.Artists
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        ///  Gets or sets the agreed commission rate group for this commission.
+        /// Gets or sets the agreed commission rate group for this commission.
         /// </summary>
         [Required]
         public int Rate { get; set; }
+
+        /// <summary>
+        /// Builds the complete <see cref="Stockist"/> from the current values in the ViewModel.
+        /// </summary>
+        /// <returns>The fully populated <see cref="Stockist"/>.</returns>
+        public Stockist ToStockist();
     }
 }
