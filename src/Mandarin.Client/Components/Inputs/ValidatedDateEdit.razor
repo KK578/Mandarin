@@ -1,0 +1,41 @@
+﻿@inherits ValidatedEditBase
+@typeparam TValue
+
+<Validation Validator="@OnValidate">
+  <Field ColumnSize="@ColumnSize">
+    <FieldLabel>@(Label)</FieldLabel>
+    <DateEdit Date="@Date" DateChanged="@DateChanged" @attributes="@AdditionalAttributes">
+      <Feedback>
+        <ValidationError>
+          <ValidationMessage For="@For" />
+        </ValidationError>
+      </Feedback>
+    </DateEdit>
+  </Field>
+</Validation>
+
+@code {
+  /// <summary>
+  /// Gets or sets the label to be associated to the input.
+  /// </summary>
+  [Parameter]
+  public string Label { get; set; }
+
+  /// <summary>
+  /// Gets or sets the value of the DateEdit.
+  /// </summary>
+  [Parameter]
+  public TValue Date { get; set; }
+
+  /// <summary>
+  /// Gets or sets the callback to be called when <see cref="Date"/> changes.
+  /// </summary>
+  [Parameter]
+  public EventCallback<TValue> DateChanged { get; set; }
+
+  /// <summary>
+  /// Gets or sets the optional ColumnSize to associate to the Field.
+  /// </summary>
+  [Parameter]
+  public IFluentColumn ColumnSize { get; set; }
+}

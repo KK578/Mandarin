@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reactive;
 using Mandarin.Common;
-using Mandarin.Inventory;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Artists
@@ -9,7 +8,7 @@ namespace Mandarin.Client.ViewModels.Artists
     /// <summary>
     /// Represents the ViewModel for creating a new <see cref="Mandarin.Stockists.Stockist"/>.
     /// </summary>
-    public interface IArtistsNewViewModel : IReactiveObject
+    public interface IArtistsNewViewModel : IValidatableViewModel
     {
         /// <summary>
         /// Gets the updatable ViewModel representing a <see cref="Mandarin.Stockists.Stockist"/>.

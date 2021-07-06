@@ -1,4 +1,5 @@
-﻿using Mandarin.Client.ViewModels.Artists;
+﻿using FluentValidation;
+using Mandarin.Client.ViewModels.Artists;
 using Mandarin.Client.ViewModels.Index;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ namespace Mandarin.Client.ViewModels
         {
             services.AddTransient<IIndexViewModel, IndexViewModel>();
 
+            services.AddTransient<IValidator<IArtistViewModel>, ArtistValidator>();
             services.AddTransient<IArtistsIndexViewModel, ArtistsIndexViewModel>();
             services.AddTransient<IArtistsNewViewModel, ArtistsNewViewModel>();
 

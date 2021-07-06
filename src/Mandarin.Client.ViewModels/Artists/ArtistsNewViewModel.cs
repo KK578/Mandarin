@@ -5,6 +5,8 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Bashi.Core.Extensions;
 using Bashi.Core.Utils;
+using FluentValidation;
+using FluentValidation.Results;
 using Mandarin.Commissions;
 using Mandarin.Common;
 using Mandarin.Stockists;
@@ -18,16 +20,21 @@ namespace Mandarin.Client.ViewModels.Artists
     {
         private readonly IStockistService stockistService;
         private readonly NavigationManager navigationManager;
+        private readonly IValidator<IArtistViewModel> validator;
+
+        private ValidationResult validationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArtistsNewViewModel"/> class.
         /// </summary>
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public ArtistsNewViewModel(IStockistService stockistService, NavigationManager navigationManager)
+        /// <param name="validator">The validator for the Stockist to ensure it can be saved.</param>
+        public ArtistsNewViewModel(IStockistService stockistService, NavigationManager navigationManager, IValidator<IArtistViewModel> validator)
         {
             this.stockistService = stockistService;
             this.navigationManager = navigationManager;
+            this.validator = validator;
 
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
@@ -50,6 +57,13 @@ namespace Mandarin.Client.ViewModels.Artists
         public IArtistViewModel Stockist { get; }
 
         /// <inheritdoc />
+        public ValidationResult ValidationResult
+        {
+            get => this.validationResult;
+            private set => this.RaiseAndSetIfChanged(ref this.validationResult, value);
+        }
+
+        /// <inheritdoc />
         public IReadOnlyCollection<StatusMode> Statuses { get; }
 
         /// <inheritdoc />
@@ -60,10 +74,16 @@ namespace Mandarin.Client.ViewModels.Artists
 
         private async Task OnSave()
         {
+            this.ValidationResult = await this.validator.ValidateAsync(this.Stockist);
+            if (!this.ValidationResult.IsValid)
+            {
+                return;
+            }
+
             await this.stockistService.SaveStockistAsync(this.Stockist.ToStockist());
             this.navigationManager.NavigateTo($"/artists/edit/{this.Stockist.StockistCode}");
         }
 
-        private void OnCancel() => this.navigationManager.NavigateTo("/inventory/frame-prices");
+        private void OnCancel() => this.navigationManager.NavigateTo("/artists");
     }
 }

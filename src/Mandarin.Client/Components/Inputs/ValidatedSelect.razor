@@ -1,0 +1,59 @@
+﻿@inherits ValidatedEditBase
+@typeparam TValue
+
+<Validation Validator="@OnValidate">
+  <Field>
+    <FieldLabel>@(Label)</FieldLabel>
+    <Select SelectedValue="@SelectedValue" SelectedValueChanged="@SelectedValueChanged">
+      <ChildContent>
+        @foreach (var option in Options)
+        {
+          <SelectItem Value="@option">@(StringFunc(option))</SelectItem>
+        }
+      </ChildContent>
+      <Feedback>
+        <ValidationError>
+          <ValidationMessage For="@For" />
+        </ValidationError>
+      </Feedback>
+    </Select>
+  </Field>
+</Validation>
+
+@code {
+  /// <summary>
+  /// Gets or sets the label to be associated to the input.
+  /// </summary>
+  [Parameter]
+  public string Label { get; set; }
+
+  /// <summary>
+  /// Gets or sets the value of the Select.
+  /// </summary>
+  [Parameter]
+  public TValue SelectedValue { get; set; }
+
+  /// <summary>
+  /// Gets or sets the callback to be called when <see cref="SelectedValue"/> changes.
+  /// </summary>
+  [Parameter]
+  public EventCallback<TValue> SelectedValueChanged { get; set; }
+
+  /// <summary>
+  /// Gets or sets the available options to display for selection.
+  /// </summary>
+  [Parameter]
+  public IReadOnlyCollection<TValue> Options { get; set; }
+
+  /// <summary>
+  /// Gets or sets the function to evaluate for determining a displayable value for each option.
+  /// </summary>
+  [Parameter]
+  public Func<TValue, string> StringFunc { get; set; } = static v => v.ToString();
+
+  /// <summary>
+  /// Gets or sets the optional ColumnSize to associate to the Field.
+  /// </summary>
+  [Parameter]
+  public IFluentColumn ColumnSize { get; set; }
+}
