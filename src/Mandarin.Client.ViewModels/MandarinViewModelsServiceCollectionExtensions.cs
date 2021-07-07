@@ -22,6 +22,7 @@ namespace Mandarin.Client.ViewModels
 
             services.AddTransient<IValidator<IArtistViewModel>, ArtistValidator>();
             services.AddTransient<IArtistsIndexViewModel, ArtistsIndexViewModel>();
+            services.AddTransient<IArtistsEditViewModel, ArtistsEditViewModel>();
             services.AddTransient<IArtistsNewViewModel, ArtistsNewViewModel>();
 
             services.AddTransient<IFramePricesIndexViewModel, FramePricesIndexViewModel>();

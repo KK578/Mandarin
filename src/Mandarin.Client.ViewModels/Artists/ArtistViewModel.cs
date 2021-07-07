@@ -158,8 +158,8 @@ namespace Mandarin.Client.ViewModels.Artists
             return new Stockist
             {
                 StockistId = this.StockistId,
-                StockistCode = this.stockistCode,
-                StatusCode = this.statusCode,
+                StockistCode = this.StockistCode,
+                StatusCode = this.StatusCode,
                 Details = new StockistDetail
                 {
                     StockistId = this.StockistId,

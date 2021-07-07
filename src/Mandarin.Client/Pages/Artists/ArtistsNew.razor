@@ -14,7 +14,7 @@
   </CardHeader>
   <CardBody>
     <Validations @ref="@validations" EditContext="@EditContext" ValidateOnLoad="false">
-      <ValidatedTextEdit For="() => Stockist.StockistCode" @bind-Text="@Stockist.StockistCode" Label="Artist Name" />
+      <ValidatedTextEdit For="() => Stockist.StockistCode" @bind-Text="@Stockist.StockistCode" Label="Artist Code" />
       <Fields>
         <ValidatedTextEdit For="() => Stockist.FirstName" @bind-Text="@Stockist.FirstName" Label="First Name" ColumnSize="@ColumnSize.Is6" />
         <ValidatedTextEdit For="() => Stockist.LastName" @bind-Text="@Stockist.LastName" Label="Last Name" ColumnSize="@ColumnSize.Is6" />
@@ -35,8 +35,8 @@
       <FieldLabel>Commission</FieldLabel>
       <ValidatedNumericEdit For="() => Stockist.Rate" @bind-Value="@Stockist.Rate" Label="%" Min="@(0)" Max="@(100)" />
       <Fields>
-        <ValidatedDateEdit For="() => Stockist.StartDate" @bind-Date="@Stockist.StartDate" ColumnSize="ColumnSize.Is6" />
-        <ValidatedDateEdit For="() => Stockist.EndDate" @bind-Date="@Stockist.EndDate" ColumnSize="ColumnSize.Is6" />
+        <ValidatedDateEdit For="() => Stockist.StartDate" @bind-Date="@Stockist.StartDate" Label="Start Date" ColumnSize="ColumnSize.Is6" />
+        <ValidatedDateEdit For="() => Stockist.EndDate" @bind-Date="@Stockist.EndDate" Label="End Date" ColumnSize="ColumnSize.Is6" />
       </Fields>
     </Validations>
   </CardBody>

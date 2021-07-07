@@ -23,7 +23,7 @@ namespace Mandarin.Client.Utils
         public static IDisposable SubscribeToViewModel(this EditContext editContext, IValidatableViewModel viewModel, Action callback)
         {
             var messages = new ValidationMessageStore(editContext);
-            return viewModel.WhenAnyValue(x => x.ValidationResult).Subscribe(HandleValidationResult);
+            return viewModel.WhenAnyValue(x => x.ValidationResult).WhereNotNull().Subscribe(HandleValidationResult);
 
             void HandleValidationResult(ValidationResult validationResult)
             {
