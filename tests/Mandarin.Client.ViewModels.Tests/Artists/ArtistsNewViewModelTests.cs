@@ -10,7 +10,6 @@ using Mandarin.Client.ViewModels.Artists;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Common;
 using Mandarin.Stockists;
-using Microsoft.AspNetCore.Components;
 using Moq;
 using Xunit;
 
