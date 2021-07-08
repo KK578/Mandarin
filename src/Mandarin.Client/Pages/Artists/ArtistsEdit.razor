@@ -1,300 +1,77 @@
 ﻿@page "/artists/edit/{stockistCode}"
-@page "/artists/new"
 @using Bashi.Core.Extensions
-@using Bashi.Core.Utils
-@using Mandarin.Commissions
+@using Mandarin.Client.Utils
 @using Mandarin.Common
-@using Mandarin.Stockists
-@inject IStockistService StockistService;
-@inject ICommissionService CommissionService;
-@inject NavigationManager NavigationManager;
+@using System.Reactive.Linq
+@inherits ReactiveInjectableComponentBase<IArtistsEditViewModel>
 
-@if (Stockist == null)
-{
-  <Card>
-    <CardHeader>
-      <CardTitle>Artist Details...</CardTitle>
-    </CardHeader>
-    <CardBody>
+<Card>
+  <CardHeader>
+    <CardTitle>Update @(StockistCode)</CardTitle>
+    <CardActions Float="Float.Right">
+      <ReactiveButton ReactiveCommand="@ViewModel!.Save" Color="Color.Primary">Save</ReactiveButton>
+      <ReactiveButton ReactiveCommand="@ViewModel!.Cancel" Color="Color.Danger">Cancel</ReactiveButton>
+    </CardActions>
+  </CardHeader>
+  <CardBody>
+    @if (ViewModel!.IsLoading)
+    {
       <MandarinProgressBar>Fetching Artist...</MandarinProgressBar>
-    </CardBody>
-  </Card>
-}
-else
-{
-  <Card>
-    <CardHeader>
-        <CardTitle>@(isNew ? "New Artist" : $"{Stockist.StockistCode} - {Stockist.Details.DisplayName}")</CardTitle>
-      <CardActions Float="Float.Right">
-        @if (isEditing)
-        {
-          <Button Color="Color.Primary" Clicked="OnSaveClicked">Save</Button>
-          <Button Color="Color.Danger" Clicked="OnCancelClicked">Cancel</Button>
-        }
-        else
-        {
-          <Button Color="Color.Primary" Clicked="@OnCloseClicked">Close</Button>
-          <Button Color="Color.Dark" Clicked="@OnEditClicked">Edit</Button>
-        }
-      </CardActions>
-    </CardHeader>
-    <CardBody>
-      <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false">
-        <Validation>
-          <Field>
-            <FieldLabel>Artist Code</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.StockistCode" Disabled="@(!isNew)">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
-
+    }
+    else
+    {
+      <Validations @ref="validations" EditContext="@EditContext" ValidateOnLoad="false">
+        <ValidatedTextEdit For="() => Stockist.StockistCode" @bind-Text="@Stockist.StockistCode" Label="Artist Code" Disabled="@(true)"/>
         <Fields>
-          <Validation>
-            <Field ColumnSize="ColumnSize.Is6">
-              <FieldLabel>First Name</FieldLabel>
-              <TextEdit @bind-Text="@Stockist.Details.FirstName" Disabled="@(!isEditing)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Field>
-          </Validation>
-          <Validation>
-            <Field ColumnSize="ColumnSize.Is6">
-              <FieldLabel>Last Name</FieldLabel>
-              <TextEdit @bind-Text="@Stockist.Details.LastName" Disabled="@(!isEditing)">
-                <Feedback><ValidationError /></Feedback>
-              </TextEdit>
-            </Field>
-          </Validation>
+          <ValidatedTextEdit For="() => Stockist.FirstName" @bind-Text="@Stockist.FirstName" Label="First Name" ColumnSize="@ColumnSize.Is6" />
+          <ValidatedTextEdit For="() => Stockist.LastName" @bind-Text="@Stockist.LastName" Label="Last Name" ColumnSize="@ColumnSize.Is6" />
         </Fields>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Full/Display Name</FieldLabel>
-            <TextEdit @bind-Text="@Stockist.Details.DisplayName" Disabled="@(!isEditing)">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Email Address</FieldLabel>
-            <TextEdit Role="@TextRole.Email" @bind-Text="@Stockist.Details.EmailAddress" Disabled="@(!isEditing)">
-              <Feedback><ValidationError /></Feedback>
-            </TextEdit>
-          </Field>
-        </Validation>
-
-        <Validation>
-          <Field>
-            <FieldLabel>Status</FieldLabel>
-            <Select TValue="StatusMode" @bind-SelectedValue="@Stockist.StatusCode" Disabled="@(!isEditing)">
-              <ChildContent>
-                @foreach (var status in EnumUtil.GetValues<StatusMode>().Except(new[] { StatusMode.Unknown }))
-                {
-                  <SelectItem Value="@status">@(status.GetDescription())</SelectItem>
-                }
-              </ChildContent>
-              <Feedback><ValidationError /></Feedback>
-            </Select>
-          </Field>
-        </Validation>
-
+        <ValidatedTextEdit For="() => Stockist.DisplayName" @bind-Text="@Stockist.DisplayName" Label="Full/Display Name" />
+        <ValidatedTextEdit For="() => Stockist.EmailAddress" @bind-Text="@Stockist.EmailAddress" Label="Email Address" />
+        <ValidatedSelect For="() => Stockist.StatusCode" @bind-SelectedValue="@Stockist.StatusCode" Label="Status" Options="@ViewModel!.Statuses" StringFunc="@(s => s.GetDescription())"/>
         <Divider />
 
         <FieldLabel>Artist Social Media</FieldLabel>
-
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-twitter")" /></AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.TwitterHandle" Placeholder="Twitter Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </TextEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-facebook")" /></AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.FacebookHandle" Placeholder="Facebook Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </TextEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-instagram")" /></AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.InstagramHandle" Placeholder="Instagram Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </TextEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel><Icon IconStyle="IconStyle.Light" Class="fab" Name="@("fa-tumblr")" /></AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.TumblrHandle" Placeholder="Tumblr Handle" Disabled="@(!StockistIsDisplayed || !isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </TextEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel><Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.GlobeEurope" /></AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <TextEdit @bind-Text="@Stockist.Details.WebsiteUrl" Placeholder="Personal Website" Disabled="@(!StockistIsDisplayed || !isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </TextEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
-
+        <ValidatedTextEditWithIcon For="() => Stockist.TwitterHandle" @bind-Text="@Stockist.TwitterHandle" Label="Twitter Handle" Icon="@MandarinIcon.Twitter" Disabled="@(!StockistIsDisplayed)" />
+        <ValidatedTextEditWithIcon For="() => Stockist.FacebookHandle" @bind-Text="@Stockist.FacebookHandle" Label="Facebook Handle" Icon="@MandarinIcon.Facebook" Disabled="@(!StockistIsDisplayed)" />
+        <ValidatedTextEditWithIcon For="() => Stockist.InstagramHandle" @bind-Text="@Stockist.InstagramHandle" Label="Instagram Handle" Icon="@MandarinIcon.Instagram" Disabled="@(!StockistIsDisplayed)" />
+        <ValidatedTextEditWithIcon For="() => Stockist.TumblrHandle" @bind-Text="@Stockist.TumblrHandle" Label="Tumblr Handle" Icon="@MandarinIcon.Tumblr" Disabled="@(!StockistIsDisplayed)" />
+        <ValidatedTextEditWithIcon For="() => Stockist.WebsiteUrl" @bind-Text="@Stockist.WebsiteUrl" Label="Personal Website" Icon="@MandarinIcon.Url" Disabled="@(!StockistIsDisplayed)" />
         <Divider />
 
         <FieldLabel>Commission</FieldLabel>
-        <Validation>
-          <Field>
-            <Addons>
-              <Addon AddonType="AddonType.Start">
-                <AddonLabel>%</AddonLabel>
-              </Addon>
-              <Addon AddonType="AddonType.Body">
-                <NumericEdit Min="0" Max="100" @bind-Value="@Commission.Rate" Disabled="@(!isEditing)">
-                  <Feedback><ValidationError /></Feedback>
-                </NumericEdit>
-              </Addon>
-            </Addons>
-          </Field>
-        </Validation>
-        <Validation>
-          <Fields>
-            <Field ColumnSize="ColumnSize.Is6">
-              <FieldLabel>Start Date</FieldLabel>
-              <DateEdit TValue="DateTime" @bind-Date="@Commission.StartDate" Disabled="@(!isEditing)" />
-            </Field>
-            <Field ColumnSize="ColumnSize.Is6">
-              <FieldLabel>End Date</FieldLabel>
-              <DateEdit TValue="DateTime" @bind-Date="@Commission.EndDate" Disabled="@(!isEditing)" />
-            </Field>
-          </Fields>
-        </Validation>
+        <ValidatedNumericEdit For="() => Stockist.Rate" @bind-Value="@Stockist.Rate" Label="%" Min="@(0)" Max="@(100)" />
+        <Fields>
+          <ValidatedDateEdit For="() => Stockist.StartDate" @bind-Date="@Stockist.StartDate" Label="Start Date" ColumnSize="ColumnSize.Is6" />
+          <ValidatedDateEdit For="() => Stockist.EndDate" @bind-Date="@Stockist.EndDate" Label="End Date" ColumnSize="ColumnSize.Is6" />
+        </Fields>
       </Validations>
-    </CardBody>
-  </Card>
-}
+    }
+  </CardBody>
+</Card>
 
 @code
 {
+  private Validations validations;
+
   /// <summary>
   /// Gets or sets the stockist code to be inspected.
   /// </summary>
   [Parameter]
   public string StockistCode { get; set; }
 
-  private Stockist Stockist { get; set; }
-  private Commission Commission => Stockist.Commission;
+  private EditContext EditContext { get; set; }
+  private IArtistViewModel Stockist => ViewModel!.Stockist;
   private bool StockistIsDisplayed => Stockist.StatusCode == StatusMode.Active;
 
-  private Validations validations;
-  private bool isNew;
-  private bool isEditing;
-
   /// <inheritdoc />
-  protected override async Task OnInitializedAsync()
+  protected override async Task OnParametersSetAsync()
   {
-    await base.OnInitializedAsync();
+    await base.OnParametersSetAsync();
+    await ViewModel!.LoadData.Execute(StockistCode);
 
-    if (string.IsNullOrEmpty(StockistCode))
-    {
-      this.isNew = true;
-      this.isEditing = true;
-      this.Stockist = new Stockist
-      {
-        StatusCode = StatusMode.Active,
-        Details = new StockistDetail(),
-      };
-      Stockist.Commission = new Commission
-      {
-        Rate = 100,
-        StartDate = DateTime.Now.Date,
-        EndDate = DateTime.Now.AddDays(90).Date,
-      };
-    }
-    else
-    {
-      this.isNew = false;
-      this.isEditing = false;
-      this.Stockist = await StockistService.GetStockistByCodeAsync(StockistCode);
-    }
-  }
-
-  private void OnEditClicked()
-  {
-    this.isNew = false;
-    this.isEditing = true;
-    validations.ClearAll();
-  }
-
-  private async Task OnSaveClicked()
-  {
-    if (!validations.ValidateAll())
-    {
-      return;
-    }
-
-    await StockistService.SaveStockistAsync(this.Stockist);
-    NavigationManager.NavigateTo($"/artists/edit/{this.Stockist.StockistCode}");
-    validations.ClearAll();
-    validations.ClearAll();
-    isNew = false;
-    isEditing = false;
-    StateHasChanged();
-  }
-
-  private async Task OnCancelClicked()
-  {
-    this.isEditing = false;
-
-    if (isNew)
-    {
-      OnCloseClicked();
-    }
-    else
-    {
-      this.Stockist = await StockistService.GetStockistByCodeAsync(this.StockistCode);
-    }
-  }
-
-  private void OnCloseClicked()
-  {
-    NavigationManager.NavigateTo("/artists");
+    this.EditContext = new EditContext(Stockist);
+    this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
   }
 
 }

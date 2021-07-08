@@ -5,11 +5,6 @@ namespace Mandarin.Client.Services.Tests.Extensions
 {
     internal static class StockistFluentAssertionExtensions
     {
-        public static void MatchStockist(this ObjectAssertions assertions, Stockist expected)
-        {
-            assertions.BeEquivalentTo(expected, o => o.IgnoringCyclicReferences());
-        }
-
         public static void MatchStockistIgnoringIds(this ObjectAssertions assertions, Stockist expected)
         {
             assertions.BeEquivalentTo(expected,

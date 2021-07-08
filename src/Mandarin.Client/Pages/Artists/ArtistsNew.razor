@@ -1,0 +1,62 @@
+﻿@page "/artists/new"
+@using Bashi.Core.Extensions
+@using Mandarin.Common
+@using Mandarin.Client.Utils
+@inherits ReactiveInjectableComponentBase<IArtistsNewViewModel>
+
+<Card>
+  <CardHeader>
+    <CardTitle>New Artist</CardTitle>
+    <CardActions Float="Float.Right">
+      <ReactiveButton ReactiveCommand="@ViewModel!.Save" Color="@Color.Primary">Save</ReactiveButton>
+      <ReactiveButton ReactiveCommand="@ViewModel!.Cancel" Color="@Color.Danger">Cancel</ReactiveButton>
+    </CardActions>
+  </CardHeader>
+  <CardBody>
+    <Validations @ref="@validations" EditContext="@EditContext" ValidateOnLoad="false">
+      <ValidatedTextEdit For="() => Stockist.StockistCode" @bind-Text="@Stockist.StockistCode" Label="Artist Code" />
+      <Fields>
+        <ValidatedTextEdit For="() => Stockist.FirstName" @bind-Text="@Stockist.FirstName" Label="First Name" ColumnSize="@ColumnSize.Is6" />
+        <ValidatedTextEdit For="() => Stockist.LastName" @bind-Text="@Stockist.LastName" Label="Last Name" ColumnSize="@ColumnSize.Is6" />
+      </Fields>
+      <ValidatedTextEdit For="() => Stockist.DisplayName" @bind-Text="@Stockist.DisplayName" Label="Full/Display Name" />
+      <ValidatedTextEdit For="() => Stockist.EmailAddress" @bind-Text="@Stockist.EmailAddress" Label="Email Address" />
+      <ValidatedSelect For="() => Stockist.StatusCode" @bind-SelectedValue="@Stockist.StatusCode" Label="Status" Options="@ViewModel!.Statuses" StringFunc="@(s => s.GetDescription())"/>
+      <Divider />
+
+      <FieldLabel>Artist Social Media</FieldLabel>
+      <ValidatedTextEditWithIcon For="() => Stockist.TwitterHandle" @bind-Text="@Stockist.TwitterHandle" Label="Twitter Handle" Icon="@MandarinIcon.Twitter" Disabled="@(!StockistIsDisplayed)" />
+      <ValidatedTextEditWithIcon For="() => Stockist.FacebookHandle" @bind-Text="@Stockist.FacebookHandle" Label="Facebook Handle" Icon="@MandarinIcon.Facebook" Disabled="@(!StockistIsDisplayed)" />
+      <ValidatedTextEditWithIcon For="() => Stockist.InstagramHandle" @bind-Text="@Stockist.InstagramHandle" Label="Instagram Handle" Icon="@MandarinIcon.Instagram" Disabled="@(!StockistIsDisplayed)" />
+      <ValidatedTextEditWithIcon For="() => Stockist.TumblrHandle" @bind-Text="@Stockist.TumblrHandle" Label="Tumblr Handle" Icon="@MandarinIcon.Tumblr" Disabled="@(!StockistIsDisplayed)" />
+      <ValidatedTextEditWithIcon For="() => Stockist.WebsiteUrl" @bind-Text="@Stockist.WebsiteUrl" Label="Personal Website" Icon="@MandarinIcon.Url" Disabled="@(!StockistIsDisplayed)" />
+      <Divider />
+
+      <FieldLabel>Commission</FieldLabel>
+      <ValidatedNumericEdit For="() => Stockist.Rate" @bind-Value="@Stockist.Rate" Label="%" Min="@(0)" Max="@(100)" />
+      <Fields>
+        <ValidatedDateEdit For="() => Stockist.StartDate" @bind-Date="@Stockist.StartDate" Label="Start Date" ColumnSize="ColumnSize.Is6" />
+        <ValidatedDateEdit For="() => Stockist.EndDate" @bind-Date="@Stockist.EndDate" Label="End Date" ColumnSize="ColumnSize.Is6" />
+      </Fields>
+    </Validations>
+  </CardBody>
+</Card>
+
+@code {
+
+  private Validations validations;
+
+  private EditContext EditContext { get; set; }
+  private IArtistViewModel Stockist => ViewModel!.Stockist;
+  private bool StockistIsDisplayed => Stockist.StatusCode == StatusMode.Active;
+
+  /// <inheritdoc />
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+
+    this.EditContext = new EditContext(Stockist);
+    this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
+  }
+
+}

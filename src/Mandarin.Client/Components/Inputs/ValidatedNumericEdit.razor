@@ -1,0 +1,47 @@
+﻿@inherits ValidatedEditBase
+@typeparam TValue
+
+<Validation Validator="@OnValidate">
+  <Field ColumnSize="@ColumnSize">
+    <Addons>
+      <Addon AddonType="AddonType.Start">
+        <AddonLabel>@Label</AddonLabel>
+      </Addon>
+      <Addon AddonType="AddonType.Body">
+        <NumericEdit Value="@Value" ValueChanged="@ValueChanged" @attributes="@AdditionalAttributes">
+          <Feedback>
+            <ValidationError>
+              <ValidationMessage For="@For" />
+            </ValidationError>
+          </Feedback>
+        </NumericEdit>
+      </Addon>
+    </Addons>
+  </Field>
+</Validation>
+
+@code {
+  /// <summary>
+  /// Gets or sets the label to be associated to the input.
+  /// </summary>
+  [Parameter]
+  public string Label { get; set; }
+
+  /// <summary>
+  /// Gets or sets the value of the ValueEdit.
+  /// </summary>
+  [Parameter]
+  public TValue Value { get; set; }
+
+  /// <summary>
+  /// Gets or sets the callback to be called when <see cref="Value"/> changes.
+  /// </summary>
+  [Parameter]
+  public EventCallback<TValue> ValueChanged { get; set; }
+
+  /// <summary>
+  /// Gets or sets the optional ColumnSize to associate to the Field.
+  /// </summary>
+  [Parameter]
+  public IFluentColumn ColumnSize { get; set; }
+}

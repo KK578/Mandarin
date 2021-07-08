@@ -1,0 +1,52 @@
+﻿@inherits ValidatedEditBase
+
+<Validation Validator="@OnValidate">
+  <Field ColumnSize="@ColumnSize">
+    <Addons>
+      <Addon AddonType="@AddonType.Start">
+        <AddonLabel><Icon Class="@Icon.IconClass" Name="@Icon.IconName" IconStyle="@Icon.IconStyle" /></AddonLabel>
+      </Addon>
+      <Addon AddonType="@AddonType.Body">
+        <TextEdit Text="@Text" TextChanged="@TextChanged" Placeholder="@Label" @attributes="@AdditionalAttributes">
+          <Feedback>
+            <ValidationError>
+              <ValidationMessage For="@For" />
+            </ValidationError>
+          </Feedback>
+        </TextEdit>
+      </Addon>
+    </Addons>
+  </Field>
+</Validation>
+
+@code {
+  /// <summary>
+  /// Gets or sets the label to be associated to the input.
+  /// </summary>
+  [Parameter]
+  public string Label { get; set; }
+
+  /// <summary>
+  /// Gets or sets the icon to be associated to the input.
+  /// </summary>
+  [Parameter]
+  public MandarinIcon Icon { get; set; }
+
+  /// <summary>
+  /// Gets or sets the value of the TextEdit.
+  /// </summary>
+  [Parameter]
+  public string Text { get; set; }
+
+  /// <summary>
+  /// Gets or sets the callback to be called when <see cref="Text"/> changes.
+  /// </summary>
+  [Parameter]
+  public EventCallback<string> TextChanged { get; set; }
+
+  /// <summary>
+  /// Gets or sets the optional ColumnSize to associate to the Field.
+  /// </summary>
+  [Parameter]
+  public IFluentColumn ColumnSize { get; set; }
+}
