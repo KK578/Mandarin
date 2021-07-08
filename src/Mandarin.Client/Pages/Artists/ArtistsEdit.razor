@@ -20,7 +20,7 @@
     }
     else
     {
-      <Validations @ref="validations" Model="@EditContext" ValidateOnLoad="false">
+      <Validations @ref="validations" EditContext="@EditContext" ValidateOnLoad="false">
         <ValidatedTextEdit For="() => Stockist.StockistCode" @bind-Text="@Stockist.StockistCode" Label="Artist Code" Disabled="@(true)"/>
         <Fields>
           <ValidatedTextEdit For="() => Stockist.FirstName" @bind-Text="@Stockist.FirstName" Label="First Name" ColumnSize="@ColumnSize.Is6" />
