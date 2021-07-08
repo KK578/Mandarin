@@ -88,7 +88,7 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <summary>
         /// Gets the stockist's latest commission id.
         /// </summary>
-        public int CommissionId { get; }
+        public int? CommissionId { get; }
 
         /// <summary>
         /// Gets or sets the start date for this commission.

@@ -42,7 +42,7 @@ namespace Mandarin.Client.ViewModels.Artists
             this.websiteUrl = stockist.Details.WebsiteUrl;
             this.tumblrHandle = stockist.Details.TumblrHandle;
             this.emailAddress = stockist.Details.EmailAddress;
-            this.CommissionId = stockist.Commission.CommissionId;
+            this.CommissionId = stockist.Commission.CommissionId?.Value;
             this.startDate = stockist.Commission.StartDate;
             this.endDate = stockist.Commission.EndDate;
             this.rate = stockist.Commission.Rate;
@@ -129,7 +129,7 @@ namespace Mandarin.Client.ViewModels.Artists
         }
 
         /// <inheritdoc/>
-        public int CommissionId { get; }
+        public int? CommissionId { get; }
 
         /// <inheritdoc />
         public DateTime StartDate
@@ -156,6 +156,7 @@ namespace Mandarin.Client.ViewModels.Artists
         public Stockist ToStockist()
         {
             var stockistId = this.StockistId.HasValue ? new StockistId(this.StockistId.Value) : null;
+            var commissionId = this.CommissionId.HasValue ? new CommissionId(this.CommissionId.Value) : null;
 
             return new Stockist
             {
@@ -177,7 +178,7 @@ namespace Mandarin.Client.ViewModels.Artists
                 },
                 Commission = new Commission
                 {
-                    CommissionId = this.CommissionId,
+                    CommissionId = commissionId,
                     StockistId = stockistId,
                     Rate = this.Rate,
                     StartDate = this.StartDate,

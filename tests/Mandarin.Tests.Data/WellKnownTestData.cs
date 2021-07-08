@@ -48,7 +48,7 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    CommissionId = 1,
+                    CommissionId = new CommissionId(1),
                     StockistId = new StockistId(1),
                     StartDate = new DateTime(2019, 08, 23),
                     EndDate = new DateTime(2019, 11, 23),
@@ -77,7 +77,7 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    CommissionId = 4,
+                    CommissionId = new CommissionId(4),
                     StockistId = new StockistId(4),
                     StartDate = new DateTime(2019, 01, 16),
                     EndDate = new DateTime(2019, 04, 16),
