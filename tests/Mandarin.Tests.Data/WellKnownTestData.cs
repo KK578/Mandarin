@@ -35,7 +35,7 @@ namespace Mandarin.Tests.Data
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
-                    StockistId = 1,
+                    StockistId = new StockistId(1),
                     FirstName = "Kelby",
                     LastName = "Tynan",
                     DisplayName = "Kelby Tynan",
@@ -64,7 +64,7 @@ namespace Mandarin.Tests.Data
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
-                    StockistId = 4,
+                    StockistId = new StockistId(4),
                     FirstName = "Othilie",
                     LastName = "Mapples",
                     DisplayName = "Othilie Mapples",
@@ -107,6 +107,26 @@ namespace Mandarin.Tests.Data
                     StartDate = new DateTime(2019, 11, 28),
                     EndDate = new DateTime(2020, 06, 09),
                     Rate = 20,
+                },
+            };
+
+            public static readonly Stockist TheLittleMandarin = new()
+            {
+                StockistCode = new StockistCode("TLM"),
+                StatusCode = StatusMode.Active,
+                Details = new StockistDetail
+                {
+                    TwitterHandle = "TLM",
+                    FirstName = "Little",
+                    LastName = "Mandarin",
+                    DisplayName = "The Little Mandarin Team",
+                    InstagramHandle = "TLM",
+                },
+                Commission = new Commission
+                {
+                    StartDate = new DateTime(2019, 11, 28),
+                    EndDate = new DateTime(2021, 07, 09),
+                    Rate = 10,
                 },
             };
         }

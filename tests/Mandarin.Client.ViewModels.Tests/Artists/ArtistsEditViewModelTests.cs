@@ -55,7 +55,7 @@ namespace Mandarin.Client.ViewModels.Tests.Artists
             public void ShouldBeTrueWhilstExecuting()
             {
                 var tcs = new TaskCompletionSource<Stockist>();
-                this.stockistService.Setup(x => x.GetStockistByCodeAsync(It.IsAny<string>())).Returns(tcs.Task);
+                this.stockistService.Setup(x => x.GetStockistByCodeAsync(It.IsAny<StockistCode>())).Returns(tcs.Task);
 
                 var unused = this.subject.LoadData.Execute().ToTask();
 

@@ -14,7 +14,7 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <summary>
         /// Gets the Stockist's unique ID.
         /// </summary>
-        public int StockistId { get; }
+        public int? StockistId { get; }
 
         /// <summary>
         /// Gets or sets the Stockist's user-friendly code.
