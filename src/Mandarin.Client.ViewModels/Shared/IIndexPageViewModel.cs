@@ -14,7 +14,7 @@ namespace Mandarin.Client.ViewModels.Shared
         /// <summary>
         /// Gets a value indicating whether gets whether the ViewModel has finished initialisation.
         /// </summary>
-        public bool IsLoading { get; }
+        bool IsLoading { get; }
 
         /// <summary>
         /// Gets the command to populate the ViewModel with data.
