@@ -40,7 +40,7 @@ jobs:
       - name: "[Setup] Install .NET Core"
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100
+          dotnet-version: 5.0.301
 
       - name: "[Setup] Install node"
         if: github.event_name == 'release'
