@@ -63,7 +63,7 @@ namespace Mandarin.Tests.Data.Extensions
         public static Product WithTlmProductCode(this Product product)
         {
             return new(product.SquareId,
-                       $"TLM-{product.ProductCode}",
+                       new ProductCode($"TLM-{product.ProductCode}"),
                        product.ProductName,
                        product.Description,
                        product.UnitPrice);
@@ -72,7 +72,7 @@ namespace Mandarin.Tests.Data.Extensions
         public static Product WithUnitPrice(this Product product, decimal unitPrice)
         {
             return new(product.SquareId,
-                       $"TLM-{product.ProductCode}",
+                       new ProductCode($"TLM-{product.ProductCode}"),
                        product.ProductName,
                        product.Description,
                        unitPrice);

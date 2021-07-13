@@ -11,7 +11,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
     public class MandarinGrpcProductServiceTests : MandarinGrpcIntegrationTestsBase
     {
         private readonly Product expectedProduct = new("BTWEJWZCPE4XAKZRBJW53DYE",
-                                                       "KT20-001F",
+                                                       new ProductCode("KT20-001F"),
                                                        "Clementine (Framed) (Regular)",
                                                        "vel augue vestibulum ante ipsum primis in",
                                                        95.00M);
@@ -40,7 +40,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductByCode()
         {
-            var product = await this.Subject.GetProductByProductCodeAsync("KT20-001F");
+            var product = await this.Subject.GetProductByProductCodeAsync(new ProductCode("KT20-001F"));
             product.Should().BeEquivalentTo(this.expectedProduct);
         }
 

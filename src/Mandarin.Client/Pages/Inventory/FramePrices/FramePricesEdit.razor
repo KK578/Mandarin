@@ -1,5 +1,6 @@
 ﻿@page "/inventory/frame-prices/edit/{ProductCode}"
 @using System.Reactive.Linq
+@using Mandarin.Inventory
 @inherits ReactiveInjectableComponentBase<IFramePricesEditViewModel>
 
 <Card>
@@ -87,7 +88,7 @@
   /// <inheritdoc />
   protected override async Task OnParametersSetAsync()
   {
-    await ViewModel!.LoadData.Execute(ProductCode);
+    await ViewModel!.LoadData.Execute(new ProductCode(ProductCode));
   }
 
 }

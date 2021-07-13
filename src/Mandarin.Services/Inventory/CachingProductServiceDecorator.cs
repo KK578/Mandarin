@@ -53,7 +53,7 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByProductCodeAsync(string productCode)
+        public async Task<Product> GetProductByProductCodeAsync(ProductCode productCode)
         {
             var products = await this.GetAllProductsAsync();
             return products.FirstOrDefault(x => x.ProductCode == productCode);
@@ -65,7 +65,7 @@ namespace Mandarin.Services.Inventory
             // TODO: Move this to a config-based lookup. And move it out of the decorator!
             if (string.Equals(productName, "eGift Card", StringComparison.OrdinalIgnoreCase))
             {
-                return new Product("TLM-GC", "TLM-GC", productName, "eGift Card", null);
+                return new Product("TLM-GC", new ProductCode("TLM-GC"), productName, "eGift Card", null);
             }
             else
             {

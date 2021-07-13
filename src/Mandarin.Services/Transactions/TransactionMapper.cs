@@ -80,7 +80,7 @@ namespace Mandarin.Services.Transactions
 
                     yield return new Subtransaction(product, quantity, subTotal);
                     yield return new Subtransaction(new Product("TLM-" + framePrice.ProductCode,
-                                                                "TLM-" + framePrice.ProductCode,
+                                                                new ProductCode("TLM-" + framePrice.ProductCode),
                                                                 $"Frame for {framePrice.ProductCode}",
                                                                 null,
                                                                 framePrice.Amount),
@@ -102,15 +102,15 @@ namespace Mandarin.Services.Transactions
 
             if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase))
             {
-                product = new Product("BUN-DCM", "BUN-DCM", "Box of Macarons Discount", "Buy 6 macarons for \"£12.00\"", -0.01m);
+                product = new Product("BUN-DCM", new ProductCode("BUN-DCM"), "Box of Macarons Discount", "Buy 6 macarons for \"£12.00\"", -0.01m);
             }
             else if (orderLineItemDiscount.Name.Contains("pocky", StringComparison.OrdinalIgnoreCase))
             {
-                product = new Product("BUN-DCP", "BUN-DCP", "Box of Pocky Discount", "Discount on buying multiple packs of Pocky.", -0.01m);
+                product = new Product("BUN-DCP", new ProductCode("BUN-DCP"), "Box of Pocky Discount", "Discount on buying multiple packs of Pocky.", -0.01m);
             }
             else
             {
-                product = new Product("TLM-D", "TLM-D", "Other discounts", "Discounts that aren't tracked.", -0.01m);
+                product = new Product("TLM-D", new ProductCode("TLM-D"), "Other discounts", "Discounts that aren't tracked.", -0.01m);
             }
 
             var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
@@ -136,11 +136,11 @@ namespace Mandarin.Services.Transactions
             Product product;
             if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
             {
-                product = new Product("TLM-DELIVERY", "TLM-DELIVERY", "Shipping Fees", "Delivery costs charged to customers.", 0.01m);
+                product = new Product("TLM-DELIVERY", new ProductCode("TLM-DELIVERY"), "Shipping Fees", "Delivery costs charged to customers.", 0.01m);
             }
             else
             {
-                product = new Product("TLM-FEES", "TLM-" + serviceCharge.Name, serviceCharge.Name, "Unknown Fee.", 0.01m);
+                product = new Product("TLM-FEES", new ProductCode("TLM-" + serviceCharge.Name), serviceCharge.Name, "Unknown Fee.", 0.01m);
             }
 
             var quantity = serviceCharge.TotalMoney.Amount ?? 0;
@@ -163,7 +163,7 @@ namespace Mandarin.Services.Transactions
             }
             else
             {
-                var unknownProduct = new Product(null, "TLM-Unknown", "Unknown Product", "Unknown Product", null);
+                var unknownProduct = new Product(null, new ProductCode("TLM-Unknown"), "Unknown Product", "Unknown Product", null);
                 return unknownProduct;
             }
 
@@ -171,9 +171,10 @@ namespace Mandarin.Services.Transactions
             {
                 foreach (var mapping in this.mandarinConfiguration.Value.ProductMappings)
                 {
-                    if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode))
+                    if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
                     {
-                        return this.productService.GetProductByProductCodeAsync(mapping.Mappings[originalProduct.ProductCode]);
+                        var mappedProductCode = new ProductCode(mapping.Mappings[originalProduct.ProductCode.Value]);
+                        return this.productService.GetProductByProductCodeAsync(mappedProductCode);
                     }
                 }
 

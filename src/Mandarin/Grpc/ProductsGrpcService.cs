@@ -51,7 +51,7 @@ namespace Mandarin.Grpc
             }
             else if (request.ProductCode != null)
             {
-                product = await this.productService.GetProductByProductCodeAsync(request.ProductCode);
+                product = await this.productService.GetProductByProductCodeAsync(this.mapper.Map<ProductCode>(request.ProductCode));
             }
             else if (request.ProductName != null)
             {

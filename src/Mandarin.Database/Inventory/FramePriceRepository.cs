@@ -46,12 +46,12 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FramePrice> GetByProductCodeAsync(string productCode, DateTime activeSince)
+        public Task<FramePrice> GetByProductCodeAsync(ProductCode productCode, DateTime activeSince)
         {
             return this.Get(productCode,
                             db =>
                             {
-                                var parameters = new { product_code = productCode, created_at = activeSince };
+                                var parameters = new { product_code = productCode.Value, created_at = activeSince };
                                 return db.QueryFirstOrDefaultAsync<FramePriceRecord>(FramePriceRepository.GetFramePriceByProductCodeSql, parameters);
                             });
         }
@@ -69,14 +69,14 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task DeleteByProductCodeAsync(string productCode)
+        public Task DeleteByProductCodeAsync(ProductCode productCode)
         {
-            var parameters = new { product_code = productCode };
+            var parameters = new { product_code = productCode.Value };
             return this.Delete(FramePriceRepository.DeleteFramePriceSql, parameters);
         }
 
         /// <inheritdoc/>
-        protected override string ExtractDisplayKey(FramePrice value) => value.ProductCode;
+        protected override string ExtractDisplayKey(FramePrice value) => value.ProductCode.Value;
 
         /// <inheritdoc/>
         protected override Task<IEnumerable<FramePriceRecord>> GetAllRecords(IDbConnection db)

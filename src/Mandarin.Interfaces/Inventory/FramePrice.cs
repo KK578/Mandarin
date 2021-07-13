@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 
 namespace Mandarin.Inventory
 {
@@ -11,13 +10,11 @@ namespace Mandarin.Inventory
         /// <summary>
         /// Gets the product's unique item code.
         /// </summary>
-        [JsonProperty("product_code")]
-        public string ProductCode { get; init; }
+        public ProductCode ProductCode { get; init; }
 
         /// <summary>
         /// Gets the product's frame price.
         /// </summary>
-        [JsonProperty("amount")]
         public decimal Amount { get; init; }
 
         /// <summary>

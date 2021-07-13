@@ -3,6 +3,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Mandarin.Inventory;
 using Mandarin.Services.Inventory;
 using Mandarin.Services.Transactions;
 using Mandarin.Tests.Data;
@@ -37,9 +38,9 @@ namespace Mandarin.Services.Tests.Inventory
             var catalogObjects = await subject.GetAllProductsAsync();
 
             catalogObjects.Should().HaveCount(2);
-            catalogObjects[0].ProductCode.Should().Be("ID-1");
+            catalogObjects[0].ProductCode.Should().Be(new ProductCode("ID-1"));
             catalogObjects[0].ProductName.Should().Be("Item1 (Regular)");
-            catalogObjects[1].ProductCode.Should().Be("ID-2");
+            catalogObjects[1].ProductCode.Should().Be(new ProductCode("ID-2"));
             catalogObjects[1].ProductName.Should().Be("Item2 (Regular)");
         }
 

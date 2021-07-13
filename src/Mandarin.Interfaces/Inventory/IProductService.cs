@@ -35,7 +35,7 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productCode">The unique Mandarin product code to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductByProductCodeAsync(string productCode);
+        Task<Product> GetProductByProductCodeAsync(ProductCode productCode);
 
         /// <summary>
         /// Finds the singular product that matches the provided product name.

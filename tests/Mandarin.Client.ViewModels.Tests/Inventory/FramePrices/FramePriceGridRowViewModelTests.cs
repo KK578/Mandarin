@@ -9,11 +9,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
     {
         private static readonly FramePrice FramePrice = new()
         {
-            ProductCode = "TLM-001",
+            ProductCode = new ProductCode("TLM-001"),
             Amount = 15.00M,
         };
 
-        private static readonly Product Product = new("SquareId", "TLM-001", "Mandarin", "It's a Mandarin!", 45.00M);
+        private static readonly Product Product = new("SquareId", new ProductCode("TLM-001"), "Mandarin", "It's a Mandarin!", 45.00M);
 
         [Fact]
         public void PropertiesShouldMatchExpected()

@@ -34,7 +34,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             this.productService = productService;
             this.navigationManager = navigationManager;
 
-            this.LoadData = ReactiveCommand.CreateFromTask<string>(this.OnLoadData);
+            this.LoadData = ReactiveCommand.CreateFromTask<ProductCode>(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.Product,
                                                                                       vm => vm.FrameAmount,
                                                                                       vm => vm.CreatedAt,
@@ -51,7 +51,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         public bool IsLoading => this.isLoading.Value;
 
         /// <inheritdoc/>
-        public ReactiveCommand<string, Unit> LoadData { get; }
+        public ReactiveCommand<ProductCode, Unit> LoadData { get; }
 
         /// <inheritdoc/>
         public ReactiveCommand<Unit, Unit> Save { get; }
@@ -86,7 +86,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <inheritdoc/>
         public decimal? StockistAmount => this.stockistAmount.Value;
 
-        private async Task OnLoadData(string productCode)
+        private async Task OnLoadData(ProductCode productCode)
         {
             var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
             this.Product = await this.productService.GetProductByProductCodeAsync(productCode);

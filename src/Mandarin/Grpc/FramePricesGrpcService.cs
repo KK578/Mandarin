@@ -42,8 +42,9 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetFramePriceResponse> GetFramePrice(GetFramePriceRequest request, ServerCallContext context)
         {
+            var productCode = this.mapper.Map<ProductCode>(request.ProductCode);
             var transactionTime = this.mapper.Map<DateTime>(request.TransactionTime);
-            var framePrice = await this.framePricesService.GetFramePriceAsync(request.ProductCode, transactionTime);
+            var framePrice = await this.framePricesService.GetFramePriceAsync(productCode, transactionTime);
             return new GetFramePriceResponse
             {
                 FramePrice = this.mapper.Map<FramePrice>(framePrice),
@@ -62,7 +63,7 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<DeleteFramePriceResponse> DeleteFramePrice(DeleteFramePriceRequest request, ServerCallContext context)
         {
-            await this.framePricesService.DeleteFramePriceAsync(request.ProductCode);
+            await this.framePricesService.DeleteFramePriceAsync(this.mapper.Map<ProductCode>(request.ProductCode));
             return new DeleteFramePriceResponse();
         }
     }

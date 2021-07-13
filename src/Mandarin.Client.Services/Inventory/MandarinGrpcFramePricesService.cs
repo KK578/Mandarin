@@ -36,9 +36,13 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<FramePrice> GetFramePriceAsync(string productCode, DateTime transactionTime)
+        public async Task<FramePrice> GetFramePriceAsync(ProductCode productCode, DateTime transactionTime)
         {
-            var request = new GetFramePriceRequest { ProductCode = productCode, TransactionTime = this.mapper.Map<Timestamp>(transactionTime) };
+            var request = new GetFramePriceRequest
+            {
+                ProductCode = this.mapper.Map<string>(productCode),
+                TransactionTime = this.mapper.Map<Timestamp>(transactionTime),
+            };
             var response = await this.framePricesClient.GetFramePriceAsync(request);
             return this.mapper.Map<FramePrice>(response.FramePrice);
         }
@@ -51,9 +55,9 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task DeleteFramePriceAsync(string productCode)
+        public async Task DeleteFramePriceAsync(ProductCode productCode)
         {
-            var request = new DeleteFramePriceRequest { ProductCode = productCode };
+            var request = new DeleteFramePriceRequest { ProductCode = this.mapper.Map<string>(productCode) };
             await this.framePricesClient.DeleteFramePriceAsync(request);
         }
     }
