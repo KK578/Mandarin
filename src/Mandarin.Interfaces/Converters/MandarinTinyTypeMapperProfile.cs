@@ -18,6 +18,8 @@ namespace Mandarin.Converters
             this.CreateMap<int, CommissionId>().ConstructUsing(x => new CommissionId(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
 
+            this.CreateMap<string, ProductId>().ConstructUsing(x => new ProductId(x))
+                .ReverseMap().ConstructUsing(x => x.Value);
             this.CreateMap<string, ProductCode>().ConstructUsing(x => new ProductCode(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
 

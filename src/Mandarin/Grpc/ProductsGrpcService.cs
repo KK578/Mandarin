@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
@@ -47,7 +46,7 @@ namespace Mandarin.Grpc
 
             if (request.SquareId != null)
             {
-                product = await this.productService.GetProductBySquareIdAsync(request.SquareId);
+                product = await this.productService.GetProductBySquareIdAsync(this.mapper.Map<ProductId>(request.SquareId));
             }
             else if (request.ProductCode != null)
             {

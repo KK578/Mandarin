@@ -27,7 +27,7 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="squareId">The unique product ID assigned by Square to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductBySquareIdAsync(string squareId);
+        Task<Product> GetProductBySquareIdAsync(ProductId squareId);
 
         /// <summary>
         /// Finds the singular product that matches the provided Mandarin product code.

@@ -19,7 +19,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             Amount = 15.00M,
         };
 
-        private static readonly Product Product = new("SquareId", new ProductCode("TLM-001"), "Mandarin", "It's a Mandarin!", 45.00M);
+        private static readonly Product Product = new(new ProductId("SquareId"), new ProductCode("TLM-001"), "Mandarin", "It's a Mandarin!", 45.00M);
 
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IQueryableProductService> productService = new();

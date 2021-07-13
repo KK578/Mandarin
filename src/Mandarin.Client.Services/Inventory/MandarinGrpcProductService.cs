@@ -34,9 +34,9 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductBySquareIdAsync(string squareId)
+        public async Task<Product> GetProductBySquareIdAsync(ProductId squareId)
         {
-            var request = new GetProductRequest { SquareId = squareId };
+            var request = new GetProductRequest { SquareId = this.mapper.Map<string>(squareId) };
             var response = await this.productsClient.GetProductAsync(request);
             return this.mapper.Map<Product>(response.Product);
         }
