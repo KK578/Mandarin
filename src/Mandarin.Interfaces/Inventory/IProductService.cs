@@ -43,6 +43,6 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productName">The name of the product to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductByNameAsync(string productName);
+        Task<Product> GetProductByNameAsync(ProductName productName);
     }
 }

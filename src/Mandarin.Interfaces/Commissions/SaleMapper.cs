@@ -20,7 +20,7 @@ namespace Mandarin.Commissions
             var sale = new Sale
             {
                 ProductCode = subtransaction.Product.ProductCode.Value,
-                ProductName = subtransaction.Product.ProductName,
+                ProductName = subtransaction.Product.ProductName.Value,
                 Quantity = subtransaction.Quantity,
                 UnitPrice = subtransaction.TransactionUnitPrice,
                 Subtotal = subTotal,

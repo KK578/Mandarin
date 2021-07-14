@@ -12,7 +12,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
     {
         private readonly Product expectedProduct = new(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
                                                        new ProductCode("KT20-001F"),
-                                                       "Clementine (Framed) (Regular)",
+                                                       new ProductName("Clementine (Framed) (Regular)"),
                                                        "vel augue vestibulum ante ipsum primis in",
                                                        95.00M);
 
@@ -47,7 +47,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductName()
         {
-            var product = await this.Subject.GetProductByNameAsync("Clementine (Framed)");
+            var product = await this.Subject.GetProductByNameAsync(new ProductName("Clementine (Framed)"));
             product.Should().BeEquivalentTo(this.expectedProduct);
         }
     }

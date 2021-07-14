@@ -13,7 +13,7 @@
         /// <param name="productName">Name of this product.</param>
         /// <param name="description">Brief description of what this product is.</param>
         /// <param name="unitPrice">Monetary amount that this product sells for.</param>
-        public Product(ProductId squareId, ProductCode productCode, string productName, string description, decimal? unitPrice)
+        public Product(ProductId squareId, ProductCode productCode, ProductName productName, string description, decimal? unitPrice)
         {
             this.SquareId = squareId;
             this.ProductCode = productCode;
@@ -35,7 +35,7 @@
         /// <summary>
         /// Gets the general name for this product.
         /// </summary>
-        public string ProductName { get; }
+        public ProductName ProductName { get; }
 
         /// <summary>
         /// Gets the detailed description for this product.

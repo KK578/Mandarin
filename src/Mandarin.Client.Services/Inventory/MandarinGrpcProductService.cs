@@ -44,15 +44,15 @@ namespace Mandarin.Client.Services.Inventory
         /// <inheritdoc/>
         public async Task<Product> GetProductByProductCodeAsync(ProductCode productCode)
         {
-            var request = new GetProductRequest { ProductCode = productCode.Value };
+            var request = new GetProductRequest { ProductCode = this.mapper.Map<string>(productCode) };
             var response = await this.productsClient.GetProductAsync(request);
             return this.mapper.Map<Product>(response.Product);
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByNameAsync(string productName)
+        public async Task<Product> GetProductByNameAsync(ProductName productName)
         {
-            var request = new GetProductRequest { ProductName = productName };
+            var request = new GetProductRequest { ProductName = this.mapper.Map<string>(productName) };
             var response = await this.productsClient.GetProductAsync(request);
             return this.mapper.Map<Product>(response.Product);
         }

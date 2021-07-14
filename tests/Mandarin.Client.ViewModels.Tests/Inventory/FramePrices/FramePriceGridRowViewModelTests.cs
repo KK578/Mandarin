@@ -13,7 +13,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             Amount = 15.00M,
         };
 
-        private static readonly Product Product = new(new ProductId("SquareId"), new ProductCode("TLM-001"), "Mandarin", "It's a Mandarin!", 45.00M);
+        private static readonly Product Product = new(new ProductId("SquareId"),
+                                                      new ProductCode("TLM-001"),
+                                                      new ProductName("Mandarin"),
+                                                      "It's a Mandarin!",
+                                                      45.00M);
 
         [Fact]
         public void PropertiesShouldMatchExpected()

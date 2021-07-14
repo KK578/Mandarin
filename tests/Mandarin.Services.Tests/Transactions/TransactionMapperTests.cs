@@ -64,7 +64,7 @@ namespace Mandarin.Services.Tests.Transactions
             {
                 new("2",
                     catalogObjectId: product.SquareId.Value,
-                    name: product.ProductName,
+                    name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(1000, "GBP")),
             };
@@ -80,7 +80,7 @@ namespace Mandarin.Services.Tests.Transactions
             var discounts = new List<OrderLineItemDiscount>
             {
                 new(catalogObjectId: product.SquareId.Value,
-                    name: product.ProductName,
+                    name: product.ProductName.Value,
                     amountMoney: new Money(2000, "GBP"),
                     appliedMoney: new Money(2000, "GBP")),
             };
@@ -97,7 +97,7 @@ namespace Mandarin.Services.Tests.Transactions
             {
                 new("3",
                     catalogObjectId: product.SquareId.Value,
-                    name: product.ProductName,
+                    name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(-1500, "GBP")),
             };
@@ -200,7 +200,11 @@ namespace Mandarin.Services.Tests.Transactions
             [Fact]
             public async Task ShouldIncludeDeliveryFeesAsAnItem()
             {
-                var product = new Product(new ProductId("CatalogId"), new ProductCode("HC20W-003"), "The Trickster", TestData.NextString(), 11.00m);
+                var product = new Product(new ProductId("CatalogId"),
+                                          new ProductCode("HC20W-003"),
+                                          new ProductName("The Trickster"),
+                                          TestData.NextString(),
+                                          11.00m);
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 var order = new Order.Builder("Location")
                             .LineItems(new List<OrderLineItem>

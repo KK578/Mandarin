@@ -61,7 +61,7 @@ namespace Mandarin.Services.Transactions
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, DateTime orderDate)
         {
-            return this.GetProductAsync(new ProductId(orderLineItem.CatalogObjectId), orderLineItem.Name, orderDate)
+            return this.GetProductAsync(new ProductId(orderLineItem.CatalogObjectId), new ProductName(orderLineItem.Name), orderDate)
                        .ToObservable()
                        .SelectMany(product =>
                        {
@@ -81,7 +81,7 @@ namespace Mandarin.Services.Transactions
                     yield return new Subtransaction(product, quantity, subTotal);
                     yield return new Subtransaction(new Product(new ProductId("TLM-" + framePrice.ProductCode),
                                                                 new ProductCode("TLM-" + framePrice.ProductCode),
-                                                                $"Frame for {framePrice.ProductCode}",
+                                                                new ProductName($"Frame for {framePrice.ProductCode}"),
                                                                 null,
                                                                 framePrice.Amount),
                                                     quantity,
@@ -104,7 +104,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product(new ProductId("BUN-DCM"),
                                       new ProductCode("BUN-DCM"),
-                                      "Box of Macarons Discount",
+                                      new ProductName("Box of Macarons Discount"),
                                       "Buy 6 macarons for \"£12.00\"",
                                       -0.01m);
             }
@@ -112,13 +112,13 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product(new ProductId("BUN-DCP"),
                                       new ProductCode("BUN-DCP"),
-                                      "Box of Pocky Discount",
+                                      new ProductName("Box of Pocky Discount"),
                                       "Discount on buying multiple packs of Pocky.",
                                       -0.01m);
             }
             else
             {
-                product = new Product(new ProductId("TLM-D"), new ProductCode("TLM-D"), "Other discounts", "Discounts that aren't tracked.", -0.01m);
+                product = new Product(new ProductId("TLM-D"), new ProductCode("TLM-D"), new ProductName("Other discounts"), "Discounts that aren't tracked.", -0.01m);
             }
 
             var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
@@ -132,7 +132,7 @@ namespace Mandarin.Services.Transactions
             return orderReturn.ReturnLineItems.ToObservable()
                               .SelectMany(async item =>
                               {
-                                  var product = await this.GetProductAsync(new ProductId(item.CatalogObjectId), item.Name, orderDate);
+                                  var product = await this.GetProductAsync(new ProductId(item.CatalogObjectId), new ProductName(item.Name), orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
                                   var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
                                   return new Subtransaction(product, quantity, subtotal);
@@ -146,7 +146,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product(new ProductId("TLM-DELIVERY"),
                                       new ProductCode("TLM-DELIVERY"),
-                                      "Shipping Fees",
+                                      new ProductName("Shipping Fees"),
                                       "Delivery costs charged to customers.",
                                       0.01m);
             }
@@ -154,7 +154,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product(new ProductId("TLM-FEES"),
                                       new ProductCode("TLM-" + serviceCharge.Name),
-                                      serviceCharge.Name,
+                                      new ProductName(serviceCharge.Name),
                                       "Unknown Fee.",
                                       0.01m);
             }
@@ -165,7 +165,7 @@ namespace Mandarin.Services.Transactions
             return Observable.Return(transaction);
         }
 
-        private async Task<Product> GetProductAsync(ProductId squareId, string name, DateTime orderDate)
+        private async Task<Product> GetProductAsync(ProductId squareId, ProductName name, DateTime orderDate)
         {
             if (squareId != null)
             {
@@ -179,7 +179,7 @@ namespace Mandarin.Services.Transactions
             }
             else
             {
-                var unknownProduct = new Product(null, new ProductCode("TLM-Unknown"), "Unknown Product", "Unknown Product", null);
+                var unknownProduct = new Product(null, new ProductCode("TLM-Unknown"), new ProductName("Unknown Product"), "Unknown Product", null);
                 return unknownProduct;
             }
 
