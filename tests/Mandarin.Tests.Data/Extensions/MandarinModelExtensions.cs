@@ -1,41 +1,11 @@
-﻿using Mandarin.Commissions;
-using Mandarin.Common;
-using Mandarin.Inventory;
+﻿using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions;
 
 namespace Mandarin.Tests.Data.Extensions
 {
     public static class MandarinModelExtensions
     {
-        public static Stockist WithStatus(this Stockist model, StatusMode statusMode)
-        {
-            return new()
-            {
-                StockistId = model.StockistId,
-                StockistCode = model.StockistCode,
-                Details = model.Details,
-                Commission = model.Commission,
-                StatusCode = statusMode,
-            };
-        }
-
-        public static Stockist WithTenPercentCommission(this Stockist model)
-        {
-            return new()
-            {
-                StockistId = model.StockistId,
-                StockistCode = new StockistCode("TLM"),
-                Details = model.Details,
-                Commission = new Commission
-                {
-                    StartDate = model.Commission.StartDate,
-                    EndDate = model.Commission.EndDate,
-                    Rate = 10,
-                },
-                StatusCode = model.StatusCode,
-            };
-        }
-
         public static Stockist WithoutCommission(this Stockist model)
         {
             return new()
@@ -44,18 +14,6 @@ namespace Mandarin.Tests.Data.Extensions
                 StockistCode = model.StockistCode,
                 Details = model.Details,
                 Commission = null,
-                StatusCode = model.StatusCode,
-            };
-        }
-
-        public static Stockist WithTlmStockistCode(this Stockist model)
-        {
-            return new()
-            {
-                StockistId = model.StockistId,
-                StockistCode = new StockistCode("TLM"),
-                Details = model.Details,
-                Commission = model.Commission,
                 StatusCode = model.StatusCode,
             };
         }
@@ -76,6 +34,15 @@ namespace Mandarin.Tests.Data.Extensions
                        product.ProductName,
                        product.Description,
                        unitPrice);
+        }
+
+        public static Transaction WithTransactionId(this Transaction transaction, TransactionId transactionId)
+        {
+            return new(transactionId,
+                       transaction.TotalAmount,
+                       transaction.Timestamp,
+                       transaction.InsertedBy,
+                       transaction.Subtransactions);
         }
     }
 }

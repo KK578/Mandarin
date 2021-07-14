@@ -41,7 +41,7 @@ namespace Mandarin.Services.Transactions
             return this.CreateSubtransactions(order)
                        .Select(subtransactions =>
                        {
-                           var transactionId = order.Id;
+                           var transactionId = new TransactionId(order.Id);
                            var totalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100);
                            var timestamp = DateTime.Parse(order.CreatedAt);
                            var insertedBy = order.Source?.Name;
