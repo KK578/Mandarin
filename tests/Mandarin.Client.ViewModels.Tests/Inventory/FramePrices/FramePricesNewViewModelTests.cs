@@ -59,23 +59,6 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             }
         }
 
-        public class AmountTests : FramePricesNewViewModelTests
-        {
-            [Fact]
-            public void StockistAmountShouldAutomaticallyUpdateOnAmountChanging()
-            {
-                var product = this.fixture.Create<Product>() with { UnitPrice = 150.00M };
-                var subject = this.Subject;
-
-                subject.SelectedProduct = product;
-                subject.FrameAmount = 10.00M;
-                subject.StockistAmount.Should().Be(140.00M);
-
-                subject.FrameAmount = 20.00M;
-                subject.StockistAmount.Should().Be(130.00M);
-            }
-        }
-
         public class CancelTests : FramePricesNewViewModelTests
         {
             [Fact]
@@ -103,16 +86,10 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             }
 
             [Fact]
-            public void ShouldDefaultCreatedAtToToday()
-            {
-                this.Subject.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
-            }
-
-            [Fact]
             public async Task ShouldNotBeAbleToExecuteWhenProductIsNotYetSelected()
             {
                 var subject = this.Subject;
-                subject.FrameAmount = this.fixture.Create<decimal>();
+                subject.FramePrice.FramePrice = this.fixture.Create<decimal>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeFalse();
@@ -133,8 +110,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             {
                 var subject = this.Subject;
                 subject.SelectedProduct = this.fixture.Create<Product>();
-                subject.FrameAmount = this.fixture.Create<decimal>();
-                subject.CreatedAt = this.fixture.Create<DateTime>();
+                subject.FramePrice.FramePrice = this.fixture.Create<decimal>();
+                subject.FramePrice.CreatedAt = this.fixture.Create<DateTime>();
 
                 var canExecute = await subject.Save.CanExecute.FirstAsync();
                 canExecute.Should().BeTrue();
@@ -146,8 +123,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var subject = this.Subject;
                 var product = this.fixture.Create<Product>();
                 subject.SelectedProduct = product;
-                subject.FrameAmount = 20.00M;
-                subject.CreatedAt = new DateTime(2021, 06, 30);
+                subject.FramePrice.FramePrice = 20.00M;
+                subject.FramePrice.CreatedAt = new DateTime(2021, 06, 30);
 
                 this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()))
                     .Returns(Task.CompletedTask)
@@ -168,8 +145,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var subject = this.Subject;
                 var product = this.fixture.Create<Product>();
                 subject.SelectedProduct = product;
-                subject.FrameAmount = this.fixture.Create<decimal>();
-                subject.CreatedAt = this.fixture.Create<DateTime>();
+                subject.FramePrice.FramePrice = this.fixture.Create<decimal>();
+                subject.FramePrice.CreatedAt = this.fixture.Create<DateTime>();
 
                 await subject.Save.Execute();
 

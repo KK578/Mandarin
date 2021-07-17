@@ -24,14 +24,14 @@
           <FieldLabel>Product</FieldLabel>
           <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
                         Placeholder="Start typing to search..." MinLength="2"
-                        TextField="@((Product item) => item.ToString())" ValueField="@((Product item) => item)"
+                        TextField="@((Product item) => item.FriendlyString())" ValueField="@((Product item) => item)"
                         Filter="AutocompleteFilter.Contains"/>
         </Field>
       </Validation>
       <Validation>
         <Field>
           <FieldLabel>Active From</FieldLabel>
-          <DateEdit TItem="DateTime?" @bind-Date="@(ViewModel!.CreatedAt)">
+          <DateEdit TItem="DateTime?" @bind-Date="@(ViewModel!.FramePrice.CreatedAt)">
             <Feedback><ValidationError/></Feedback>
           </DateEdit>
         </Field>
@@ -43,7 +43,7 @@
             <Addons>
               <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.FrameAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
+                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.FramePrice.FramePrice" Disabled="@(ViewModel!.SelectedProduct == null)">
                   <Feedback><ValidationError/></Feedback>
                 </NumericEdit>
               </Addon>
@@ -55,7 +55,7 @@
             <Addons>
               <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Value="@ViewModel!.ProductAmount" ReadOnly="true" Disabled="true">
+                <NumericEdit TValue="decimal?" Value="@ViewModel!.FramePrice.RetailPrice" ReadOnly="true" Disabled="true">
                   <Feedback><ValidationError/></Feedback>
                 </NumericEdit>
               </Addon>
@@ -67,7 +67,7 @@
             <Addons>
               <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
               <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Value="@ViewModel!.StockistAmount" ReadOnly="true" Disabled="true">
+                <NumericEdit TValue="decimal?" Value="@ViewModel!.FramePrice.ArtistPrice" ReadOnly="true" Disabled="true">
                   <Feedback><ValidationError/></Feedback>
                 </NumericEdit>
               </Addon>

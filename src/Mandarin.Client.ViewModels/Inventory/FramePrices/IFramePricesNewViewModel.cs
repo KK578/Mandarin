@@ -18,6 +18,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         bool IsLoading { get; }
 
         /// <summary>
+        /// Gets the updatable ViewModel representing a <see cref="Mandarin.Inventory.FramePrice"/>.
+        /// </summary>
+        IFramePriceViewModel FramePrice { get; }
+
+        /// <summary>
         /// Gets the command to populate the ViewModel with data.
         /// </summary>
         ReactiveCommand<Unit, IReadOnlyList<Product>> LoadData { get; }
@@ -41,25 +46,5 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// Gets or sets the product to be associated to the new <see cref="FramePrice"/>.
         /// </summary>
         Product SelectedProduct { get; set; }
-
-        /// <summary>
-        /// Gets or sets the frame price to be associated to the selected product.
-        /// </summary>
-        decimal? FrameAmount { get; set; }
-
-        /// <summary>
-        /// Gets or sets the timestamp at which the frame price should be considered as active.
-        /// </summary>
-        DateTime? CreatedAt { get; set; }
-
-        /// <summary>
-        /// Gets the total cost of the product.
-        /// </summary>
-        decimal? ProductAmount { get; }
-
-        /// <summary>
-        /// Gets the commission that will be paid to stockist on selling the product.
-        /// </summary>
-        decimal? StockistAmount { get; }
     }
 }

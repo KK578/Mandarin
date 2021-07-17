@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using System;
+using Mandarin.Inventory;
+using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
@@ -8,28 +10,39 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
     public interface IFramePriceViewModel : IReactiveObject
     {
         /// <summary>
-        /// Gets the code of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
+        /// Gets or sets the code of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
         /// </summary>
-        string ProductCode { get; }
+        string ProductCode { get; set; }
 
         /// <summary>
-        /// Gets the name of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
+        /// Gets or sets the name of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
         /// </summary>
-        string ProductName { get; }
+        string ProductName { get; set; }
 
         /// <summary>
-        /// Gets the retail price of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
+        /// Gets or sets the retail price of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
         /// </summary>
-        decimal? RetailPrice { get; }
+        decimal? RetailPrice { get; set; }
 
         /// <summary>
-        /// Gets the commission amount associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
+        /// Gets or sets the commission amount associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
         /// </summary>
-        decimal FramePrice { get; }
+        decimal? FramePrice { get; set; }
 
         /// <summary>
         /// Gets the price that the artist will receive for the sale of the product.
         /// </summary>
         decimal? ArtistPrice { get; }
+
+        /// <summary>
+        /// Gets or sets the timestamp at which the frame price should be considered as active.
+        /// </summary>
+        DateTime? CreatedAt { get; set; }
+
+        /// <summary>
+        /// Builds the complete <see cref="Mandarin.Inventory.FramePrice"/> from the current values in the ViewModel.
+        /// </summary>
+        /// <returns>The fully populated <see cref="Mandarin.Inventory.FramePrice"/>.</returns>
+        FramePrice ToFramePrice();
     }
 }

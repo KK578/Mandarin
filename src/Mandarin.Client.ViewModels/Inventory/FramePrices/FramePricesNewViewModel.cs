@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Mandarin.Client.ViewModels.Extensions;
@@ -20,11 +19,8 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly NavigationManager navigationManager;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
-        private readonly ObservableAsPropertyHelper<decimal?> productAmount;
-        private readonly ObservableAsPropertyHelper<decimal?> stockistAmount;
+        private IFramePriceViewModel framePrice;
         private Product selectedProduct;
-        private decimal? frameAmount;
-        private DateTime? createdAt;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesNewViewModel"/> class.
@@ -40,23 +36,26 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
             var products = new ObservableCollection<Product>();
             this.Products = new ReadOnlyObservableCollection<Product>(products);
-            this.CreatedAt = DateTime.Now;
+            this.FramePrice = new FramePriceViewModel();
 
             this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
-            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.SelectedProduct,
-                                                                                      vm => vm.FrameAmount,
-                                                                                      vm => vm.CreatedAt,
-                                                                                      (p, f, c) => p != null && f.HasValue && c.HasValue));
+            this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
-            this.productAmount = this.WhenAnyValue(vm => vm.SelectedProduct).WhereNotNull().Select(p => p.UnitPrice).ToProperty(this, x => x.ProductAmount);
-            this.stockistAmount = this.WhenAnyValue(vm => vm.ProductAmount, vm => vm.FrameAmount, (p, c) => p - c).ToProperty(this, x => x.StockistAmount);
             this.isLoading = this.LoadData.IsExecuting.ToProperty(this, x => x.IsLoading);
             this.LoadData.Subscribe(x => products.Reset(x));
+            this.WhenAnyValue(x => x.SelectedProduct).WhereNotNull().Subscribe(this.OnProductUpdated);
         }
 
         /// <inheritdoc/>
         public bool IsLoading => this.isLoading.Value;
+
+        /// <inheritdoc/>
+        public IFramePriceViewModel FramePrice
+        {
+            get => this.framePrice;
+            private set => this.RaiseAndSetIfChanged(ref this.framePrice, value);
+        }
 
         /// <inheritdoc/>
         public ReactiveCommand<Unit, IReadOnlyList<Product>> LoadData { get; }
@@ -77,47 +76,22 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             set => this.RaiseAndSetIfChanged(ref this.selectedProduct, value);
         }
 
-        /// <inheritdoc/>
-        public decimal? FrameAmount
-        {
-            get => this.frameAmount;
-            set => this.RaiseAndSetIfChanged(ref this.frameAmount, value);
-        }
-
-        /// <inheritdoc/>
-        public DateTime? CreatedAt
-        {
-            get => this.createdAt;
-            set => this.RaiseAndSetIfChanged(ref this.createdAt, value);
-        }
-
-        /// <inheritdoc/>
-        public decimal? ProductAmount => this.productAmount.Value;
-
-        /// <inheritdoc/>
-        public decimal? StockistAmount => this.stockistAmount.Value;
-
         private IObservable<IReadOnlyList<Product>> OnLoadData()
         {
             return this.productService.GetAllProductsAsync().ToObservable();
         }
 
+        private void OnProductUpdated(Product product)
+        {
+            this.FramePrice.ProductCode = product.ProductCode.Value;
+            this.FramePrice.ProductName = product.FriendlyString();
+            this.FramePrice.RetailPrice = product.UnitPrice;
+        }
+
         private async Task OnSave()
         {
-            if (!this.FrameAmount.HasValue || !this.CreatedAt.HasValue)
-            {
-                return;
-            }
-
-            var framePrice = new FramePrice
-            {
-                ProductCode = this.SelectedProduct.ProductCode,
-                Amount = this.FrameAmount.Value,
-                CreatedAt = this.CreatedAt.Value,
-            };
-            await this.framePricesService.SaveFramePriceAsync(framePrice);
-
-            this.navigationManager.NavigateTo($"/inventory/frame-prices/edit/{this.selectedProduct.ProductCode}");
+            await this.framePricesService.SaveFramePriceAsync(this.FramePrice.ToFramePrice());
+            this.navigationManager.NavigateTo($"/inventory/frame-prices/edit/{this.FramePrice.ProductCode}");
         }
 
         private void OnCancel() => this.navigationManager.NavigateTo("/inventory/frame-prices");
