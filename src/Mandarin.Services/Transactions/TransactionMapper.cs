@@ -39,20 +39,13 @@ namespace Mandarin.Services.Transactions
         public IObservable<Transaction> MapToTransaction(Order order)
         {
             return this.CreateSubtransactions(order)
-                       .Select(subtransactions =>
+                       .Select(subtransactions => new Transaction()
                        {
-                           var transactionId = new TransactionId(order.Id);
-                           var totalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100);
-                           var timestamp = DateTime.Parse(order.CreatedAt);
-                           var insertedBy = order.Source?.Name;
-                           return new Transaction()
-                           {
-                               SquareId = transactionId,
-                               TotalAmount = totalAmount,
-                               Timestamp = timestamp,
-                               InsertedBy = insertedBy,
-                               Subtransactions = subtransactions.AsReadOnlyList(),
-                           };
+                           SquareId = new TransactionId(order.Id),
+                           TotalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100),
+                           Timestamp = DateTime.Parse(order.CreatedAt),
+                           InsertedBy = order.Source?.Name,
+                           Subtransactions = subtransactions.AsReadOnlyList(),
                        });
         }
 
