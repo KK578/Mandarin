@@ -57,8 +57,7 @@ namespace Mandarin.Database.Commissions
         /// <inheritdoc/>
         public Task<Commission> SaveCommissionAsync(StockistId stockistId, Commission commission)
         {
-            commission.StockistId = stockistId;
-            return this.Upsert(commission);
+            return this.Upsert(commission with { StockistId = stockistId });
         }
 
         /// <inheritdoc/>

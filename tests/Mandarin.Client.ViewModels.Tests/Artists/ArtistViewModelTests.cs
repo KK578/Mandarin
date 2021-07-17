@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Mandarin.Client.ViewModels.Artists;
 using Mandarin.Tests.Data;
+using Mandarin.Tests.Data.Extensions;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Artists
@@ -11,8 +12,7 @@ namespace Mandarin.Client.ViewModels.Tests.Artists
         public void ShouldRoundTripAnExistingStockist()
         {
             var subject = new ArtistViewModel(WellKnownTestData.Stockists.OthilieMapples);
-            subject.ToStockist().Should().BeEquivalentTo(WellKnownTestData.Stockists.OthilieMapples,
-                                                         o => o.Excluding(x => x.Commission.InsertedAt));
+            subject.ToStockist().Should().MatchStockist(WellKnownTestData.Stockists.OthilieMapples);
         }
     }
 }

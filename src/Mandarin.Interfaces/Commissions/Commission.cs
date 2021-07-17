@@ -7,41 +7,41 @@ namespace Mandarin.Commissions
     /// <summary>
     /// Represents an agreed commission period with a stockist.
     /// </summary>
-    public class Commission
+    public record Commission
     {
         /// <summary>
-        /// Gets or sets the commission's Database ID.
+        /// Gets the commission's Database ID.
         /// </summary>
         [Key]
-        public CommissionId CommissionId { get; set; }
+        public CommissionId CommissionId { get; init; }
 
         /// <summary>
-        /// Gets or sets the related stockist ID related to this commission.
+        /// Gets the related stockist ID related to this commission.
         /// </summary>
         [Required]
-        public StockistId StockistId { get; set; }
+        public StockistId StockistId { get; init; }
 
         /// <summary>
-        /// Gets or sets the start date for this commission.
+        /// Gets the start date for this commission.
         /// </summary>
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate { get; init; }
 
         /// <summary>
-        /// Gets or sets the end date for this commission.
+        /// Gets the end date for this commission.
         /// </summary>
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate { get; init; }
 
         /// <summary>
-        /// Gets or sets the agreed commission rate group for this commission.
+        /// Gets the agreed commission rate group for this commission.
         /// </summary>
         [Required]
-        public int Rate { get; set; }
+        public int Rate { get; init; }
 
         /// <summary>
-        /// Gets or sets the time that this commission was created at.
+        /// Gets the time that this commission was created at.
         /// </summary>
-        public DateTime? InsertedAt { get; set; }
+        public DateTime? InsertedAt { get; init; }
     }
 }

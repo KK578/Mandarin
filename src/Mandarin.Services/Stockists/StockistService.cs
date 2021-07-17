@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Bashi.Core.Extensions;
 using Mandarin.Commissions;
 using Mandarin.Stockists;
 using Microsoft.Extensions.Logging;
@@ -35,10 +37,11 @@ namespace Mandarin.Services.Stockists
             this.logger.LogDebug("Fetching stockist '{StockistCode}'.", stockistCode);
             try
             {
+                // TODO: Review when Commission is actually populated.
                 var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
-                await this.PopulateCommissionAsync(stockist);
+                var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
                 this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", stockist);
-                return stockist;
+                return stockist with { Commission = commission };
             }
             catch (Exception ex)
             {
@@ -53,14 +56,16 @@ namespace Mandarin.Services.Stockists
             this.logger.LogDebug("Fetching all stockists.");
             try
             {
+                // TODO: Review when Commission is actually populated.
                 var stockists = await this.stockistRepository.GetAllStockists();
-                foreach (var stockist in stockists)
+                var updatedStockists = await Task.WhenAll(stockists.Select(async stockist =>
                 {
-                    await this.PopulateCommissionAsync(stockist);
-                }
+                    var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
+                    return stockist with { Commission = commission };
+                }));
 
                 this.logger.LogInformation("Successfully fetched {Count} stockist(s).", stockists.Count);
-                return stockists;
+                return updatedStockists.AsReadOnlyList();
             }
             catch (Exception ex)
             {
@@ -85,12 +90,6 @@ namespace Mandarin.Services.Stockists
                 this.logger.LogError(ex, "Failed to save the stockist {@Stockist}.", stockist);
                 throw;
             }
-        }
-
-        private async Task PopulateCommissionAsync(Stockist stockist)
-        {
-            // TODO: Should most likely not bother populating this unless explicitly requested.
-            stockist.Commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
         }
     }
 }
