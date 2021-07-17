@@ -3,18 +3,18 @@ using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
-    /// <inheritdoc cref="IFramePriceGridRowViewModel" />
-    internal sealed class FramePriceGridRowViewModel : ReactiveObject, IFramePriceGridRowViewModel
+    /// <inheritdoc cref="IFramePriceViewModel" />
+    internal sealed class FramePriceViewModel : ReactiveObject, IFramePriceViewModel
     {
         private readonly FramePrice framePrice;
         private readonly Product product;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FramePriceGridRowViewModel"/> class.
+        /// Initializes a new instance of the <see cref="FramePriceViewModel"/> class.
         /// </summary>
         /// <param name="framePrice">The domain model for the frame price.</param>
         /// <param name="product">The domain model for the Product underlying the frame price.</param>
-        public FramePriceGridRowViewModel(FramePrice framePrice, Product product)
+        public FramePriceViewModel(FramePrice framePrice, Product product)
         {
             this.framePrice = framePrice;
             this.product = product;

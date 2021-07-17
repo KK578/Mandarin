@@ -17,14 +17,14 @@
     }
     else
     {
-      <DataGrid TItem="IFramePriceGridRowViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
+      <DataGrid TItem="IFramePriceViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
                 ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="15"
                 RowSelectable="@(_ => true)" @bind-SelectedRow="@ViewModel!.SelectedRow">
-        <DataGridColumn TItem="IFramePriceGridRowViewModel" Caption="Product Code" Field="@(nameof(IFramePriceGridRowViewModel.ProductCode))" TextAlignment="TextAlignment.Left" />
-        <DataGridColumn TItem="IFramePriceGridRowViewModel" Caption="Product Name" Field="@(nameof(IFramePriceGridRowViewModel.ProductName))" TextAlignment="TextAlignment.Left" />
-        <DataGridNumericColumn TItem="IFramePriceGridRowViewModel" Caption="Retail Price" Field="@(nameof(IFramePriceGridRowViewModel.RetailPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
-        <DataGridNumericColumn TItem="IFramePriceGridRowViewModel" Caption="Frame Price" Field="@(nameof(IFramePriceGridRowViewModel.FramePrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
-        <DataGridNumericColumn TItem="IFramePriceGridRowViewModel" Caption="Artist Price" Field="@(nameof(IFramePriceGridRowViewModel.ArtistPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
+        <DataGridColumn TItem="IFramePriceViewModel" Caption="Product Code" Field="@(nameof(IFramePriceViewModel.ProductCode))" TextAlignment="TextAlignment.Left" />
+        <DataGridColumn TItem="IFramePriceViewModel" Caption="Product Name" Field="@(nameof(IFramePriceViewModel.ProductName))" TextAlignment="TextAlignment.Left" />
+        <DataGridNumericColumn TItem="IFramePriceViewModel" Caption="Retail Price" Field="@(nameof(IFramePriceViewModel.RetailPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
+        <DataGridNumericColumn TItem="IFramePriceViewModel" Caption="Frame Price" Field="@(nameof(IFramePriceViewModel.FramePrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
+        <DataGridNumericColumn TItem="IFramePriceViewModel" Caption="Artist Price" Field="@(nameof(IFramePriceViewModel.ArtistPrice))" TextAlignment="TextAlignment.Right" DisplayFormat="{0:C}" />
       </DataGrid>
     }
   </CardBody>

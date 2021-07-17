@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
-    public class FramePriceGridRowViewModelTests
+    public class FramePriceViewModelTests
     {
         private static readonly FramePrice FramePrice = new()
         {
@@ -25,7 +25,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         [Fact]
         public void PropertiesShouldMatchExpected()
         {
-            var subject = new FramePriceGridRowViewModel(FramePriceGridRowViewModelTests.FramePrice, FramePriceGridRowViewModelTests.Product);
+            var subject = new FramePriceViewModel(FramePriceViewModelTests.FramePrice, FramePriceViewModelTests.Product);
             subject.ProductCode.Should().Be("TLM-001");
             subject.ProductName.Should().Be("Mandarin");
             subject.RetailPrice.Should().Be(45.00M);

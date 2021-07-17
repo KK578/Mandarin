@@ -122,7 +122,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public async Task ShouldBeExecutableOnceARowIsSelected()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFramePriceGridRowViewModel>();
+                subject.SelectedRow = Mock.Of<IFramePriceViewModel>();
                 var result = await subject.EditSelected.CanExecute.FirstAsync();
                 result.Should().BeTrue();
             }
@@ -131,7 +131,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public async Task ShouldRedirectOnExecute()
             {
                 var subject = this.Subject;
-                subject.SelectedRow = Mock.Of<IFramePriceGridRowViewModel>(x => x.ProductCode == "TLM-001");
+                subject.SelectedRow = Mock.Of<IFramePriceViewModel>(x => x.ProductCode == "TLM-001");
                 await subject.EditSelected.Execute();
                 this.navigationManager.Uri.Should().Contain("/inventory/frame-prices/edit/TLM-001");
             }

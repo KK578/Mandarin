@@ -5,7 +5,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
     /// <summary>
     /// Represents a <see cref="Mandarin.Inventory.FramePrice"/> for display in a grid.
     /// </summary>
-    public interface IFramePriceGridRowViewModel : IReactiveObject
+    public interface IFramePriceViewModel : IReactiveObject
     {
         /// <summary>
         /// Gets the code of the product associated to the <see cref="Mandarin.Inventory.FramePrice"/>.
