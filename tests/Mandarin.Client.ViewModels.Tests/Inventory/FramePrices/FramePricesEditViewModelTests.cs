@@ -82,7 +82,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             [Fact]
             public void StockistAmountShouldAutomaticallyUpdateOnAmountChanging()
             {
-                var product = this.fixture.Create<Product>().WithUnitPrice(150.00M);
+                var product = this.fixture.Create<Product>() with { UnitPrice = 150.00M };
                 this.GivenServicesReturnProduct(product, 10.00M);
 
                 var subject = this.Subject;
@@ -100,7 +100,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             [Fact]
             public void CreatedAtShouldAutomaticallyUpdateOnChangingCommissionAmount()
             {
-                var product = this.fixture.Create<Product>().WithUnitPrice(150.00M);
+                var product = this.fixture.Create<Product>() with { UnitPrice = 150.00M };
                 this.GivenServicesReturnProduct(product, 10.00M);
 
                 var subject = this.Subject;

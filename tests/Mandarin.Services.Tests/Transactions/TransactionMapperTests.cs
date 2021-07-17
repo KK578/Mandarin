@@ -200,11 +200,15 @@ namespace Mandarin.Services.Tests.Transactions
             [Fact]
             public async Task ShouldIncludeDeliveryFeesAsAnItem()
             {
-                var product = new Product(new ProductId("CatalogId"),
-                                          new ProductCode("HC20W-003"),
-                                          new ProductName("The Trickster"),
-                                          TestData.NextString(),
-                                          11.00m);
+                var product = new Product()
+                {
+                    SquareId = new ProductId("CatalogId"),
+                    ProductCode = new ProductCode("HC20W-003"),
+                    ProductName = new ProductName("The Trickster"),
+                    Description = TestData.NextString(),
+                    UnitPrice = 11.00m,
+                };
+
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 var order = new Order.Builder("Location")
                             .LineItems(new List<OrderLineItem>

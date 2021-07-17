@@ -10,11 +10,14 @@ namespace Mandarin.Client.Services.Tests.Inventory
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class MandarinGrpcProductServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        private readonly Product expectedProduct = new(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
-                                                       new ProductCode("KT20-001F"),
-                                                       new ProductName("Clementine (Framed) (Regular)"),
-                                                       "vel augue vestibulum ante ipsum primis in",
-                                                       95.00M);
+        private readonly Product expectedProduct = new()
+        {
+            SquareId = new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
+            ProductCode = new ProductCode("KT20-001F"),
+            ProductName = new ProductName("Clementine (Framed) (Regular)"),
+            Description = "vel augue vestibulum ante ipsum primis in",
+            UnitPrice = 95.00M,
+        };
 
         public MandarinGrpcProductServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)

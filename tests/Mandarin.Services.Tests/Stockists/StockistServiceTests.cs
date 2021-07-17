@@ -32,15 +32,18 @@ namespace Mandarin.Services.Tests.Stockists
 
         private void GivenRepositoriesReturnWellKnownTestData()
         {
+            var kelbyTynanWithoutCommission = WellKnownTestData.Stockists.KelbyTynan with { Commission = null };
+            var othilieMapplesWithoutCommission = WellKnownTestData.Stockists.OthilieMapples with { Commission = null };
+
             this.stockistRepository.Setup(x => x.GetStockistByCode(WellKnownTestData.Stockists.KelbyTynan.StockistCode))
-                .ReturnsAsync(WellKnownTestData.Stockists.KelbyTynan.WithoutCommission());
+                .ReturnsAsync(kelbyTynanWithoutCommission);
             this.stockistRepository.Setup(x => x.GetStockistByCode(WellKnownTestData.Stockists.OthilieMapples.StockistCode))
-                .ReturnsAsync(WellKnownTestData.Stockists.OthilieMapples.WithoutCommission());
+                .ReturnsAsync(othilieMapplesWithoutCommission);
             this.stockistRepository.Setup(x => x.GetAllStockists())
                 .ReturnsAsync(new List<Stockist>
                 {
-                    WellKnownTestData.Stockists.KelbyTynan.WithoutCommission(),
-                    WellKnownTestData.Stockists.OthilieMapples.WithoutCommission(),
+                    kelbyTynanWithoutCommission,
+                    othilieMapplesWithoutCommission,
                 });
 
             this.commissionRepository.Setup(x => x.GetCommissionByStockist(WellKnownTestData.Stockists.KelbyTynan.StockistId))
