@@ -39,13 +39,13 @@ namespace Mandarin.Services.Transactions
         public IObservable<Transaction> MapToTransaction(Order order)
         {
             return this.CreateSubtransactions(order)
-                       .Select(subtransactions =>
+                       .Select(subtransactions => new Transaction()
                        {
-                           var transactionId = new TransactionId(order.Id);
-                           var totalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100);
-                           var timestamp = DateTime.Parse(order.CreatedAt);
-                           var insertedBy = order.Source?.Name;
-                           return new Transaction(transactionId, totalAmount, timestamp, insertedBy, subtransactions);
+                           SquareId = new TransactionId(order.Id),
+                           TotalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100),
+                           Timestamp = DateTime.Parse(order.CreatedAt),
+                           InsertedBy = order.Source?.Name,
+                           Subtransactions = subtransactions.AsReadOnlyList(),
                        });
         }
 
@@ -78,20 +78,37 @@ namespace Mandarin.Services.Transactions
                     var commissionSubtotal = framePrice.Amount;
                     var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
-                    yield return new Subtransaction(product, quantity, subTotal);
-                    yield return new Subtransaction(new Product(new ProductId("TLM-" + framePrice.ProductCode),
-                                                                new ProductCode("TLM-" + framePrice.ProductCode),
-                                                                new ProductName($"Frame for {framePrice.ProductCode}"),
-                                                                null,
-                                                                framePrice.Amount),
-                                                    quantity,
-                                                    quantity * commissionSubtotal);
+                    yield return new Subtransaction
+                    {
+                        Product = product,
+                        Quantity = quantity,
+                        Subtotal = subTotal,
+                    };
+
+                    yield return new Subtransaction
+                    {
+                        Product = new Product
+                        {
+                            SquareId = new ProductId("TLM-" + framePrice.ProductCode),
+                            ProductCode = new ProductCode("TLM-" + framePrice.ProductCode),
+                            ProductName = new ProductName($"Frame for {framePrice.ProductCode}"),
+                            Description = null,
+                            UnitPrice = framePrice.Amount,
+                        },
+                        Quantity = quantity,
+                        Subtotal = quantity * commissionSubtotal,
+                    };
                 }
                 else
                 {
                     var quantity = int.Parse(orderLineItem.Quantity);
                     var subTotal = quantity * decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100);
-                    yield return new Subtransaction(product, quantity, subTotal);
+                    yield return new Subtransaction
+                    {
+                        Product = product,
+                        Quantity = quantity,
+                        Subtotal = subTotal,
+                    };
                 }
             }
         }
@@ -102,29 +119,46 @@ namespace Mandarin.Services.Transactions
 
             if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase))
             {
-                product = new Product(new ProductId("BUN-DCM"),
-                                      new ProductCode("BUN-DCM"),
-                                      new ProductName("Box of Macarons Discount"),
-                                      "Buy 6 macarons for \"£12.00\"",
-                                      -0.01m);
+                product = new Product
+                {
+                    SquareId = new ProductId("BUN-DCM"),
+                    ProductCode = new ProductCode("BUN-DCM"),
+                    ProductName = new ProductName("Box of Macarons Discount"),
+                    Description = "Buy 6 macarons for \"£12.00\"",
+                    UnitPrice = -0.01m,
+                };
             }
             else if (orderLineItemDiscount.Name.Contains("pocky", StringComparison.OrdinalIgnoreCase))
             {
-                product = new Product(new ProductId("BUN-DCP"),
-                                      new ProductCode("BUN-DCP"),
-                                      new ProductName("Box of Pocky Discount"),
-                                      "Discount on buying multiple packs of Pocky.",
-                                      -0.01m);
+                product = new Product
+                {
+                    SquareId = new ProductId("BUN-DCP"),
+                    ProductCode = new ProductCode("BUN-DCP"),
+                    ProductName = new ProductName("Box of Pocky Discount"),
+                    Description = "Discount on buying multiple packs of Pocky.",
+                    UnitPrice = -0.01m,
+                };
             }
             else
             {
-                product = new Product(new ProductId("TLM-D"), new ProductCode("TLM-D"), new ProductName("Other discounts"), "Discounts that aren't tracked.", -0.01m);
+                product = new Product
+                {
+                    SquareId = new ProductId("TLM-D"),
+                    ProductCode = new ProductCode("TLM-D"),
+                    ProductName = new ProductName("Other discounts"),
+                    Description = "Discounts that aren't tracked.",
+                    UnitPrice = -0.01m,
+                };
             }
 
             var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
             var amount = decimal.Divide(quantity, 100);
-            var subtransaction = new Subtransaction(product, (int)quantity, -amount);
-            return Observable.Return(subtransaction);
+            return Observable.Return(new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                Subtotal = -amount,
+            });
         }
 
         private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, DateTime orderDate)
@@ -135,7 +169,13 @@ namespace Mandarin.Services.Transactions
                                   var product = await this.GetProductAsync(new ProductId(item.CatalogObjectId), new ProductName(item.Name), orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
                                   var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
-                                  return new Subtransaction(product, quantity, subtotal);
+
+                                  return new Subtransaction
+                                  {
+                                      Product = product,
+                                      Quantity = quantity,
+                                      Subtotal = subtotal,
+                                  };
                               });
         }
 
@@ -144,25 +184,35 @@ namespace Mandarin.Services.Transactions
             Product product;
             if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
             {
-                product = new Product(new ProductId("TLM-DELIVERY"),
-                                      new ProductCode("TLM-DELIVERY"),
-                                      new ProductName("Shipping Fees"),
-                                      "Delivery costs charged to customers.",
-                                      0.01m);
+                product = new Product
+                {
+                    SquareId = new ProductId("TLM-DELIVERY"),
+                    ProductCode = new ProductCode("TLM-DELIVERY"),
+                    ProductName = new ProductName("Shipping Fees"),
+                    Description = "Delivery costs charged to customers.",
+                    UnitPrice = 0.01m,
+                };
             }
             else
             {
-                product = new Product(new ProductId("TLM-FEES"),
-                                      new ProductCode("TLM-" + serviceCharge.Name),
-                                      new ProductName(serviceCharge.Name),
-                                      "Unknown Fee.",
-                                      0.01m);
+                product = new Product
+                {
+                    SquareId = new ProductId("TLM-FEES"),
+                    ProductCode = new ProductCode("TLM-" + serviceCharge.Name),
+                    ProductName = new ProductName(serviceCharge.Name),
+                    Description = "Unknown Fee.",
+                    UnitPrice = 0.01m,
+                };
             }
 
             var quantity = serviceCharge.TotalMoney.Amount ?? 0;
             var amount = decimal.Divide(quantity, 100);
-            var transaction = new Subtransaction(product, (int)quantity, amount);
-            return Observable.Return(transaction);
+            return Observable.Return(new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                Subtotal = amount,
+            });
         }
 
         private async Task<Product> GetProductAsync(ProductId squareId, ProductName name, DateTime orderDate)
@@ -179,8 +229,14 @@ namespace Mandarin.Services.Transactions
             }
             else
             {
-                var unknownProduct = new Product(null, new ProductCode("TLM-Unknown"), new ProductName("Unknown Product"), "Unknown Product", null);
-                return unknownProduct;
+                return new Product
+                {
+                    SquareId = null,
+                    ProductCode = new ProductCode("TLM-Unknown"),
+                    ProductName = new ProductName("Unknown Product"),
+                    Description = "Unknown Product",
+                    UnitPrice = null,
+                };
             }
 
             Task<Product> MapProduct(Product originalProduct)

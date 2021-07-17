@@ -70,7 +70,14 @@ namespace Mandarin.Services.Inventory
             // TODO: Move this to a config-based lookup. And move it out of the decorator!
             if (productName.Equals(ProductName.TlmGiftCard))
             {
-                return new Product(new ProductId("TLM-GC"), new ProductCode("TLM-GC"), productName, "eGift Card", null);
+                return new Product
+                {
+                    SquareId = new ProductId("TLM-GC"),
+                    ProductCode = new ProductCode("TLM-GC"),
+                    ProductName = productName,
+                    Description = "eGift Card",
+                    UnitPrice = null,
+                };
             }
             else
             {

@@ -43,20 +43,49 @@ namespace Mandarin.Services.Tests.Commission
 
         private void GivenTransactionServiceReturnsData()
         {
-            var product1 = TestData.Create<Product>().WithTlmProductCode().WithUnitPrice(1.00m);
-            var product2 = TestData.Create<Product>().WithTlmProductCode().WithUnitPrice(5.00m);
+            var product1 = TestData.Create<Product>().WithTlmProductCode() with { UnitPrice = 1.00m };
+            var product2 = TestData.Create<Product>().WithTlmProductCode() with { UnitPrice = 5.00m };
 
             var transactions = new List<Transaction>
             {
-                new(null, 10.00M, DateTime.Now, null, new List<Subtransaction>
+                new()
+                {
+                    SquareId = null,
+                    TotalAmount = 10.00M,
+                    Timestamp = DateTime.Now,
+                    InsertedBy = null,
+                    Subtransactions = new List<Subtransaction>
                     {
-                        new(product1, 5, 5.00m),
-                        new(product2, 1, 5.00m),
-                    }),
-                new(null, 50.00m, DateTime.Now, null, new List<Subtransaction>
+                        new()
+                        {
+                            Product = product1,
+                            Quantity = 5,
+                            Subtotal = 5.00m,
+                        },
+                        new()
+                        {
+                            Product = product2,
+                            Quantity = 1,
+                            Subtotal = 5.00m,
+                        },
+                    }.AsReadOnly(),
+                },
+                new()
+                {
+                    SquareId = null,
+                    TotalAmount = 50.00m,
+                    Timestamp = DateTime.Now,
+                    InsertedBy = null,
+                    Subtransactions = new List<Subtransaction>
                     {
-                        new(product2, 10, 50.00m),
-                    }),
+                        new()
+                        {
+                            Product = product2,
+                            Quantity = 10,
+                            Subtotal = 50.00m,
+                        },
+                    }.AsReadOnly(),
+                },
             };
 
             this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))

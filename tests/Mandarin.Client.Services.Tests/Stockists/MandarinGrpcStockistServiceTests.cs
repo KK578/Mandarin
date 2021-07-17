@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
-using Mandarin.Client.Services.Tests.Extensions;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
+using Mandarin.Tests.Data.Extensions;
 using Mandarin.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -54,13 +54,19 @@ namespace Mandarin.Client.Services.Tests.Stockists
             var existing = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.KelbyTynan.StockistCode);
             existing.Should().MatchStockistIgnoringIds(WellKnownTestData.Stockists.KelbyTynan);
 
-            existing.Details.EmailAddress = TestData.NextString();
-            existing.Details.FirstName = "New Name";
+            var updated = existing with
+            {
+                Details = existing.Details with
+                {
+                    EmailAddress = TestData.NextString(),
+                    FirstName = "New Name",
+                },
+            };
 
-            await this.Subject.SaveStockistAsync(existing);
+            await this.Subject.SaveStockistAsync(updated);
 
-            var updated = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.KelbyTynan.StockistCode);
-            updated.Should().MatchStockistIgnoringIds(existing);
+            var result = await this.Subject.GetStockistByCodeAsync(WellKnownTestData.Stockists.KelbyTynan.StockistCode);
+            result.Should().MatchStockistIgnoringIds(updated);
         }
     }
 }

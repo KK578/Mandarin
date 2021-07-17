@@ -9,7 +9,6 @@ using FluentAssertions;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
-using Mandarin.Tests.Data.Extensions;
 using Microsoft.AspNetCore.Components;
 using Moq;
 using Xunit;
@@ -65,7 +64,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             [Fact]
             public void StockistAmountShouldAutomaticallyUpdateOnAmountChanging()
             {
-                var product = this.fixture.Create<Product>().WithUnitPrice(150.00M);
+                var product = this.fixture.Create<Product>() with { UnitPrice = 150.00M };
                 var subject = this.Subject;
 
                 subject.SelectedProduct = product;
