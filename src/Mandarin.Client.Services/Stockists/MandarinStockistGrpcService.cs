@@ -29,7 +29,7 @@ namespace Mandarin.Client.Services.Stockists
         /// <inheritdoc/>
         public async Task<Stockist> GetStockistByCodeAsync(StockistCode stockistCode)
         {
-            var request = new GetStockistRequest { StockistCode = stockistCode.Value };
+            var request = new GetStockistRequest { StockistCode = this.mapper.Map<string>(stockistCode) };
             var response = await this.stockistsClient.GetStockistAsync(request);
             return this.mapper.Map<Stockist>(response.Stockist);
         }
