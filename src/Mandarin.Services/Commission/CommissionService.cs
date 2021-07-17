@@ -55,7 +55,13 @@ namespace Mandarin.Services.Commission
                 var product = list.First().Product;
                 var quantity = list.Sum(y => y.Quantity);
                 var subtotal = list.Sum(y => y.Subtotal);
-                return new Subtransaction(product, quantity, subtotal);
+
+                return new Subtransaction
+                {
+                    Product = product,
+                    Quantity = quantity,
+                    Subtotal = subtotal,
+                };
             }
 
             RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)

@@ -35,14 +35,5 @@ namespace Mandarin.Tests.Data.Extensions
                        product.Description,
                        unitPrice);
         }
-
-        public static Transaction WithTransactionId(this Transaction transaction, TransactionId transactionId)
-        {
-            return new(transactionId,
-                       transaction.TotalAmount,
-                       transaction.Timestamp,
-                       transaction.InsertedBy,
-                       transaction.Subtransactions);
-        }
     }
 }

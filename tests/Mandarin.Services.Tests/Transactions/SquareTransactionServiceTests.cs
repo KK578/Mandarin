@@ -65,9 +65,9 @@ namespace Mandarin.Services.Tests.Transactions
         private void GivenTransactionMapperMapsTo()
         {
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order1")))
-                .Returns(Observable.Return(TestData.Create<Transaction>().WithTransactionId(new TransactionId("Order1"))));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { SquareId = new TransactionId("Order1") }));
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order2")))
-                .Returns(Observable.Return(TestData.Create<Transaction>().WithTransactionId(new TransactionId("Order2"))));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { SquareId = new TransactionId("Order2") }));
         }
 
         public class GetAllTransactionsTests : SquareTransactionServiceTests

@@ -45,7 +45,14 @@ namespace Mandarin.Services.Transactions
                            var totalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100);
                            var timestamp = DateTime.Parse(order.CreatedAt);
                            var insertedBy = order.Source?.Name;
-                           return new Transaction(transactionId, totalAmount, timestamp, insertedBy, subtransactions);
+                           return new Transaction()
+                           {
+                               SquareId = transactionId,
+                               TotalAmount = totalAmount,
+                               Timestamp = timestamp,
+                               InsertedBy = insertedBy,
+                               Subtransactions = subtransactions.AsReadOnlyList(),
+                           };
                        });
         }
 
@@ -78,20 +85,34 @@ namespace Mandarin.Services.Transactions
                     var commissionSubtotal = framePrice.Amount;
                     var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
-                    yield return new Subtransaction(product, quantity, subTotal);
-                    yield return new Subtransaction(new Product(new ProductId("TLM-" + framePrice.ProductCode),
-                                                                new ProductCode("TLM-" + framePrice.ProductCode),
-                                                                new ProductName($"Frame for {framePrice.ProductCode}"),
-                                                                null,
-                                                                framePrice.Amount),
-                                                    quantity,
-                                                    quantity * commissionSubtotal);
+                    yield return new Subtransaction
+                    {
+                        Product = product,
+                        Quantity = quantity,
+                        Subtotal = subTotal,
+                    };
+
+                    yield return new Subtransaction
+                    {
+                        Product = new Product(new ProductId("TLM-" + framePrice.ProductCode),
+                                              new ProductCode("TLM-" + framePrice.ProductCode),
+                                              new ProductName($"Frame for {framePrice.ProductCode}"),
+                                              null,
+                                              framePrice.Amount),
+                        Quantity = quantity,
+                        Subtotal = quantity * commissionSubtotal,
+                    };
                 }
                 else
                 {
                     var quantity = int.Parse(orderLineItem.Quantity);
                     var subTotal = quantity * decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100);
-                    yield return new Subtransaction(product, quantity, subTotal);
+                    yield return new Subtransaction
+                    {
+                        Product = product,
+                        Quantity = quantity,
+                        Subtotal = subTotal,
+                    };
                 }
             }
         }
@@ -123,8 +144,12 @@ namespace Mandarin.Services.Transactions
 
             var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
             var amount = decimal.Divide(quantity, 100);
-            var subtransaction = new Subtransaction(product, (int)quantity, -amount);
-            return Observable.Return(subtransaction);
+            return Observable.Return(new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                Subtotal = -amount,
+            });
         }
 
         private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, DateTime orderDate)
@@ -135,7 +160,13 @@ namespace Mandarin.Services.Transactions
                                   var product = await this.GetProductAsync(new ProductId(item.CatalogObjectId), new ProductName(item.Name), orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
                                   var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
-                                  return new Subtransaction(product, quantity, subtotal);
+
+                                  return new Subtransaction
+                                  {
+                                      Product = product,
+                                      Quantity = quantity,
+                                      Subtotal = subtotal,
+                                  };
                               });
         }
 
@@ -161,8 +192,12 @@ namespace Mandarin.Services.Transactions
 
             var quantity = serviceCharge.TotalMoney.Amount ?? 0;
             var amount = decimal.Divide(quantity, 100);
-            var transaction = new Subtransaction(product, (int)quantity, amount);
-            return Observable.Return(transaction);
+            return Observable.Return(new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                Subtotal = amount,
+            });
         }
 
         private async Task<Product> GetProductAsync(ProductId squareId, ProductName name, DateTime orderDate)
