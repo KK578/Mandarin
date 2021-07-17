@@ -72,7 +72,7 @@ namespace Mandarin.Database.Stockists
         }
 
         /// <inheritdoc/>
-        public Task<Stockist> GetStockistByCode(string stockistCode)
+        public Task<Stockist> GetStockistByCode(StockistCode stockistCode)
         {
             return this.Get(stockistCode,
                             async db =>
@@ -80,7 +80,7 @@ namespace Mandarin.Database.Stockists
                                 var records = await db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(
                                  StockistRepository.GetStockistByCodeSql,
                                  (s, sd) => s with { Details = sd },
-                                 new { stockist_code = stockistCode },
+                                 new { stockist_code = stockistCode.Value },
                                  splitOn: "stockist_id,stockist_id");
 
                                 return records.First();
@@ -100,7 +100,7 @@ namespace Mandarin.Database.Stockists
         }
 
         /// <inheritdoc/>
-        protected override string ExtractDisplayKey(Stockist value) => value.StockistCode;
+        protected override string ExtractDisplayKey(Stockist value) => value.StockistCode.Value;
 
         /// <inheritdoc/>
         protected override Task<IEnumerable<StockistRecord>> GetAllRecords(IDbConnection db)

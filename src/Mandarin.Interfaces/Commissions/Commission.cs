@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Mandarin.Stockists;
 
 namespace Mandarin.Commissions
 {
@@ -12,13 +13,13 @@ namespace Mandarin.Commissions
         /// Gets or sets the commission's Database ID.
         /// </summary>
         [Key]
-        public int CommissionId { get; set; }
+        public CommissionId CommissionId { get; set; }
 
         /// <summary>
         /// Gets or sets the related stockist ID related to this commission.
         /// </summary>
         [Required]
-        public int? StockistId { get; set; }
+        public StockistId StockistId { get; set; }
 
         /// <summary>
         /// Gets or sets the start date for this commission.
@@ -33,7 +34,7 @@ namespace Mandarin.Commissions
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        ///  Gets or sets the agreed commission rate group for this commission.
+        /// Gets or sets the agreed commission rate group for this commission.
         /// </summary>
         [Required]
         public int Rate { get; set; }

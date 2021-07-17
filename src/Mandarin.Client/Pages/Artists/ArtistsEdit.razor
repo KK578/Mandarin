@@ -3,6 +3,7 @@
 @using Mandarin.Client.Utils
 @using Mandarin.Common
 @using System.Reactive.Linq
+@using Mandarin.Stockists
 @inherits ReactiveInjectableComponentBase<IArtistsEditViewModel>
 
 <Card>
@@ -68,7 +69,7 @@
   protected override async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
-    await ViewModel!.LoadData.Execute(StockistCode);
+    await ViewModel!.LoadData.Execute(new StockistCode(StockistCode));
 
     this.EditContext = new EditContext(Stockist);
     this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());

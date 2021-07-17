@@ -15,7 +15,7 @@ namespace Mandarin.Inventory
         /// <param name="productCode">The product code to search for.</param>
         /// <param name="activeSince">The timestamp at which the frame price must be active at.</param>
         /// <returns>A <see cref="Task"/> containing the <see cref="FramePrice"/> for the given product code.</returns>
-        Task<FramePrice> GetByProductCodeAsync(string productCode, DateTime activeSince);
+        Task<FramePrice> GetByProductCodeAsync(ProductCode productCode, DateTime activeSince);
 
         /// <summary>
         /// Gets the list of all <see cref="FramePrice"/>.
@@ -36,6 +36,6 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productCode">The product code of the <see cref="FramePrice"/> to be deleted.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task DeleteByProductCodeAsync(string productCode);
+        Task DeleteByProductCodeAsync(ProductCode productCode);
     }
 }

@@ -22,7 +22,7 @@ namespace Mandarin.Inventory
         /// <param name="productCode">The product code of the product to search for a frame price.</param>
         /// <param name="transactionTime">The timestamp at which the transaction occurred.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous retrieval of the frame price.</returns>
-        Task<FramePrice> GetFramePriceAsync(string productCode, DateTime transactionTime);
+        Task<FramePrice> GetFramePriceAsync(ProductCode productCode, DateTime transactionTime);
 
         /// <summary>
         /// Saves all changes made to the <see cref="FramePrice"/>. Will automatically detect if it is a new <see cref="FramePrice"/>
@@ -37,6 +37,6 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productCode">The product code of the product to delete its frame price.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task DeleteFramePriceAsync(string productCode);
+        Task DeleteFramePriceAsync(ProductCode productCode);
     }
 }

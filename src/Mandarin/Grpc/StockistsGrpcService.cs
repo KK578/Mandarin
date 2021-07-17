@@ -36,7 +36,8 @@ namespace Mandarin.Grpc
         /// <inheritdoc />
         public override async Task<GetStockistResponse> GetStockist(GetStockistRequest request, ServerCallContext context)
         {
-            var stockist = await this.stockistService.GetStockistByCodeAsync(request.StockistCode);
+            var stockistCode = this.mapper.Map<StockistCode>(request.StockistCode);
+            var stockist = await this.stockistService.GetStockistByCodeAsync(stockistCode);
 
             return new GetStockistResponse
             {

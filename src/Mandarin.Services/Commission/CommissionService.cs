@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Bashi.Core.Extensions;
 using Mandarin.Commissions;
 using Mandarin.Common;
+using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 
@@ -42,7 +43,7 @@ namespace Mandarin.Services.Commission
 
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? "TLM-Unknown", subtransaction.TransactionUnitPrice))
+                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? new ProductCode("TLM-Unknown"), subtransaction.TransactionUnitPrice))
                                         .Select(ToAggregateSubtransaction)
                                         .ToList();
 
@@ -59,14 +60,14 @@ namespace Mandarin.Services.Commission
 
             RecordOfSales ToRecordOfSales(Stockist stockist, IEnumerable<Subtransaction> subtransactions)
             {
-                var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.StartsWith(stockist.StockistCode)).ToList();
+                var stockistsSubtransactions = subtransactions.Where(x => x.Product.ProductCode.Value.StartsWith(stockist.StockistCode.Value)).ToList();
                 var rate = decimal.Divide(stockist.Commission.Rate, 100);
 
                 if (stockistsSubtransactions.Count == 0)
                 {
                     return new RecordOfSales
                     {
-                        StockistCode = stockist.StockistCode,
+                        StockistCode = stockist.StockistCode.Value,
                         FirstName = stockist.Details.FirstName,
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
@@ -88,7 +89,7 @@ namespace Mandarin.Services.Commission
 
                     return new RecordOfSales
                     {
-                        StockistCode = stockist.StockistCode,
+                        StockistCode = stockist.StockistCode.Value,
                         FirstName = stockist.Details.FirstName,
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,

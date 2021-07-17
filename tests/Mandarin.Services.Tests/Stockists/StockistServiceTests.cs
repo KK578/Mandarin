@@ -25,7 +25,7 @@ namespace Mandarin.Services.Tests.Stockists
 
         private void GivenRepositoriesThrowException()
         {
-            this.stockistRepository.Setup(x => x.GetStockistByCode(It.IsAny<string>())).ThrowsAsync(new NpgsqlException("Not allowed."));
+            this.stockistRepository.Setup(x => x.GetStockistByCode(It.IsAny<StockistCode>())).ThrowsAsync(new NpgsqlException("Not allowed."));
             this.stockistRepository.Setup(x => x.GetAllStockists()).ThrowsAsync(new NpgsqlException("Not allowed."));
             this.stockistRepository.Setup(x => x.SaveStockistAsync(It.IsAny<Stockist>())).ThrowsAsync(new NpgsqlException("Not allowed."));
         }

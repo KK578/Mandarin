@@ -94,9 +94,9 @@ namespace Mandarin.Services.Inventory
 
             foreach (var variation in catalogItem.Variations)
             {
-                var squareId = variation.Id;
-                var variationName = $"{productName} ({variation.ItemVariationData.Name})";
-                var productCode = variation.ItemVariationData.Sku;
+                var squareId = new ProductId(variation.Id);
+                var productCode = new ProductCode(variation.ItemVariationData.Sku);
+                var variationName = new ProductName($"{productName} ({variation.ItemVariationData.Name})");
                 var price = variation.ItemVariationData.PriceMoney;
                 var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
                 yield return new Product(squareId, productCode, variationName, description, unitPrice);

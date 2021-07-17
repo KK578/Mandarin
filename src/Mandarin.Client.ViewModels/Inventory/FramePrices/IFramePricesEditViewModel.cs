@@ -18,7 +18,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <summary>
         /// Gets the command to load the Product by ProductCode and populate the ViewModel with data.
         /// </summary>
-        ReactiveCommand<string, Unit> LoadData { get; }
+        ReactiveCommand<ProductCode, Unit> LoadData { get; }
 
         /// <summary>
         /// Gets the command to save the updated <see cref="FramePrice"/>.

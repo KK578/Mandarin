@@ -36,7 +36,7 @@ namespace Mandarin.Client.ViewModels.Artists
             this.navigationManager = navigationManager;
             this.validator = validator;
 
-            this.LoadData = ReactiveCommand.CreateFromTask<string>(this.OnLoadData);
+            this.LoadData = ReactiveCommand.CreateFromTask<StockistCode>(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
@@ -65,7 +65,7 @@ namespace Mandarin.Client.ViewModels.Artists
         public IReadOnlyCollection<StatusMode> Statuses { get; }
 
         /// <inheritdoc />
-        public ReactiveCommand<string, Unit> LoadData { get; }
+        public ReactiveCommand<StockistCode, Unit> LoadData { get; }
 
         /// <inheritdoc />
         public ReactiveCommand<Unit, Unit> Save { get; }
@@ -73,7 +73,7 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <inheritdoc />
         public ReactiveCommand<Unit, Unit> Cancel { get; }
 
-        private async Task OnLoadData(string stockistCode)
+        private async Task OnLoadData(StockistCode stockistCode)
         {
             var existingStockist = await this.stockistService.GetStockistByCodeAsync(stockistCode);
             this.Stockist = new ArtistViewModel(existingStockist);

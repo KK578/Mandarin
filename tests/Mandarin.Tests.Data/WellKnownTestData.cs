@@ -30,12 +30,12 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Stockist KelbyTynan = new()
             {
-                StockistId = 1,
-                StockistCode = "KT20",
+                StockistId = new StockistId(1),
+                StockistCode = new StockistCode("KT20"),
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
-                    StockistId = 1,
+                    StockistId = new StockistId(1),
                     FirstName = "Kelby",
                     LastName = "Tynan",
                     DisplayName = "Kelby Tynan",
@@ -48,8 +48,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    CommissionId = 1,
-                    StockistId = 1,
+                    CommissionId = new CommissionId(1),
+                    StockistId = new StockistId(1),
                     StartDate = new DateTime(2019, 08, 23),
                     EndDate = new DateTime(2019, 11, 23),
                     Rate = 10,
@@ -59,12 +59,12 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist OthilieMapples = new()
             {
-                StockistId = 4,
-                StockistCode = "OM19",
+                StockistId = new StockistId(4),
+                StockistCode = new StockistCode("OM19"),
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
-                    StockistId = 4,
+                    StockistId = new StockistId(4),
                     FirstName = "Othilie",
                     LastName = "Mapples",
                     DisplayName = "Othilie Mapples",
@@ -77,8 +77,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    CommissionId = 4,
-                    StockistId = 4,
+                    CommissionId = new CommissionId(4),
+                    StockistId = new StockistId(4),
                     StartDate = new DateTime(2019, 01, 16),
                     EndDate = new DateTime(2019, 04, 16),
                     Rate = 40,
@@ -88,7 +88,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist ArlueneWoodes = new()
             {
-                StockistCode = "AW20",
+                StockistCode = new StockistCode("AW20"),
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
@@ -107,6 +107,26 @@ namespace Mandarin.Tests.Data
                     StartDate = new DateTime(2019, 11, 28),
                     EndDate = new DateTime(2020, 06, 09),
                     Rate = 20,
+                },
+            };
+
+            public static readonly Stockist TheLittleMandarin = new()
+            {
+                StockistCode = new StockistCode("TLM"),
+                StatusCode = StatusMode.Active,
+                Details = new StockistDetail
+                {
+                    TwitterHandle = "TLM",
+                    FirstName = "Little",
+                    LastName = "Mandarin",
+                    DisplayName = "The Little Mandarin Team",
+                    InstagramHandle = "TLM",
+                },
+                Commission = new Commission
+                {
+                    StartDate = new DateTime(2019, 11, 28),
+                    EndDate = new DateTime(2021, 07, 09),
+                    Rate = 10,
                 },
             };
         }

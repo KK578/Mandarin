@@ -53,10 +53,10 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public void ShouldBeTrueWhilstExecuting()
             {
                 var tcs = new TaskCompletionSource<Product>();
-                this.productService.Setup(x => x.GetProductByProductCodeAsync(string.Empty)).Returns(tcs.Task);
+                this.productService.Setup(x => x.GetProductByProductCodeAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
 
                 var subject = this.Subject;
-                var executingTask = subject.LoadData.Execute(string.Empty).ToTask();
+                var executingTask = subject.LoadData.Execute(new ProductCode("TLM-001")).ToTask();
 
                 subject.IsLoading.Should().BeTrue();
                 tcs.SetCanceled();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reactive;
 using Mandarin.Common;
+using Mandarin.Stockists;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Artists
@@ -28,7 +29,7 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <summary>
         /// Gets the command to load the selected <see cref="Mandarin.Stockists.Stockist"/> into <see cref="Stockist"/>.
         /// </summary>
-        ReactiveCommand<string, Unit> LoadData { get; }
+        ReactiveCommand<StockistCode, Unit> LoadData { get; }
 
         /// <summary>
         /// Gets the command to save the newly created <see cref="Mandarin.Stockists.Stockist"/>.

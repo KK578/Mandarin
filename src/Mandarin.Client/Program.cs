@@ -8,6 +8,7 @@ using Blazorise.Icons.FontAwesome;
 using Mandarin.Client.Services;
 using Mandarin.Client.ViewModels;
 using Mandarin.Configuration;
+using Mandarin.Converters;
 using Mandarin.Grpc.Converters;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -52,6 +53,7 @@ namespace Mandarin.Client
             builder.Services.AddMandarinViewModels();
             builder.Services.AddAutoMapper(options =>
             {
+                options.AddProfile<MandarinTinyTypeMapperProfile>();
                 options.AddProfile<MandarinGrpcMapperProfile>();
             });
 

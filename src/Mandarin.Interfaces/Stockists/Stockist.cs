@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Bashi.Core.TinyTypes;
 using Mandarin.Commissions;
 using Mandarin.Common;
 
@@ -13,14 +14,14 @@ namespace Mandarin.Stockists
         /// Gets or sets the Stockist's unique ID.
         /// </summary>
         [Key]
-        public int StockistId { get; set; }
+        public StockistId StockistId { get; set; }
 
         /// <summary>
         /// Gets or sets the Stockist's user-friendly code.
         /// </summary>
         [Required]
         [StringLength(6)]
-        public string StockistCode { get; set; }
+        public StockistCode StockistCode { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the stockist's current active status.

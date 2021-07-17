@@ -46,31 +46,36 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductBySquareIdAsync(string squareId)
+        public async Task<Product> GetProductBySquareIdAsync(ProductId squareId)
         {
             var products = await this.GetAllProductsAsync();
             return products.FirstOrDefault(x => x.SquareId == squareId);
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByProductCodeAsync(string productCode)
+        public async Task<Product> GetProductByProductCodeAsync(ProductCode productCode)
         {
             var products = await this.GetAllProductsAsync();
             return products.FirstOrDefault(x => x.ProductCode == productCode);
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByNameAsync(string productName)
+        public async Task<Product> GetProductByNameAsync(ProductName productName)
         {
-            // TODO: Move this to a config-based lookup. And move it out of the decorator!
-            if (string.Equals(productName, "eGift Card", StringComparison.OrdinalIgnoreCase))
+            if (productName == null)
             {
-                return new Product("TLM-GC", "TLM-GC", productName, "eGift Card", null);
+                return null;
+            }
+
+            // TODO: Move this to a config-based lookup. And move it out of the decorator!
+            if (productName.Equals(ProductName.TlmGiftCard))
+            {
+                return new Product(new ProductId("TLM-GC"), new ProductCode("TLM-GC"), productName, "eGift Card", null);
             }
             else
             {
                 var products = await this.GetAllProductsAsync();
-                return products.FirstOrDefault(x => x.ProductName.Contains(productName, StringComparison.OrdinalIgnoreCase));
+                return products.FirstOrDefault(x => x.ProductName.Value.Contains(productName.Value, StringComparison.OrdinalIgnoreCase));
             }
         }
 

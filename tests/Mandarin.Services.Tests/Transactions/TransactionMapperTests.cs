@@ -53,7 +53,7 @@ namespace Mandarin.Services.Tests.Transactions
             this.configuration.ProductMappings.Add(new ProductMapping
             {
                 TransactionsAfterDate = this.orderDate.AddDays(-1),
-                Mappings = new Dictionary<string, string> { { product.ProductCode, mappedProduct.ProductCode } },
+                Mappings = new Dictionary<string, string> { { product.ProductCode.Value, mappedProduct.ProductCode.Value } },
             });
             this.GivenInventoryServiceSetUpWithProduct(mappedProduct);
         }
@@ -63,8 +63,8 @@ namespace Mandarin.Services.Tests.Transactions
             var lineItems = new List<OrderLineItem>
             {
                 new("2",
-                    catalogObjectId: product.SquareId,
-                    name: product.ProductName,
+                    catalogObjectId: product.SquareId.Value,
+                    name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(1000, "GBP")),
             };
@@ -79,8 +79,8 @@ namespace Mandarin.Services.Tests.Transactions
         {
             var discounts = new List<OrderLineItemDiscount>
             {
-                new(catalogObjectId: product.SquareId,
-                    name: product.ProductName,
+                new(catalogObjectId: product.SquareId.Value,
+                    name: product.ProductName.Value,
                     amountMoney: new Money(2000, "GBP"),
                     appliedMoney: new Money(2000, "GBP")),
             };
@@ -96,8 +96,8 @@ namespace Mandarin.Services.Tests.Transactions
             var returns = new List<OrderReturnLineItem>
             {
                 new("3",
-                    catalogObjectId: product.SquareId,
-                    name: product.ProductName,
+                    catalogObjectId: product.SquareId.Value,
+                    name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(-1500, "GBP")),
             };
@@ -161,7 +161,7 @@ namespace Mandarin.Services.Tests.Transactions
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
                 transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(4.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(8.00m);
-                transactions[0].Subtransactions[1].Product.ProductCode.Should().StartWith("TLM");
+                transactions[0].Subtransactions[1].Product.ProductCode.Value.Should().StartWith("TLM");
                 transactions[0].Subtransactions[1].Quantity.Should().Be(2);
                 transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(1.00m);
                 transactions[0].Subtransactions[1].Subtotal.Should().Be(2.00m);
@@ -200,7 +200,11 @@ namespace Mandarin.Services.Tests.Transactions
             [Fact]
             public async Task ShouldIncludeDeliveryFeesAsAnItem()
             {
-                var product = new Product("CatalogId", "HC20W-003", "The Trickster", TestData.NextString(), 11.00m);
+                var product = new Product(new ProductId("CatalogId"),
+                                          new ProductCode("HC20W-003"),
+                                          new ProductName("The Trickster"),
+                                          TestData.NextString(),
+                                          11.00m);
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 var order = new Order.Builder("Location")
                             .LineItems(new List<OrderLineItem>

@@ -21,10 +21,10 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         }
 
         /// <inheritdoc/>
-        public string ProductCode => this.product.ProductCode;
+        public string ProductCode => this.product.ProductCode.Value;
 
         /// <inheritdoc/>
-        public string ProductName => this.product.ProductName;
+        public string ProductName => this.product.ProductName.Value;
 
         /// <inheritdoc/>
         public decimal? RetailPrice => this.product?.UnitPrice;

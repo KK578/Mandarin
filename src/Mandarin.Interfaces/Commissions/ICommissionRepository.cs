@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Mandarin.Stockists;
 
 namespace Mandarin.Commissions
 {
@@ -12,7 +13,7 @@ namespace Mandarin.Commissions
         /// </summary>
         /// <param name="stockistId">The stockist's database id.</param>
         /// <returns>A <see cref="Task"/> containing the <see cref="Commission"/> for the stockist.</returns>
-        Task<Commission> GetCommissionByStockist(int stockistId);
+        Task<Commission> GetCommissionByStockist(StockistId stockistId);
 
         /// <summary>
         /// Saves the provided <see cref="Commission"/>, and returns the new version of the <see cref="Commission"/> after it has been saved
@@ -21,6 +22,6 @@ namespace Mandarin.Commissions
         /// <param name="stockistId">The stockist's database id.</param>
         /// <param name="commission">The commission details to be saved.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<Commission> SaveCommissionAsync(int stockistId, Commission commission);
+        Task<Commission> SaveCommissionAsync(StockistId stockistId, Commission commission);
     }
 }

@@ -32,7 +32,7 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FramePrice> GetFramePriceAsync(string productCode, DateTime transactionTime)
+        public Task<FramePrice> GetFramePriceAsync(ProductCode productCode, DateTime transactionTime)
         {
             this.logger.LogDebug("Fetching frame price for '{ProductCode}' @ '{TransactionTime}'.", productCode, transactionTime);
             return this.framePriceRepository.GetByProductCodeAsync(productCode, transactionTime);
@@ -46,7 +46,7 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public Task DeleteFramePriceAsync(string productCode)
+        public Task DeleteFramePriceAsync(ProductCode productCode)
         {
             this.logger.LogInformation("Deleting frame price for '{ProductCode}'.", productCode);
             return this.framePriceRepository.DeleteByProductCodeAsync(productCode);

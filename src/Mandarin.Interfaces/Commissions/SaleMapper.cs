@@ -19,8 +19,8 @@ namespace Mandarin.Commissions
             var commission = subTotal * rate;
             var sale = new Sale
             {
-                ProductCode = subtransaction.Product.ProductCode,
-                ProductName = subtransaction.Product.ProductName,
+                ProductCode = subtransaction.Product.ProductCode.Value,
+                ProductName = subtransaction.Product.ProductName.Value,
                 Quantity = subtransaction.Quantity,
                 UnitPrice = subtransaction.TransactionUnitPrice,
                 Subtotal = subTotal,

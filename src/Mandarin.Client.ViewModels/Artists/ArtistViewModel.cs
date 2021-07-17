@@ -30,8 +30,8 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <param name="stockist">The pre-existing stockist to populate from.</param>
         public ArtistViewModel(Stockist stockist)
         {
-            this.StockistId = stockist.StockistId;
-            this.stockistCode = stockist.StockistCode;
+            this.StockistId = stockist.StockistId?.Value;
+            this.stockistCode = stockist.StockistCode?.Value;
             this.statusCode = stockist.StatusCode;
             this.firstName = stockist.Details.FirstName;
             this.lastName = stockist.Details.LastName;
@@ -42,14 +42,14 @@ namespace Mandarin.Client.ViewModels.Artists
             this.websiteUrl = stockist.Details.WebsiteUrl;
             this.tumblrHandle = stockist.Details.TumblrHandle;
             this.emailAddress = stockist.Details.EmailAddress;
-            this.CommissionId = stockist.Commission.CommissionId;
+            this.CommissionId = stockist.Commission.CommissionId?.Value;
             this.startDate = stockist.Commission.StartDate;
             this.endDate = stockist.Commission.EndDate;
             this.rate = stockist.Commission.Rate;
         }
 
         /// <inheritdoc />
-        public int StockistId { get; }
+        public int? StockistId { get; }
 
         /// <inheritdoc />
         public string StockistCode
@@ -129,7 +129,7 @@ namespace Mandarin.Client.ViewModels.Artists
         }
 
         /// <inheritdoc/>
-        public int CommissionId { get; }
+        public int? CommissionId { get; }
 
         /// <inheritdoc />
         public DateTime StartDate
@@ -155,14 +155,17 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <inheritdoc/>
         public Stockist ToStockist()
         {
+            var stockistId = this.StockistId.HasValue ? new StockistId(this.StockistId.Value) : null;
+            var commissionId = this.CommissionId.HasValue ? new CommissionId(this.CommissionId.Value) : null;
+
             return new Stockist
             {
-                StockistId = this.StockistId,
-                StockistCode = this.StockistCode,
+                StockistId = stockistId,
+                StockistCode = new StockistCode(this.StockistCode),
                 StatusCode = this.StatusCode,
                 Details = new StockistDetail
                 {
-                    StockistId = this.StockistId,
+                    StockistId = stockistId,
                     FirstName = this.FirstName,
                     LastName = this.LastName,
                     DisplayName = this.DisplayName,
@@ -175,8 +178,8 @@ namespace Mandarin.Client.ViewModels.Artists
                 },
                 Commission = new Commission
                 {
-                    CommissionId = this.CommissionId,
-                    StockistId = this.StockistId,
+                    CommissionId = commissionId,
+                    StockistId = stockistId,
                     Rate = this.Rate,
                     StartDate = this.StartDate,
                     EndDate = this.EndDate,

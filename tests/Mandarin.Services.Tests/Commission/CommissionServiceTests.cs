@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Mandarin.Commissions;
-using Mandarin.Common;
 using Mandarin.Inventory;
 using Mandarin.Services.Commission;
 using Mandarin.Stockists;
@@ -39,13 +37,7 @@ namespace Mandarin.Services.Tests.Commission
 
         private void GivenTlmStockistExists()
         {
-            var stockists = new List<Stockist>
-            {
-                MandarinFixture.Instance.Create<Stockist>()
-                               .WithStatus(StatusMode.Active)
-                               .WithTlmStockistCode()
-                               .WithTenPercentCommission(),
-            };
+            var stockists = new List<Stockist> { WellKnownTestData.Stockists.TheLittleMandarin };
             this.stockistService.Setup(x => x.GetStockistsAsync()).ReturnsAsync(stockists);
         }
 

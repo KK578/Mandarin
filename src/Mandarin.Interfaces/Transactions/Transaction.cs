@@ -17,7 +17,7 @@ namespace Mandarin.Transactions
         /// <param name="timestamp">The timestamp at which this transaction was last updated.</param>
         /// <param name="insertedBy">The name of the user who created the transaction.</param>
         /// <param name="subtransactions">The collection of subtransactions that form the transaction.</param>
-        public Transaction(string squareId,
+        public Transaction(TransactionId squareId,
                            decimal totalAmount,
                            DateTime timestamp,
                            string insertedBy,
@@ -33,7 +33,7 @@ namespace Mandarin.Transactions
         /// <summary>
         /// Gets the unique transaction ID assigned by Square for this transaction.
         /// </summary>
-        public string SquareId { get; }
+        public TransactionId SquareId { get; }
 
         /// <summary>
         /// Gets the total monetary amount for this transaction.

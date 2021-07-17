@@ -30,14 +30,14 @@ namespace Mandarin.Services.Stockists
         }
 
         /// <inheritdoc/>
-        public async Task<Stockist> GetStockistByCodeAsync(string stockistCode)
+        public async Task<Stockist> GetStockistByCodeAsync(StockistCode stockistCode)
         {
             this.logger.LogDebug("Fetching stockist '{StockistCode}'.", stockistCode);
             try
             {
                 var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
                 await this.PopulateCommissionAsync(stockist);
-                this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", nameof(Stockist.StockistId), stockist);
+                this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", stockist);
                 return stockist;
             }
             catch (Exception ex)
