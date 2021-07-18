@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Mandarin.Commissions;
+﻿using Mandarin.Commissions;
 using Mandarin.Common;
 
 namespace Mandarin.Stockists
@@ -12,14 +11,11 @@ namespace Mandarin.Stockists
         /// <summary>
         /// Gets the Stockist's unique ID.
         /// </summary>
-        [Key]
         public StockistId StockistId { get; init; }
 
         /// <summary>
         /// Gets the Stockist's user-friendly code.
         /// </summary>
-        [Required]
-        [StringLength(6)]
         public StockistCode StockistCode { get; init; }
 
         /// <summary>
