@@ -28,10 +28,10 @@
                                 Min="@(0M)"/>
           <ValidatedNumericEdit For="() => FramePrice.RetailPrice" @bind-Value="@FramePrice.RetailPrice"
                                 ColumnSize="ColumnSize.Is4" Label="Retail Price" AddonLabel="£"
-                                Min="@(0M)" ReadOnly="@(true)" Disabled="@(true)"/>
+                                Min="@(0M)" ReadOnly="true" Disabled="true"/>
           <ValidatedNumericEdit For="() => FramePrice.ArtistPrice" Value="@FramePrice.ArtistPrice"
                                 ColumnSize="ColumnSize.Is4" Label="Artist Price" AddonLabel="£"
-                                Min="@(0M)" ReadOnly="@(true)" Disabled="@(true)"/>
+                                Min="@(0M)" ReadOnly="true" Disabled="true"/>
         </Fields>
       </Validations>
     }

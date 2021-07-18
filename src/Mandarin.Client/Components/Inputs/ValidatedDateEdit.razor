@@ -4,7 +4,8 @@
 <Validation Validator="@OnValidate">
   <Field ColumnSize="@ColumnSize">
     <FieldLabel>@(Label)</FieldLabel>
-    <DateEdit Date="@Date" DateChanged="@DateChanged" @attributes="@AdditionalAttributes">
+    <DateEdit @attributes="@AdditionalAttributes"
+              Date="@Date" DateChanged="@DateChanged" Disabled="@Disabled" ReadOnly="@ReadOnly">
       <Feedback>
         <ValidationError>
           <ValidationMessage For="@For" />

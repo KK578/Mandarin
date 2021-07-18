@@ -3,7 +3,8 @@
 <Validation Validator="@OnValidate">
   <Field ColumnSize="@ColumnSize">
     <FieldLabel>@(Label)</FieldLabel>
-    <TextEdit Text="@Text" TextChanged="@TextChanged" @attributes="@AdditionalAttributes">
+    <TextEdit @attributes="@AdditionalAttributes"
+              Disabled="@Disabled" ReadOnly="@ReadOnly" Text="@Text" TextChanged="@TextChanged">
       <Feedback>
         <ValidationError>
           <ValidationMessage For="@For" />
