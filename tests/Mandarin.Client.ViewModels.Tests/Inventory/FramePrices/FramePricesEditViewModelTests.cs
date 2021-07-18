@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
-using Mandarin.Tests.Data.Extensions;
+using Mandarin.Tests.Data;
 using Microsoft.AspNetCore.Components;
 using Moq;
 using Xunit;
@@ -21,23 +24,30 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IQueryableProductService> productService = new();
+        private readonly Mock<IValidator<IFramePriceViewModel>> validator = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
 
-        private IFramePricesEditViewModel Subject =>
-            new FramePricesEditViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
+        private readonly IFramePricesEditViewModel subject;
 
-        private void GivenServicesReturnProduct(Product product, decimal? commission = null)
+        protected FramePricesEditViewModelTests()
         {
-            commission ??= this.fixture.Create<decimal>();
+            this.subject = new FramePricesEditViewModel(this.framePricesService.Object,
+                                                        this.productService.Object,
+                                                        this.navigationManager,
+                                                        this.validator.Object);
+        }
 
+        private void GivenValidationResult(ValidationResult validationResult)
+        {
+            this.validator
+                .Setup(x => x.ValidateAsync(It.IsAny<IFramePriceViewModel>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(validationResult);
+        }
+
+        private void GivenServicesReturnProduct(FramePrice framePrice, Product product)
+        {
             this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>()))
-                .ReturnsAsync(new FramePrice
-                {
-                    ProductCode = product.ProductCode,
-                    Amount = commission.Value,
-                    CreatedAt = FramePricesEditViewModelTests.OriginalCommissionDate,
-                });
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>())).ReturnsAsync(framePrice);
         }
 
 
@@ -46,7 +56,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             [Fact]
             public void ShouldBeFalseOnConstruction()
             {
-                this.Subject.IsLoading.Should().BeFalse();
+                this.subject.IsLoading.Should().BeFalse();
             }
 
             [Fact]
@@ -55,65 +65,76 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var tcs = new TaskCompletionSource<Product>();
                 this.productService.Setup(x => x.GetProductByProductCodeAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
 
-                var subject = this.Subject;
-                var executingTask = subject.LoadData.Execute(new ProductCode("TLM-001")).ToTask();
+                var unused = this.subject.LoadData.Execute(new ProductCode("TLM-001")).ToTask();
 
-                subject.IsLoading.Should().BeTrue();
+                this.subject.IsLoading.Should().BeTrue();
                 tcs.SetCanceled();
             }
-
-            [Fact]
-            public async Task ShouldHaveAvailableListOfProductsAfterLoad()
-            {
-                var product = this.fixture.Create<Product>();
-                this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-                this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>()))
-                    .ReturnsAsync(this.fixture.Create<FramePrice>());
-
-                var subject = this.Subject;
-                await subject.LoadData.Execute(product.ProductCode);
-
-                subject.Product.Should().Be(product);
-            }
         }
 
-        public class AmountTests : FramePricesEditViewModelTests
+        public class SaveTests : FramePricesEditViewModelTests, IAsyncLifetime
         {
-            [Fact]
-            public void StockistAmountShouldAutomaticallyUpdateOnAmountChanging()
+            private readonly ValidationResult failure;
+            private readonly ValidationResult success;
+
+            public SaveTests()
             {
-                var product = this.fixture.Create<Product>() with { UnitPrice = 150.00M };
-                this.GivenServicesReturnProduct(product, 10.00M);
-
-                var subject = this.Subject;
-
-                subject.LoadData.Execute(product.ProductCode);
-                subject.StockistAmount.Should().Be(140.00M);
-
-                subject.FrameAmount = 20.00M;
-                subject.StockistAmount.Should().Be(130.00M);
+                this.failure = new ValidationResult(this.fixture.CreateMany<ValidationFailure>());
+                this.success = new ValidationResult();
             }
-        }
 
-        public class CreatedAtTests : FramePricesEditViewModelTests
-        {
-            [Fact]
-            public void CreatedAtShouldAutomaticallyUpdateOnChangingCommissionAmount()
+            /// <inheritdoc />
+            public async Task InitializeAsync()
             {
-                var product = this.fixture.Create<Product>() with { UnitPrice = 150.00M };
-                this.GivenServicesReturnProduct(product, 10.00M);
+                this.GivenServicesReturnProduct(WellKnownTestData.FramePrices.Clementine,
+                                                WellKnownTestData.Products.ClementineFramed);
+                await this.subject.LoadData.Execute(WellKnownTestData.Products.ClementineFramed.ProductCode);
+            }
 
-                var subject = this.Subject;
+            /// <inheritdoc />
+            public Task DisposeAsync()
+            {
+                return Task.CompletedTask;
+            }
 
-                subject.LoadData.Execute(product.ProductCode);
-                subject.CreatedAt.Should().BeCloseTo(FramePricesEditViewModelTests.OriginalCommissionDate);
+            [Fact]
+            public async Task ShouldBeExecutableOnCreation()
+            {
+                var canExecute = await this.subject.Save.CanExecute.FirstAsync();
+                canExecute.Should().BeTrue();
+            }
 
-                subject.FrameAmount = 20.00M;
-                subject.CreatedAt.Should().NotBeCloseTo(FramePricesEditViewModelTests.OriginalCommissionDate);
-                subject.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+            [Fact]
+            public async Task ShouldUpdateValidationResultOnSaving()
+            {
+                this.GivenValidationResult(this.failure);
 
-                subject.FrameAmount = 10.00M;
-                subject.CreatedAt.Should().BeCloseTo(FramePricesEditViewModelTests.OriginalCommissionDate);
+                await this.subject.Save.Execute();
+                this.subject.ValidationResult.Should().Be(this.failure);
+            }
+
+            [Fact]
+            public async Task ShouldNotCallServiceIfValidationFails()
+            {
+                this.GivenValidationResult(this.failure);
+                await this.subject.Save.Execute();
+                this.framePricesService.Verify(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()), Times.Never());
+            }
+
+            [Fact]
+            public async Task ShouldCallServiceOnSuccessfulValidation()
+            {
+                this.GivenValidationResult(this.success);
+                await this.subject.Save.Execute();
+                this.framePricesService.Verify(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()), Times.Once());
+            }
+
+            [Fact]
+            public async Task ShouldNavigateToEditNewArtistOnSuccess()
+            {
+                this.GivenValidationResult(this.success);
+                await this.subject.Save.Execute();
+                this.navigationManager.Uri.Should().EndWith("/inventory/frame-prices");
             }
         }
 
@@ -122,104 +143,14 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             [Fact]
             public async Task ShouldBeExecutableOnConstruction()
             {
-                var canExecute = await this.Subject.Cancel.CanExecute.FirstAsync();
+                var canExecute = await this.subject.Cancel.CanExecute.FirstAsync();
                 canExecute.Should().BeTrue();
             }
 
             [Fact]
             public async Task ShouldNavigateToIndexOnCancel()
             {
-                await this.Subject.Cancel.Execute();
-                this.navigationManager.Uri.Should().EndWith("/inventory/frame-prices");
-            }
-        }
-
-        public class SaveTests : FramePricesEditViewModelTests
-        {
-            private readonly Product product;
-
-            public SaveTests()
-            {
-                this.product = this.fixture.Create<Product>();
-            }
-
-            [Fact]
-            public async Task ShouldNotBeExecutableOnConstruction()
-            {
-                var canExecute = await this.Subject.Save.CanExecute.FirstAsync();
-                canExecute.Should().BeFalse();
-            }
-
-            [Theory]
-            [InlineData(1)]
-            [InlineData(2)]
-            public async Task ShouldNotBeAbleToExecuteWhenAnyRequiredPropertiesIsNotSet(int i)
-            {
-                var subject = this.Subject;
-                if (i != 1)
-                {
-                    subject.FrameAmount = this.fixture.Create<decimal>();
-                }
-
-                if (i != 2)
-                {
-                    subject.CreatedAt = this.fixture.Create<DateTime>();
-                }
-
-                var canExecute = await subject.Save.CanExecute.FirstAsync();
-                canExecute.Should().BeFalse();
-            }
-
-            [Fact]
-            public async Task ShouldBeAbleToExecuteWhenProductAndCommissionAreSet()
-            {
-                this.GivenServicesReturnProduct(this.product);
-
-                var subject = this.Subject;
-                await subject.LoadData.Execute(this.product.ProductCode);
-                subject.FrameAmount = this.fixture.Create<decimal>();
-                subject.CreatedAt = this.fixture.Create<DateTime>();
-
-                var canExecute = await subject.Save.CanExecute.FirstAsync();
-                canExecute.Should().BeTrue();
-            }
-
-            [Fact]
-            public async Task ShouldSaveCommissionOnExecute()
-            {
-                this.GivenServicesReturnProduct(this.product);
-
-                var subject = this.Subject;
-                await subject.LoadData.Execute(this.product.ProductCode);
-                subject.FrameAmount = 20.00M;
-                subject.CreatedAt = new DateTime(2021, 06, 30);
-
-                this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>()))
-                    .Returns(Task.CompletedTask)
-                    .Verifiable();
-
-                await subject.Save.Execute();
-                this.framePricesService.Verify(x => x.SaveFramePriceAsync(new FramePrice
-                {
-                    ProductCode = this.product.ProductCode,
-                    Amount = 20.00M,
-                    CreatedAt = new DateTime(2021, 06, 30),
-                }));
-            }
-
-            [Fact]
-            public async Task ShouldRedirectAfterSavingCommission()
-            {
-                this.GivenServicesReturnProduct(this.product);
-
-                var subject = this.Subject;
-                await subject.LoadData.Execute(this.product.ProductCode);
-                subject.FrameAmount = this.fixture.Create<decimal>();
-                subject.CreatedAt = this.fixture.Create<DateTime>();
-
-                this.framePricesService.Setup(x => x.SaveFramePriceAsync(It.IsAny<FramePrice>())).Returns(Task.CompletedTask);
-
-                await subject.Save.Execute();
+                await this.subject.Cancel.Execute();
                 this.navigationManager.Uri.Should().EndWith("/inventory/frame-prices");
             }
         }

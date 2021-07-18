@@ -3,12 +3,17 @@
 
 <Validation Validator="@OnValidate">
   <Field ColumnSize="@ColumnSize">
+    @if (Label != null)
+    {
+      <FieldLabel>@Label</FieldLabel>
+    }
     <Addons>
       <Addon AddonType="AddonType.Start">
-        <AddonLabel>@Label</AddonLabel>
+        <AddonLabel>@AddonLabel</AddonLabel>
       </Addon>
       <Addon AddonType="AddonType.Body">
-        <NumericEdit Value="@Value" ValueChanged="@ValueChanged" @attributes="@AdditionalAttributes">
+        <NumericEdit @attributes="@AdditionalAttributes"
+                     Disabled="@Disabled" Max="@Max" Min="@Min" ReadOnly="@ReadOnly" Value="@Value" ValueChanged="@ValueChanged">
           <Feedback>
             <ValidationError>
               <ValidationMessage For="@For" />
@@ -28,6 +33,12 @@
   public string Label { get; set; }
 
   /// <summary>
+  /// Gets or sets the addon label to be associated to the input.
+  /// </summary>
+  [Parameter]
+  public string AddonLabel { get; set; }
+
+  /// <summary>
   /// Gets or sets the value of the ValueEdit.
   /// </summary>
   [Parameter]
@@ -44,4 +55,16 @@
   /// </summary>
   [Parameter]
   public IFluentColumn ColumnSize { get; set; }
+
+  /// <summary>
+  /// Gets or sets the minimum value for the input.
+  /// </summary>
+  [Parameter]
+  public TValue Min { get; set; }
+
+  /// <summary>
+  /// Gets or sets the maximum value for the input.
+  /// </summary>
+  [Parameter]
+  public TValue Max { get; set; }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
 using ReactiveUI;
@@ -14,13 +15,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
+        private readonly IValidator<IFramePriceViewModel> validator;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
-        private readonly ObservableAsPropertyHelper<decimal?> productAmount;
-        private readonly ObservableAsPropertyHelper<decimal?> stockistAmount;
-        private Product product;
-        private decimal? frameAmount;
-        private DateTime? createdAt;
+        private IFramePriceViewModel framePrice;
+        private ValidationResult validationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesEditViewModel"/> class.
@@ -28,27 +27,41 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FramePricesEditViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
+        /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
+        public FramePricesEditViewModel(IFramePricesService framePricesService,
+                                        IQueryableProductService productService,
+                                        NavigationManager navigationManager,
+                                        IValidator<IFramePriceViewModel> validator)
         {
             this.framePricesService = framePricesService;
             this.productService = productService;
             this.navigationManager = navigationManager;
+            this.validator = validator;
 
             this.LoadData = ReactiveCommand.CreateFromTask<ProductCode>(this.OnLoadData);
-            this.Save = ReactiveCommand.CreateFromTask(this.OnSave, this.WhenAnyValue(vm => vm.Product,
-                                                                                      vm => vm.FrameAmount,
-                                                                                      vm => vm.CreatedAt,
-                                                                                      (p, f, c) => p != null && f.HasValue && c.HasValue));
+            this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
-            this.productAmount = this.WhenAnyValue(vm => vm.Product).WhereNotNull().Select(p => p.UnitPrice).ToProperty(this, x => x.ProductAmount);
-            this.stockistAmount = this.WhenAnyValue(vm => vm.ProductAmount, vm => vm.FrameAmount, (p, c) => p - c).ToProperty(this, x => x.StockistAmount);
             this.isLoading = this.LoadData.IsExecuting.ToProperty(this, x => x.IsLoading);
             this.LoadData.Subscribe();
         }
 
         /// <inheritdoc/>
         public bool IsLoading => this.isLoading.Value;
+
+        /// <inheritdoc/>
+        public IFramePriceViewModel FramePrice
+        {
+            get => this.framePrice;
+            private set => this.RaiseAndSetIfChanged(ref this.framePrice, value);
+        }
+
+        /// <inheritdoc />
+        public ValidationResult ValidationResult
+        {
+            get => this.validationResult;
+            private set => this.RaiseAndSetIfChanged(ref this.validationResult, value);
+        }
 
         /// <inheritdoc/>
         public ReactiveCommand<ProductCode, Unit> LoadData { get; }
@@ -59,58 +72,22 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <inheritdoc/>
         public ReactiveCommand<Unit, Unit> Cancel { get; }
 
-        /// <inheritdoc/>
-        public Product Product
-        {
-            get => this.product;
-            private set => this.RaiseAndSetIfChanged(ref this.product, value);
-        }
-
-        /// <inheritdoc/>
-        public decimal? FrameAmount
-        {
-            get => this.frameAmount;
-            set => this.RaiseAndSetIfChanged(ref this.frameAmount, value);
-        }
-
-        /// <inheritdoc/>
-        public DateTime? CreatedAt
-        {
-            get => this.createdAt;
-            set => this.RaiseAndSetIfChanged(ref this.createdAt, value);
-        }
-
-        /// <inheritdoc/>
-        public decimal? ProductAmount => this.productAmount.Value;
-
-        /// <inheritdoc/>
-        public decimal? StockistAmount => this.stockistAmount.Value;
-
         private async Task OnLoadData(ProductCode productCode)
         {
             var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
-            this.Product = await this.productService.GetProductByProductCodeAsync(productCode);
-            this.FrameAmount = existingFramePrice.Amount;
-            this.CreatedAt = existingFramePrice.CreatedAt;
-            this.WhenAnyValue(vm => vm.FrameAmount)
-                .Select(amount => amount == existingFramePrice.Amount ? existingFramePrice.CreatedAt : DateTime.Now)
-                .Subscribe(date => this.CreatedAt = date);
+            var product = await this.productService.GetProductByProductCodeAsync(productCode);
+            this.FramePrice = new FramePriceViewModel(existingFramePrice, product);
         }
 
         private async Task OnSave()
         {
-            if (!this.FrameAmount.HasValue || !this.CreatedAt.HasValue)
+            this.ValidationResult = await this.validator.ValidateAsync(this.FramePrice);
+            if (!this.ValidationResult.IsValid)
             {
                 return;
             }
 
-            var framePrice = new FramePrice
-            {
-                ProductCode = this.Product.ProductCode,
-                Amount = this.FrameAmount.Value,
-                CreatedAt = this.CreatedAt.Value,
-            };
-            await this.framePricesService.SaveFramePriceAsync(framePrice);
+            await this.framePricesService.SaveFramePriceAsync(this.FramePrice.ToFramePrice());
             this.navigationManager.NavigateTo("/inventory/frame-prices");
         }
 

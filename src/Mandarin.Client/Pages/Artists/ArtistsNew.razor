@@ -33,7 +33,7 @@
       <Divider />
 
       <FieldLabel>Commission</FieldLabel>
-      <ValidatedNumericEdit For="() => Stockist.Rate" @bind-Value="@Stockist.Rate" Label="%" Min="@(0)" Max="@(100)" />
+      <ValidatedNumericEdit For="() => Stockist.Rate" @bind-Value="@Stockist.Rate" AddonLabel="%" Min="@(0)" Max="@(100)" />
       <Fields>
         <ValidatedDateEdit For="() => Stockist.StartDate" @bind-Date="@Stockist.StartDate" Label="Start Date" ColumnSize="ColumnSize.Is6" />
         <ValidatedDateEdit For="() => Stockist.EndDate" @bind-Date="@Stockist.EndDate" Label="End Date" ColumnSize="ColumnSize.Is6" />

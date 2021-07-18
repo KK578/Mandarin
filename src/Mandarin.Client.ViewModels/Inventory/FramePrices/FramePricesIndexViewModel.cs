@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
     /// <inheritdoc cref="IFramePricesIndexViewModel" />
-    internal sealed class FramePricesIndexViewModel : IndexPageViewModelBase<IFramePriceGridRowViewModel>, IFramePricesIndexViewModel
+    internal sealed class FramePricesIndexViewModel : IndexPageViewModelBase<IFramePriceViewModel>, IFramePricesIndexViewModel
     {
         private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
@@ -28,16 +28,16 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         }
 
         /// <inheritdoc/>
-        protected override async Task<IReadOnlyCollection<IFramePriceGridRowViewModel>> OnLoadData()
+        protected override async Task<IReadOnlyCollection<IFramePriceViewModel>> OnLoadData()
         {
             var framePrices = await this.framePricesService.GetAllFramePricesAsync();
             var viewModels = await Task.WhenAll(framePrices.Select(CreateViewModel).ToList());
             return viewModels;
 
-            async Task<IFramePriceGridRowViewModel> CreateViewModel(FramePrice x)
+            async Task<IFramePriceViewModel> CreateViewModel(FramePrice x)
             {
                 var product = await this.productService.GetProductByProductCodeAsync(x.ProductCode);
-                return new FramePriceGridRowViewModel(x, product);
+                return new FramePriceViewModel(x, product);
             }
         }
 

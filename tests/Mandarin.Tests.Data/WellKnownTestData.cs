@@ -2,6 +2,7 @@
 using System.IO;
 using Mandarin.Commissions;
 using Mandarin.Common;
+using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Newtonsoft.Json;
 using Square.Models;
@@ -24,6 +25,46 @@ namespace Mandarin.Tests.Data
         {
             public const string FixedCommissions = "TestData/Commissions/FixedCommissions.json";
             public const string RecordOfSalesTLM = "TestData/Commissions/RecordOfSales.TLM.json";
+        }
+
+        public static class FramePrices
+        {
+            public static readonly FramePrice Clementine = new()
+            {
+                ProductCode = Products.ClementineFramed.ProductCode,
+                Amount = 35.00M,
+                CreatedAt = new DateTime(2021, 06, 10),
+            };
+        }
+
+        public static class Products
+        {
+            public static readonly Product Mandarin = new()
+            {
+                SquareId = new ProductId("SquareId"),
+                ProductCode = new ProductCode("TLM-001"),
+                ProductName = new ProductName("Mandarin"),
+                Description = "It's a Mandarin!",
+                UnitPrice = 45.00M,
+            };
+
+            public static readonly Product TheTrickster = new()
+            {
+                SquareId = new ProductId("CatalogId"),
+                ProductCode = new ProductCode("HC20W-003"),
+                ProductName = new ProductName("The Trickster"),
+                Description = "The Trickster.",
+                UnitPrice = 11.00m,
+            };
+
+            public static readonly Product ClementineFramed = new()
+            {
+                SquareId = new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
+                ProductCode = new ProductCode("KT20-001F"),
+                ProductName = new ProductName("Clementine (Framed) (Regular)"),
+                Description = "vel augue vestibulum ante ipsum primis in",
+                UnitPrice = 95.00M,
+            };
         }
 
         public static class Stockists

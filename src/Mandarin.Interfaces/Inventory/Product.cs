@@ -29,5 +29,11 @@
         /// Gets the unit price for this product.
         /// </summary>
         public decimal? UnitPrice { get; init; }
+
+        /// <summary>
+        /// Gets the user friendly string for this product.
+        /// </summary>
+        /// <returns>The user friendly string.</returns>
+        public string FriendlyString() => $"[{this.ProductCode}] {this.ProductName}";
     }
 }

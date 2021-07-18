@@ -1,6 +1,7 @@
 ﻿@page "/inventory/frame-prices/new"
 @using Mandarin.Inventory
 @using System.Reactive.Linq
+@using Mandarin.Client.Utils
 @inherits ReactiveInjectableComponentBase<IFramePricesNewViewModel>
 
 <Card>
@@ -18,75 +19,39 @@
     }
     else
     {
-      @* <Validations @ref="validations" Mode="ValidationMode.Auto" Model="@Stockist" ValidateOnLoad="false"> *@
-      <Validation>
-        <Field>
-          <FieldLabel>Product</FieldLabel>
-          <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
-                        Placeholder="Start typing to search..." MinLength="2"
-                        TextField="@((Product item) => item.ToString())" ValueField="@((Product item) => item)"
-                        Filter="AutocompleteFilter.Contains"/>
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <FieldLabel>Active From</FieldLabel>
-          <DateEdit TItem="DateTime?" @bind-Date="@(ViewModel!.CreatedAt)">
-            <Feedback><ValidationError/></Feedback>
-          </DateEdit>
-        </Field>
-      </Validation>
-      <Validation>
+      <Validations @ref="@validations" EditContext="@EditContext" ValidateOnLoad="false">
+        <Validation>
+          <Field>
+            <FieldLabel>Product</FieldLabel>
+            <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
+                          Placeholder="Start typing to search..." MinLength="2"
+                          TextField="@((Product item) => item.FriendlyString())" ValueField="@((Product item) => item)"
+                          Filter="AutocompleteFilter.Contains"/>
+          </Field>
+        </Validation>
+        <ValidatedDateEdit For="() => FramePrice.CreatedAt" @bind-Date="@FramePrice.CreatedAt" Label="Active From" />
         <Fields>
-          <Field ColumnSize="ColumnSize.Is4">
-            <FieldLabel>Frame Price</FieldLabel>
-            <Addons>
-              <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
-              <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Min="0" @bind-Value="@ViewModel!.FrameAmount" Disabled="@(ViewModel!.SelectedProduct == null)">
-                  <Feedback><ValidationError/></Feedback>
-                </NumericEdit>
-              </Addon>
-            </Addons>
-          </Field>
-
-          <Field ColumnSize="ColumnSize.Is4">
-            <FieldLabel>Retail Price</FieldLabel>
-            <Addons>
-              <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
-              <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Value="@ViewModel!.ProductAmount" ReadOnly="true" Disabled="true">
-                  <Feedback><ValidationError/></Feedback>
-                </NumericEdit>
-              </Addon>
-            </Addons>
-          </Field>
-
-          <Field ColumnSize="ColumnSize.Is4">
-            <FieldLabel>Artist Price</FieldLabel>
-            <Addons>
-              <Addon AddonType="AddonType.Start"><AddonLabel>£</AddonLabel></Addon>
-              <Addon AddonType="AddonType.Body">
-                <NumericEdit TValue="decimal?" Value="@ViewModel!.StockistAmount" ReadOnly="true" Disabled="true">
-                  <Feedback><ValidationError/></Feedback>
-                </NumericEdit>
-              </Addon>
-            </Addons>
-          </Field>
+          <ValidatedNumericEdit For="() => FramePrice.FramePrice" @bind-Value="@FramePrice.FramePrice"
+                                ColumnSize="ColumnSize.Is4" Label="Frame Price" AddonLabel="£"
+                                Min="@(0M)" Disabled="@(ViewModel!.SelectedProduct == null)"/>
+          <ValidatedNumericEdit For="() => FramePrice.RetailPrice" @bind-Value="@FramePrice.RetailPrice"
+                                ColumnSize="ColumnSize.Is4" Label="Retail Price" AddonLabel="£"
+                                Min="@(0M)" ReadOnly="true" Disabled="true"/>
+          <ValidatedNumericEdit For="() => FramePrice.ArtistPrice" Value="@FramePrice.ArtistPrice"
+                                ColumnSize="ColumnSize.Is4" Label="Artist Price" AddonLabel="£"
+                                Min="@(0M)" ReadOnly="true" Disabled="true"/>
         </Fields>
-      </Validation>
-      @* </Validations> *@
+      </Validations>
     }
   </CardBody>
 </Card>
 
 @code {
 
-  /// <inheritdoc />
-  protected override async void OnInitialized()
-  {
-    await ViewModel!.LoadData.Execute();
-  }
+  private Validations validations;
+
+  private EditContext EditContext { get; set; }
+  private IFramePriceViewModel FramePrice => ViewModel!.FramePrice;
 
   /// <summary>
   /// Gets or sets the selected product.
@@ -95,6 +60,15 @@
   {
     get => ViewModel!.SelectedProduct;
     set => ViewModel!.SelectedProduct = (Product) value;
+  }
+
+  /// <inheritdoc />
+  protected override async void OnInitialized()
+  {
+    await ViewModel!.LoadData.Execute();
+
+    this.EditContext = new EditContext(FramePrice);
+    this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
   }
 
 }

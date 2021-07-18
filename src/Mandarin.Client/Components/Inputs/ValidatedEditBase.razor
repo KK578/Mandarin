@@ -15,6 +15,18 @@
   public EditContext EditContext { get; set; }
 
   /// <summary>
+  /// Gets or sets whether the input is disabled.
+  /// </summary>
+  [Parameter]
+  public bool Disabled { get; set; }
+
+  /// <summary>
+  /// Gets or sets whether the input is readonly.
+  /// </summary>
+  [Parameter]
+  public bool ReadOnly { get; set; }
+
+  /// <summary>
   /// Gets or sets the map of additional parameters to attach to the underlying TextEdit.
   /// </summary>
   [Parameter(CaptureUnmatchedValues = true)]

@@ -4,7 +4,8 @@
 <Validation Validator="@OnValidate">
   <Field>
     <FieldLabel>@(Label)</FieldLabel>
-    <Select SelectedValue="@SelectedValue" SelectedValueChanged="@SelectedValueChanged">
+    <Select @attributes="@AdditionalAttributes"
+            Disabled="@Disabled" ReadOnly="@ReadOnly" SelectedValue="@SelectedValue" SelectedValueChanged="@SelectedValueChanged">
       <ChildContent>
         @foreach (var option in Options)
         {
