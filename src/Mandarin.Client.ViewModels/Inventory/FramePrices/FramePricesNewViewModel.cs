@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Mandarin.Client.ViewModels.Extensions;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
@@ -17,10 +18,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly IFramePricesService framePricesService;
         private readonly IQueryableProductService productService;
         private readonly NavigationManager navigationManager;
+        private readonly IValidator<IFramePriceViewModel> validator;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
-        private IFramePriceViewModel framePrice;
         private Product selectedProduct;
+        private ValidationResult validationResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesNewViewModel"/> class.
@@ -28,17 +30,22 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productService">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FramePricesNewViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
+        /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
+        public FramePricesNewViewModel(IFramePricesService framePricesService,
+                                       IQueryableProductService productService,
+                                       NavigationManager navigationManager,
+                                       IValidator<IFramePriceViewModel> validator)
         {
             this.framePricesService = framePricesService;
             this.productService = productService;
             this.navigationManager = navigationManager;
+            this.validator = validator;
 
             var products = new ObservableCollection<Product>();
             this.Products = new ReadOnlyObservableCollection<Product>(products);
             this.FramePrice = new FramePriceViewModel();
 
-            this.LoadData = ReactiveCommand.CreateFromObservable(this.OnLoadData);
+            this.LoadData = ReactiveCommand.CreateFromTask(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
@@ -50,21 +57,15 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <inheritdoc/>
         public bool IsLoading => this.isLoading.Value;
 
-        /// <inheritdoc/>
-        public IFramePriceViewModel FramePrice
+        /// <inheritdoc />
+        public ValidationResult ValidationResult
         {
-            get => this.framePrice;
-            private set => this.RaiseAndSetIfChanged(ref this.framePrice, value);
+            get => this.validationResult;
+            private set => this.RaiseAndSetIfChanged(ref this.validationResult, value);
         }
 
         /// <inheritdoc/>
-        public ReactiveCommand<Unit, IReadOnlyList<Product>> LoadData { get; }
-
-        /// <inheritdoc/>
-        public ReactiveCommand<Unit, Unit> Save { get; }
-
-        /// <inheritdoc/>
-        public ReactiveCommand<Unit, Unit> Cancel { get; }
+        public IFramePriceViewModel FramePrice { get; }
 
         /// <inheritdoc/>
         public ReadOnlyObservableCollection<Product> Products { get; }
@@ -76,9 +77,18 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             set => this.RaiseAndSetIfChanged(ref this.selectedProduct, value);
         }
 
-        private IObservable<IReadOnlyList<Product>> OnLoadData()
+        /// <inheritdoc/>
+        public ReactiveCommand<Unit, IReadOnlyList<Product>> LoadData { get; }
+
+        /// <inheritdoc/>
+        public ReactiveCommand<Unit, Unit> Save { get; }
+
+        /// <inheritdoc/>
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
+
+        private Task<IReadOnlyList<Product>> OnLoadData()
         {
-            return this.productService.GetAllProductsAsync().ToObservable();
+            return this.productService.GetAllProductsAsync();
         }
 
         private void OnProductUpdated(Product product)
@@ -90,6 +100,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
         private async Task OnSave()
         {
+            this.ValidationResult = await this.validator.ValidateAsync(this.FramePrice);
+            if (!this.ValidationResult.IsValid)
+            {
+                return;
+            }
+
             await this.framePricesService.SaveFramePriceAsync(this.FramePrice.ToFramePrice());
             this.navigationManager.NavigateTo($"/inventory/frame-prices/edit/{this.FramePrice.ProductCode}");
         }

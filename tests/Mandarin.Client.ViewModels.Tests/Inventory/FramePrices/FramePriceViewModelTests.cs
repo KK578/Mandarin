@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Inventory;
+using Mandarin.Tests.Data;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
@@ -15,20 +16,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             CreatedAt = new DateTime(2021, 07, 01),
         };
 
-        private static readonly Product Product = new()
-        {
-            SquareId = new ProductId("SquareId"),
-            ProductCode = new ProductCode("TLM-001"),
-            ProductName = new ProductName("Mandarin"),
-            Description = "It's a Mandarin!",
-            UnitPrice = 45.00M,
-        };
-
         private readonly IFramePriceViewModel subject;
 
         public FramePriceViewModelTests()
         {
-            this.subject = new FramePriceViewModel(FramePriceViewModelTests.FramePrice, FramePriceViewModelTests.Product);
+            this.subject = new FramePriceViewModel(FramePriceViewModelTests.FramePrice, WellKnownTestData.Products.Mandarin);
         }
 
         [Fact]

@@ -7,7 +7,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
     /// <summary>
     /// Represents the ViewModel for editing an existing <see cref="Mandarin.Inventory.FramePrice"/>.
     /// </summary>
-    public interface IFramePricesEditViewModel : IReactiveObject
+    public interface IFramePricesEditViewModel : IValidatableViewModel
     {
         /// <summary>
         /// Gets a value indicating whether gets whether the ViewModel has finished initialisation.

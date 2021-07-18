@@ -8,6 +8,7 @@ using FluentAssertions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
 using Mandarin.Services.Transactions;
+using Mandarin.Tests.Data;
 using Microsoft.Extensions.Options;
 using Moq;
 using Square.Models;
@@ -200,16 +201,7 @@ namespace Mandarin.Services.Tests.Transactions
             [Fact]
             public async Task ShouldIncludeDeliveryFeesAsAnItem()
             {
-                var product = new Product()
-                {
-                    SquareId = new ProductId("CatalogId"),
-                    ProductCode = new ProductCode("HC20W-003"),
-                    ProductName = new ProductName("The Trickster"),
-                    Description = TestData.NextString(),
-                    UnitPrice = 11.00m,
-                };
-
-                this.GivenInventoryServiceSetUpWithProduct(product);
+                this.GivenInventoryServiceSetUpWithProduct(WellKnownTestData.Products.TheTrickster);
                 var order = new Order.Builder("Location")
                             .LineItems(new List<OrderLineItem>
                             {

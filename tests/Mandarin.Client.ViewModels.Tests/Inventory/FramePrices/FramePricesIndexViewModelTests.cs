@@ -6,6 +6,7 @@ using FluentAssertions;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
+using Mandarin.Tests.Data;
 using Moq;
 using Xunit;
 
@@ -17,15 +18,6 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         {
             ProductCode = new ProductCode("TLM-001"),
             Amount = 15.00M,
-        };
-
-        private static readonly Product Product = new()
-        {
-            SquareId = new ProductId("SquareId"),
-            ProductCode = new ProductCode("TLM-001"),
-            ProductName = new ProductName("Mandarin"),
-            Description = "It's a Mandarin!",
-            UnitPrice = 45.00M,
         };
 
         private readonly Mock<IFramePricesService> framePricesService = new();
@@ -83,7 +75,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).ReturnsAsync(data);
                 this.productService
                     .Setup(x => x.GetProductByProductCodeAsync(FramePricesIndexViewModelTests.FramePrice.ProductCode))
-                    .ReturnsAsync(FramePricesIndexViewModelTests.Product);
+                    .ReturnsAsync(WellKnownTestData.Products.Mandarin);
 
                 var subject = this.Subject;
                 await subject.LoadData.Execute();

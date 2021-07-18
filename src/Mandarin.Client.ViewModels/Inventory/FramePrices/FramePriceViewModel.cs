@@ -26,9 +26,11 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         {
             this.productCode = product.ProductCode.Value;
             this.productName = product.FriendlyString();
-            this.retailPrice = product.UnitPrice;
-            this.framePrice = framePrice.Amount;
             this.createdAt = framePrice.CreatedAt;
+
+            // Must be set via properties to trigger ArtistPrice update
+            this.RetailPrice = product.UnitPrice;
+            this.FramePrice = framePrice.Amount;
 
             this.WhenAnyValue(vm => vm.FramePrice)
                 .Select(amount => amount == framePrice.Amount ? framePrice.CreatedAt : DateTime.Now)
