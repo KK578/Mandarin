@@ -21,7 +21,7 @@ message GetAllProductsResponse {
 }
 
 message GetProductRequest {
-  google.protobuf.StringValue squareId = 1;
+  google.protobuf.StringValue productId = 1;
   google.protobuf.StringValue productCode = 2;
   google.protobuf.StringValue productName = 3;
 }
@@ -32,7 +32,7 @@ message GetProductResponse {
 
 
 message Product {
-  string squareId = 1;
+  string productId = 1;
   google.protobuf.StringValue productCode = 2;
   string productName = 3;
   google.protobuf.StringValue description = 4;

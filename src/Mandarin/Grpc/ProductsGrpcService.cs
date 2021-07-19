@@ -44,9 +44,9 @@ namespace Mandarin.Grpc
         {
             Inventory.Product product;
 
-            if (request.SquareId != null)
+            if (request.ProductId != null)
             {
-                product = await this.productService.GetProductBySquareIdAsync(this.mapper.Map<ProductId>(request.SquareId));
+                product = await this.productService.GetProductBySquareIdAsync(this.mapper.Map<ProductId>(request.ProductId));
             }
             else if (request.ProductCode != null)
             {

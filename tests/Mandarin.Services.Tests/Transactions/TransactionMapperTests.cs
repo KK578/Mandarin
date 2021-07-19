@@ -39,7 +39,7 @@ namespace Mandarin.Services.Tests.Transactions
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)
         {
-            this.productService.Setup(x => x.GetProductBySquareIdAsync(product.SquareId)).ReturnsAsync(product);
+            this.productService.Setup(x => x.GetProductBySquareIdAsync(product.ProductId)).ReturnsAsync(product);
             this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
             this.productService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
         }
@@ -64,7 +64,7 @@ namespace Mandarin.Services.Tests.Transactions
             var lineItems = new List<OrderLineItem>
             {
                 new("2",
-                    catalogObjectId: product.SquareId.Value,
+                    catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(1000, "GBP")),
@@ -80,7 +80,7 @@ namespace Mandarin.Services.Tests.Transactions
         {
             var discounts = new List<OrderLineItemDiscount>
             {
-                new(catalogObjectId: product.SquareId.Value,
+                new(catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     amountMoney: new Money(2000, "GBP"),
                     appliedMoney: new Money(2000, "GBP")),
@@ -97,7 +97,7 @@ namespace Mandarin.Services.Tests.Transactions
             var returns = new List<OrderReturnLineItem>
             {
                 new("3",
-                    catalogObjectId: product.SquareId.Value,
+                    catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(-1500, "GBP")),

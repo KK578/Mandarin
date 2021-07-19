@@ -64,7 +64,9 @@ namespace Mandarin.Services
 
         private static void AddInventoryServices(this IServiceCollection services)
         {
-            services.AddTransient<IProductService, SquareProductService>();
+            services.AddTransient<SquareProductService>();
+            services.AddTransient<IProductService>(s => s.GetRequiredService<SquareProductService>());
+            services.AddTransient<IProductSynchronizer>(s => s.GetRequiredService<SquareProductService>());
             services.Decorate<IProductService, CachingProductServiceDecorator>();
             services.AddTransient(s => (IQueryableProductService)s.GetRequiredService<IProductService>());
             services.AddTransient<IFramePricesService, FramePricesService>();

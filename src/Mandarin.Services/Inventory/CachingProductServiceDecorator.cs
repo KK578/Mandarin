@@ -49,7 +49,7 @@ namespace Mandarin.Services.Inventory
         public async Task<Product> GetProductBySquareIdAsync(ProductId squareId)
         {
             var products = await this.GetAllProductsAsync();
-            return products.FirstOrDefault(x => x.SquareId == squareId);
+            return products.FirstOrDefault(x => x.ProductId == squareId);
         }
 
         /// <inheritdoc/>
@@ -72,7 +72,7 @@ namespace Mandarin.Services.Inventory
             {
                 return new Product
                 {
-                    SquareId = new ProductId("TLM-GC"),
+                    ProductId = new ProductId("TLM-GC"),
                     ProductCode = new ProductCode("TLM-GC"),
                     ProductName = productName,
                     Description = "eGift Card",

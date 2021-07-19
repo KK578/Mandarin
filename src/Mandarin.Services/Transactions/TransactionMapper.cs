@@ -89,7 +89,7 @@ namespace Mandarin.Services.Transactions
                     {
                         Product = new Product
                         {
-                            SquareId = new ProductId("TLM-" + framePrice.ProductCode),
+                            ProductId = new ProductId("TLM-" + framePrice.ProductCode),
                             ProductCode = new ProductCode("TLM-" + framePrice.ProductCode),
                             ProductName = new ProductName($"Frame for {framePrice.ProductCode}"),
                             Description = null,
@@ -121,7 +121,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("BUN-DCM"),
+                    ProductId = new ProductId("BUN-DCM"),
                     ProductCode = new ProductCode("BUN-DCM"),
                     ProductName = new ProductName("Box of Macarons Discount"),
                     Description = "Buy 6 macarons for \"£12.00\"",
@@ -132,7 +132,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("BUN-DCP"),
+                    ProductId = new ProductId("BUN-DCP"),
                     ProductCode = new ProductCode("BUN-DCP"),
                     ProductName = new ProductName("Box of Pocky Discount"),
                     Description = "Discount on buying multiple packs of Pocky.",
@@ -143,7 +143,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("TLM-D"),
+                    ProductId = new ProductId("TLM-D"),
                     ProductCode = new ProductCode("TLM-D"),
                     ProductName = new ProductName("Other discounts"),
                     Description = "Discounts that aren't tracked.",
@@ -186,7 +186,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("TLM-DELIVERY"),
+                    ProductId = new ProductId("TLM-DELIVERY"),
                     ProductCode = new ProductCode("TLM-DELIVERY"),
                     ProductName = new ProductName("Shipping Fees"),
                     Description = "Delivery costs charged to customers.",
@@ -197,7 +197,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("TLM-FEES"),
+                    ProductId = new ProductId("TLM-FEES"),
                     ProductCode = new ProductCode("TLM-" + serviceCharge.Name),
                     ProductName = new ProductName(serviceCharge.Name),
                     Description = "Unknown Fee.",
@@ -231,7 +231,7 @@ namespace Mandarin.Services.Transactions
             {
                 return new Product
                 {
-                    SquareId = null,
+                    ProductId = null,
                     ProductCode = new ProductCode("TLM-Unknown"),
                     ProductName = new ProductName("Unknown Product"),
                     Description = "Unknown Product",

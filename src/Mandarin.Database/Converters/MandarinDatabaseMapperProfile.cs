@@ -34,6 +34,7 @@ namespace Mandarin.Database.Converters
         private void ConfigureMapForInventory()
         {
             this.CreateMap<FramePriceRecord, FramePrice>().ReverseMap();
+            this.CreateMap<ProductRecord, Product>().ReverseMap();
         }
 
         private void ConfigureMapForStockists()

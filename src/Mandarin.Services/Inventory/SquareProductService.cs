@@ -14,24 +14,51 @@ using Square.Models;
 
 namespace Mandarin.Services.Inventory
 {
-    /// <inheritdoc />
-    internal sealed class SquareProductService : IProductService
+    /// <inheritdoc cref="Mandarin.Inventory.IProductService" />
+    internal sealed class SquareProductService : IProductService, IProductSynchronizer
     {
         private static readonly Regex HyphenSeparatedProductNameRegex = new("^.* - (?<name>.*)$");
         private static readonly Regex SquareBracketProductNameRegex = new("^\\[.*\\] (?<name>.*)$");
 
         private readonly ILogger<SquareTransactionService> logger;
         private readonly ISquareClient squareClient;
+        private readonly IProductRepository productRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareProductService"/> class.
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
-        public SquareProductService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
+        /// <param name="productRepository">The application repository for interacting with products.</param>
+        public SquareProductService(ILogger<SquareTransactionService> logger, ISquareClient squareClient, IProductRepository productRepository)
         {
             this.logger = logger;
             this.squareClient = squareClient;
+            this.productRepository = productRepository;
+        }
+
+        /// <inheritdoc/>
+        public async Task SynchroniseRepositoryAsync()
+        {
+            var existingProducts = (await this.productRepository.GetAllAsync()).ToDictionary(x => x.ProductCode);
+            var squareProducts = await this.GetAllProductsAsync();
+
+            foreach (var product in squareProducts)
+            {
+                if (existingProducts.TryGetValue(product.ProductCode, out var existingProduct))
+                {
+                    if (!product.Equals(existingProduct))
+                    {
+                        this.logger.LogInformation("Updating {ProductCode} to new version: {Product}", product.ProductCode, product);
+                        await this.productRepository.SaveAsync(product);
+                    }
+                }
+                else
+                {
+                    this.logger.LogInformation("Inserting new product {ProductCode}: {Product}", product.ProductCode, product);
+                    await this.productRepository.SaveAsync(product);
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -99,11 +126,12 @@ namespace Mandarin.Services.Inventory
 
                 yield return new Product
                 {
-                    SquareId = new ProductId(variation.Id),
+                    ProductId = new ProductId(variation.Id),
                     ProductCode = new ProductCode(variation.ItemVariationData.Sku),
                     ProductName = new ProductName($"{productName} ({variation.ItemVariationData.Name})"),
                     Description = description,
                     UnitPrice = unitPrice,
+                    LastUpdated = DateTime.Parse(variation.UpdatedAt),
                 };
             }
         }
