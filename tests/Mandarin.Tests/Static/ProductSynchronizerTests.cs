@@ -1,11 +1,9 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Dapper;
 using FluentAssertions;
+using Mandarin.Database;
 using Mandarin.Inventory;
-using Mandarin.Services.Inventory;
 using Mandarin.Tests.Helpers;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
@@ -28,6 +26,7 @@ namespace Mandarin.Tests.Static
         [Fact]
         public async Task ShouldSaveSquareDataIntoDatabase()
         {
+            await this.GivenProductTableIsEmptyAsync();
             await this.productSynchronizer.SynchroniseRepositoryAsync();
             var products = await this.productRepository.GetAllAsync();
             products.Should().HaveCount(4);
@@ -37,9 +36,14 @@ namespace Mandarin.Tests.Static
         public async Task ShouldNotUpdateMultipleTimesIfItemsAlreadyExist()
         {
             await this.productSynchronizer.SynchroniseRepositoryAsync();
-            await this.productSynchronizer.SynchroniseRepositoryAsync();
             var products = await this.productRepository.GetAllAsync();
             products.Should().HaveCount(4);
+        }
+
+        private async Task GivenProductTableIsEmptyAsync()
+        {
+            var db = this.Fixture.Services.GetRequiredService<MandarinDbContext>();
+            await db.GetConnection().ExecuteAsync("TRUNCATE inventory.product");
         }
     }
 }

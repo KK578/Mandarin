@@ -16,7 +16,7 @@ namespace Mandarin.Database.Inventory
         public string product_code { get; init; }
         public string product_name { get; init; }
         public string description { get; init; }
-        public decimal unit_price { get; init; }
+        public decimal? unit_price { get; init; }
         public DateTime created_at { get; init; }
         public DateTime last_updated { get; init; }
     }

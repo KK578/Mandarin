@@ -2,10 +2,10 @@
 CREATE TABLE IF NOT EXISTS inventory.product
 (
     product_id     VARCHAR(32)   PRIMARY KEY,
-    product_code   VARCHAR(12)   UNIQUE NOT NULL,
+    product_code   VARCHAR(12)   NOT NULL,
     product_name   VARCHAR(100)  NOT NULL,
-    description    VARCHAR(1000) NOT NULL,
-    unit_price     NUMERIC(6, 2) NOT NULL,
+    description    VARCHAR(1000),
+    unit_price     NUMERIC(6, 2),
     last_updated   TIMESTAMP(3)  NOT NULL
 );
 

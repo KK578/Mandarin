@@ -14,51 +14,24 @@ using Square.Models;
 
 namespace Mandarin.Services.Inventory
 {
-    /// <inheritdoc cref="Mandarin.Inventory.IProductService" />
-    internal sealed class SquareProductService : IProductService, IProductSynchronizer
+    /// <inheritdoc />
+    internal sealed class SquareProductService : ISquareProductService
     {
         private static readonly Regex HyphenSeparatedProductNameRegex = new("^.* - (?<name>.*)$");
         private static readonly Regex SquareBracketProductNameRegex = new("^\\[.*\\] (?<name>.*)$");
 
-        private readonly ILogger<SquareTransactionService> logger;
+        private readonly ILogger<SquareProductService> logger;
         private readonly ISquareClient squareClient;
-        private readonly IProductRepository productRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareProductService"/> class.
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
-        /// <param name="productRepository">The application repository for interacting with products.</param>
-        public SquareProductService(ILogger<SquareTransactionService> logger, ISquareClient squareClient, IProductRepository productRepository)
+        public SquareProductService(ILogger<SquareProductService> logger, ISquareClient squareClient)
         {
             this.logger = logger;
             this.squareClient = squareClient;
-            this.productRepository = productRepository;
-        }
-
-        /// <inheritdoc/>
-        public async Task SynchroniseRepositoryAsync()
-        {
-            var existingProducts = (await this.productRepository.GetAllAsync()).ToDictionary(x => x.ProductCode);
-            var squareProducts = await this.GetAllProductsAsync();
-
-            foreach (var product in squareProducts)
-            {
-                if (existingProducts.TryGetValue(product.ProductCode, out var existingProduct))
-                {
-                    if (!product.Equals(existingProduct))
-                    {
-                        this.logger.LogInformation("Updating {ProductCode} to new version: {Product}", product.ProductCode, product);
-                        await this.productRepository.SaveAsync(product);
-                    }
-                }
-                else
-                {
-                    this.logger.LogInformation("Inserting new product {ProductCode}: {Product}", product.ProductCode, product);
-                    await this.productRepository.SaveAsync(product);
-                }
-            }
         }
 
         /// <inheritdoc/>
@@ -105,7 +78,10 @@ namespace Mandarin.Services.Inventory
             foreach (var item in items)
             {
                 var itemVariations = variations.Where(x => x.ItemVariationData.ItemId == item.Id).ToList();
-                yield return item.ItemData.ToBuilder().Variations(itemVariations).Build();
+                if (itemVariations.Count > 0)
+                {
+                    yield return item.ItemData.ToBuilder().Variations(itemVariations).Build();
+                }
             }
         }
 
@@ -121,6 +97,11 @@ namespace Mandarin.Services.Inventory
 
             foreach (var variation in catalogItem.Variations)
             {
+                if (variation.ItemVariationData.Sku == null)
+                {
+                    continue;
+                }
+
                 var price = variation.ItemVariationData.PriceMoney;
                 var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
 

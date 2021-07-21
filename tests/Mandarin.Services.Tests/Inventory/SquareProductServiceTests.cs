@@ -18,14 +18,12 @@ namespace Mandarin.Services.Tests.Inventory
     public class SquareProductServiceTests
     {
         private readonly Mock<ISquareClient> squareClient = new();
-        private readonly Mock<IProductRepository> productRepository = new();
-        private readonly IProductService subject;
+        private readonly ISquareProductService subject;
 
         protected SquareProductServiceTests()
         {
-            this.subject = new SquareProductService(NullLogger<SquareTransactionService>.Instance,
-                                                    this.squareClient.Object,
-                                                    this.productRepository.Object);
+            this.subject = new SquareProductService(NullLogger<SquareProductService>.Instance,
+                                                    this.squareClient.Object);
         }
 
         private void GivenSquareClientCatalogApiReturnsData()
