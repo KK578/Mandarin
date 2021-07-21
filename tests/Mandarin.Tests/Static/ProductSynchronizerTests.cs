@@ -27,7 +27,7 @@ namespace Mandarin.Tests.Static
         public async Task ShouldSaveSquareDataIntoDatabase()
         {
             await this.GivenProductTableIsEmptyAsync();
-            await this.productSynchronizer.SynchroniseRepositoryAsync();
+            await this.productSynchronizer.SynchroniseProductsAsync();
             var products = await this.productRepository.GetAllAsync();
             products.Should().HaveCount(4);
         }
@@ -35,7 +35,7 @@ namespace Mandarin.Tests.Static
         [Fact]
         public async Task ShouldNotUpdateMultipleTimesIfItemsAlreadyExist()
         {
-            await this.productSynchronizer.SynchroniseRepositoryAsync();
+            await this.productSynchronizer.SynchroniseProductsAsync();
             var products = await this.productRepository.GetAllAsync();
             products.Should().HaveCount(4);
         }

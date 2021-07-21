@@ -20,7 +20,9 @@ namespace Mandarin.Services.Inventory
         /// <param name="logger">The application logger.</param>
         /// <param name="squareProductService">The service to fetch products from Square.</param>
         /// <param name="productRepository">The application repository for interacting with products.</param>
-        public SquareProductSynchronizer(ILogger<SquareProductService> logger, ISquareProductService squareProductService, IProductRepository productRepository)
+        public SquareProductSynchronizer(ILogger<SquareProductService> logger,
+                                         ISquareProductService squareProductService,
+                                         IProductRepository productRepository)
         {
             this.logger = logger;
             this.squareProductService = squareProductService;
@@ -29,8 +31,10 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc />
-        public async Task SynchroniseRepositoryAsync()
+        public async Task SynchroniseProductsAsync()
         {
+            var updateCount = 0;
+            this.logger.LogInformation("Starting Square product synchronisation.");
             await this.semaphore.WaitAsync();
             try
             {
@@ -45,17 +49,20 @@ namespace Mandarin.Services.Inventory
                         {
                             this.logger.LogInformation("Updating {ProductId} to new version: {Product}", product.ProductId, product);
                             await this.productRepository.SaveAsync(product);
+                            updateCount++;
                         }
                     }
                     else
                     {
                         this.logger.LogInformation("Inserting new product: {Product}", product);
                         await this.productRepository.SaveAsync(product);
+                        updateCount++;
                     }
                 }
             }
             finally
             {
+                this.logger.LogInformation("Finished product synchronisation - Update Count: {Count}.", updateCount);
                 this.semaphore.Release();
             }
         }
