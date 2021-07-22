@@ -28,7 +28,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// Initializes a new instance of the <see cref="FramePricesNewViewModel"/> class.
         /// </summary>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
-        /// <param name="productRepository">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
         public FramePricesNewViewModel(IFramePricesService framePricesService,

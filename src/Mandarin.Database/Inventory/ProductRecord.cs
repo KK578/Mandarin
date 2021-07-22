@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Mandarin.Database.Inventory
 {
     /// <summary>
-    /// Represents the database record for the billing.frame_price table.
+    /// Represents the database record for the inventory.product table.
     /// </summary>
     [SuppressMessage("ReSharper", "SA1300", Justification = "Database record should match exactly to schema.")]
     [SuppressMessage("ReSharper", "SA1516", Justification = "Database record doesn't need documentation.")]

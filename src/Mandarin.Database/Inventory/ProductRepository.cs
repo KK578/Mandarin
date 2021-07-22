@@ -30,7 +30,7 @@ namespace Mandarin.Database.Inventory
         private const string GetProductByNameSql = @"
             SELECT *
             FROM inventory.product
-            WHERE product_name ILIKE CONCAT('%', @product_name, '%')";
+            WHERE product_name ILIKE '%' || @product_name || '%'";
 
         private const string UpsertProductSql = @"
             CALL inventory.sp_product_upsert(@product_id, @product_code, @product_name, @description, @unit_price, @last_updated)";
@@ -41,7 +41,7 @@ namespace Mandarin.Database.Inventory
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
         /// <param name="logger">The application logger.</param>
-        public ProductRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<DatabaseRepositoryBase<Product, ProductRecord>> logger)
+        public ProductRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<ProductRepository> logger)
             : base(mandarinDbContext, mapper, logger)
         {
         }

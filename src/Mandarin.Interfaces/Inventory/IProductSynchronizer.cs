@@ -11,6 +11,6 @@ namespace Mandarin.Inventory
         /// Update the underlying repository with the current state of products.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task SynchroniseProductsAsync();
+        Task SynchroniseProductsAsync();
     }
 }
