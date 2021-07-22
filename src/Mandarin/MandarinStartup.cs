@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Elastic.Apm.NetCoreAll;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -63,6 +64,7 @@ namespace Mandarin
             services.AddHangfireServer(o => o.WorkerCount = 1);
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
+            services.AddMandarinAuthorization();
             services.AddMandarinDatabase(this.configuration);
             services.AddAutoMapper(options =>
             {
@@ -99,7 +101,6 @@ namespace Mandarin
                 app.UseHsts();
             }
 
-            app.UseHangfireDashboard();
             app.UseAllElasticApm(this.configuration);
             app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
@@ -118,6 +119,7 @@ namespace Mandarin
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHangfireDashboardWithAuthorizationPolicy("Hangfire");
                 endpoints.MapGrpcService<CommissionsGrpcService>();
                 endpoints.MapGrpcService<EmailGrpcService>();
                 endpoints.MapGrpcService<FramePricesGrpcService>();
