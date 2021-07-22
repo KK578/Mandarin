@@ -28,7 +28,7 @@ namespace Mandarin.Tests.Static
         {
             await this.GivenProductTableIsEmptyAsync();
             await this.productSynchronizer.SynchroniseProductsAsync();
-            var products = await this.productRepository.GetAllAsync();
+            var products = await this.productRepository.GetAllProductsAsync();
             products.Should().HaveCount(4); // Only contains data from Square - excludes well known items added by migrations.
         }
 
@@ -36,7 +36,7 @@ namespace Mandarin.Tests.Static
         public async Task ShouldNotUpdateMultipleTimesIfItemsAlreadyExist()
         {
             await this.productSynchronizer.SynchroniseProductsAsync();
-            var products = await this.productRepository.GetAllAsync();
+            var products = await this.productRepository.GetAllProductsAsync();
             products.Should().HaveCount(5);
         }
 

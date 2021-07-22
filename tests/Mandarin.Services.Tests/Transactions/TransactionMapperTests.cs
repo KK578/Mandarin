@@ -39,9 +39,9 @@ namespace Mandarin.Services.Tests.Transactions
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)
         {
-            this.productRepository.Setup(x => x.GetProductByIdAsync(product.ProductId)).ReturnsAsync(product);
-            this.productRepository.Setup(x => x.GetProductByCodeAsync(product.ProductCode)).ReturnsAsync(product);
-            this.productRepository.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductId)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductCode)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductName)).ReturnsAsync(product);
         }
 
         private void GivenFramePriceExists(Product product, FramePrice framePrice)

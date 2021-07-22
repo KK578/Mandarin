@@ -74,7 +74,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var data = new List<FramePrice> { FramePricesIndexViewModelTests.FramePrice };
                 this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).ReturnsAsync(data);
                 this.productRepository
-                    .Setup(x => x.GetProductByCodeAsync(FramePricesIndexViewModelTests.FramePrice.ProductCode))
+                    .Setup(x => x.GetProductAsync(FramePricesIndexViewModelTests.FramePrice.ProductCode))
                     .ReturnsAsync(WellKnownTestData.Products.Mandarin);
 
                 var subject = this.Subject;

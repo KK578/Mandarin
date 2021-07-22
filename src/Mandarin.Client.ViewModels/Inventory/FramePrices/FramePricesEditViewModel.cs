@@ -75,7 +75,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private async Task OnLoadData(ProductCode productCode)
         {
             var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
-            var product = await this.productRepository.GetProductByCodeAsync(productCode);
+            var product = await this.productRepository.GetProductAsync(productCode);
             this.FramePrice = new FramePriceViewModel(existingFramePrice, product);
         }
 

@@ -56,7 +56,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public void ShouldBeTrueWhilstExecuting()
             {
                 var tcs = new TaskCompletionSource<IReadOnlyList<Product>>();
-                this.productRepository.Setup(x => x.GetAllAsync()).Returns(tcs.Task);
+                this.productRepository.Setup(x => x.GetAllProductsAsync()).Returns(tcs.Task);
 
                 var unused = this.subject.LoadData.Execute().ToTask();
 
@@ -68,7 +68,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public async Task ShouldHaveAvailableListOfProductsAfterLoad()
             {
                 var products = this.fixture.CreateMany<Product>().ToList().AsReadOnly();
-                this.productRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(products);
+                this.productRepository.Setup(x => x.GetAllProductsAsync()).ReturnsAsync(products);
 
                 await this.subject.LoadData.Execute();
 

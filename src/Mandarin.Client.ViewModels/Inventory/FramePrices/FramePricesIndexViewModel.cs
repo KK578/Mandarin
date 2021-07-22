@@ -36,7 +36,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
             async Task<IFramePriceViewModel> CreateViewModel(FramePrice x)
             {
-                var product = await this.productRepository.GetProductByCodeAsync(x.ProductCode);
+                var product = await this.productRepository.GetProductAsync(x.ProductCode);
                 return new FramePriceViewModel(x, product);
             }
         }

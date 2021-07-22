@@ -88,7 +88,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
         private Task<IReadOnlyList<Product>> OnLoadData()
         {
-            return this.productRepository.GetAllAsync();
+            return this.productRepository.GetAllProductsAsync();
         }
 
         private void OnProductUpdated(Product product)

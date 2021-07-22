@@ -27,7 +27,7 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyList<Product>> GetAllAsync()
+        public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
         {
             var request = new GetAllProductsRequest();
             var response = await this.productsClient.GetAllProductsAsync(request);
@@ -35,7 +35,7 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByIdAsync(ProductId squareId)
+        public async Task<Product> GetProductAsync(ProductId squareId)
         {
             var request = new GetProductRequest { ProductId = this.mapper.Map<string>(squareId) };
             var response = await this.productsClient.GetProductAsync(request);
@@ -43,7 +43,7 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByCodeAsync(ProductCode productCode)
+        public async Task<Product> GetProductAsync(ProductCode productCode)
         {
             var request = new GetProductRequest { ProductCode = this.mapper.Map<string>(productCode) };
             var response = await this.productsClient.GetProductAsync(request);
@@ -51,7 +51,7 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<Product> GetProductByNameAsync(ProductName productName)
+        public async Task<Product> GetProductAsync(ProductName productName)
         {
             var request = new GetProductRequest { ProductName = this.mapper.Map<string>(productName) };
             var response = await this.productsClient.GetProductAsync(request);
@@ -59,7 +59,7 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc />
-        public Task<Product> SaveAsync(Product product)
+        public Task<Product> SaveProductAsync(Product product)
         {
             throw new NotSupportedException("Mandarin API currently does not support saving new products. Please use Square instead.");
         }

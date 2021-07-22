@@ -32,7 +32,7 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetAllProductsResponse> GetAllProducts(GetAllProductsRequest request, ServerCallContext context)
         {
-            var products = await this.productRepository.GetAllAsync();
+            var products = await this.productRepository.GetAllProductsAsync();
             return new GetAllProductsResponse
             {
                 Products = { this.mapper.Map<IEnumerable<Product>>(products) },
@@ -46,15 +46,15 @@ namespace Mandarin.Grpc
 
             if (request.ProductId != null)
             {
-                product = await this.productRepository.GetProductByIdAsync(this.mapper.Map<ProductId>(request.ProductId));
+                product = await this.productRepository.GetProductAsync(this.mapper.Map<ProductId>(request.ProductId));
             }
             else if (request.ProductCode != null)
             {
-                product = await this.productRepository.GetProductByCodeAsync(this.mapper.Map<ProductCode>(request.ProductCode));
+                product = await this.productRepository.GetProductAsync(this.mapper.Map<ProductCode>(request.ProductCode));
             }
             else if (request.ProductName != null)
             {
-                product = await this.productRepository.GetProductByNameAsync(this.mapper.Map<ProductName>(request.ProductName));
+                product = await this.productRepository.GetProductAsync(this.mapper.Map<ProductName>(request.ProductName));
             }
             else
             {

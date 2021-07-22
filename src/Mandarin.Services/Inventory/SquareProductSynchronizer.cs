@@ -38,7 +38,7 @@ namespace Mandarin.Services.Inventory
             await this.semaphore.WaitAsync();
             try
             {
-                var existingProducts = (await this.productRepository.GetAllAsync()).ToDictionary(x => x.ProductId);
+                var existingProducts = (await this.productRepository.GetAllProductsAsync()).ToDictionary(x => x.ProductId);
                 var squareProducts = await this.squareProductService.GetAllProductsAsync();
 
                 foreach (var product in squareProducts)
@@ -48,14 +48,14 @@ namespace Mandarin.Services.Inventory
                         if (!product.Equals(existingProduct))
                         {
                             this.logger.LogInformation("Updating {ProductId} to new version: {Product}", product.ProductId, product);
-                            await this.productRepository.SaveAsync(product);
+                            await this.productRepository.SaveProductAsync(product);
                             updateCount++;
                         }
                     }
                     else
                     {
                         this.logger.LogInformation("Inserting new product: {Product}", product);
-                        await this.productRepository.SaveAsync(product);
+                        await this.productRepository.SaveProductAsync(product);
                         updateCount++;
                     }
                 }

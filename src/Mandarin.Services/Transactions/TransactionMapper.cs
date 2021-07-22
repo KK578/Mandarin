@@ -219,12 +219,12 @@ namespace Mandarin.Services.Transactions
         {
             if (squareId != null)
             {
-                var product = await this.productRepository.GetProductByIdAsync(squareId);
+                var product = await this.productRepository.GetProductAsync(squareId);
                 return await MapProduct(product);
             }
             else if (name != null)
             {
-                var product = await this.productRepository.GetProductByNameAsync(name);
+                var product = await this.productRepository.GetProductAsync(name);
                 return await MapProduct(product);
             }
             else
@@ -246,7 +246,7 @@ namespace Mandarin.Services.Transactions
                     if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
                     {
                         var mappedProductCode = new ProductCode(mapping.Mappings[originalProduct.ProductCode.Value]);
-                        return this.productRepository.GetProductByCodeAsync(mappedProductCode);
+                        return this.productRepository.GetProductAsync(mappedProductCode);
                     }
                 }
 

@@ -32,7 +32,7 @@
   {
     await base.OnInitializedAsync();
 
-    Data = await productRepository.GetAllAsync();
+    Data = await productRepository.GetAllProductsAsync();
   }
 
   private IReadOnlyList<Product> Data { get; set; }

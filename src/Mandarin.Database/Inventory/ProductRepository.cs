@@ -47,10 +47,10 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<Product>> GetAllAsync() => this.GetAll();
+        public Task<IReadOnlyList<Product>> GetAllProductsAsync() => this.GetAll();
 
         /// <inheritdoc />
-        public Task<Product> GetProductByIdAsync(ProductId productId)
+        public Task<Product> GetProductAsync(ProductId productId)
         {
             return this.Get(productId,
                             db =>
@@ -61,7 +61,7 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc />
-        public Task<Product> GetProductByCodeAsync(ProductCode productCode)
+        public Task<Product> GetProductAsync(ProductCode productCode)
         {
             return this.Get(productCode,
                             db =>
@@ -72,7 +72,7 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc />
-        public Task<Product> GetProductByNameAsync(ProductName productName)
+        public Task<Product> GetProductAsync(ProductName productName)
         {
             return this.Get(productName,
                             db =>
@@ -83,7 +83,7 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc />
-        public Task<Product> SaveAsync(Product product) => this.Upsert(product);
+        public Task<Product> SaveProductAsync(Product product) => this.Upsert(product);
 
         /// <inheritdoc />
         protected override string ExtractDisplayKey(Product value) => value.FriendlyString();

@@ -12,7 +12,7 @@ namespace Mandarin.Inventory
         /// Gets the list of all <see cref="Product"/>.
         /// </summary>
         /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of all <see cref="Product"/>.</returns>
-        Task<IReadOnlyList<Product>> GetAllAsync();
+        Task<IReadOnlyList<Product>> GetAllProductsAsync();
 
         /// <summary>
         /// Finds the singular product that matches the provided product ID.
@@ -20,7 +20,7 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productId">The unique product ID assigned by Square to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductByIdAsync(ProductId productId);
+        Task<Product> GetProductAsync(ProductId productId);
 
         /// <summary>
         /// Finds the singular product that matches the provided product code.
@@ -28,7 +28,7 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productCode">The unique product code to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductByCodeAsync(ProductCode productCode);
+        Task<Product> GetProductAsync(ProductCode productCode);
 
         /// <summary>
         /// Finds the singular product that matches the provided product name.
@@ -36,7 +36,7 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="productName">The name of the product to be searched for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
-        Task<Product> GetProductByNameAsync(ProductName productName);
+        Task<Product> GetProductAsync(ProductName productName);
 
         /// <summary>
         /// Saves the provided <see cref="Product"/>, and returns the new version of the <see cref="Product"/> after it
@@ -44,6 +44,6 @@ namespace Mandarin.Inventory
         /// </summary>
         /// <param name="product">The <see cref="Product"/> to be saved.</param>
         /// <returns>A <see cref="Task"/> containing the new <see cref="Product"/> after the operation is complete.</returns>
-        Task<Product> SaveAsync(Product product);
+        Task<Product> SaveProductAsync(Product product);
     }
 }

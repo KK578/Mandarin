@@ -46,7 +46,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 
         private void GivenServicesReturnProduct(FramePrice framePrice, Product product)
         {
-            this.productRepository.Setup(x => x.GetProductByCodeAsync(product.ProductCode)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductCode)).ReturnsAsync(product);
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>())).ReturnsAsync(framePrice);
         }
 
@@ -63,7 +63,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public void ShouldBeTrueWhilstExecuting()
             {
                 var tcs = new TaskCompletionSource<Product>();
-                this.productRepository.Setup(x => x.GetProductByCodeAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
+                this.productRepository.Setup(x => x.GetProductAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
 
                 var unused = this.subject.LoadData.Execute(new ProductCode("TLM-001")).ToTask();
 
