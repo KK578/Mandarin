@@ -17,6 +17,21 @@ namespace Mandarin.Database.Inventory
             FROM inventory.product
             ORDER BY product_code";
 
+        private const string GetProductByIdSql = @"
+            SELECT *
+            FROM inventory.product
+            WHERE product_id = @product_id";
+
+        private const string GetProductByCodeSql = @"
+            SELECT *
+            FROM inventory.product
+            WHERE product_code = @product_code";
+
+        private const string GetProductByNameSql = @"
+            SELECT *
+            FROM inventory.product
+            WHERE product_name ILIKE CONCAT('%', @product_name, '%')";
+
         private const string UpsertProductSql = @"
             CALL inventory.sp_product_upsert(@product_id, @product_code, @product_name, @description, @unit_price, @last_updated)";
 
@@ -33,6 +48,39 @@ namespace Mandarin.Database.Inventory
 
         /// <inheritdoc />
         public Task<IReadOnlyList<Product>> GetAllAsync() => this.GetAll();
+
+        /// <inheritdoc />
+        public Task<Product> GetProductByIdAsync(ProductId productId)
+        {
+            return this.Get(productId,
+                            db =>
+                            {
+                                var parameters = new { product_id = productId.Value };
+                                return db.QueryFirstOrDefaultAsync<ProductRecord>(ProductRepository.GetProductByIdSql, parameters);
+                            });
+        }
+
+        /// <inheritdoc />
+        public Task<Product> GetProductByCodeAsync(ProductCode productCode)
+        {
+            return this.Get(productCode,
+                            db =>
+                            {
+                                var parameters = new { product_code = productCode.Value };
+                                return db.QueryFirstOrDefaultAsync<ProductRecord>(ProductRepository.GetProductByCodeSql, parameters);
+                            });
+        }
+
+        /// <inheritdoc />
+        public Task<Product> GetProductByNameAsync(ProductName productName)
+        {
+            return this.Get(productName,
+                            db =>
+                            {
+                                var parameters = new { product_name = productName.Value };
+                                return db.QueryFirstOrDefaultAsync<ProductRecord>(ProductRepository.GetProductByNameSql, parameters);
+                            });
+        }
 
         /// <inheritdoc />
         public Task<Product> SaveAsync(Product product) => this.Upsert(product);

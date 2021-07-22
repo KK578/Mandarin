@@ -65,6 +65,15 @@ namespace Mandarin.Tests.Data
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 95.00M,
             };
+
+            public static readonly Product GiftCard = new()
+            {
+                ProductId = new ProductId("TLM-GC"),
+                ProductCode = new ProductCode("TLM-GC"),
+                ProductName = new ProductName("eGift Card"),
+                Description = "eGift Card",
+                UnitPrice = null,
+            };
         }
 
         public static class Stockists

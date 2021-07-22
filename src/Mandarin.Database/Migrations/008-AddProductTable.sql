@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS inventory.product
     last_updated   TIMESTAMP(3)  NOT NULL
 );
 
-
 CREATE OR REPLACE PROCEDURE inventory.sp_product_upsert(
     _product_id     VARCHAR(32),
     _product_code   VARCHAR(12),
@@ -25,4 +24,6 @@ BEGIN
     INSERT INTO inventory.product (product_id, product_code, product_name, description, unit_price, last_updated)
     VALUES ($1, $2, $3, $4, $5, $6);
 END
-$$
+$$;
+
+CALL inventory.sp_product_upsert('TLM-GC'::varchar(32), 'TLM-GC'::varchar(12), 'eGift Card'::varchar(100), 'eGift Card'::varchar(1000), NULL::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);

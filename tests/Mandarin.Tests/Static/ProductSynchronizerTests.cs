@@ -29,7 +29,7 @@ namespace Mandarin.Tests.Static
             await this.GivenProductTableIsEmptyAsync();
             await this.productSynchronizer.SynchroniseProductsAsync();
             var products = await this.productRepository.GetAllAsync();
-            products.Should().HaveCount(4);
+            products.Should().HaveCount(4); // Only contains data from Square - excludes well known items added by migrations.
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace Mandarin.Tests.Static
         {
             await this.productSynchronizer.SynchroniseProductsAsync();
             var products = await this.productRepository.GetAllAsync();
-            products.Should().HaveCount(4);
+            products.Should().HaveCount(5);
         }
 
         private async Task GivenProductTableIsEmptyAsync()

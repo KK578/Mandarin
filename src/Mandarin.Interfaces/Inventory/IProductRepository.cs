@@ -15,6 +15,30 @@ namespace Mandarin.Inventory
         Task<IReadOnlyList<Product>> GetAllAsync();
 
         /// <summary>
+        /// Finds the singular product that matches the provided product ID.
+        /// If no match is found, returns null.
+        /// </summary>
+        /// <param name="productId">The unique product ID assigned by Square to be searched for.</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
+        Task<Product> GetProductByIdAsync(ProductId productId);
+
+        /// <summary>
+        /// Finds the singular product that matches the provided product code.
+        /// If no match is found, returns null.
+        /// </summary>
+        /// <param name="productCode">The unique product code to be searched for.</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
+        Task<Product> GetProductByCodeAsync(ProductCode productCode);
+
+        /// <summary>
+        /// Finds the singular product that matches the provided product name.
+        /// If no match is found, returns null.
+        /// </summary>
+        /// <param name="productName">The name of the product to be searched for.</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing either the matched product or null.</returns>
+        Task<Product> GetProductByNameAsync(ProductName productName);
+
+        /// <summary>
         /// Saves the provided <see cref="Product"/>, and returns the new version of the <see cref="Product"/> after it
         /// has been saved successfully.
         /// </summary>

@@ -16,27 +16,34 @@ namespace Mandarin.Client.Services.Tests.Inventory
         {
         }
 
-        private IQueryableProductService Subject => this.Resolve<IQueryableProductService>();
+        private IProductRepository Subject => this.Resolve<IProductRepository>();
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveAllProducts()
         {
-            var products = await this.Subject.GetAllProductsAsync();
-            products.Should().HaveCount(4);
+            var products = await this.Subject.GetAllAsync();
+            products.Should().HaveCount(5);
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductBySquareId()
         {
-            var product = await this.Subject.GetProductBySquareIdAsync(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"));
+            var product = await this.Subject.GetProductByIdAsync(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductByCode()
         {
-            var product = await this.Subject.GetProductByProductCodeAsync(new ProductCode("KT20-001F"));
+            var product = await this.Subject.GetProductByCodeAsync(new ProductCode("KT20-001F"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
+        }
+
+        [Fact]
+        public async Task ShouldBeAbleToRetrieveGiftCard()
+        {
+            var product = await this.Subject.GetProductByCodeAsync(new ProductCode("TLM-GC"));
+            product.Should().BeEquivalentTo(WellKnownTestData.Products.GiftCard, o => o.Excluding(x => x.LastUpdated));
         }
 
         [Fact]

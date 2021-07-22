@@ -11,19 +11,19 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
     internal sealed class FramePricesIndexViewModel : IndexPageViewModelBase<IFramePriceViewModel>, IFramePricesIndexViewModel
     {
         private readonly IFramePricesService framePricesService;
-        private readonly IQueryableProductService productService;
+        private readonly IProductRepository productRepository;
         private readonly NavigationManager navigationManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesIndexViewModel"/> class.
         /// </summary>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
-        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FramePricesIndexViewModel(IFramePricesService framePricesService, IQueryableProductService productService, NavigationManager navigationManager)
+        public FramePricesIndexViewModel(IFramePricesService framePricesService, IProductRepository productRepository, NavigationManager navigationManager)
         {
             this.framePricesService = framePricesService;
-            this.productService = productService;
+            this.productRepository = productRepository;
             this.navigationManager = navigationManager;
         }
 
@@ -36,7 +36,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
             async Task<IFramePriceViewModel> CreateViewModel(FramePrice x)
             {
-                var product = await this.productService.GetProductByProductCodeAsync(x.ProductCode);
+                var product = await this.productRepository.GetProductByCodeAsync(x.ProductCode);
                 return new FramePriceViewModel(x, product);
             }
         }

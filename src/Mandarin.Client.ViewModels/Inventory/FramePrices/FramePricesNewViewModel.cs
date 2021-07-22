@@ -16,7 +16,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
     internal sealed class FramePricesNewViewModel : ReactiveObject, IFramePricesNewViewModel
     {
         private readonly IFramePricesService framePricesService;
-        private readonly IQueryableProductService productService;
+        private readonly IProductRepository productRepository;
         private readonly NavigationManager navigationManager;
         private readonly IValidator<IFramePriceViewModel> validator;
 
@@ -28,16 +28,16 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// Initializes a new instance of the <see cref="FramePricesNewViewModel"/> class.
         /// </summary>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
-        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application service for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
         public FramePricesNewViewModel(IFramePricesService framePricesService,
-                                       IQueryableProductService productService,
+                                       IProductRepository productRepository,
                                        NavigationManager navigationManager,
                                        IValidator<IFramePriceViewModel> validator)
         {
             this.framePricesService = framePricesService;
-            this.productService = productService;
+            this.productRepository = productRepository;
             this.navigationManager = navigationManager;
             this.validator = validator;
 
@@ -88,7 +88,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
         private Task<IReadOnlyList<Product>> OnLoadData()
         {
-            return this.productService.GetAllProductsAsync();
+            return this.productRepository.GetAllAsync();
         }
 
         private void OnProductUpdated(Product product)

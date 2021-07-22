@@ -66,9 +66,6 @@ namespace Mandarin.Services
         {
             services.AddSingleton<IProductSynchronizer, SquareProductSynchronizer>();
             services.AddTransient<ISquareProductService, SquareProductService>();
-            services.AddTransient<IProductService, ProductService>();
-            services.Decorate<IProductService, CachingProductServiceDecorator>();
-            services.AddTransient(s => (IQueryableProductService)s.GetRequiredService<IProductService>());
             services.AddTransient<IFramePricesService, FramePricesService>();
         }
 

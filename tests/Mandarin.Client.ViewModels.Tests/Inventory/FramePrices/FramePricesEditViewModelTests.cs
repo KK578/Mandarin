@@ -23,7 +23,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
-        private readonly Mock<IQueryableProductService> productService = new();
+        private readonly Mock<IProductRepository> productRepository = new();
         private readonly Mock<IValidator<IFramePriceViewModel>> validator = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
 
@@ -32,7 +32,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         protected FramePricesEditViewModelTests()
         {
             this.subject = new FramePricesEditViewModel(this.framePricesService.Object,
-                                                        this.productService.Object,
+                                                        this.productRepository.Object,
                                                         this.navigationManager,
                                                         this.validator.Object);
         }
@@ -46,7 +46,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 
         private void GivenServicesReturnProduct(FramePrice framePrice, Product product)
         {
-            this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductByCodeAsync(product.ProductCode)).ReturnsAsync(product);
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>())).ReturnsAsync(framePrice);
         }
 
@@ -63,7 +63,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public void ShouldBeTrueWhilstExecuting()
             {
                 var tcs = new TaskCompletionSource<Product>();
-                this.productService.Setup(x => x.GetProductByProductCodeAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
+                this.productRepository.Setup(x => x.GetProductByCodeAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
 
                 var unused = this.subject.LoadData.Execute(new ProductCode("TLM-001")).ToTask();
 

@@ -16,21 +16,21 @@ namespace Mandarin.Services.Transactions
     /// <inheritdoc />
     internal sealed class TransactionMapper : ITransactionMapper
     {
-        private readonly IQueryableProductService productService;
+        private readonly IProductRepository productRepository;
         private readonly IFramePricesService framePricesService;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
         /// </summary>
-        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
-        public TransactionMapper(IQueryableProductService productService,
+        public TransactionMapper(IProductRepository productRepository,
                                  IFramePricesService framePricesService,
                                  IOptions<MandarinConfiguration> mandarinConfiguration)
         {
-            this.productService = productService;
+            this.productRepository = productRepository;
             this.framePricesService = framePricesService;
             this.mandarinConfiguration = mandarinConfiguration;
         }
@@ -219,12 +219,12 @@ namespace Mandarin.Services.Transactions
         {
             if (squareId != null)
             {
-                var product = await this.productService.GetProductBySquareIdAsync(squareId);
+                var product = await this.productRepository.GetProductByIdAsync(squareId);
                 return await MapProduct(product);
             }
             else if (name != null)
             {
-                var product = await this.productService.GetProductByNameAsync(name);
+                var product = await this.productRepository.GetProductByNameAsync(name);
                 return await MapProduct(product);
             }
             else
@@ -246,7 +246,7 @@ namespace Mandarin.Services.Transactions
                     if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
                     {
                         var mappedProductCode = new ProductCode(mapping.Mappings[originalProduct.ProductCode.Value]);
-                        return this.productService.GetProductByProductCodeAsync(mappedProductCode);
+                        return this.productRepository.GetProductByCodeAsync(mappedProductCode);
                     }
                 }
 

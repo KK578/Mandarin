@@ -15,24 +15,24 @@ namespace Mandarin.Grpc
     [Authorize]
     internal sealed class ProductsGrpcService : ProductsBase
     {
-        private readonly IQueryableProductService productService;
+        private readonly IProductRepository productRepository;
         private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductsGrpcService"/> class.
         /// </summary>
-        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public ProductsGrpcService(IQueryableProductService productService, IMapper mapper)
+        public ProductsGrpcService(IProductRepository productRepository, IMapper mapper)
         {
-            this.productService = productService;
+            this.productRepository = productRepository;
             this.mapper = mapper;
         }
 
         /// <inheritdoc/>
         public override async Task<GetAllProductsResponse> GetAllProducts(GetAllProductsRequest request, ServerCallContext context)
         {
-            var products = await this.productService.GetAllProductsAsync();
+            var products = await this.productRepository.GetAllAsync();
             return new GetAllProductsResponse
             {
                 Products = { this.mapper.Map<IEnumerable<Product>>(products) },
@@ -46,15 +46,15 @@ namespace Mandarin.Grpc
 
             if (request.ProductId != null)
             {
-                product = await this.productService.GetProductBySquareIdAsync(this.mapper.Map<ProductId>(request.ProductId));
+                product = await this.productRepository.GetProductByIdAsync(this.mapper.Map<ProductId>(request.ProductId));
             }
             else if (request.ProductCode != null)
             {
-                product = await this.productService.GetProductByProductCodeAsync(this.mapper.Map<ProductCode>(request.ProductCode));
+                product = await this.productRepository.GetProductByCodeAsync(this.mapper.Map<ProductCode>(request.ProductCode));
             }
             else if (request.ProductName != null)
             {
-                product = await this.productService.GetProductByNameAsync(this.mapper.Map<ProductName>(request.ProductName));
+                product = await this.productRepository.GetProductByNameAsync(this.mapper.Map<ProductName>(request.ProductName));
             }
             else
             {

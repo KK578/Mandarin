@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Mandarin.Tests.Data\Mandarin.Tests.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Decorators\CachingInventoryServiceDecoratorTests.cs" />
+  </ItemGroup>
+
 </Project>
