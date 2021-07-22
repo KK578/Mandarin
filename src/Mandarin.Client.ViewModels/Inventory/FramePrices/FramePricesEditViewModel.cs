@@ -13,7 +13,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
     internal sealed class FramePricesEditViewModel : ReactiveObject, IFramePricesEditViewModel
     {
         private readonly IFramePricesService framePricesService;
-        private readonly IQueryableProductService productService;
+        private readonly IProductRepository productRepository;
         private readonly NavigationManager navigationManager;
         private readonly IValidator<IFramePriceViewModel> validator;
 
@@ -25,16 +25,16 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// Initializes a new instance of the <see cref="FramePricesEditViewModel"/> class.
         /// </summary>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
-        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
         public FramePricesEditViewModel(IFramePricesService framePricesService,
-                                        IQueryableProductService productService,
+                                        IProductRepository productRepository,
                                         NavigationManager navigationManager,
                                         IValidator<IFramePriceViewModel> validator)
         {
             this.framePricesService = framePricesService;
-            this.productService = productService;
+            this.productRepository = productRepository;
             this.navigationManager = navigationManager;
             this.validator = validator;
 
@@ -75,7 +75,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private async Task OnLoadData(ProductCode productCode)
         {
             var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
-            var product = await this.productService.GetProductByProductCodeAsync(productCode);
+            var product = await this.productRepository.GetProductAsync(productCode);
             this.FramePrice = new FramePriceViewModel(existingFramePrice, product);
         }
 

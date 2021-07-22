@@ -20,28 +20,28 @@ namespace Mandarin.Services.Tests.Transactions
     {
         private readonly DateTime orderDate = DateTime.Now;
 
-        private readonly Mock<IQueryableProductService> productService;
+        private readonly Mock<IProductRepository> productRepository;
         private readonly MandarinConfiguration configuration;
         private readonly Mock<IFramePricesService> framePricesService;
 
-        public TransactionMapperTests()
+        protected TransactionMapperTests()
         {
-            this.productService = new Mock<IQueryableProductService>();
+            this.productRepository = new Mock<IProductRepository>();
             this.configuration = new MandarinConfiguration();
             this.framePricesService = new Mock<IFramePricesService>();
         }
 
         private ITransactionMapper Subject =>
-            new TransactionMapper(this.productService.Object,
+            new TransactionMapper(this.productRepository.Object,
                                   this.framePricesService.Object,
                                   Options.Create(this.configuration));
 
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)
         {
-            this.productService.Setup(x => x.GetProductBySquareIdAsync(product.SquareId)).ReturnsAsync(product);
-            this.productService.Setup(x => x.GetProductByProductCodeAsync(product.ProductCode)).ReturnsAsync(product);
-            this.productService.Setup(x => x.GetProductByNameAsync(product.ProductName)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductId)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductCode)).ReturnsAsync(product);
+            this.productRepository.Setup(x => x.GetProductAsync(product.ProductName)).ReturnsAsync(product);
         }
 
         private void GivenFramePriceExists(Product product, FramePrice framePrice)
@@ -64,7 +64,7 @@ namespace Mandarin.Services.Tests.Transactions
             var lineItems = new List<OrderLineItem>
             {
                 new("2",
-                    catalogObjectId: product.SquareId.Value,
+                    catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(1000, "GBP")),
@@ -80,7 +80,7 @@ namespace Mandarin.Services.Tests.Transactions
         {
             var discounts = new List<OrderLineItemDiscount>
             {
-                new(catalogObjectId: product.SquareId.Value,
+                new(catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     amountMoney: new Money(2000, "GBP"),
                     appliedMoney: new Money(2000, "GBP")),
@@ -97,7 +97,7 @@ namespace Mandarin.Services.Tests.Transactions
             var returns = new List<OrderReturnLineItem>
             {
                 new("3",
-                    catalogObjectId: product.SquareId.Value,
+                    catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
                     totalMoney: new Money(-1500, "GBP")),

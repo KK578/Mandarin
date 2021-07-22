@@ -1,6 +1,6 @@
 ﻿@page "/inventory"
 @using Mandarin.Inventory
-@inject IProductService productService;
+@inject IProductRepository productRepository;
 
 <Card>
   <CardHeader>
@@ -13,7 +13,9 @@
     }
     else
     {
-      <DataGrid Data="@Data" Filterable="true" ShowPager="true" PageSize="10" Striped="true" RowSelectable="@(_ => false)">
+      <DataGrid Data="@Data" Filterable="true" Striped="true"
+                ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="10"
+                RowSelectable="@(_ => false)">
         <DataGridColumn TItem="Product" Field="ProductCode" Caption="Product Code" Width="150px" />
         <DataGridColumn TItem="Product" Field="ProductName" Caption="Name" Width="400px" TextAlignment="TextAlignment.Right" />
         <DataGridColumn TItem="Product" Field="Description" Caption="Description" TextAlignment="TextAlignment.Right" />
@@ -30,7 +32,7 @@
   {
     await base.OnInitializedAsync();
 
-    Data = await productService.GetAllProductsAsync();
+    Data = await productRepository.GetAllProductsAsync();
   }
 
   private IReadOnlyList<Product> Data { get; set; }

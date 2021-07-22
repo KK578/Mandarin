@@ -1,4 +1,6 @@
-﻿namespace Mandarin.Inventory
+﻿using System;
+
+namespace Mandarin.Inventory
 {
     /// <summary>
     /// Represents a Product sold by The Little Mandarin.
@@ -6,9 +8,9 @@
     public record Product
     {
         /// <summary>
-        /// Gets the unique product ID assigned by Square for this product.
+        /// Gets the unique product ID for this product.
         /// </summary>
-        public ProductId SquareId { get; init; }
+        public ProductId ProductId { get; init; }
 
         /// <summary>
         /// Gets the unique internal product code for this product.
@@ -29,6 +31,11 @@
         /// Gets the unit price for this product.
         /// </summary>
         public decimal? UnitPrice { get; init; }
+
+        /// <summary>
+        /// Gets the last time this product was updated.
+        /// </summary>
+        public DateTime? LastUpdated { get; init; }
 
         /// <summary>
         /// Gets the user friendly string for this product.

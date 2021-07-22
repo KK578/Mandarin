@@ -16,33 +16,40 @@ namespace Mandarin.Client.Services.Tests.Inventory
         {
         }
 
-        private IQueryableProductService Subject => this.Resolve<IQueryableProductService>();
+        private IProductRepository Subject => this.Resolve<IProductRepository>();
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveAllProducts()
         {
             var products = await this.Subject.GetAllProductsAsync();
-            products.Should().HaveCount(4);
+            products.Should().HaveCount(5);
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductBySquareId()
         {
-            var product = await this.Subject.GetProductBySquareIdAsync(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"));
+            var product = await this.Subject.GetProductAsync(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductByCode()
         {
-            var product = await this.Subject.GetProductByProductCodeAsync(new ProductCode("KT20-001F"));
+            var product = await this.Subject.GetProductAsync(new ProductCode("KT20-001F"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
+        }
+
+        [Fact]
+        public async Task ShouldBeAbleToRetrieveGiftCard()
+        {
+            var product = await this.Subject.GetProductAsync(new ProductCode("TLM-GC"));
+            product.Should().BeEquivalentTo(WellKnownTestData.Products.GiftCard, o => o.Excluding(x => x.LastUpdated));
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductName()
         {
-            var product = await this.Subject.GetProductByNameAsync(new ProductName("Clementine (Framed)"));
+            var product = await this.Subject.GetProductAsync(new ProductName("Clementine (Framed)"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
         }
     }

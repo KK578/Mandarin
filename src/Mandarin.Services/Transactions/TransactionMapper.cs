@@ -16,21 +16,21 @@ namespace Mandarin.Services.Transactions
     /// <inheritdoc />
     internal sealed class TransactionMapper : ITransactionMapper
     {
-        private readonly IQueryableProductService productService;
+        private readonly IProductRepository productRepository;
         private readonly IFramePricesService framePricesService;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
         /// </summary>
-        /// <param name="productService">The application service for interacting with products.</param>
+        /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
-        public TransactionMapper(IQueryableProductService productService,
+        public TransactionMapper(IProductRepository productRepository,
                                  IFramePricesService framePricesService,
                                  IOptions<MandarinConfiguration> mandarinConfiguration)
         {
-            this.productService = productService;
+            this.productRepository = productRepository;
             this.framePricesService = framePricesService;
             this.mandarinConfiguration = mandarinConfiguration;
         }
@@ -89,7 +89,7 @@ namespace Mandarin.Services.Transactions
                     {
                         Product = new Product
                         {
-                            SquareId = new ProductId("TLM-" + framePrice.ProductCode),
+                            ProductId = new ProductId("TLM-" + framePrice.ProductCode),
                             ProductCode = new ProductCode("TLM-" + framePrice.ProductCode),
                             ProductName = new ProductName($"Frame for {framePrice.ProductCode}"),
                             Description = null,
@@ -121,7 +121,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("BUN-DCM"),
+                    ProductId = new ProductId("BUN-DCM"),
                     ProductCode = new ProductCode("BUN-DCM"),
                     ProductName = new ProductName("Box of Macarons Discount"),
                     Description = "Buy 6 macarons for \"£12.00\"",
@@ -132,7 +132,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("BUN-DCP"),
+                    ProductId = new ProductId("BUN-DCP"),
                     ProductCode = new ProductCode("BUN-DCP"),
                     ProductName = new ProductName("Box of Pocky Discount"),
                     Description = "Discount on buying multiple packs of Pocky.",
@@ -143,7 +143,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("TLM-D"),
+                    ProductId = new ProductId("TLM-D"),
                     ProductCode = new ProductCode("TLM-D"),
                     ProductName = new ProductName("Other discounts"),
                     Description = "Discounts that aren't tracked.",
@@ -186,7 +186,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("TLM-DELIVERY"),
+                    ProductId = new ProductId("TLM-DELIVERY"),
                     ProductCode = new ProductCode("TLM-DELIVERY"),
                     ProductName = new ProductName("Shipping Fees"),
                     Description = "Delivery costs charged to customers.",
@@ -197,7 +197,7 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    SquareId = new ProductId("TLM-FEES"),
+                    ProductId = new ProductId("TLM-FEES"),
                     ProductCode = new ProductCode("TLM-" + serviceCharge.Name),
                     ProductName = new ProductName(serviceCharge.Name),
                     Description = "Unknown Fee.",
@@ -219,19 +219,19 @@ namespace Mandarin.Services.Transactions
         {
             if (squareId != null)
             {
-                var product = await this.productService.GetProductBySquareIdAsync(squareId);
+                var product = await this.productRepository.GetProductAsync(squareId);
                 return await MapProduct(product);
             }
             else if (name != null)
             {
-                var product = await this.productService.GetProductByNameAsync(name);
+                var product = await this.productRepository.GetProductAsync(name);
                 return await MapProduct(product);
             }
             else
             {
                 return new Product
                 {
-                    SquareId = null,
+                    ProductId = null,
                     ProductCode = new ProductCode("TLM-Unknown"),
                     ProductName = new ProductName("Unknown Product"),
                     Description = "Unknown Product",
@@ -246,7 +246,7 @@ namespace Mandarin.Services.Transactions
                     if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
                     {
                         var mappedProductCode = new ProductCode(mapping.Mappings[originalProduct.ProductCode.Value]);
-                        return this.productService.GetProductByProductCodeAsync(mappedProductCode);
+                        return this.productRepository.GetProductAsync(mappedProductCode);
                     }
                 }
 

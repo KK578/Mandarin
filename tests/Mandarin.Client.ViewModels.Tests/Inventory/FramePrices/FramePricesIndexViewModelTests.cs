@@ -21,11 +21,11 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         };
 
         private readonly Mock<IFramePricesService> framePricesService = new();
-        private readonly Mock<IQueryableProductService> productService = new();
+        private readonly Mock<IProductRepository> productRepository = new();
         private readonly MockNavigationManager navigationManager = new();
 
         private IFramePricesIndexViewModel Subject =>
-            new FramePricesIndexViewModel(this.framePricesService.Object, this.productService.Object, this.navigationManager);
+            new FramePricesIndexViewModel(this.framePricesService.Object, this.productRepository.Object, this.navigationManager);
 
         public class IsLoadingTests : FramePricesIndexViewModelTests
         {
@@ -73,8 +73,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             {
                 var data = new List<FramePrice> { FramePricesIndexViewModelTests.FramePrice };
                 this.framePricesService.Setup(x => x.GetAllFramePricesAsync()).ReturnsAsync(data);
-                this.productService
-                    .Setup(x => x.GetProductByProductCodeAsync(FramePricesIndexViewModelTests.FramePrice.ProductCode))
+                this.productRepository
+                    .Setup(x => x.GetProductAsync(FramePricesIndexViewModelTests.FramePrice.ProductCode))
                     .ReturnsAsync(WellKnownTestData.Products.Mandarin);
 
                 var subject = this.Subject;

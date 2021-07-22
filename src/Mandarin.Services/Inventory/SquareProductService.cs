@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
-using Mandarin.Services.Transactions;
 using Microsoft.Extensions.Logging;
 using Square;
 using Square.Models;
@@ -15,12 +14,12 @@ using Square.Models;
 namespace Mandarin.Services.Inventory
 {
     /// <inheritdoc />
-    internal sealed class SquareProductService : IProductService
+    internal sealed class SquareProductService : ISquareProductService
     {
         private static readonly Regex HyphenSeparatedProductNameRegex = new("^.* - (?<name>.*)$");
         private static readonly Regex SquareBracketProductNameRegex = new("^\\[.*\\] (?<name>.*)$");
 
-        private readonly ILogger<SquareTransactionService> logger;
+        private readonly ILogger<SquareProductService> logger;
         private readonly ISquareClient squareClient;
 
         /// <summary>
@@ -28,7 +27,7 @@ namespace Mandarin.Services.Inventory
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
-        public SquareProductService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
+        public SquareProductService(ILogger<SquareProductService> logger, ISquareClient squareClient)
         {
             this.logger = logger;
             this.squareClient = squareClient;
@@ -78,7 +77,10 @@ namespace Mandarin.Services.Inventory
             foreach (var item in items)
             {
                 var itemVariations = variations.Where(x => x.ItemVariationData.ItemId == item.Id).ToList();
-                yield return item.ItemData.ToBuilder().Variations(itemVariations).Build();
+                if (itemVariations.Count > 0)
+                {
+                    yield return item.ItemData.ToBuilder().Variations(itemVariations).Build();
+                }
             }
         }
 
@@ -94,16 +96,22 @@ namespace Mandarin.Services.Inventory
 
             foreach (var variation in catalogItem.Variations)
             {
+                if (variation.ItemVariationData.Sku == null)
+                {
+                    continue;
+                }
+
                 var price = variation.ItemVariationData.PriceMoney;
                 var unitPrice = price?.Amount != null ? decimal.Divide(price.Amount.Value, 100) : (decimal?)null;
 
                 yield return new Product
                 {
-                    SquareId = new ProductId(variation.Id),
+                    ProductId = new ProductId(variation.Id),
                     ProductCode = new ProductCode(variation.ItemVariationData.Sku),
                     ProductName = new ProductName($"{productName} ({variation.ItemVariationData.Name})"),
                     Description = description,
                     UnitPrice = unitPrice,
+                    LastUpdated = DateTime.Parse(variation.UpdatedAt),
                 };
             }
         }

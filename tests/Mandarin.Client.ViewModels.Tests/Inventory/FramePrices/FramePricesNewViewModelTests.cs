@@ -23,7 +23,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
     {
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
-        private readonly Mock<IQueryableProductService> productService = new();
+        private readonly Mock<IProductRepository> productRepository = new();
         private readonly Mock<IValidator<IFramePriceViewModel>> validator = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
 
@@ -32,7 +32,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         protected FramePricesNewViewModelTests()
         {
             this.subject = new FramePricesNewViewModel(this.framePricesService.Object,
-                                                       this.productService.Object,
+                                                       this.productRepository.Object,
                                                        this.navigationManager,
                                                        this.validator.Object);
         }
@@ -56,7 +56,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public void ShouldBeTrueWhilstExecuting()
             {
                 var tcs = new TaskCompletionSource<IReadOnlyList<Product>>();
-                this.productService.Setup(x => x.GetAllProductsAsync()).Returns(tcs.Task);
+                this.productRepository.Setup(x => x.GetAllProductsAsync()).Returns(tcs.Task);
 
                 var unused = this.subject.LoadData.Execute().ToTask();
 
@@ -68,7 +68,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             public async Task ShouldHaveAvailableListOfProductsAfterLoad()
             {
                 var products = this.fixture.CreateMany<Product>().ToList().AsReadOnly();
-                this.productService.Setup(x => x.GetAllProductsAsync()).ReturnsAsync(products);
+                this.productRepository.Setup(x => x.GetAllProductsAsync()).ReturnsAsync(products);
 
                 await this.subject.LoadData.Execute();
 

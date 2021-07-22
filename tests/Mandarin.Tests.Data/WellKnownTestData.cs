@@ -41,7 +41,7 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Product Mandarin = new()
             {
-                SquareId = new ProductId("SquareId"),
+                ProductId = new ProductId("SquareId"),
                 ProductCode = new ProductCode("TLM-001"),
                 ProductName = new ProductName("Mandarin"),
                 Description = "It's a Mandarin!",
@@ -50,7 +50,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Product TheTrickster = new()
             {
-                SquareId = new ProductId("CatalogId"),
+                ProductId = new ProductId("CatalogId"),
                 ProductCode = new ProductCode("HC20W-003"),
                 ProductName = new ProductName("The Trickster"),
                 Description = "The Trickster.",
@@ -59,11 +59,20 @@ namespace Mandarin.Tests.Data
 
             public static readonly Product ClementineFramed = new()
             {
-                SquareId = new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
+                ProductId = new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
                 ProductCode = new ProductCode("KT20-001F"),
                 ProductName = new ProductName("Clementine (Framed) (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 95.00M,
+            };
+
+            public static readonly Product GiftCard = new()
+            {
+                ProductId = new ProductId("TLM-GC"),
+                ProductCode = new ProductCode("TLM-GC"),
+                ProductName = new ProductName("eGift Card"),
+                Description = "eGift Card",
+                UnitPrice = null,
             };
         }
 

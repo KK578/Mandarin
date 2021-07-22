@@ -9,11 +9,6 @@ namespace Mandarin.Inventory
     public class ProductName : TinyString
     {
         /// <summary>
-        /// Represents the Product named 'eGift Card'.
-        /// </summary>
-        public static readonly ProductName TlmGiftCard = new("eGift Card");
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ProductName"/> class.
         /// </summary>
         /// <param name="value">The unique Product Name.</param>
