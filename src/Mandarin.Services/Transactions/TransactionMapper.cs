@@ -41,10 +41,9 @@ namespace Mandarin.Services.Transactions
             return this.CreateSubtransactions(order)
                        .Select(subtransactions => new Transaction()
                        {
-                           SquareId = TransactionId.Of(order.Id),
+                           TransactionId = TransactionId.Of(order.Id),
                            TotalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100),
                            Timestamp = DateTime.Parse(order.CreatedAt),
-                           InsertedBy = order.Source?.Name,
                            Subtransactions = subtransactions.AsReadOnlyList(),
                        });
         }

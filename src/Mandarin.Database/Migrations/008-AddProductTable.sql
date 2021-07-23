@@ -22,7 +22,8 @@ $$
 DECLARE
 BEGIN
     INSERT INTO inventory.product (product_id, product_code, product_name, description, unit_price, last_updated)
-    VALUES ($1, $2, $3, $4, $5, $6);
+    VALUES ($1, $2, $3, $4, $5, $6)
+    ON CONFLICT (product_id) DO UPDATE SET (product_code, product_name, description, unit_price, last_updated) = ($2, $3, $4, $5, $6);
 END
 $$;
 

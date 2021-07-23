@@ -2,6 +2,7 @@
 using Mandarin.Commissions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions;
 
 namespace Mandarin.Converters
 {
@@ -28,6 +29,9 @@ namespace Mandarin.Converters
             this.CreateMap<int, StockistId>().ConstructUsing(x => StockistId.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
             this.CreateMap<string, StockistCode>().ConstructUsing(x => StockistCode.Of(x))
+                .ReverseMap().ConstructUsing(x => x.Value);
+
+            this.CreateMap<string, TransactionId>().ConstructUsing(x => new TransactionId(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
         }
     }

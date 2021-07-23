@@ -78,6 +78,7 @@ namespace Mandarin.Services
         {
             services.AddTransient<ITransactionService, SquareTransactionService>();
             services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
+            services.AddSingleton<ITransactionSynchronizer, SquareTransactionSynchronizer>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)

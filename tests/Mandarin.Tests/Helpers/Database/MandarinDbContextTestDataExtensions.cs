@@ -19,6 +19,8 @@ namespace Mandarin.Tests.Helpers.Database
             using var connection = mandarinDbContext.GetConnection();
             connection.Open();
             await connection.ExecuteAsync("DROP TABLE IF EXISTS billing.commission");
+            await connection.ExecuteAsync("DROP TABLE IF EXISTS billing.subtransaction");
+            await connection.ExecuteAsync("DROP TABLE IF EXISTS billing.transaction");
             await connection.ExecuteAsync("DROP TABLE IF EXISTS inventory.stockist_detail");
             await connection.ExecuteAsync("DROP TABLE IF EXISTS inventory.stockist");
             await connection.ExecuteAsync("DROP TABLE IF EXISTS inventory.fixed_commission_amount");

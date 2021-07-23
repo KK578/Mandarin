@@ -6,8 +6,10 @@ using Mandarin.Database.Converters;
 using Mandarin.Database.Inventory;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
+using Mandarin.Database.Transactions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +39,7 @@ namespace Mandarin.Database
             services.AddTransient<IFramePriceRepository, FramePriceRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IStockistRepository, StockistRepository>();
+            services.AddTransient<ITransactionRepository, TransactionRepository>();
 
             return services;
         }
