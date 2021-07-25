@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS billing.subtransaction
     subtotal          NUMERIC(6, 2) NOT NULL
 );
 
-CREATE TYPE TVP_SUBTRANSACTION AS
+CREATE TYPE billing.TVP_SUBTRANSACTION AS
 (
     product_id VARCHAR(32),
     quantity   INT,
@@ -26,11 +26,12 @@ CREATE OR REPLACE PROCEDURE billing.sp_transaction_upsert(
     _transaction_id VARCHAR(32),
     _total_amount NUMERIC(6, 2),
     _timestamp TIMESTAMP(3),
-    _subtransactions TVP_SUBTRANSACTION)
+    _subtransactions billing.TVP_SUBTRANSACTION[])
     LANGUAGE plpgsql
 AS
 $$
 DECLARE
+    _subtransaction billing.TVP_SUBTRANSACTION;
 BEGIN
     INSERT INTO billing.transaction (transaction_id, total_amount, timestamp)
     VALUES ($1, $2, $3)
@@ -38,7 +39,10 @@ BEGIN
 
     DELETE FROM billing.subtransaction WHERE transaction_id = $1;
 
-    INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, subtotal)
-    SELECT $1, product_id, quantity, subtotal FROM $4;
+    FOREACH _subtransaction IN ARRAY $4
+    LOOP
+        INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, subtotal)
+        SELECT $1, _subtransaction.product_id, _subtransaction.quantity, _subtransaction.subtotal;
+    END LOOP;
 END
 $$;

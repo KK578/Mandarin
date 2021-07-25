@@ -9,6 +9,7 @@ using Mandarin.Database.Common;
 using Mandarin.Database.Inventory;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace Mandarin.Database.Transactions
 {
@@ -29,12 +30,7 @@ namespace Mandarin.Database.Transactions
             FROM inventory.product";
 
         private const string UpsertTransactionSql = @"
-            INSERT INTO billing.transaction (transaction_id, total_amount, timestamp)
-            VALUES (@transaction_id, @total_amount, @timestamp)";
-
-        private const string UpsertSubtransactionSql = @"
-            INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, subtotal)
-            VALUES (@transaction_id, @product_id, @quantity, @subtotal)";
+            CALL billing.sp_transaction_upsert(@transaction_id, @total_amount, @timestamp, @subtransactions)";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRepository"/> class.
@@ -75,12 +71,9 @@ namespace Mandarin.Database.Transactions
         /// <inheritdoc />
         protected override async Task<TransactionRecord> UpsertRecordAsync(IDbConnection db, TransactionRecord value)
         {
+            db.Open();
+            (db as NpgsqlConnection)?.TypeMapper.MapComposite<SubtransactionRecord>("billing.tvp_subtransaction");
             await db.ExecuteAsync(TransactionRepository.UpsertTransactionSql, value);
-            foreach (var subtransaction in value.Subtransactions.NullToEmpty())
-            {
-                await db.ExecuteAsync(TransactionRepository.UpsertSubtransactionSql, subtransaction with { transaction_id = value.transaction_id });
-            }
-
             return value;
         }
     }
