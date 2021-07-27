@@ -38,12 +38,6 @@ namespace Mandarin.Services.Common
                        .SelectMany(x => x);
         }
 
-        /// <inheritdoc/>
-        public IObservable<Transaction> GetAllOnlineTransactions(DateTime start, DateTime end)
-        {
-            return this.transactionService.GetAllOnlineTransactions(start, end);
-        }
-
         private static string CreateCacheKey(DateTime start, DateTime end, [CallerMemberName] string methodName = null)
         {
             return $"{nameof(ITransactionService)}-{methodName}-{start}-{end}";

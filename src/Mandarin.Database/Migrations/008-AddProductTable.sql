@@ -28,3 +28,4 @@ END
 $$;
 
 CALL inventory.sp_product_upsert('TLM-GC'::varchar(32), 'TLM-GC'::varchar(12), 'eGift Card'::varchar(100), 'eGift Card'::varchar(1000), NULL::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
+CALL inventory.sp_product_upsert('TLM-DELIVERY'::varchar(32), 'TLM-DELIVERY'::varchar(12), 'Shipping Fees'::varchar(100), 'Delivery costs charged to customers'::varchar(1000), 0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);

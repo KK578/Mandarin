@@ -180,38 +180,32 @@ namespace Mandarin.Services.Transactions
 
         private IObservable<Subtransaction> CreateSubtransactionFromFee(OrderServiceCharge serviceCharge)
         {
-            Product product;
-            if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                product = new Product
-                {
-                    ProductId = ProductId.Of("TLM-DELIVERY"),
-                    ProductCode = ProductCode.Of("TLM-DELIVERY"),
-                    ProductName = ProductName.Of("Shipping Fees"),
-                    Description = "Delivery costs charged to customers.",
-                    UnitPrice = 0.01m,
-                };
-            }
-            else
-            {
-                product = new Product
-                {
-                    ProductId = ProductId.Of("TLM-FEES"),
-                    ProductCode = ProductCode.Of("TLM-" + serviceCharge.Name),
-                    ProductName = ProductName.Of(serviceCharge.Name),
-                    Description = "Unknown Fee.",
-                    UnitPrice = 0.01m,
-                };
-            }
+            return Observable.FromAsync(() =>
+                             {
+                                 if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
+                                 {
+                                     return this.productRepository.GetProductAsync(ProductId.TlmDelivery);
+                                 }
 
-            var quantity = serviceCharge.TotalMoney.Amount ?? 0;
-            var amount = decimal.Divide(quantity, 100);
-            return Observable.Return(new Subtransaction
-            {
-                Product = product,
-                Quantity = (int)quantity,
-                Subtotal = amount,
-            });
+                                 return Task.FromResult(new Product
+                                 {
+                                     ProductId = ProductId.Of("TLM-FEES"),
+                                     ProductCode = ProductCode.Of("TLM-" + serviceCharge.Name),
+                                     ProductName = ProductName.Of(serviceCharge.Name),
+                                     Description = "Unknown Fee.",
+                                     UnitPrice = 0.01m,
+                                 });
+                             })
+                             .Select(product =>
+                             {
+                                 var quantity = serviceCharge.TotalMoney.Amount ?? 0;
+                                 return new Subtransaction
+                                 {
+                                     Product = product,
+                                     Quantity = (int)quantity,
+                                     Subtotal = decimal.Divide(quantity, 100),
+                                 };
+                             });
         }
 
         private async Task<Product> GetProductAsync(ProductId squareId, ProductName name, DateTime orderDate)

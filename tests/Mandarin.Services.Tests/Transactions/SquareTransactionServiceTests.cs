@@ -31,8 +31,7 @@ namespace Mandarin.Services.Tests.Transactions
 
         private ITransactionService Subject =>
             new SquareTransactionService(NullLogger<SquareTransactionService>.Instance,
-                                         this.squareClient.Object,
-                                         this.transactionMapper.Object);
+                                         this.squareClient.Object);
 
         private void GivenSquareClientLocationApiReturnsData()
         {
