@@ -22,7 +22,7 @@ namespace Mandarin.Services.Transactions
         /// <inheritdoc/>
         public IObservable<Transaction> GetAllTransactions(DateTime start, DateTime end)
         {
-            return this.transactionRepository.GetAllTransactionsAsync().ToObservable().SelectMany(x => x);
+            return this.transactionRepository.GetAllTransactionsAsync(start, end).ToObservable().SelectMany(x => x);
         }
     }
 }
