@@ -48,6 +48,17 @@ namespace Mandarin.Services.Transactions
                        });
         }
 
+        private static Subtransaction CreateSubtransactionFromMoney(Product product, Money money)
+        {
+            var quantity = money.Amount ?? 0;
+            return new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                Subtotal = decimal.Divide(quantity, 100),
+            };
+        }
+
         private IObservable<IList<Subtransaction>> CreateSubtransactions(Order order)
         {
             var orderDate = DateTime.Parse(order.CreatedAt);
@@ -55,7 +66,8 @@ namespace Mandarin.Services.Transactions
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
             var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));
             var fees = order.ServiceCharges.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromFee);
-            return Observable.Merge(lineItems, discounts, returns, fees).ToList();
+            var tips = this.CreateSubtransactionFromTip(order.TotalTipMoney);
+            return Observable.Merge(lineItems, discounts, returns, fees, tips).ToList();
         }
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, DateTime orderDate)
@@ -206,6 +218,17 @@ namespace Mandarin.Services.Transactions
                                      Subtotal = decimal.Divide(quantity, 100),
                                  };
                              });
+        }
+
+        private IObservable<Subtransaction> CreateSubtransactionFromTip(Money tip)
+        {
+            if (tip?.Amount >= 0)
+            {
+                return Observable.FromAsync(() => this.productRepository.GetProductAsync(ProductId.TlmTip))
+                                 .Select(product => TransactionMapper.CreateSubtransactionFromMoney(product, tip));
+            }
+
+            return Observable.Empty<Subtransaction>();
         }
 
         private async Task<Product> GetProductAsync(ProductId squareId, ProductName name, DateTime orderDate)
