@@ -51,8 +51,8 @@ namespace Mandarin.Database.Converters
 
         private void ConfigureMapForTransactions()
         {
-            this.CreateMap<TransactionRecord, Transaction>()
-                .ReverseMap();
+            this.CreateMap<TransactionAuditRecord, TransactionAudit>().ReverseMap();
+            this.CreateMap<TransactionRecord, Transaction>().ReverseMap();
             this.CreateMap<SubtransactionRecord, Subtransaction>()
                 .ReverseMap()
                 .ForMember(x => x.product_id, o => o.MapFrom(src => src.Product.ProductId));

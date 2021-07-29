@@ -1,4 +1,14 @@
 ﻿-- BASHI-129: Persist Square transaction details to database
+CREATE TABLE IF NOT EXISTS billing.transaction_audit
+(
+    transaction_id VARCHAR(32)  NOT NULL,
+    updated_at     TIMESTAMP(3) NOT NULL,
+    created_at     TIMESTAMP(3) NOT NULL,
+    raw_data       JSONB        NOT NULL,
+
+    PRIMARY KEY (transaction_id, updated_at)
+);
+
 CREATE TABLE IF NOT EXISTS billing.transaction
 (
     transaction_id VARCHAR(32) PRIMARY KEY,

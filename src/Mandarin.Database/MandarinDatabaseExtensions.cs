@@ -39,6 +39,7 @@ namespace Mandarin.Database
             services.AddTransient<IFramePriceRepository, FramePriceRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IStockistRepository, StockistRepository>();
+            services.AddTransient<ITransactionAuditRepository, TransactionAuditRepository>();
             services.AddTransient<ITransactionRepository, TransactionRepository>();
 
             return services;

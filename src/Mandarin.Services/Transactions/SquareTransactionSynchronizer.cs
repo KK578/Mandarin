@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Hangfire;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
@@ -16,6 +17,7 @@ namespace Mandarin.Services.Transactions
     {
         private readonly ILogger<SquareTransactionSynchronizer> logger;
         private readonly ISquareTransactionService squareTransactionService;
+        private readonly ITransactionAuditRepository transactionAuditRepository;
         private readonly ITransactionRepository transactionRepository;
         private readonly ITransactionMapper transactionMapper;
         private readonly SemaphoreSlim semaphore;
@@ -25,15 +27,18 @@ namespace Mandarin.Services.Transactions
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareTransactionService">The service to fetch transactions from Square.</param>
+        /// <param name="transactionAuditRepository">The application repository for interacting with transaction audits.</param>
         /// <param name="transactionRepository">The application repository for interacting with transactions.</param>
         /// <param name="transactionMapper">The service to map Square orders to a Transation.</param>
         public SquareTransactionSynchronizer(ILogger<SquareTransactionSynchronizer> logger,
                                              ISquareTransactionService squareTransactionService,
+                                             ITransactionAuditRepository transactionAuditRepository,
                                              ITransactionRepository transactionRepository,
                                              ITransactionMapper transactionMapper)
         {
             this.logger = logger;
             this.squareTransactionService = squareTransactionService;
+            this.transactionAuditRepository = transactionAuditRepository;
             this.transactionRepository = transactionRepository;
             this.transactionMapper = transactionMapper;
             this.semaphore = new SemaphoreSlim(1);
@@ -49,8 +54,22 @@ namespace Mandarin.Services.Transactions
                 var orders = await this.squareTransactionService.GetAllOrders(start, end).ToList();
                 foreach (var order in orders)
                 {
-                    BackgroundJob.Enqueue<ITransactionSynchronizer>(s => s.SynchronizeTransactionAsync(order));
-                    processCount++;
+                    var transactionId = new TransactionId(order.Id);
+                    var lastUpdated = DateTime.Parse(order.UpdatedAt);
+                    var existingAudit = await this.transactionAuditRepository.GetTransactionAuditAsync(transactionId, lastUpdated);
+
+                    if (existingAudit is null)
+                    {
+                        await this.transactionAuditRepository.SaveTransactionAuditAsync(new TransactionAudit
+                        {
+                            TransactionId = transactionId,
+                            CreatedAt = DateTime.Parse(order.CreatedAt),
+                            UpdatedAt = lastUpdated,
+                            RawData = JsonConvert.SerializeObject(order),
+                        });
+                        BackgroundJob.Enqueue<ITransactionSynchronizer>(s => s.SynchronizeTransactionAsync(transactionId));
+                        processCount++;
+                    }
                 }
             }
             finally
@@ -61,9 +80,11 @@ namespace Mandarin.Services.Transactions
         }
 
         /// <inheritdoc />
-        public async Task SynchronizeTransactionAsync(Order order)
+        public async Task SynchronizeTransactionAsync(TransactionId transactionId)
         {
-            // TODO: This shouldn't really be exposed with the full Order on the signature...
+            var transactionAudit = await this.transactionAuditRepository.GetTransactionAuditAsync(transactionId);
+            var order = JsonConvert.DeserializeObject<Order>(transactionAudit.RawData);
+
             var transaction = await this.transactionMapper.MapToTransaction(order);
             var existingTransaction = await this.transactionRepository.GetTransactionAsync(transaction.TransactionId);
 

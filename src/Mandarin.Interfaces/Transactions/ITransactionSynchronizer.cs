@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Square.Models;
 
 namespace Mandarin.Transactions
 {
@@ -20,8 +19,8 @@ namespace Mandarin.Transactions
         /// <summary>
         /// Check the given Square Order and update the underlying repository if the transaction differs.
         /// </summary>
-        /// <param name="order">The raw Square order to be updated.</param>
+        /// <param name="transactionId">The transaction id to be updated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SynchronizeTransactionAsync(Order order);
+        Task SynchronizeTransactionAsync(TransactionId transactionId);
     }
 }

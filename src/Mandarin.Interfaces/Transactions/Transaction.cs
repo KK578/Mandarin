@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Mandarin.Transactions
 {
     /// <summary>
-    /// Represents a the details of a completed transaction, with details for the individual products sold within it.
+    /// Represents the details of a completed transaction, with details for the individual products sold within it.
     /// </summary>
     public record Transaction
     {

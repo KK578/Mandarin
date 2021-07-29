@@ -88,10 +88,10 @@ namespace Mandarin.Services.Transactions
                     {
                         Product = new Product
                         {
-                            ProductId = ProductId.Of("TLM-" + framePrice.ProductCode),
-                            ProductCode = ProductCode.Of("TLM-" + framePrice.ProductCode),
-                            ProductName = ProductName.Of($"Frame for {framePrice.ProductCode}"),
-                            Description = null,
+                            ProductId = ProductId.Of("TLM-FRAMING"),
+                            ProductCode = ProductCode.Of("TLM-FRAMING"),
+                            ProductName = ProductName.Of("Commission for Frame"),
+                            Description = $"Commission for Frame of {framePrice.ProductCode}",
                             UnitPrice = framePrice.Amount,
                         },
                         Quantity = quantity,
