@@ -206,7 +206,7 @@ namespace Mandarin.Services.Transactions
 
         private IObservable<Subtransaction> CreateSubtransactionFromTip(Money tip)
         {
-            if (tip?.Amount >= 0)
+            if (tip?.Amount > 0)
             {
                 return Observable.FromAsync(() => this.productRepository.GetProductAsync(ProductId.TlmTip))
                                  .Select(product => TransactionMapper.CreateSubtransactionFromMoney(product, tip));
