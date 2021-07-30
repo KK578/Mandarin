@@ -39,10 +39,10 @@ namespace Mandarin.Services.Transactions
         public IObservable<Transaction> MapToTransaction(Order order)
         {
             return this.CreateSubtransactions(order)
-                       .Select(subtransactions => new Transaction()
+                       .Select(subtransactions => new Transaction
                        {
                            TransactionId = TransactionId.Of(order.Id),
-                           TotalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100),
+                           TotalAmount = decimal.Divide(order.NetAmounts.TotalMoney?.Amount ?? 0, 100),
                            Timestamp = DateTime.Parse(order.CreatedAt),
                            Subtransactions = subtransactions.AsReadOnlyList(),
                        });
@@ -162,14 +162,7 @@ namespace Mandarin.Services.Transactions
                 };
             }
 
-            var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
-            var amount = decimal.Divide(quantity, 100);
-            return Observable.Return(new Subtransaction
-            {
-                Product = product,
-                Quantity = (int)quantity,
-                Subtotal = -amount,
-            });
+            return Observable.Return(TransactionMapper.CreateSubtransactionFromMoney(product, orderLineItemDiscount.AppliedMoney));
         }
 
         private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, DateTime orderDate)
@@ -208,16 +201,7 @@ namespace Mandarin.Services.Transactions
                                      UnitPrice = 0.01m,
                                  });
                              })
-                             .Select(product =>
-                             {
-                                 var quantity = serviceCharge.TotalMoney.Amount ?? 0;
-                                 return new Subtransaction
-                                 {
-                                     Product = product,
-                                     Quantity = (int)quantity,
-                                     Subtotal = decimal.Divide(quantity, 100),
-                                 };
-                             });
+                             .Select(product => TransactionMapper.CreateSubtransactionFromMoney(product, serviceCharge.TotalMoney));
         }
 
         private IObservable<Subtransaction> CreateSubtransactionFromTip(Money tip)

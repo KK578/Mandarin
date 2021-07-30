@@ -43,14 +43,14 @@ namespace Mandarin.Database.Common
         /// <returns>A <see cref="Task"/> containing the <typeparamref name="TDomain"/> for the given <paramref name="key"/>.</returns>
         protected async Task<TDomain> Get<T>(T key, Func<IDbConnection, Task<TRecord>> recordFunc)
         {
-            this.logger.LogDebug($"Fetching {this.typeName} entry for Key={{Key}}.", key);
+            this.logger.LogTrace($"Fetching {this.typeName} entry for Key={{Key}}.", key);
 
             try
             {
                 using var db = this.mandarinDbContext.GetConnection();
                 var record = await recordFunc(db);
                 var value = this.mapper.Map<TDomain>(record);
-                this.logger.LogTrace($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
+                this.logger.LogInformation($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
                 return value;
             }
             catch (Exception ex)

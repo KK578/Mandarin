@@ -10,7 +10,6 @@ using Mandarin.Database.Transactions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.Database
@@ -24,9 +23,8 @@ namespace Mandarin.Database
         /// Registers the Mandarin.Database assembly implementations into the provided service container.
         /// </summary>
         /// <param name="services">Service container to add registrations to.</param>
-        /// <param name="configuration">Application configuration for configuring services.</param>
         /// <returns>The service container returned as is, for chaining calls.</returns>
-        public static IServiceCollection AddMandarinDatabase(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMandarinDatabase(this IServiceCollection services)
         {
             services.AddSingleton(typeof(Migrator).Assembly);
             services.AddTransient<IUpgradeLog, DbUpLogger>();

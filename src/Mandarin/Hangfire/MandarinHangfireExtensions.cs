@@ -1,5 +1,7 @@
-﻿using Hangfire;
+﻿using System;
+using Hangfire;
 using Mandarin.Inventory;
+using Mandarin.Transactions;
 using Microsoft.AspNetCore.Builder;
 
 namespace Mandarin.Hangfire
@@ -15,7 +17,8 @@ namespace Mandarin.Hangfire
         /// <param name="builder">The application builder instance.</param>
         public static void AddMandarinBackgroundJobs(this IApplicationBuilder builder)
         {
-            // RecurringJob.AddOrUpdate<ITransactionSynchronizer>(s => s.SynchroniseTransactionsAsync(DateTime.Today.AddDays(-1), DateTime.Today.AddDays(-2)), Cron.Daily(01));
+            RecurringJob.AddOrUpdate<ITransactionSynchronizer>(s => s.LoadSquareOrders(DateTime.Today.AddDays(-1), DateTime.Today), Cron.Daily(01));
+            RecurringJob.AddOrUpdate<ITransactionSynchronizer>(s => s.LoadSquareOrders(DateTime.Today.AddDays(-45), DateTime.Today), Cron.Monthly(01));
             RecurringJob.AddOrUpdate<IProductSynchronizer>(s => s.SynchroniseProductsAsync(), Cron.Hourly);
         }
     }
