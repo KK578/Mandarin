@@ -17,9 +17,13 @@ namespace Mandarin.Hangfire
         /// <param name="builder">The application builder instance.</param>
         public static void AddMandarinBackgroundJobs(this IApplicationBuilder builder)
         {
-            RecurringJob.AddOrUpdate<ITransactionSynchronizer>(s => s.LoadSquareOrders(DateTime.Today.AddDays(-1), DateTime.Today), Cron.Daily(01));
-            RecurringJob.AddOrUpdate<ITransactionSynchronizer>(s => s.LoadSquareOrders(DateTime.Today.AddDays(-45), DateTime.Today), Cron.Monthly(01));
-            RecurringJob.AddOrUpdate<IProductSynchronizer>(s => s.SynchroniseProductsAsync(), Cron.Hourly);
+            RecurringJob.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Daily",
+                                                               s => s.LoadSquareOrders(DateTime.UtcNow.Date.AddDays(-1), DateTime.UtcNow.Date),
+                                                               Cron.Daily(01));
+            RecurringJob.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Monthly",
+                                                               s => s.LoadSquareOrders(DateTime.UtcNow.Date.AddDays(-45), DateTime.UtcNow.Date),
+                                                               Cron.Monthly(01));
+            RecurringJob.AddOrUpdate<IProductSynchronizer>(s => s.SynchronizeProductsAsync(), Cron.Hourly);
         }
     }
 }

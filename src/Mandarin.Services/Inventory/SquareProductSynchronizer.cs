@@ -31,7 +31,7 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc />
-        public async Task SynchroniseProductsAsync()
+        public async Task SynchronizeProductsAsync()
         {
             var updateCount = 0;
             this.logger.LogInformation("Starting Square product synchronisation.");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Mandarin.Transactions
@@ -14,6 +15,7 @@ namespace Mandarin.Transactions
         /// <param name="start">The start datetime to query transactions for.</param>
         /// <param name="end">The end datetime to query transactions for.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [DisplayName("ITransactionSynchronizer.LoadSquareOrders({0} => {1})")]
         Task LoadSquareOrders(DateTime start, DateTime end);
 
         /// <summary>
@@ -21,6 +23,7 @@ namespace Mandarin.Transactions
         /// </summary>
         /// <param name="transactionId">The transaction id to be updated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [DisplayName("ITransactionSynchronizer.SynchronizeTransaction({0})")]
         Task SynchronizeTransactionAsync(TransactionId transactionId);
     }
 }
