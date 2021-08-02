@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Services.Transactions;
+using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
-using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Square;
@@ -16,12 +17,12 @@ using Square.Models;
 using Xunit;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Tests.Transactions
+namespace Mandarin.Services.Tests.Transactions.External
 {
     public class SquareTransactionServiceTests
     {
         private readonly Mock<ISquareClient> squareClient = new();
-        private readonly Mock<ITransactionMapper> transactionMapper = new();
+        private readonly Mock<ISquareTransactionMapper> transactionMapper = new();
 
         protected SquareTransactionServiceTests()
         {
@@ -63,9 +64,9 @@ namespace Mandarin.Services.Tests.Transactions
         private void GivenTransactionMapperMapsTo()
         {
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order1")))
-                .Returns(Observable.Return(TestData.Create<Transaction>() with { TransactionId = TransactionId.Of("Order1") }));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { ExternalTransactionId = new ExternalTransactionId("Order1") }));
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order2")))
-                .Returns(Observable.Return(TestData.Create<Transaction>() with { TransactionId = TransactionId.Of("Order2") }));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { ExternalTransactionId = new ExternalTransactionId("Order2") }));
         }
 
         public class GetAllOrdersTests : SquareTransactionServiceTests

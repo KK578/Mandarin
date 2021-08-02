@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Square.Models;
 
-namespace Mandarin.Services.Transactions
+namespace Mandarin.Services.Transactions.External
 {
     /// <summary>
     /// Represents a type that can resolve transactions from Square.

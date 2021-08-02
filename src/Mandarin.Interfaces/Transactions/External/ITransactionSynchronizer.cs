@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace Mandarin.Transactions
+namespace Mandarin.Transactions.External
 {
     /// <summary>
     /// Represents a type that synchronises external data sources of <see cref="Transaction"/> with internal data sources.
@@ -15,15 +15,15 @@ namespace Mandarin.Transactions
         /// <param name="start">The start datetime to query transactions for.</param>
         /// <param name="end">The end datetime to query transactions for.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [DisplayName("ITransactionSynchronizer.LoadSquareOrders({0} => {1})")]
-        Task LoadSquareOrders(DateTime start, DateTime end);
+        [DisplayName("ITransactionSynchronizer.LoadExternalTransactions({0} => {1})")]
+        Task LoadExternalTransactions(DateTime start, DateTime end);
 
         /// <summary>
         /// Check the given Square Order and update the underlying repository if the transaction differs.
         /// </summary>
-        /// <param name="transactionId">The transaction id to be updated.</param>
+        /// <param name="externalTransactionId">The transaction id to be updated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [DisplayName("ITransactionSynchronizer.SynchronizeTransaction({0})")]
-        Task SynchronizeTransactionAsync(TransactionId transactionId);
+        Task SynchronizeTransactionAsync(ExternalTransactionId externalTransactionId);
     }
 }

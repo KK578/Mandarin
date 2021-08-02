@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Square;
 using Square.Models;
 
-namespace Mandarin.Services.Transactions
+namespace Mandarin.Services.Transactions.External
 {
     /// <inheritdoc />
     internal sealed class SquareTransactionService : ISquareTransactionService

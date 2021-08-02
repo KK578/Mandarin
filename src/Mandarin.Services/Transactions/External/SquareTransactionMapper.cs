@@ -7,26 +7,27 @@ using Bashi.Core.Extensions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Options;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Transactions
+namespace Mandarin.Services.Transactions.External
 {
     /// <inheritdoc />
-    internal sealed class TransactionMapper : ITransactionMapper
+    internal sealed class SquareTransactionMapper : ISquareTransactionMapper
     {
         private readonly IProductRepository productRepository;
         private readonly IFramePricesService framePricesService;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
+        /// Initializes a new instance of the <see cref="SquareTransactionMapper"/> class.
         /// </summary>
         /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
-        public TransactionMapper(IProductRepository productRepository,
+        public SquareTransactionMapper(IProductRepository productRepository,
                                  IFramePricesService framePricesService,
                                  IOptions<MandarinConfiguration> mandarinConfiguration)
         {
@@ -41,10 +42,10 @@ namespace Mandarin.Services.Transactions
             return this.CreateSubtransactions(order)
                        .Select(subtransactions => new Transaction
                        {
-                           TransactionId = TransactionId.Of(order.Id),
+                           ExternalTransactionId = new ExternalTransactionId(order.Id),
                            TotalAmount = decimal.Divide(order.NetAmounts.TotalMoney?.Amount ?? 0, 100),
                            Timestamp = DateTime.Parse(order.CreatedAt),
-                           Subtransactions = subtransactions.AsReadOnlyList(),
+                           Subtransactions = EnumerableExtensions.AsReadOnlyList<Subtransaction>(subtransactions),
                        });
         }
 
@@ -208,7 +209,7 @@ namespace Mandarin.Services.Transactions
                                      UnitPrice = 0.01m,
                                  });
                              })
-                             .Select(product => TransactionMapper.CreateSubtransactionFromMoney(product, serviceCharge.TotalMoney));
+                             .Select(product => SquareTransactionMapper.CreateSubtransactionFromMoney(product, serviceCharge.TotalMoney));
         }
 
         private IObservable<Subtransaction> CreateSubtransactionFromTip(Money tip)
@@ -216,7 +217,7 @@ namespace Mandarin.Services.Transactions
             if (tip?.Amount > 0)
             {
                 return Observable.FromAsync(() => this.productRepository.GetProductAsync(ProductId.TlmTip))
-                                 .Select(product => TransactionMapper.CreateSubtransactionFromMoney(product, tip));
+                                 .Select(product => SquareTransactionMapper.CreateSubtransactionFromMoney(product, tip));
             }
 
             return Observable.Empty<Subtransaction>();

@@ -9,6 +9,7 @@ using Dapper;
 using Mandarin.Database.Common;
 using Mandarin.Database.Inventory;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
@@ -17,10 +18,10 @@ namespace Mandarin.Database.Transactions
     /// <inheritdoc cref="Mandarin.Transactions.ITransactionRepository" />
     internal sealed class TransactionRepository : DatabaseRepositoryBase<Transaction, TransactionRecord>, ITransactionRepository
     {
-        private const string GetTransactionByIdSql = @"
+        private const string GetTransactionByExternalIdSql = @"
             SELECT *
             FROM billing.transaction
-            WHERE transaction_id = @transaction_id";
+            WHERE external_transaction_id = @external_transaction_id";
 
         private const string GetSubtransactionByIdSql = @"
             SELECT s.subtransaction_id, s.transaction_id, s.quantity, s.subtotal, 
@@ -68,13 +69,13 @@ namespace Mandarin.Database.Transactions
         }
 
         /// <inheritdoc/>
-        public Task<Transaction> GetTransactionAsync(TransactionId transactionId)
+        public Task<Transaction> GetTransactionAsync(ExternalTransactionId externalTransactionId)
         {
-            return this.Get(transactionId,
+            return this.Get(externalTransactionId,
                             async db =>
                             {
-                                var parameters = new { transaction_id = transactionId.Value };
-                                var transaction = await db.QueryFirstOrDefaultAsync<TransactionRecord>(TransactionRepository.GetTransactionByIdSql, parameters);
+                                var parameters = new { external_transaction_id = externalTransactionId.Value };
+                                var transaction = await db.QueryFirstOrDefaultAsync<TransactionRecord>(TransactionRepository.GetTransactionByExternalIdSql, parameters);
                                 if (transaction == null)
                                 {
                                     return null;
@@ -83,7 +84,7 @@ namespace Mandarin.Database.Transactions
                                 var subtransactions = await db.QueryAsync<SubtransactionRecord, ProductRecord, SubtransactionRecord>(
                                  TransactionRepository.GetSubtransactionByIdSql,
                                  (s, p) => s with { product_id = p.product_id, Product = p },
-                                 parameters,
+                                 new { transaction_id = transaction.transaction_id },
                                  splitOn: "subtransaction_id,product_id");
 
                                 return transaction with { Subtransactions = subtransactions.ToList() };
@@ -94,7 +95,7 @@ namespace Mandarin.Database.Transactions
         public Task SaveTransactionAsync(Transaction transaction) => this.Upsert(transaction);
 
         /// <inheritdoc />
-        protected override string ExtractDisplayKey(Transaction value) => value.TransactionId.Value;
+        protected override string ExtractDisplayKey(Transaction value) => value.TransactionId.ToString();
 
         /// <inheritdoc />
         protected override async Task<IEnumerable<TransactionRecord>> GetAllRecords(IDbConnection db)

@@ -5,13 +5,13 @@ namespace Mandarin.Transactions
     /// <summary>
     /// Represents the unique Id for a <see cref="Transaction"/>.
     /// </summary>
-    public class TransactionId : TinyString
+    public class TransactionId : TinyType<int>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionId"/> class.
         /// </summary>
         /// <param name="value">The unique Transaction Id.</param>
-        private TransactionId(string value)
+        private TransactionId(int value)
             : base(value)
         {
         }
@@ -21,6 +21,6 @@ namespace Mandarin.Transactions
         /// </summary>
         /// <param name="value">The unique Transaction Id.</param>
         /// <returns>A newly created <see cref="TransactionId"/> or null/empty.</returns>
-        public static TransactionId Of(string value) => string.IsNullOrEmpty(value) ? null : new TransactionId(value);
+        public static TransactionId Of(int? value) => value.HasValue ? new TransactionId(value.Value) : null;
     }
 }

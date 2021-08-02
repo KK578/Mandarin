@@ -13,7 +13,7 @@ namespace Mandarin.Database.Transactions
     internal sealed record SubtransactionRecord
     {
         public int subtransaction_id { get; init; }
-        public string transaction_id { get; init; }
+        public int transaction_id { get; init; }
         public string product_id { get; init; }
         public int quantity { get; init; }
         public decimal? subtotal { get; init; }

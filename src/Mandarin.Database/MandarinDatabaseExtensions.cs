@@ -7,9 +7,11 @@ using Mandarin.Database.Inventory;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
 using Mandarin.Database.Transactions;
+using Mandarin.Database.Transactions.External;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mandarin.Database
@@ -34,10 +36,10 @@ namespace Mandarin.Database
             SqlMapper.AddTypeHandler(new DateTimeUtcHandler());
 
             services.AddTransient<ICommissionRepository, CommissionRepository>();
+            services.AddTransient<IExternalTransactionRepository, ExternalTransactionRepository>();
             services.AddTransient<IFramePriceRepository, FramePriceRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IStockistRepository, StockistRepository>();
-            services.AddTransient<ITransactionAuditRepository, TransactionAuditRepository>();
             services.AddTransient<ITransactionRepository, TransactionRepository>();
 
             return services;

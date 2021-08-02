@@ -7,16 +7,16 @@ using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
-using Mandarin.Services.Transactions;
+using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Options;
 using Moq;
 using Square.Models;
 using Xunit;
 
-namespace Mandarin.Services.Tests.Transactions
+namespace Mandarin.Services.Tests.Transactions.External
 {
-    public class TransactionMapperTests
+    public class SquareTransactionMapperTests
     {
         private readonly DateTime orderDate = DateTime.Now;
 
@@ -24,15 +24,15 @@ namespace Mandarin.Services.Tests.Transactions
         private readonly MandarinConfiguration configuration;
         private readonly Mock<IFramePricesService> framePricesService;
 
-        protected TransactionMapperTests()
+        protected SquareTransactionMapperTests()
         {
             this.productRepository = new Mock<IProductRepository>();
             this.configuration = new MandarinConfiguration();
             this.framePricesService = new Mock<IFramePricesService>();
         }
 
-        private ITransactionMapper Subject =>
-            new TransactionMapper(this.productRepository.Object,
+        private ISquareTransactionMapper Subject =>
+            new SquareTransactionMapper(this.productRepository.Object,
                                   this.framePricesService.Object,
                                   Options.Create(this.configuration));
 
@@ -118,7 +118,7 @@ namespace Mandarin.Services.Tests.Transactions
                              createdAt: this.orderDate.ToString("O"));
         }
 
-        public class MapToTransactionTests : TransactionMapperTests
+        public class MapToTransactionTests : SquareTransactionMapperTests
         {
             [Fact]
             public async Task ShouldConvertLineItemsToATransaction()

@@ -3,6 +3,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Mandarin.Inventory;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,10 +39,10 @@ namespace Mandarin.Hangfire
         {
             app.UseEndpoints(e => e.MapHangfireDashboardWithAuthorizationPolicy("Hangfire"));
             RecurringJob.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Daily",
-                                                               s => s.LoadSquareOrders(DateTime.UtcNow.Date.AddDays(-1), DateTime.UtcNow.Date),
+                                                               s => s.LoadExternalTransactions(DateTime.UtcNow.Date.AddDays(-1), DateTime.UtcNow.Date),
                                                                Cron.Daily(01));
             RecurringJob.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Monthly",
-                                                               s => s.LoadSquareOrders(DateTime.UtcNow.Date.AddDays(-45), DateTime.UtcNow.Date),
+                                                               s => s.LoadExternalTransactions(DateTime.UtcNow.Date.AddDays(-45), DateTime.UtcNow.Date),
                                                                Cron.Monthly(01));
             RecurringJob.AddOrUpdate<IProductSynchronizer>(s => s.SynchronizeProductsAsync(), Cron.Hourly);
         }

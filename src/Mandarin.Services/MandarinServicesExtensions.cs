@@ -7,8 +7,10 @@ using Mandarin.Services.Emails;
 using Mandarin.Services.Inventory;
 using Mandarin.Services.Stockists;
 using Mandarin.Services.Transactions;
+using Mandarin.Services.Transactions.External;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendGrid;
@@ -74,7 +76,7 @@ namespace Mandarin.Services
 
         private static void AddTransactionServices(this IServiceCollection services)
         {
-            services.AddTransient<ITransactionMapper, TransactionMapper>();
+            services.AddTransient<ISquareTransactionMapper, SquareTransactionMapper>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ISquareTransactionService, SquareTransactionService>();
             services.AddSingleton<ITransactionSynchronizer, SquareTransactionSynchronizer>();

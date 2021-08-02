@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace Mandarin.Transactions
+namespace Mandarin.Transactions.External
 {
     /// <summary>
-    /// Represents the raw details of a completed transaction, prior to being converted to a <see cref="Transaction"/>.
+    /// Represents the raw details of a completed transaction, prior to being converted to a <see cref="Mandarin.Transactions.Transaction"/>.
     /// </summary>
-    public record TransactionAudit
+    public record ExternalTransaction
     {
         /// <summary>
-        /// Gets the unique transaction ID assigned by Square for this transaction.
+        /// Gets the unique transaction ID assigned by Square.
         /// </summary>
-        public TransactionId TransactionId { get; init; }
+        public ExternalTransactionId ExternalTransactionId { get; init; }
 
         /// <summary>
         /// Gets the time that this transaction was created at.

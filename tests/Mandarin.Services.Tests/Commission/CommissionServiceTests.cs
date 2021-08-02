@@ -51,6 +51,7 @@ namespace Mandarin.Services.Tests.Commission
                 new()
                 {
                     TransactionId = null,
+                    ExternalTransactionId = null,
                     TotalAmount = 10.00M,
                     Timestamp = DateTime.Now,
                     Subtransactions = new List<Subtransaction>
@@ -72,6 +73,7 @@ namespace Mandarin.Services.Tests.Commission
                 new()
                 {
                     TransactionId = null,
+                    ExternalTransactionId = null,
                     TotalAmount = 50.00m,
                     Timestamp = DateTime.Now,
                     Subtransactions = new List<Subtransaction>

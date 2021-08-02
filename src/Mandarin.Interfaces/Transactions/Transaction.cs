@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Mandarin.Transactions.External;
 
 namespace Mandarin.Transactions
 {
@@ -9,9 +10,14 @@ namespace Mandarin.Transactions
     public record Transaction
     {
         /// <summary>
-        /// Gets the unique transaction ID assigned by Square for this transaction.
+        /// Gets the unique internal transaction ID for this transaction.
         /// </summary>
         public TransactionId TransactionId { get; init; }
+
+        /// <summary>
+        /// Gets the unique transaction ID assigned by Square for this transaction.
+        /// </summary>
+        public ExternalTransactionId ExternalTransactionId { get; init; }
 
         /// <summary>
         /// Gets the total monetary amount for this transaction.

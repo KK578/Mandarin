@@ -4,9 +4,11 @@ using Mandarin.Database.Commissions;
 using Mandarin.Database.Inventory;
 using Mandarin.Database.Stockists;
 using Mandarin.Database.Transactions;
+using Mandarin.Database.Transactions.External;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 
 namespace Mandarin.Database.Converters
 {
@@ -51,7 +53,7 @@ namespace Mandarin.Database.Converters
 
         private void ConfigureMapForTransactions()
         {
-            this.CreateMap<TransactionAuditRecord, TransactionAudit>().ReverseMap();
+            this.CreateMap<ExternalTransactionRecord, ExternalTransaction>().ReverseMap();
             this.CreateMap<TransactionRecord, Transaction>().ReverseMap();
             this.CreateMap<SubtransactionRecord, Subtransaction>()
                 .ReverseMap()

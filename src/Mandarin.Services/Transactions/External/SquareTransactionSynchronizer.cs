@@ -5,21 +5,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Transactions
+namespace Mandarin.Services.Transactions.External
 {
     /// <inheritdoc />
     internal sealed class SquareTransactionSynchronizer : ITransactionSynchronizer
     {
         private readonly ILogger<SquareTransactionSynchronizer> logger;
         private readonly ISquareTransactionService squareTransactionService;
-        private readonly ITransactionAuditRepository transactionAuditRepository;
+        private readonly IExternalTransactionRepository externalTransactionRepository;
         private readonly ITransactionRepository transactionRepository;
-        private readonly ITransactionMapper transactionMapper;
+        private readonly ISquareTransactionMapper squareTransactionMapper;
         private readonly SemaphoreSlim semaphore;
 
         /// <summary>
@@ -27,25 +28,25 @@ namespace Mandarin.Services.Transactions
         /// </summary>
         /// <param name="logger">The application logger.</param>
         /// <param name="squareTransactionService">The service to fetch transactions from Square.</param>
-        /// <param name="transactionAuditRepository">The application repository for interacting with transaction audits.</param>
+        /// <param name="externalTransactionRepository">The application repository for interacting with external transactions.</param>
         /// <param name="transactionRepository">The application repository for interacting with transactions.</param>
-        /// <param name="transactionMapper">The service to map Square orders to a Transation.</param>
+        /// <param name="squareTransactionMapper">The service to map Square orders to a Transaction.</param>
         public SquareTransactionSynchronizer(ILogger<SquareTransactionSynchronizer> logger,
                                              ISquareTransactionService squareTransactionService,
-                                             ITransactionAuditRepository transactionAuditRepository,
+                                             IExternalTransactionRepository externalTransactionRepository,
                                              ITransactionRepository transactionRepository,
-                                             ITransactionMapper transactionMapper)
+                                             ISquareTransactionMapper squareTransactionMapper)
         {
             this.logger = logger;
             this.squareTransactionService = squareTransactionService;
-            this.transactionAuditRepository = transactionAuditRepository;
+            this.externalTransactionRepository = externalTransactionRepository;
             this.transactionRepository = transactionRepository;
-            this.transactionMapper = transactionMapper;
+            this.squareTransactionMapper = squareTransactionMapper;
             this.semaphore = new SemaphoreSlim(1);
         }
 
         /// <inheritdoc/>
-        public async Task LoadSquareOrders(DateTime start, DateTime end)
+        public async Task LoadExternalTransactions(DateTime start, DateTime end)
         {
             await this.semaphore.WaitAsync();
             var processCount = 0;
@@ -54,15 +55,15 @@ namespace Mandarin.Services.Transactions
                 var orders = await this.squareTransactionService.GetAllOrders(start, end).ToList();
                 foreach (var order in orders)
                 {
-                    var transactionId = new TransactionId(order.Id);
+                    var transactionId = new ExternalTransactionId(order.Id);
                     var lastUpdated = DateTime.Parse(order.UpdatedAt);
-                    var existingAudit = await this.transactionAuditRepository.GetTransactionAuditAsync(transactionId, lastUpdated);
+                    var externalTransaction = await this.externalTransactionRepository.GetExternalTransactionAsync(transactionId, lastUpdated);
 
-                    if (existingAudit is null)
+                    if (externalTransaction is null)
                     {
-                        await this.transactionAuditRepository.SaveTransactionAuditAsync(new TransactionAudit
+                        await this.externalTransactionRepository.SaveExternalTransactionAsync(new ExternalTransaction
                         {
-                            TransactionId = transactionId,
+                            ExternalTransactionId = transactionId,
                             CreatedAt = DateTime.Parse(order.CreatedAt),
                             UpdatedAt = lastUpdated,
                             RawData = JsonConvert.SerializeObject(order),
@@ -80,29 +81,29 @@ namespace Mandarin.Services.Transactions
         }
 
         /// <inheritdoc />
-        public async Task SynchronizeTransactionAsync(TransactionId transactionId)
+        public async Task SynchronizeTransactionAsync(ExternalTransactionId externalTransactionId)
         {
-            var transactionAudit = await this.transactionAuditRepository.GetTransactionAuditAsync(transactionId);
-            var order = JsonConvert.DeserializeObject<Order>(transactionAudit.RawData);
+            var externalTransaction = await this.externalTransactionRepository.GetExternalTransactionAsync(externalTransactionId);
+            var order = JsonConvert.DeserializeObject<Order>(externalTransaction.RawData);
 
-            var transaction = await this.transactionMapper.MapToTransaction(order);
-            var existingTransaction = await this.transactionRepository.GetTransactionAsync(transaction.TransactionId);
+            var transaction = await this.squareTransactionMapper.MapToTransaction(order);
+            var existingTransaction = await this.transactionRepository.GetTransactionAsync(transaction.ExternalTransactionId);
 
             if (existingTransaction is null)
             {
                 this.logger.LogInformation("Inserting new transaction: {Transaction}", transaction);
                 await this.transactionRepository.SaveTransactionAsync(transaction);
             }
-            else if (!this.AreTransactionsEquivalent(transaction, existingTransaction))
+            else if (!SquareTransactionSynchronizer.AreTransactionsEquivalent(transaction, existingTransaction))
             {
-                this.logger.LogInformation("Updating {TransactionId} to new version: {Transaction}", transaction.TransactionId, transaction);
+                this.logger.LogInformation("Updating {TransactionId} to new version: {Transaction}", transaction.ExternalTransactionId, transaction);
                 await this.transactionRepository.SaveTransactionAsync(transaction);
             }
         }
 
-        private bool AreTransactionsEquivalent(Transaction x, Transaction y)
+        private static bool AreTransactionsEquivalent(Transaction x, Transaction y)
         {
-            return x.TransactionId.Equals(y.TransactionId)
+            return x.ExternalTransactionId.Equals(y.ExternalTransactionId)
                    && x.TotalAmount == y.TotalAmount
                    && x.Timestamp.Equals(y.Timestamp)
                    && x.Subtransactions.OrderBy(s => s.Product.ProductId).SequenceEqual(y.Subtransactions.OrderBy(s => s.Product.ProductId));

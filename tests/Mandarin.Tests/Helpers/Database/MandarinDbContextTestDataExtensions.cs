@@ -26,8 +26,8 @@ namespace Mandarin.Tests.Helpers.Database
                 DROP TYPE IF EXISTS billing.tvp_subtransaction;
 
                 DROP TABLE IF EXISTS billing.commission;
+                DROP TABLE IF EXISTS billing.external_transaction;
                 DROP TABLE IF EXISTS billing.subtransaction;
-                DROP TABLE IF EXISTS billing.transaction_audit;
                 DROP TABLE IF EXISTS billing.transaction;
                 DROP TABLE IF EXISTS inventory.stockist_detail;
                 DROP TABLE IF EXISTS inventory.stockist;
