@@ -37,13 +37,14 @@ namespace Mandarin.Tests.Static
         {
             await this.productSynchronizer.SynchronizeProductsAsync();
             var products = await this.productRepository.GetAllProductsAsync();
-            products.Should().HaveCount(5);
+            products.Should().HaveCount(8);
         }
 
         private async Task GivenProductTableIsEmptyAsync()
         {
             var db = this.Fixture.Services.GetRequiredService<MandarinDbContext>();
-            await db.GetConnection().ExecuteAsync("TRUNCATE inventory.product");
+            await db.GetConnection().ExecuteAsync(@"
+                DELETE FROM inventory.product;");
         }
     }
 }

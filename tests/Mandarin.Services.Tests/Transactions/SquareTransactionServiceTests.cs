@@ -8,7 +8,6 @@ using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Services.Transactions;
 using Mandarin.Tests.Data;
-using Mandarin.Tests.Data.Extensions;
 using Mandarin.Transactions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -29,7 +28,7 @@ namespace Mandarin.Services.Tests.Transactions
             this.GivenSquareClientLocationApiReturnsData();
         }
 
-        private ITransactionService Subject =>
+        private ISquareTransactionService Subject =>
             new SquareTransactionService(NullLogger<SquareTransactionService>.Instance,
                                          this.squareClient.Object);
 
@@ -69,14 +68,14 @@ namespace Mandarin.Services.Tests.Transactions
                 .Returns(Observable.Return(TestData.Create<Transaction>() with { TransactionId = TransactionId.Of("Order2") }));
         }
 
-        public class GetAllTransactionsTests : SquareTransactionServiceTests
+        public class GetAllOrdersTests : SquareTransactionServiceTests
         {
             [Fact]
             public void GetTransaction_WhenRequestIsCancelled_ShouldThrowException()
             {
                 var waitHandle = this.GivenSquareClientOrderApiWaitsToContinue();
                 var cts = new CancellationTokenSource();
-                var task = this.Subject.GetAllTransactions(DateTime.Now, DateTime.Now).ToList().ToTask(cts.Token);
+                var task = this.Subject.GetAllOrders(DateTime.Now, DateTime.Now).ToList().ToTask(cts.Token);
                 task.Wait(10);
                 cts.Cancel();
                 waitHandle.Set();
@@ -90,11 +89,11 @@ namespace Mandarin.Services.Tests.Transactions
                 this.GivenSquareClientLocationApiReturnsData();
                 this.GivenSquareClientOrdersApiReturnsData();
                 this.GivenTransactionMapperMapsTo();
-                var transactions = await this.Subject.GetAllTransactions(DateTime.Now, DateTime.Now).ToList();
+                var transactions = await this.Subject.GetAllOrders(DateTime.Now, DateTime.Now).ToList();
 
                 transactions.Should().HaveCount(2);
-                transactions[0].TransactionId.Should().Be(TransactionId.Of("Order1"));
-                transactions[1].TransactionId.Should().Be(TransactionId.Of("Order2"));
+                transactions[0].Id.Should().Be("Order1");
+                transactions[1].Id.Should().Be("Order2");
             }
         }
     }

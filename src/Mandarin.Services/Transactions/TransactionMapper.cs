@@ -162,7 +162,14 @@ namespace Mandarin.Services.Transactions
                 };
             }
 
-            return Observable.Return(TransactionMapper.CreateSubtransactionFromMoney(product, orderLineItemDiscount.AppliedMoney));
+            var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
+            var amount = decimal.Divide(quantity, 100);
+            return Observable.Return(new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                Subtotal = -amount,
+            });
         }
 
         private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, DateTime orderDate)
