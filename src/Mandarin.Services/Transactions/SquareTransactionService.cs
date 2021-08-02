@@ -33,26 +33,22 @@ namespace Mandarin.Services.Transactions
         public IObservable<Order> GetAllOrders(DateTime start, DateTime end)
         {
             this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
-            return Observable.Create<Order>(SubscribeToOrders)
-                             .ToList()
-                             .SelectMany(FilterOrders);
+            return Observable.Create<Order>(SubscribeToOrders);
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
             {
                 var builder = new SearchOrdersRequest.Builder();
                 builder.LocationIds(await this.ListAllLocationsAsync(ct));
-                builder.Limit(100);
                 builder.Query(new SearchOrdersQuery.Builder()
                               .Filter(new SearchOrdersFilter.Builder()
                                       .StateFilter(new SearchOrdersStateFilter(new[] { "COMPLETED" }))
                                       .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
-                                                      .ClosedAt(new TimeRange.Builder()
+                                                      .CreatedAt(new TimeRange.Builder()
                                                                 .StartAt(start.ToString("s"))
-                                                                .EndAt(end.AddDays(14).ToString("s"))
+                                                                .EndAt(end.ToString("s"))
                                                                 .Build())
                                                       .Build())
                                       .Build())
-                              .Sort(new SearchOrdersSort("CLOSED_AT"))
                               .Build());
 
                 SearchOrdersResponse response = null;
@@ -70,15 +66,6 @@ namespace Mandarin.Services.Transactions
                 while (response.Cursor != null);
 
                 o.OnCompleted();
-            }
-
-            IObservable<Order> FilterOrders(IList<Order> sourceOrders)
-            {
-                var orders = sourceOrders.Where(x => DateTime.Parse(x.ClosedAt) < end).Where(x => x.Returns == null).ToList();
-                var orderIds = orders.Select(x => x.Id).ToHashSet();
-                var refunds = sourceOrders.Where(x => x.Returns != null).Where(x => x.Returns.Any(r => orderIds.Contains(r.SourceOrderId))).ToList();
-
-                return orders.Concat(refunds).ToObservable();
             }
         }
 
