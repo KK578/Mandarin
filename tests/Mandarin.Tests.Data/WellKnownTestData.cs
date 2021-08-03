@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Mandarin.Commissions;
 using Mandarin.Common;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Newtonsoft.Json;
 using Square.Models;
+using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Tests.Data
 {
@@ -57,6 +61,16 @@ namespace Mandarin.Tests.Data
                 UnitPrice = 11.00m,
             };
 
+            public static readonly Product Clementine = new()
+            {
+                ProductId = new ProductId("BQGTKYVIFNM6MPB57Y5QEBYN"),
+                ProductCode = new ProductCode("KT20-001"),
+                ProductName = new ProductName("Clementine (Regular)"),
+                Description = "vel augue vestibulum ante ipsum primis in",
+                UnitPrice = 45.00M,
+                LastUpdated = new DateTime(2021, 01, 31, 22, 51, 49, 569),
+            };
+
             public static readonly Product ClementineFramed = new()
             {
                 ProductId = ProductId.Of("BTWEJWZCPE4XAKZRBJW53DYE"),
@@ -64,6 +78,7 @@ namespace Mandarin.Tests.Data
                 ProductName = ProductName.Of("Clementine (Framed) (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 95.00M,
+                LastUpdated = new DateTime(2021, 01, 31, 22, 48, 44, 608),
             };
 
             public static readonly Product GiftCard = new()
@@ -82,7 +97,7 @@ namespace Mandarin.Tests.Data
             {
                 StockistId = StockistId.Of(1),
                 StockistCode = StockistCode.Of("KT20"),
-                StatusCode = StatusMode.Inactive,
+                StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
                     StockistId = StockistId.Of(1),
@@ -201,6 +216,25 @@ namespace Mandarin.Tests.Data
                     public const string SearchOrdersPage2 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.2.json";
                 }
             }
+        }
+
+        public static class Transactions
+        {
+            public static readonly Transaction Transaction1 = new()
+            {
+                ExternalTransactionId = new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"),
+                Timestamp = new DateTime(2021, 07, 14, 12, 54, 06),
+                TotalAmount = 45.00M,
+                Subtransactions = new List<Subtransaction>
+                {
+                    new()
+                    {
+                        Product = Products.Clementine,
+                        Quantity = 1,
+                        Subtotal = 45.00M,
+                    },
+                }.AsReadOnly(),
+            };
         }
     }
 }

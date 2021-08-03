@@ -43,7 +43,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
         public async Task ShouldBeAbleToRetrieveGiftCard()
         {
             var product = await this.Subject.GetProductAsync(ProductCode.Of("TLM-GC"));
-            product.Should().BeEquivalentTo(WellKnownTestData.Products.GiftCard, o => o.Excluding(x => x.LastUpdated));
+            product.Should().BeEquivalentTo(WellKnownTestData.Products.GiftCard, o => o.ComparingByMembers<Product>().Excluding(x => x.LastUpdated));
         }
 
         [Fact]

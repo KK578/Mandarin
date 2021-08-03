@@ -44,7 +44,7 @@ namespace Mandarin.Database.Transactions
             FROM inventory.product";
 
         private const string UpsertTransactionSql = @"
-            CALL billing.sp_transaction_upsert(@transaction_id, @total_amount, @timestamp, @subtransactions)";
+            CALL billing.sp_transaction_upsert(@external_transaction_id, @total_amount, @timestamp, @subtransactions)";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionRepository"/> class.
@@ -95,7 +95,7 @@ namespace Mandarin.Database.Transactions
         public Task SaveTransactionAsync(Transaction transaction) => this.Upsert(transaction);
 
         /// <inheritdoc />
-        protected override string ExtractDisplayKey(Transaction value) => value.TransactionId.ToString();
+        protected override string ExtractDisplayKey(Transaction value) => value.TransactionId?.ToString() ?? value.ExternalTransactionId.ToString();
 
         /// <inheritdoc />
         protected override async Task<IEnumerable<TransactionRecord>> GetAllRecords(IDbConnection db)

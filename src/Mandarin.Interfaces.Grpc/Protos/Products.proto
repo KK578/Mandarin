@@ -1,5 +1,6 @@
 ﻿syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 option csharp_namespace = "Mandarin.Api.Inventory";
@@ -37,4 +38,5 @@ message Product {
   string productName = 3;
   google.protobuf.StringValue description = 4;
   google.protobuf.DoubleValue unitPrice = 5;
+  google.protobuf.Timestamp lastUpdated = 6;
 }

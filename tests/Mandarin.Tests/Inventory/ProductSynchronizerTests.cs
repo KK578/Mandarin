@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Static
+namespace Mandarin.Tests.Inventory
 {
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public class ProductSynchronizerTests : MandarinIntegrationTestsBase
@@ -44,6 +44,9 @@ namespace Mandarin.Tests.Static
         {
             var db = this.Fixture.Services.GetRequiredService<MandarinDbContext>();
             await db.GetConnection().ExecuteAsync(@"
+                DELETE FROM billing.subtransaction;
+                DELETE FROM billing.transaction;
+                DELETE FROM billing.external_transaction;
                 DELETE FROM inventory.product;");
         }
     }
