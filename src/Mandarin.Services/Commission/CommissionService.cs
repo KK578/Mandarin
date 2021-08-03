@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Bashi.Core.Extensions;
 using Mandarin.Commissions;
@@ -15,37 +14,32 @@ namespace Mandarin.Services.Commission
     /// <inheritdoc />
     public class CommissionService : ICommissionService
     {
-        private readonly ICommissionRepository commissionRepository;
         private readonly IStockistService stockistService;
-        private readonly ITransactionService transactionService;
+        private readonly ITransactionRepository transactionRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionService"/> class.
         /// </summary>
-        /// <param name="commissionRepository">The application repository for interacting with commissions.</param>
         /// <param name="stockistService">The application service for interacting with stockists.</param>
-        /// <param name="transactionService">The transaction service.</param>
-        public CommissionService(ICommissionRepository commissionRepository,
-                                 IStockistService stockistService,
-                                 ITransactionService transactionService)
+        /// <param name="transactionRepository">The transaction service.</param>
+        public CommissionService(IStockistService stockistService, ITransactionRepository transactionRepository)
         {
-            this.commissionRepository = commissionRepository;
             this.stockistService = stockistService;
-            this.transactionService = transactionService;
+            this.transactionRepository = transactionRepository;
         }
 
         /// <inheritdoc />
         public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
         {
-            var transactions = await this.transactionService.GetAllTransactions(start, end).ToList();
-            var allStockists = await this.stockistService.GetStockistsAsync();
-            var stockists = allStockists.Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList();
-
+            var transactions = await this.transactionRepository.GetAllTransactionsAsync(start, end);
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
                                         .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? ProductCode.Of("TLM-Unknown"), subtransaction.TransactionUnitPrice))
                                         .Select(ToAggregateSubtransaction)
                                         .ToList();
+
+            var allStockists = await this.stockistService.GetStockistsAsync();
+            var stockists = allStockists.Where(x => x.StatusCode >= StatusMode.ActiveHidden).ToList();
 
             return stockists.Select(s => ToRecordOfSales(s, aggregateTransactions)).ToList().AsReadOnly();
 

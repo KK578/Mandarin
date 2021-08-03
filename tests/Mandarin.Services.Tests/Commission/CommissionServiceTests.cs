@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
@@ -19,21 +18,17 @@ namespace Mandarin.Services.Tests.Commission
 {
     public class CommissionServiceTests
     {
-        private readonly Mock<ICommissionRepository> commissionRepository;
         private readonly Mock<IStockistService> stockistService;
-        private readonly Mock<ITransactionService> transactionService;
+        private readonly Mock<ITransactionRepository> transactionRepository;
 
         protected CommissionServiceTests()
         {
-            this.commissionRepository = new Mock<ICommissionRepository>();
             this.stockistService = new Mock<IStockistService>();
-            this.transactionService = new Mock<ITransactionService>();
+            this.transactionRepository = new Mock<ITransactionRepository>();
         }
 
         private ICommissionService Subject =>
-            new CommissionService(this.commissionRepository.Object,
-                                  this.stockistService.Object,
-                                  this.transactionService.Object);
+            new CommissionService(this.stockistService.Object, this.transactionRepository.Object);
 
         private void GivenTlmStockistExists()
         {
@@ -88,8 +83,8 @@ namespace Mandarin.Services.Tests.Commission
                 },
             };
 
-            this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(transactions.ToObservable());
+            this.transactionRepository.Setup(x => x.GetAllTransactionsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .ReturnsAsync(transactions.AsReadOnly());
         }
 
         public class GetRecordOfSalesForPeriodAsyncTests : CommissionServiceTests
