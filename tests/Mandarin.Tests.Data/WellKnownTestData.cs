@@ -63,9 +63,9 @@ namespace Mandarin.Tests.Data
 
             public static readonly Product Clementine = new()
             {
-                ProductId = new ProductId("BQGTKYVIFNM6MPB57Y5QEBYN"),
-                ProductCode = new ProductCode("KT20-001"),
-                ProductName = new ProductName("Clementine (Regular)"),
+                ProductId = ProductId.Of("BQGTKYVIFNM6MPB57Y5QEBYN"),
+                ProductCode = ProductCode.Of("KT20-001"),
+                ProductName = ProductName.Of("Clementine (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 45.00M,
                 LastUpdated = new DateTime(2021, 01, 31, 22, 51, 49, 569),
@@ -88,6 +88,15 @@ namespace Mandarin.Tests.Data
                 ProductName = ProductName.Of("eGift Card"),
                 Description = "eGift Card",
                 UnitPrice = null,
+            };
+
+            public static readonly Product TlmFraming = new()
+            {
+                ProductId = ProductId.TlmFraming,
+                ProductCode = ProductCode.Of("TLM-FRAMING"),
+                ProductName = ProductName.Of("Commission for Frame"),
+                Description = "Commission for Frame",
+                UnitPrice = 0.01M,
             };
         }
 
@@ -222,7 +231,7 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Transaction Transaction1 = new()
             {
-                ExternalTransactionId = new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"),
+                ExternalTransactionId = ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"),
                 Timestamp = new DateTime(2021, 07, 14, 12, 54, 06),
                 TotalAmount = 45.00M,
                 Subtransactions = new List<Subtransaction>

@@ -32,9 +32,9 @@ namespace Mandarin.Converters
             this.CreateMap<string, StockistCode>().ConstructUsing(x => StockistCode.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
 
-            this.CreateMap<int, TransactionId>().ConstructUsing(x => new TransactionId(x))
+            this.CreateMap<int, TransactionId>().ConstructUsing(x => TransactionId.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
-            this.CreateMap<string, ExternalTransactionId>().ConstructUsing(x => new ExternalTransactionId(x))
+            this.CreateMap<string, ExternalTransactionId>().ConstructUsing(x => ExternalTransactionId.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
         }
     }

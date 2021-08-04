@@ -31,8 +31,8 @@ namespace Mandarin.Tests.Transactions
         public async Task ShouldProcessTransactionFromExternalTransactionCorrectly()
         {
             await this.GivenTransactionTableIsEmptyAsync();
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
-            var transaction = await this.transactionRepository.GetTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
+            var transaction = await this.transactionRepository.GetTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
 
             transaction.Should().MatchTransaction(WellKnownTestData.Transactions.Transaction1);
         }
@@ -41,8 +41,8 @@ namespace Mandarin.Tests.Transactions
         public async Task ShouldNotProcessTheSameTransactionTwice()
         {
             await this.GivenTransactionTableIsEmptyAsync();
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
 
             var transactions = await this.transactionRepository.GetAllTransactionsAsync();
             transactions.Should().HaveCount(1);
@@ -53,8 +53,8 @@ namespace Mandarin.Tests.Transactions
         {
             await this.GivenTransactionTableIsEmptyAsync();
             await this.transactionRepository.SaveTransactionAsync(WellKnownTestData.Transactions.Transaction1 with { Timestamp = DateTime.Now });
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
-            var transaction = await this.transactionRepository.GetTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
+            var transaction = await this.transactionRepository.GetTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
 
             transaction.Should().MatchTransaction(WellKnownTestData.Transactions.Transaction1);
         }

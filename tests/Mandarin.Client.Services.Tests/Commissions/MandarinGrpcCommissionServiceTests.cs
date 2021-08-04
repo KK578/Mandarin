@@ -56,7 +56,7 @@ namespace Mandarin.Client.Services.Tests.Commissions
         public async Task ShouldBeAbleToRetrieveEntriesForRecordsOfSales()
         {
             var recordOfSales = await this.Subject.GetRecordOfSalesForPeriodAsync(new DateTime(2021, 06, 16), new DateTime(2021, 07, 17));
-            var salesByStockistCode = recordOfSales.ToDictionary(x => new StockistCode(x.StockistCode));
+            var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
             salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.kelbyTynanRecordOfSales);
             salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Total.Should().Be(0);

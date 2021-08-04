@@ -49,7 +49,7 @@ namespace Mandarin.Tests.Helpers
 
         private static async Task SynchronizeTransactions(ITransactionSynchronizer transactionSynchronizer)
         {
-            await transactionSynchronizer.SynchronizeTransactionAsync(new ExternalTransactionId("sNVseFoHwzywEiVV69mNfK5eV"));
+            await transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
         }
     }
 }

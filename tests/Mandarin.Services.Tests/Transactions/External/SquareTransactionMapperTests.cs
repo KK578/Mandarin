@@ -47,6 +47,7 @@ namespace Mandarin.Services.Tests.Transactions.External
         private void GivenFramePriceExists(Product product, FramePrice framePrice)
         {
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, this.orderDate)).ReturnsAsync(framePrice);
+            this.productRepository.Setup(x => x.GetProductAsync(ProductId.TlmFraming)).ReturnsAsync(WellKnownTestData.Products.TlmFraming);
         }
 
         private void GivenConfigurationWithMappings(Product product, Product mappedProduct)

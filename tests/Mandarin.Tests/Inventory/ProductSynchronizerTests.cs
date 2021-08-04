@@ -37,7 +37,7 @@ namespace Mandarin.Tests.Inventory
         {
             await this.productSynchronizer.SynchronizeProductsAsync();
             var products = await this.productRepository.GetAllProductsAsync();
-            products.Should().HaveCount(8);
+            products.Should().HaveCount(9);
         }
 
         private async Task GivenProductTableIsEmptyAsync()

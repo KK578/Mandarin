@@ -64,9 +64,9 @@ namespace Mandarin.Services.Tests.Transactions.External
         private void GivenTransactionMapperMapsTo()
         {
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order1")))
-                .Returns(Observable.Return(TestData.Create<Transaction>() with { ExternalTransactionId = new ExternalTransactionId("Order1") }));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { ExternalTransactionId = ExternalTransactionId.Of("Order1") }));
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order2")))
-                .Returns(Observable.Return(TestData.Create<Transaction>() with { ExternalTransactionId = new ExternalTransactionId("Order2") }));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { ExternalTransactionId = ExternalTransactionId.Of("Order2") }));
         }
 
         public class GetAllOrdersTests : SquareTransactionServiceTests

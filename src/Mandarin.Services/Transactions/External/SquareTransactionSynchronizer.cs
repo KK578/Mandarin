@@ -55,7 +55,7 @@ namespace Mandarin.Services.Transactions.External
                 var orders = await this.squareTransactionService.GetAllOrders(start, end).ToList();
                 foreach (var order in orders)
                 {
-                    var transactionId = new ExternalTransactionId(order.Id);
+                    var transactionId = ExternalTransactionId.Of(order.Id);
                     var lastUpdated = DateTime.Parse(order.UpdatedAt);
                     var externalTransaction = await this.externalTransactionRepository.GetExternalTransactionAsync(transactionId, lastUpdated);
 
