@@ -155,13 +155,13 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <inheritdoc/>
         public Stockist ToStockist()
         {
-            var stockistId = this.StockistId.HasValue ? new StockistId(this.StockistId.Value) : null;
-            var commissionId = this.CommissionId.HasValue ? new CommissionId(this.CommissionId.Value) : null;
+            var stockistId = Stockists.StockistId.Of(this.StockistId);
+            var commissionId = Mandarin.Commissions.CommissionId.Of(this.CommissionId);
 
             return new Stockist
             {
                 StockistId = stockistId,
-                StockistCode = new StockistCode(this.StockistCode),
+                StockistCode = Stockists.StockistCode.Of(this.StockistCode),
                 StatusCode = this.StatusCode,
                 Details = new StockistDetail
                 {

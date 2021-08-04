@@ -106,9 +106,9 @@ namespace Mandarin.Services.Inventory
 
                 yield return new Product
                 {
-                    ProductId = new ProductId(variation.Id),
-                    ProductCode = new ProductCode(variation.ItemVariationData.Sku),
-                    ProductName = new ProductName($"{productName} ({variation.ItemVariationData.Name})"),
+                    ProductId = ProductId.Of(variation.Id),
+                    ProductCode = ProductCode.Of(variation.ItemVariationData.Sku),
+                    ProductName = ProductName.Of($"{productName} ({variation.ItemVariationData.Name})"),
                     Description = description,
                     UnitPrice = unitPrice,
                     LastUpdated = DateTime.Parse(variation.UpdatedAt),

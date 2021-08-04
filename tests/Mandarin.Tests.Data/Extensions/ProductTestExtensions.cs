@@ -8,7 +8,7 @@ namespace Mandarin.Tests.Data.Extensions
         {
             return product with
             {
-                ProductCode = new ProductCode($"TLM-{product.ProductCode}"),
+                ProductCode = ProductCode.Of($"TLM-{product.ProductCode}"),
             };
         }
     }

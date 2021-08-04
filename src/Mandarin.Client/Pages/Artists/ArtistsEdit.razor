@@ -69,7 +69,7 @@
   protected override async Task OnParametersSetAsync()
   {
     await base.OnParametersSetAsync();
-    await ViewModel!.LoadData.Execute(new StockistCode(StockistCode));
+    await ViewModel!.LoadData.Execute(Stockists.StockistCode.Of(StockistCode));
 
     this.EditContext = new EditContext(Stockist);
     this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());

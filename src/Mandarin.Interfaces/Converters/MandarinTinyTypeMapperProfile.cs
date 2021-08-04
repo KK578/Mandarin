@@ -15,19 +15,19 @@ namespace Mandarin.Converters
         /// </summary>
         public MandarinTinyTypeMapperProfile()
         {
-            this.CreateMap<int, CommissionId>().ConstructUsing(x => new CommissionId(x))
+            this.CreateMap<int, CommissionId>().ConstructUsing(x => CommissionId.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
 
-            this.CreateMap<string, ProductId>().ConstructUsing(x => new ProductId(x))
+            this.CreateMap<string, ProductId>().ConstructUsing(x => ProductId.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
-            this.CreateMap<string, ProductCode>().ConstructUsing(x => new ProductCode(x))
+            this.CreateMap<string, ProductCode>().ConstructUsing(x => ProductCode.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
-            this.CreateMap<string, ProductName>().ConstructUsing(x => new ProductName(x))
+            this.CreateMap<string, ProductName>().ConstructUsing(x => ProductName.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
 
-            this.CreateMap<int, StockistId>().ConstructUsing(x => new StockistId(x))
+            this.CreateMap<int, StockistId>().ConstructUsing(x => StockistId.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
-            this.CreateMap<string, StockistCode>().ConstructUsing(x => new StockistCode(x))
+            this.CreateMap<string, StockistCode>().ConstructUsing(x => StockistCode.Of(x))
                 .ReverseMap().ConstructUsing(x => x.Value);
         }
     }

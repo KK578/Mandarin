@@ -12,9 +12,16 @@ namespace Mandarin.Inventory
         /// Initializes a new instance of the <see cref="ProductName"/> class.
         /// </summary>
         /// <param name="value">The unique Product Name.</param>
-        public ProductName(string value)
+        private ProductName(string value)
             : base(value, StringComparer.OrdinalIgnoreCase)
         {
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductName"/> class, or null if the given <paramref name="value"/> is null/empty.
+        /// </summary>
+        /// <param name="value">The unique Product Name.</param>
+        /// <returns>A newly created <see cref="ProductName"/> or null/empty.</returns>
+        public static ProductName Of(string value) => string.IsNullOrEmpty(value) ? null : new ProductName(value);
     }
 }

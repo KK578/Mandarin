@@ -65,7 +65,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 var tcs = new TaskCompletionSource<Product>();
                 this.productRepository.Setup(x => x.GetProductAsync(It.IsAny<ProductCode>())).Returns(tcs.Task);
 
-                var unused = this.subject.LoadData.Execute(new ProductCode("TLM-001")).ToTask();
+                var unused = this.subject.LoadData.Execute(ProductCode.Of("TLM-001")).ToTask();
 
                 this.subject.IsLoading.Should().BeTrue();
                 tcs.SetCanceled();

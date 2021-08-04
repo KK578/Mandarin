@@ -16,7 +16,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
     {
         private static readonly FramePrice FramePrice = new()
         {
-            ProductCode = new ProductCode("TLM-001"),
+            ProductCode = ProductCode.Of("TLM-001"),
             Amount = 15.00M,
         };
 
