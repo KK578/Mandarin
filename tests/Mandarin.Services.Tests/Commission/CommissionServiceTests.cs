@@ -55,13 +55,13 @@ namespace Mandarin.Services.Tests.Commission
                         {
                             Product = product1,
                             Quantity = 5,
-                            Subtotal = 5.00m,
+                            UnitPrice = 1.00M,
                         },
                         new()
                         {
                             Product = product2,
                             Quantity = 1,
-                            Subtotal = 5.00m,
+                            UnitPrice = 5.00M,
                         },
                     }.AsReadOnly(),
                 },
@@ -77,7 +77,7 @@ namespace Mandarin.Services.Tests.Commission
                         {
                             Product = product2,
                             Quantity = 10,
-                            Subtotal = 50.00m,
+                            UnitPrice = 5.00M,
                         },
                     }.AsReadOnly(),
                 },

@@ -133,7 +133,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions[0].TotalAmount.Should().Be(10.00m);
                 transactions[0].Subtransactions[0].Product.Should().Be(product);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(10.00m);
             }
 
@@ -170,11 +170,11 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions[0].Subtransactions.Should().HaveCount(2);
                 transactions[0].Subtransactions[0].Product.Should().Be(product);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(4.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(4.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(8.00m);
                 transactions[0].Subtransactions[1].Product.ProductCode.Value.Should().StartWith("TLM");
                 transactions[0].Subtransactions[1].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(1.00m);
+                transactions[0].Subtransactions[1].UnitPrice.Should().Be(1.00m);
                 transactions[0].Subtransactions[1].Subtotal.Should().Be(2.00m);
             }
 
@@ -189,10 +189,10 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions.Should().HaveCount(1);
                 transactions[0].TotalAmount.Should().Be(80.00m);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(50.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(50.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(100.00M);
                 transactions[0].Subtransactions[1].Quantity.Should().Be(2000);
-                transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(-0.01m);
+                transactions[0].Subtransactions[1].UnitPrice.Should().Be(-0.01m);
                 transactions[0].Subtransactions[1].Subtotal.Should().Be(-20.00m);
             }
 
@@ -207,7 +207,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions.Should().HaveCount(1);
                 transactions[0].TotalAmount.Should().Be(-15.00m);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(-3);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(-15.00m);
             }
 
@@ -242,10 +242,10 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions[0].TotalAmount.Should().Be(16.00m);
                 transactions[0].Subtransactions.Should().HaveCount(2);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(1);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(11.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(11.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(11.00m);
                 transactions[0].Subtransactions[1].Quantity.Should().Be(500);
-                transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(0.01m);
+                transactions[0].Subtransactions[1].UnitPrice.Should().Be(0.01m);
                 transactions[0].Subtransactions[1].Subtotal.Should().Be(5.00m);
             }
         }

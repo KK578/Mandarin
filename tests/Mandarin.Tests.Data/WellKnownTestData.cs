@@ -240,7 +240,7 @@ namespace Mandarin.Tests.Data
                     {
                         Product = Products.Clementine,
                         Quantity = 1,
-                        Subtotal = 45.00M,
+                        UnitPrice = 45.00M,
                     },
                 }.AsReadOnly(),
             };

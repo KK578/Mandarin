@@ -56,7 +56,7 @@ namespace Mandarin.Services.Transactions.External
             {
                 Product = product,
                 Quantity = (int)quantity,
-                Subtotal = decimal.Divide(quantity, 100),
+                UnitPrice = 0.01M,
             };
         }
 
@@ -84,11 +84,11 @@ namespace Mandarin.Services.Transactions.External
 
             IObservable<Subtransaction> Create(Product product, FramePrice framePrice)
             {
+                var quantity = int.Parse(orderLineItem.Quantity);
+
                 if (framePrice != null)
                 {
-                    var quantity = int.Parse(orderLineItem.Quantity);
                     var commissionSubtotal = framePrice.Amount;
-                    var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
                     return Observable.Create<Subtransaction>(async o =>
                     {
@@ -98,26 +98,24 @@ namespace Mandarin.Services.Transactions.External
                         {
                             Product = product,
                             Quantity = quantity,
-                            Subtotal = subTotal,
+                            UnitPrice = orderLineItem.BasePriceMoney.ToDecimal() - commissionSubtotal,
                         });
 
                         o.OnNext(new Subtransaction
                         {
                             Product = framing,
                             Quantity = quantity,
-                            Subtotal = quantity * commissionSubtotal,
+                            UnitPrice = commissionSubtotal,
                         });
                     });
                 }
                 else
                 {
-                    var quantity = int.Parse(orderLineItem.Quantity);
-                    var subTotal = quantity * decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100);
                     return Observable.Return(new Subtransaction
                     {
                         Product = product,
                         Quantity = quantity,
-                        Subtotal = subTotal,
+                        UnitPrice = orderLineItem.BasePriceMoney.ToDecimal(),
                     });
                 }
             }
@@ -162,12 +160,11 @@ namespace Mandarin.Services.Transactions.External
             }
 
             var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
-            var amount = decimal.Divide(quantity, 100);
             return Observable.Return(new Subtransaction
             {
                 Product = product,
                 Quantity = (int)quantity,
-                Subtotal = -amount,
+                UnitPrice = -0.01M,
             });
         }
 
@@ -178,13 +175,12 @@ namespace Mandarin.Services.Transactions.External
                               {
                                   var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name), orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
-                                  var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
 
                                   return new Subtransaction
                                   {
                                       Product = product,
                                       Quantity = quantity,
-                                      Subtotal = subtotal,
+                                      UnitPrice = item.BasePriceMoney.ToDecimal(),
                                   };
                               });
         }

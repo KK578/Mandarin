@@ -21,14 +21,14 @@ CREATE TABLE IF NOT EXISTS billing.subtransaction
     transaction_id    INT           NOT NULL REFERENCES billing.transaction (transaction_id),
     product_id        VARCHAR(32)   NOT NULL REFERENCES inventory.product (product_id),
     quantity          INT           NOT NULL,
-    subtotal          NUMERIC(6, 2) NOT NULL
+    unit_price        NUMERIC(6, 2) NOT NULL
 );
 
 CREATE TYPE billing.TVP_SUBTRANSACTION AS
 (
     product_id VARCHAR(32),
     quantity   INT,
-    subtotal   NUMERIC(6, 2)
+    unit_price NUMERIC(6, 2)
 );
 
 CREATE OR REPLACE PROCEDURE billing.sp_transaction_upsert(
@@ -52,8 +52,8 @@ BEGIN
 
     FOREACH _subtransaction IN ARRAY $4
     LOOP
-        INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, subtotal)
-        SELECT _transaction_id, _subtransaction.product_id, _subtransaction.quantity, _subtransaction.subtotal;
+        INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, unit_price)
+        SELECT _transaction_id, _subtransaction.product_id, _subtransaction.quantity, _subtransaction.unit_price;
     END LOOP;
 END
 $$;

@@ -16,7 +16,7 @@ namespace Mandarin.Database.Transactions
         public int transaction_id { get; init; }
         public string product_id { get; init; }
         public int quantity { get; init; }
-        public decimal? subtotal { get; init; }
+        public decimal unit_price { get; init; }
 
         public ProductRecord Product { get; init; }
     }

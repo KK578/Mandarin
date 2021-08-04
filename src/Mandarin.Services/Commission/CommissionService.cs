@@ -34,7 +34,7 @@ namespace Mandarin.Services.Commission
             var transactions = await this.transactionRepository.GetAllTransactionsAsync(start, end);
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? ProductCode.Of("TLM-Unknown"), subtransaction.TransactionUnitPrice))
+                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? ProductCode.Of("TLM-Unknown"), TransactionUnitPrice: subtransaction.UnitPrice))
                                         .Select(ToAggregateSubtransaction)
                                         .ToList();
 
@@ -46,15 +46,12 @@ namespace Mandarin.Services.Commission
             static Subtransaction ToAggregateSubtransaction(IEnumerable<Subtransaction> s)
             {
                 var list = s.ToList();
-                var product = list.First().Product;
-                var quantity = list.Sum(y => y.Quantity);
-                var subtotal = list.Sum(y => y.Subtotal);
 
                 return new Subtransaction
                 {
-                    Product = product,
-                    Quantity = quantity,
-                    Subtotal = subtotal,
+                    Product = list.First().Product,
+                    Quantity = list.Sum(y => y.Quantity),
+                    UnitPrice = list.First().UnitPrice,
                 };
             }
 
