@@ -43,7 +43,7 @@ namespace Mandarin.Services.Commission
 
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
-                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? new ProductCode("TLM-Unknown"), subtransaction.TransactionUnitPrice))
+                                        .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? ProductCode.Of("TLM-Unknown"), subtransaction.TransactionUnitPrice))
                                         .Select(ToAggregateSubtransaction)
                                         .ToList();
 

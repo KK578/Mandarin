@@ -41,36 +41,36 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Product Mandarin = new()
             {
-                ProductId = new ProductId("SquareId"),
-                ProductCode = new ProductCode("TLM-001"),
-                ProductName = new ProductName("Mandarin"),
+                ProductId = ProductId.Of("SquareId"),
+                ProductCode = ProductCode.Of("TLM-001"),
+                ProductName = ProductName.Of("Mandarin"),
                 Description = "It's a Mandarin!",
                 UnitPrice = 45.00M,
             };
 
             public static readonly Product TheTrickster = new()
             {
-                ProductId = new ProductId("CatalogId"),
-                ProductCode = new ProductCode("HC20W-003"),
-                ProductName = new ProductName("The Trickster"),
+                ProductId = ProductId.Of("CatalogId"),
+                ProductCode = ProductCode.Of("HC20W-003"),
+                ProductName = ProductName.Of("The Trickster"),
                 Description = "The Trickster.",
                 UnitPrice = 11.00m,
             };
 
             public static readonly Product ClementineFramed = new()
             {
-                ProductId = new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"),
-                ProductCode = new ProductCode("KT20-001F"),
-                ProductName = new ProductName("Clementine (Framed) (Regular)"),
+                ProductId = ProductId.Of("BTWEJWZCPE4XAKZRBJW53DYE"),
+                ProductCode = ProductCode.Of("KT20-001F"),
+                ProductName = ProductName.Of("Clementine (Framed) (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 95.00M,
             };
 
             public static readonly Product GiftCard = new()
             {
-                ProductId = new ProductId("TLM-GC"),
-                ProductCode = new ProductCode("TLM-GC"),
-                ProductName = new ProductName("eGift Card"),
+                ProductId = ProductId.Of("TLM-GC"),
+                ProductCode = ProductCode.Of("TLM-GC"),
+                ProductName = ProductName.Of("eGift Card"),
                 Description = "eGift Card",
                 UnitPrice = null,
             };
@@ -80,12 +80,12 @@ namespace Mandarin.Tests.Data
         {
             public static readonly Stockist KelbyTynan = new()
             {
-                StockistId = new StockistId(1),
-                StockistCode = new StockistCode("KT20"),
+                StockistId = StockistId.Of(1),
+                StockistCode = StockistCode.Of("KT20"),
                 StatusCode = StatusMode.Inactive,
                 Details = new StockistDetail
                 {
-                    StockistId = new StockistId(1),
+                    StockistId = StockistId.Of(1),
                     FirstName = "Kelby",
                     LastName = "Tynan",
                     DisplayName = "Kelby Tynan",
@@ -98,8 +98,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    CommissionId = new CommissionId(1),
-                    StockistId = new StockistId(1),
+                    CommissionId = CommissionId.Of(1),
+                    StockistId = StockistId.Of(1),
                     StartDate = new DateTime(2019, 08, 23),
                     EndDate = new DateTime(2019, 11, 23),
                     Rate = 10,
@@ -109,12 +109,12 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist OthilieMapples = new()
             {
-                StockistId = new StockistId(4),
-                StockistCode = new StockistCode("OM19"),
+                StockistId = StockistId.Of(4),
+                StockistCode = StockistCode.Of("OM19"),
                 StatusCode = StatusMode.ActiveHidden,
                 Details = new StockistDetail
                 {
-                    StockistId = new StockistId(4),
+                    StockistId = StockistId.Of(4),
                     FirstName = "Othilie",
                     LastName = "Mapples",
                     DisplayName = "Othilie Mapples",
@@ -127,8 +127,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    CommissionId = new CommissionId(4),
-                    StockistId = new StockistId(4),
+                    CommissionId = CommissionId.Of(4),
+                    StockistId = StockistId.Of(4),
                     StartDate = new DateTime(2019, 01, 16),
                     EndDate = new DateTime(2019, 04, 16),
                     Rate = 40,
@@ -138,7 +138,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist ArlueneWoodes = new()
             {
-                StockistCode = new StockistCode("AW20"),
+                StockistCode = StockistCode.Of("AW20"),
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {
@@ -162,7 +162,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist TheLittleMandarin = new()
             {
-                StockistCode = new StockistCode("TLM"),
+                StockistCode = StockistCode.Of("TLM"),
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail
                 {

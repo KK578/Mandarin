@@ -65,9 +65,9 @@ namespace Mandarin.Services.Tests.Transactions
         private void GivenTransactionMapperMapsTo()
         {
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order1")))
-                .Returns(Observable.Return(TestData.Create<Transaction>() with { SquareId = new TransactionId("Order1") }));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { SquareId = TransactionId.Of("Order1") }));
             this.transactionMapper.Setup(x => x.MapToTransaction(It.Is<Order>(o => o.Id == "Order2")))
-                .Returns(Observable.Return(TestData.Create<Transaction>() with { SquareId = new TransactionId("Order2") }));
+                .Returns(Observable.Return(TestData.Create<Transaction>() with { SquareId = TransactionId.Of("Order2") }));
         }
 
         public class GetAllTransactionsTests : SquareTransactionServiceTests
@@ -94,8 +94,8 @@ namespace Mandarin.Services.Tests.Transactions
                 var transactions = await this.Subject.GetAllTransactions(DateTime.Now, DateTime.Now).ToList();
 
                 transactions.Should().HaveCount(2);
-                transactions[0].SquareId.Should().Be(new TransactionId("Order1"));
-                transactions[1].SquareId.Should().Be(new TransactionId("Order2"));
+                transactions[0].SquareId.Should().Be(TransactionId.Of("Order1"));
+                transactions[1].SquareId.Should().Be(TransactionId.Of("Order2"));
             }
         }
     }

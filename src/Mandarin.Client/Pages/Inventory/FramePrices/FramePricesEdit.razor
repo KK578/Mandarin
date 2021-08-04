@@ -54,7 +54,7 @@
   /// <inheritdoc />
   protected override async Task OnParametersSetAsync()
   {
-    await ViewModel!.LoadData.Execute(new ProductCode(ProductCode));
+    await ViewModel!.LoadData.Execute(Mandarin.Inventory.ProductCode.Of(ProductCode));
 
     this.EditContext = new EditContext(FramePrice);
     this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());

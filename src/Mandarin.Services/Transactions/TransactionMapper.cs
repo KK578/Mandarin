@@ -41,7 +41,7 @@ namespace Mandarin.Services.Transactions
             return this.CreateSubtransactions(order)
                        .Select(subtransactions => new Transaction()
                        {
-                           SquareId = new TransactionId(order.Id),
+                           SquareId = TransactionId.Of(order.Id),
                            TotalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100),
                            Timestamp = DateTime.Parse(order.CreatedAt),
                            InsertedBy = order.Source?.Name,
@@ -61,7 +61,7 @@ namespace Mandarin.Services.Transactions
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, DateTime orderDate)
         {
-            return this.GetProductAsync(new ProductId(orderLineItem.CatalogObjectId), new ProductName(orderLineItem.Name), orderDate)
+            return this.GetProductAsync(ProductId.Of(orderLineItem.CatalogObjectId), ProductName.Of(orderLineItem.Name), orderDate)
                        .ToObservable()
                        .SelectMany(product =>
                        {
@@ -89,9 +89,9 @@ namespace Mandarin.Services.Transactions
                     {
                         Product = new Product
                         {
-                            ProductId = new ProductId("TLM-" + framePrice.ProductCode),
-                            ProductCode = new ProductCode("TLM-" + framePrice.ProductCode),
-                            ProductName = new ProductName($"Frame for {framePrice.ProductCode}"),
+                            ProductId = ProductId.Of("TLM-" + framePrice.ProductCode),
+                            ProductCode = ProductCode.Of("TLM-" + framePrice.ProductCode),
+                            ProductName = ProductName.Of($"Frame for {framePrice.ProductCode}"),
                             Description = null,
                             UnitPrice = framePrice.Amount,
                         },
@@ -121,9 +121,9 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    ProductId = new ProductId("BUN-DCM"),
-                    ProductCode = new ProductCode("BUN-DCM"),
-                    ProductName = new ProductName("Box of Macarons Discount"),
+                    ProductId = ProductId.Of("BUN-DCM"),
+                    ProductCode = ProductCode.Of("BUN-DCM"),
+                    ProductName = ProductName.Of("Box of Macarons Discount"),
                     Description = "Buy 6 macarons for \"£12.00\"",
                     UnitPrice = -0.01m,
                 };
@@ -132,9 +132,9 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    ProductId = new ProductId("BUN-DCP"),
-                    ProductCode = new ProductCode("BUN-DCP"),
-                    ProductName = new ProductName("Box of Pocky Discount"),
+                    ProductId = ProductId.Of("BUN-DCP"),
+                    ProductCode = ProductCode.Of("BUN-DCP"),
+                    ProductName = ProductName.Of("Box of Pocky Discount"),
                     Description = "Discount on buying multiple packs of Pocky.",
                     UnitPrice = -0.01m,
                 };
@@ -143,9 +143,9 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    ProductId = new ProductId("TLM-D"),
-                    ProductCode = new ProductCode("TLM-D"),
-                    ProductName = new ProductName("Other discounts"),
+                    ProductId = ProductId.Of("TLM-D"),
+                    ProductCode = ProductCode.Of("TLM-D"),
+                    ProductName = ProductName.Of("Other discounts"),
                     Description = "Discounts that aren't tracked.",
                     UnitPrice = -0.01m,
                 };
@@ -166,7 +166,7 @@ namespace Mandarin.Services.Transactions
             return orderReturn.ReturnLineItems.ToObservable()
                               .SelectMany(async item =>
                               {
-                                  var product = await this.GetProductAsync(new ProductId(item.CatalogObjectId), new ProductName(item.Name), orderDate);
+                                  var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name), orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
                                   var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
 
@@ -186,9 +186,9 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    ProductId = new ProductId("TLM-DELIVERY"),
-                    ProductCode = new ProductCode("TLM-DELIVERY"),
-                    ProductName = new ProductName("Shipping Fees"),
+                    ProductId = ProductId.Of("TLM-DELIVERY"),
+                    ProductCode = ProductCode.Of("TLM-DELIVERY"),
+                    ProductName = ProductName.Of("Shipping Fees"),
                     Description = "Delivery costs charged to customers.",
                     UnitPrice = 0.01m,
                 };
@@ -197,9 +197,9 @@ namespace Mandarin.Services.Transactions
             {
                 product = new Product
                 {
-                    ProductId = new ProductId("TLM-FEES"),
-                    ProductCode = new ProductCode("TLM-" + serviceCharge.Name),
-                    ProductName = new ProductName(serviceCharge.Name),
+                    ProductId = ProductId.Of("TLM-FEES"),
+                    ProductCode = ProductCode.Of("TLM-" + serviceCharge.Name),
+                    ProductName = ProductName.Of(serviceCharge.Name),
                     Description = "Unknown Fee.",
                     UnitPrice = 0.01m,
                 };
@@ -232,8 +232,8 @@ namespace Mandarin.Services.Transactions
                 return new Product
                 {
                     ProductId = null,
-                    ProductCode = new ProductCode("TLM-Unknown"),
-                    ProductName = new ProductName("Unknown Product"),
+                    ProductCode = ProductCode.Of("TLM-Unknown"),
+                    ProductName = ProductName.Of("Unknown Product"),
                     Description = "Unknown Product",
                     UnitPrice = null,
                 };
@@ -245,7 +245,7 @@ namespace Mandarin.Services.Transactions
                 {
                     if (orderDate > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
                     {
-                        var mappedProductCode = new ProductCode(mapping.Mappings[originalProduct.ProductCode.Value]);
+                        var mappedProductCode = ProductCode.Of(mapping.Mappings[originalProduct.ProductCode.Value]);
                         return this.productRepository.GetProductAsync(mappedProductCode);
                     }
                 }

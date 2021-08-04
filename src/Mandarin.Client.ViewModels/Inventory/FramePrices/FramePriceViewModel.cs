@@ -90,7 +90,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         {
             return new FramePrice
             {
-                ProductCode = new ProductCode(this.productCode),
+                ProductCode = Mandarin.Inventory.ProductCode.Of(this.productCode),
                 Amount = this.FramePrice ?? throw new InvalidOperationException("No frame price has been set."),
                 CreatedAt = this.CreatedAt ?? DateTime.Now,
             };

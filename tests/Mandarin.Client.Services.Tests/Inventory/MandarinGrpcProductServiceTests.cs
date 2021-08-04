@@ -28,28 +28,28 @@ namespace Mandarin.Client.Services.Tests.Inventory
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductBySquareId()
         {
-            var product = await this.Subject.GetProductAsync(new ProductId("BTWEJWZCPE4XAKZRBJW53DYE"));
+            var product = await this.Subject.GetProductAsync(ProductId.Of("BTWEJWZCPE4XAKZRBJW53DYE"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductByCode()
         {
-            var product = await this.Subject.GetProductAsync(new ProductCode("KT20-001F"));
+            var product = await this.Subject.GetProductAsync(ProductCode.Of("KT20-001F"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveGiftCard()
         {
-            var product = await this.Subject.GetProductAsync(new ProductCode("TLM-GC"));
+            var product = await this.Subject.GetProductAsync(ProductCode.Of("TLM-GC"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.GiftCard, o => o.Excluding(x => x.LastUpdated));
         }
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveProductName()
         {
-            var product = await this.Subject.GetProductAsync(new ProductName("Clementine (Framed)"));
+            var product = await this.Subject.GetProductAsync(ProductName.Of("Clementine (Framed)"));
             product.Should().BeEquivalentTo(WellKnownTestData.Products.ClementineFramed);
         }
     }

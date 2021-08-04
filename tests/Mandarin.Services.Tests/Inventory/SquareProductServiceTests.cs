@@ -68,10 +68,10 @@ namespace Mandarin.Services.Tests.Inventory
                 var catalogObjects = await this.subject.GetAllProductsAsync();
 
                 catalogObjects.Should().HaveCount(2);
-                catalogObjects[0].ProductCode.Should().Be(new ProductCode("ID-1"));
-                catalogObjects[0].ProductName.Should().Be(new ProductName("Item1 (Regular)"));
-                catalogObjects[1].ProductCode.Should().Be(new ProductCode("ID-2"));
-                catalogObjects[1].ProductName.Should().Be(new ProductName("Item2 (Regular)"));
+                catalogObjects[0].ProductCode.Should().Be(ProductCode.Of("ID-1"));
+                catalogObjects[0].ProductName.Should().Be(ProductName.Of("Item1 (Regular)"));
+                catalogObjects[1].ProductCode.Should().Be(ProductCode.Of("ID-2"));
+                catalogObjects[1].ProductName.Should().Be(ProductName.Of("Item2 (Regular)"));
             }
         }
     }
