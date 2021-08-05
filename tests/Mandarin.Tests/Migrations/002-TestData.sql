@@ -8,7 +8,7 @@ INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, fir
 INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (7, 'ST20', 'Inactive', 'Stafani', 'Ticic');
 INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (8, 'DW19', 'Inactive', 'Denni', 'Wolford');
 INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (9, 'SB20', 'Active', 'Sherye', 'Bulpitt');
-INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (10, 'SF19', 'Active', 'Sebastian', 'Faiers');
+INSERT INTO inventory.stockist (stockist_id, stockist_code, stockist_status, first_name, last_name) VALUES (10, 'TLM', 'Active', 'Little', 'Mandarin');
 ALTER SEQUENCE inventory.stockist_stockist_id_seq RESTART WITH 11;
 
 INSERT INTO inventory.stockist_detail (stockist_id, twitter_handle, instagram_handle, facebook_handle, website_url, image_url, tumblr_handle, email_address, description, full_display_name, short_display_name, thumbnail_image_url) VALUES (1, 'jharrowing0', 'jharrowing0', null, 'https://hhs.gov/velit.png', 'http://dummyimage.com/600x200.png/cc0000/ffffff', null, 'ccareless0@homestead.com', 'integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor sed tristique', 'Kelby Tynan', 'Kelby Tynan', 'http://dummyimage.com/200x200.png/cc0000/ffffff');

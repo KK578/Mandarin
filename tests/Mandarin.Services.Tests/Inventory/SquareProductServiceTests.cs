@@ -1,11 +1,8 @@
-﻿using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Mandarin.Inventory;
 using Mandarin.Services.Inventory;
-using Mandarin.Services.Transactions;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;

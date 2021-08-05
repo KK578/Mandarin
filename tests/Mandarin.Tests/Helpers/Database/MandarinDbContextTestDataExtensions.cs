@@ -21,7 +21,7 @@ namespace Mandarin.Tests.Helpers.Database
             await connection.ExecuteAsync(@"
                 DROP PROCEDURE IF EXISTS inventory.sp_frame_price_upsert(TEXT, NUMERIC, TIMESTAMP);
                 DROP PROCEDURE IF EXISTS inventory.sp_product_upsert(VARCHAR, VARCHAR, VARCHAR, VARCHAR, NUMERIC, TIMESTAMP);
-                DROP PROCEDURE IF EXISTS billing.sp_transaction_upsert(VARCHAR, NUMERIC, TIMESTAMP, billing.TVP_SUBTRANSACTION[]);
+                DROP PROCEDURE IF EXISTS billing.sp_transaction_upsert(VARCHAR, NUMERIC, TIMESTAMP, billing.tvp_subtransaction[]);
 
                 DROP TYPE IF EXISTS billing.tvp_subtransaction;
 
@@ -29,10 +29,10 @@ namespace Mandarin.Tests.Helpers.Database
                 DROP TABLE IF EXISTS billing.subtransaction;
                 DROP TABLE IF EXISTS billing.transaction;
                 DROP TABLE IF EXISTS billing.external_transaction;
-                DROP TABLE IF EXISTS inventory.stockist_detail;
-                DROP TABLE IF EXISTS inventory.stockist;
                 DROP TABLE IF EXISTS inventory.frame_price;
                 DROP TABLE IF EXISTS inventory.product;
+                DROP TABLE IF EXISTS inventory.stockist_detail;
+                DROP TABLE IF EXISTS inventory.stockist;
                 TRUNCATE TABLE public.schemaversions");
         }
     }

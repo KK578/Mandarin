@@ -38,23 +38,20 @@ namespace Mandarin.Services.Inventory
             await this.semaphore.WaitAsync();
             try
             {
-                var existingProducts = (await this.productRepository.GetAllProductsAsync()).ToDictionary(x => x.ProductId);
                 var squareProducts = await this.squareProductService.GetAllProductsAsync();
-
                 foreach (var product in squareProducts)
                 {
-                    if (existingProducts.TryGetValue(product.ProductId, out var existingProduct))
-                    {
-                        if (!product.Equals(existingProduct))
-                        {
-                            this.logger.LogInformation("Updating {ProductId} to new version: {Product}", product.ProductId, product);
-                            await this.productRepository.SaveProductAsync(product);
-                            updateCount++;
-                        }
-                    }
-                    else
+                    var existingProduct = await this.productRepository.GetProductAsync(product.ProductId);
+
+                    if (existingProduct is null)
                     {
                         this.logger.LogInformation("Inserting new product: {Product}", product);
+                        await this.productRepository.SaveProductAsync(product);
+                        updateCount++;
+                    }
+                    else if (!SquareProductSynchronizer.AreProductsEquivalent(product, existingProduct))
+                    {
+                        this.logger.LogInformation("Updating {ProductId} to new version: {Product}", product.ProductId, product);
                         await this.productRepository.SaveProductAsync(product);
                         updateCount++;
                     }
@@ -65,6 +62,16 @@ namespace Mandarin.Services.Inventory
                 this.logger.LogInformation("Finished product synchronisation - Update Count: {Count}.", updateCount);
                 this.semaphore.Release();
             }
+        }
+
+        private static bool AreProductsEquivalent(Product x, Product y)
+        {
+            return x.ProductId.Equals(y.ProductId)
+                   && x.ProductCode.Equals(y.ProductCode)
+                   && x.ProductName.Equals(y.ProductName)
+                   && x.Description == y.Description
+                   && x.UnitPrice.Equals(y.UnitPrice)
+                   && x.LastUpdated.Equals(y.LastUpdated);
         }
     }
 }

@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS inventory.product
 (
     product_id     VARCHAR(32)   PRIMARY KEY,
+    stockist_id    INT           REFERENCES inventory.stockist (stockist_id),
     product_code   VARCHAR(12)   NOT NULL,
     product_name   VARCHAR(100)  NOT NULL,
     description    VARCHAR(1000),
@@ -19,11 +20,15 @@ CREATE OR REPLACE PROCEDURE inventory.sp_product_upsert(
     LANGUAGE plpgsql
 AS
 $$
-DECLARE
+DECLARE _stockist_id INT;
 BEGIN
-    INSERT INTO inventory.product (product_id, product_code, product_name, description, unit_price, last_updated)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    ON CONFLICT (product_id) DO UPDATE SET (product_code, product_name, description, unit_price, last_updated) = ($2, $3, $4, $5, $6);
+    SELECT stockist_id INTO _stockist_id
+    FROM inventory.stockist
+    WHERE stockist_code = left($2, strpos($2, '-') - 1);
+
+    INSERT INTO inventory.product (product_id, stockist_id, product_code, product_name, description, unit_price, last_updated)
+    VALUES ($1, _stockist_id, $2, $3, $4, $5, $6)
+    ON CONFLICT (product_id) DO UPDATE SET (stockist_id, product_code, product_name, description, unit_price, last_updated) = (_stockist_id, $2, $3, $4, $5, $6);
 END
 $$;
 

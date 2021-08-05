@@ -13,6 +13,7 @@ namespace Mandarin.Database.Inventory
     internal sealed record ProductRecord
     {
         public string product_id { get; init; }
+        public int stockist_id { get; init; }
         public string product_code { get; init; }
         public string product_name { get; init; }
         public string description { get; init; }

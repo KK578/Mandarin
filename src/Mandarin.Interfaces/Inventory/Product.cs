@@ -1,4 +1,5 @@
 ﻿using System;
+using Mandarin.Stockists;
 
 namespace Mandarin.Inventory
 {
@@ -11,6 +12,11 @@ namespace Mandarin.Inventory
         /// Gets the unique product ID for this product.
         /// </summary>
         public ProductId ProductId { get; init; }
+
+        /// <summary>
+        /// Gets the Stockist ID for the stockist that owns this product.
+        /// </summary>
+        public StockistId StockistId { get; init; }
 
         /// <summary>
         /// Gets the unique internal product code for this product.

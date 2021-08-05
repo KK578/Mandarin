@@ -107,6 +107,7 @@ namespace Mandarin.Services.Inventory
                 yield return new Product
                 {
                     ProductId = ProductId.Of(variation.Id),
+                    StockistId = null, // Populated by stored procedure.
                     ProductCode = ProductCode.Of(variation.ItemVariationData.Sku),
                     ProductName = ProductName.Of($"{productName} ({variation.ItemVariationData.Name})"),
                     Description = description,

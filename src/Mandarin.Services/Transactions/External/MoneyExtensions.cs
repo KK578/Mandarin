@@ -12,6 +12,6 @@ namespace Mandarin.Services.Transactions.External
         /// </summary>
         /// <param name="money">The Square monetary amount.</param>
         /// <returns>The monetary amount adjusted as GBP.</returns>
-        public static decimal ToDecimal(this Money money) => decimal.Divide(money.Amount.GetValueOrDefault(), 100);
+        public static decimal ToDecimal(this Money money) => money?.Amount == null ? decimal.Zero : decimal.Divide(money.Amount.GetValueOrDefault(), 100);
     }
 }

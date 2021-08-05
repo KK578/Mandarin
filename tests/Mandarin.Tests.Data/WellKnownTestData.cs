@@ -46,6 +46,7 @@ namespace Mandarin.Tests.Data
             public static readonly Product Mandarin = new()
             {
                 ProductId = ProductId.Of("SquareId"),
+                StockistId = StockistId.Of(10),
                 ProductCode = ProductCode.Of("TLM-001"),
                 ProductName = ProductName.Of("Mandarin"),
                 Description = "It's a Mandarin!",
@@ -64,6 +65,7 @@ namespace Mandarin.Tests.Data
             public static readonly Product Clementine = new()
             {
                 ProductId = ProductId.Of("BQGTKYVIFNM6MPB57Y5QEBYN"),
+                StockistId = Stockists.KelbyTynan.StockistId,
                 ProductCode = ProductCode.Of("KT20-001"),
                 ProductName = ProductName.Of("Clementine (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
@@ -74,6 +76,7 @@ namespace Mandarin.Tests.Data
             public static readonly Product ClementineFramed = new()
             {
                 ProductId = ProductId.Of("BTWEJWZCPE4XAKZRBJW53DYE"),
+                StockistId = Stockists.KelbyTynan.StockistId,
                 ProductCode = ProductCode.Of("KT20-001F"),
                 ProductName = ProductName.Of("Clementine (Framed) (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
@@ -84,6 +87,7 @@ namespace Mandarin.Tests.Data
             public static readonly Product GiftCard = new()
             {
                 ProductId = ProductId.Of("TLM-GC"),
+                StockistId = Stockists.TheLittleMandarin.StockistId,
                 ProductCode = ProductCode.Of("TLM-GC"),
                 ProductName = ProductName.Of("eGift Card"),
                 Description = "eGift Card",
@@ -93,6 +97,7 @@ namespace Mandarin.Tests.Data
             public static readonly Product TlmFraming = new()
             {
                 ProductId = ProductId.TlmFraming,
+                StockistId = Stockists.TheLittleMandarin.StockistId,
                 ProductCode = ProductCode.Of("TLM-FRAMING"),
                 ProductName = ProductName.Of("Commission for Frame"),
                 Description = "Commission for Frame",
@@ -186,6 +191,7 @@ namespace Mandarin.Tests.Data
 
             public static readonly Stockist TheLittleMandarin = new()
             {
+                StockistId = StockistId.Of(10),
                 StockistCode = StockistCode.Of("TLM"),
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail

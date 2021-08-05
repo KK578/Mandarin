@@ -34,6 +34,7 @@ message GetProductResponse {
 
 message Product {
   string productId = 1;
+  int32 stockistId = 7;
   google.protobuf.StringValue productCode = 2;
   string productName = 3;
   google.protobuf.StringValue description = 4;
