@@ -12,6 +12,7 @@ package uk.co.thelittlemandarin;
 service Products {
   rpc GetAllProducts (GetAllProductsRequest) returns (GetAllProductsResponse);
   rpc GetProduct (GetProductRequest) returns (GetProductResponse);
+  rpc SynchronizeProducts (SynchronizeProductsRequest) returns (SynchronizeProductsResponse);
 }
 
 message GetAllProductsRequest {
@@ -31,6 +32,11 @@ message GetProductResponse {
   Product product = 1;
 }
 
+message SynchronizeProductsRequest {
+}
+
+message SynchronizeProductsResponse {
+}
 
 message Product {
   string productId = 1;

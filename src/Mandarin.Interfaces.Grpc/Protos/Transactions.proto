@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Mandarin.Api.Transactions";
+option java_package = "uk.co.thelittlemandarin.mandarin.api.transaction";
+
+package uk.co.thelittlemandarin;
+
+// The product service definition.
+service Transactions {
+  rpc SynchronizeTransactions (SynchronizeTransactionsRequest) returns (SynchronizeTransactionsResponse);
+}
+
+message SynchronizeTransactionsRequest {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}
+
+message SynchronizeTransactionsResponse {
+}

@@ -10,6 +10,24 @@ namespace Mandarin.Transactions.External
     public interface ITransactionSynchronizer
     {
         /// <summary>
+        /// Fetch the set of orders that have occurred since start of yesterday.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task LoadExternalTransactionsInPastDay()
+        {
+            return this.LoadExternalTransactions(DateTime.UtcNow.Date.AddDays(-1), DateTime.UtcNow);
+        }
+
+        /// <summary>
+        /// Fetch the set of orders that have occurred since 2 months ago from today.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task LoadExternalTransactionsInPast2Months()
+        {
+            return this.LoadExternalTransactions(DateTime.UtcNow.Date.AddMonths(-2), DateTime.UtcNow);
+        }
+
+        /// <summary>
         /// Fetch the set of orders between the given start and end dates, and enqueue a job to process them.
         /// </summary>
         /// <param name="start">The start datetime to query transactions for.</param>

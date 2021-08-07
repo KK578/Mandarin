@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using Elastic.Apm.NetCoreAll;
-using Hangfire;
-using Hangfire.PostgreSql;
 using Mandarin.Configuration;
 using Mandarin.Converters;
 using Mandarin.Database;
@@ -122,6 +119,7 @@ namespace Mandarin
                 endpoints.MapGrpcService<FramePricesGrpcService>();
                 endpoints.MapGrpcService<ProductsGrpcService>();
                 endpoints.MapGrpcService<StockistsGrpcService>();
+                endpoints.MapGrpcService<TransactionsGrpcService>();
                 endpoints.MapFallbackToFile("index.html");
             });
         }

@@ -2,7 +2,6 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using Mandarin.Inventory;
-using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -38,13 +37,17 @@ namespace Mandarin.Hangfire
         public static void UseMandarinHangfire(this IApplicationBuilder app)
         {
             app.UseEndpoints(e => e.MapHangfireDashboardWithAuthorizationPolicy("Hangfire"));
-            RecurringJob.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Daily",
-                                                               s => s.LoadExternalTransactions(DateTime.UtcNow.Date.AddDays(-1), DateTime.UtcNow.Date),
-                                                               Cron.Daily(01));
-            RecurringJob.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Monthly",
-                                                               s => s.LoadExternalTransactions(DateTime.UtcNow.Date.AddDays(-45), DateTime.UtcNow.Date),
-                                                               Cron.Monthly(01));
-            RecurringJob.AddOrUpdate<IProductSynchronizer>(s => s.SynchronizeProductsAsync(), Cron.Hourly);
+
+            var jobs = app.ApplicationServices.GetRequiredService<IRecurringJobManager>();
+            jobs.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Daily",
+                                                       s => s.LoadExternalTransactionsInPastDay(),
+                                                       Cron.Daily(01));
+            jobs.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Monthly",
+                                                       s => s.LoadExternalTransactionsInPast2Months(),
+                                                       Cron.Monthly(01));
+            jobs.AddOrUpdate<IProductSynchronizer>("Product Refresh - Daily",
+                                                   s => s.SynchronizeProductsAsync(),
+                                                   Cron.Hourly);
         }
     }
 }

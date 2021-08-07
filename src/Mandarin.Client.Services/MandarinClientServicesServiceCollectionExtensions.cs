@@ -7,16 +7,19 @@ using Mandarin.Client.Services.Commissions;
 using Mandarin.Client.Services.Emails;
 using Mandarin.Client.Services.Inventory;
 using Mandarin.Client.Services.Stockists;
+using Mandarin.Client.Services.Transactions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.DependencyInjection;
 using static Mandarin.Api.Commissions.Commissions;
 using static Mandarin.Api.Emails.Emails;
 using static Mandarin.Api.Inventory.FramePrices;
 using static Mandarin.Api.Inventory.Products;
 using static Mandarin.Api.Stockists.Stockists;
+using static Mandarin.Api.Transactions.Transactions;
 
 namespace Mandarin.Client.Services
 {
@@ -54,12 +57,15 @@ namespace Mandarin.Client.Services
             AddMandarinGrpcClient<FramePricesClient>();
             AddMandarinGrpcClient<ProductsClient>();
             AddMandarinGrpcClient<StockistsClient>();
+            AddMandarinGrpcClient<TransactionsClient>();
 
             services.AddTransient<ICommissionService, MandarinGrpcCommissionService>();
             services.AddTransient<IEmailService, MandarinGrpcEmailService>();
             services.AddTransient<IFramePricesService, MandarinGrpcFramePricesService>();
             services.AddTransient<IProductRepository, MandarinGrpcProductRepository>();
+            services.AddTransient<IProductSynchronizer, MandarinGrpcProductSynchronizer>();
             services.AddTransient<IStockistService, MandarinStockistGrpcService>();
+            services.AddTransient<ITransactionSynchronizer, MandarinGrpcTransactionSynchronizer>();
 
             return services;
 
