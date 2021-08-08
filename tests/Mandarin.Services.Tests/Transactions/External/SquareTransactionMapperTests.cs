@@ -33,8 +33,8 @@ namespace Mandarin.Services.Tests.Transactions.External
 
         private ISquareTransactionMapper Subject =>
             new SquareTransactionMapper(this.productRepository.Object,
-                                  this.framePricesService.Object,
-                                  Options.Create(this.configuration));
+                                        this.framePricesService.Object,
+                                        Options.Create(this.configuration));
 
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)

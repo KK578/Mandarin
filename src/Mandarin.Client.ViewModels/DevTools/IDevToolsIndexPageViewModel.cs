@@ -12,12 +12,12 @@ namespace Mandarin.Client.ViewModels.DevTools
         /// <summary>
         /// Gets the command to synchronize all <see cref="Mandarin.Inventory.Product"/>s now.
         /// </summary>
-        public ReactiveCommand<Unit, Unit> SynchronizeProducts { get; }
+        ReactiveCommand<Unit, Unit> SynchronizeProducts { get; }
 
         /// <summary>
         /// Gets the command to synchronize all <see cref="Mandarin.Transactions.Transaction"/>s between the given date and now.
         /// </summary>
-        public ReactiveCommand<Unit, Unit> SynchronizeTransactions { get; }
+        ReactiveCommand<Unit, Unit> SynchronizeTransactions { get; }
 
         /// <summary>
         /// Gets or sets the start date for synchronizing transactions.
