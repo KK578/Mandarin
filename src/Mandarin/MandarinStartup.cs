@@ -110,7 +110,7 @@ namespace Mandarin
             app.UseSerilogRequestLogging();
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-            app.UseMandarinHangfire();
+            app.UseMandarinHangfire(this.configuration);
 
             app.UseEndpoints(endpoints =>
             {

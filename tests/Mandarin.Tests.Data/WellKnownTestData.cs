@@ -238,7 +238,7 @@ namespace Mandarin.Tests.Data
             public static readonly Transaction Transaction1 = new()
             {
                 ExternalTransactionId = ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"),
-                Timestamp = new DateTime(2021, 07, 14, 12, 54, 06),
+                Timestamp = new DateTime(2021, 07, 14, 12, 54, 06, DateTimeKind.Utc),
                 TotalAmount = 45.00M,
                 Subtransactions = new List<Subtransaction>
                 {

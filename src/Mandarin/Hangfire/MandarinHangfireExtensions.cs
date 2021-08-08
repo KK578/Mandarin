@@ -34,20 +34,23 @@ namespace Mandarin.Hangfire
         /// Configures the Hangfire Server with registered background jobs for Mandarin services.
         /// </summary>
         /// <param name="app">The application builder instance.</param>
-        public static void UseMandarinHangfire(this IApplicationBuilder app)
+        /// <param name="configuration">Application configuration for configuring services.</param>
+        public static void UseMandarinHangfire(this IApplicationBuilder app, IConfiguration configuration)
         {
             app.UseEndpoints(e => e.MapHangfireDashboardWithAuthorizationPolicy("Hangfire"));
 
-            var jobs = app.ApplicationServices.GetRequiredService<IRecurringJobManager>();
-            jobs.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Daily",
-                                                       s => s.LoadExternalTransactionsInPastDay(),
-                                                       Cron.Daily(01));
-            jobs.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Monthly",
-                                                       s => s.LoadExternalTransactionsInPast2Months(),
-                                                       Cron.Monthly(01));
-            jobs.AddOrUpdate<IProductSynchronizer>("Product Refresh - Daily",
-                                                   s => s.SynchronizeProductsAsync(),
-                                                   Cron.Hourly);
+            if (configuration.GetValue<bool>("Hangfire:ConfigureRecurringJobs"))
+            {
+                var jobs = app.ApplicationServices.GetRequiredService<IRecurringJobManager>();
+                MandarinHangfireExtensions.ConfigureRecurringJobs(jobs);
+            }
+        }
+
+        private static void ConfigureRecurringJobs(IRecurringJobManager jobs)
+        {
+            jobs.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Daily", s => s.LoadExternalTransactionsInPastDay(), Cron.Daily(01));
+            jobs.AddOrUpdate<ITransactionSynchronizer>("Transaction Refresh - Monthly", s => s.LoadExternalTransactionsInPast2Months(), Cron.Monthly(01));
+            jobs.AddOrUpdate<IProductSynchronizer>("Product Refresh - Daily", s => s.SynchronizeProductsAsync(), Cron.Hourly);
         }
     }
 }
