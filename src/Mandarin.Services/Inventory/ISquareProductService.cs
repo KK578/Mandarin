@@ -5,7 +5,7 @@ using Mandarin.Inventory;
 namespace Mandarin.Services.Inventory
 {
     /// <summary>
-    /// Represents a type that can resolve a products from Square's catalog.
+    /// Represents a type that can resolve products from Square's catalog.
     /// </summary>
     internal interface ISquareProductService
     {

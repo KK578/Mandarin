@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
@@ -19,21 +18,17 @@ namespace Mandarin.Services.Tests.Commission
 {
     public class CommissionServiceTests
     {
-        private readonly Mock<ICommissionRepository> commissionRepository;
         private readonly Mock<IStockistService> stockistService;
-        private readonly Mock<ITransactionService> transactionService;
+        private readonly Mock<ITransactionRepository> transactionRepository;
 
         protected CommissionServiceTests()
         {
-            this.commissionRepository = new Mock<ICommissionRepository>();
             this.stockistService = new Mock<IStockistService>();
-            this.transactionService = new Mock<ITransactionService>();
+            this.transactionRepository = new Mock<ITransactionRepository>();
         }
 
         private ICommissionService Subject =>
-            new CommissionService(this.commissionRepository.Object,
-                                  this.stockistService.Object,
-                                  this.transactionService.Object);
+            new CommissionService(this.stockistService.Object, this.transactionRepository.Object);
 
         private void GivenTlmStockistExists()
         {
@@ -50,46 +45,46 @@ namespace Mandarin.Services.Tests.Commission
             {
                 new()
                 {
-                    SquareId = null,
+                    TransactionId = null,
+                    ExternalTransactionId = null,
                     TotalAmount = 10.00M,
                     Timestamp = DateTime.Now,
-                    InsertedBy = null,
                     Subtransactions = new List<Subtransaction>
                     {
                         new()
                         {
                             Product = product1,
                             Quantity = 5,
-                            Subtotal = 5.00m,
+                            UnitPrice = 1.00M,
                         },
                         new()
                         {
                             Product = product2,
                             Quantity = 1,
-                            Subtotal = 5.00m,
+                            UnitPrice = 5.00M,
                         },
                     }.AsReadOnly(),
                 },
                 new()
                 {
-                    SquareId = null,
+                    TransactionId = null,
+                    ExternalTransactionId = null,
                     TotalAmount = 50.00m,
                     Timestamp = DateTime.Now,
-                    InsertedBy = null,
                     Subtransactions = new List<Subtransaction>
                     {
                         new()
                         {
                             Product = product2,
                             Quantity = 10,
-                            Subtotal = 50.00m,
+                            UnitPrice = 5.00M,
                         },
                     }.AsReadOnly(),
                 },
             };
 
-            this.transactionService.Setup(x => x.GetAllTransactions(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(transactions.ToObservable());
+            this.transactionRepository.Setup(x => x.GetAllTransactionsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .ReturnsAsync(transactions.AsReadOnly());
         }
 
         public class GetRecordOfSalesForPeriodAsyncTests : CommissionServiceTests

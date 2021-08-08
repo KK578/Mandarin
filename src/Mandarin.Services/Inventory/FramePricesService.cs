@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
-using Mandarin.Services.Transactions;
+using Mandarin.Services.Transactions.External;
 using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Services.Inventory

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Mandarin.Tests.Static
+namespace Mandarin.Tests.Inventory
 {
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public class ProductSynchronizerTests : MandarinIntegrationTestsBase
@@ -27,7 +27,7 @@ namespace Mandarin.Tests.Static
         public async Task ShouldSaveSquareDataIntoDatabase()
         {
             await this.GivenProductTableIsEmptyAsync();
-            await this.productSynchronizer.SynchroniseProductsAsync();
+            await this.productSynchronizer.SynchronizeProductsAsync();
             var products = await this.productRepository.GetAllProductsAsync();
             products.Should().HaveCount(4); // Only contains data from Square - excludes well known items added by migrations.
         }
@@ -35,15 +35,19 @@ namespace Mandarin.Tests.Static
         [Fact]
         public async Task ShouldNotUpdateMultipleTimesIfItemsAlreadyExist()
         {
-            await this.productSynchronizer.SynchroniseProductsAsync();
+            await this.productSynchronizer.SynchronizeProductsAsync();
             var products = await this.productRepository.GetAllProductsAsync();
-            products.Should().HaveCount(5);
+            products.Should().HaveCount(9);
         }
 
         private async Task GivenProductTableIsEmptyAsync()
         {
             var db = this.Fixture.Services.GetRequiredService<MandarinDbContext>();
-            await db.GetConnection().ExecuteAsync("TRUNCATE inventory.product");
+            await db.GetConnection().ExecuteAsync(@"
+                DELETE FROM billing.subtransaction;
+                DELETE FROM billing.transaction;
+                DELETE FROM billing.external_transaction;
+                DELETE FROM inventory.product;");
         }
     }
 }

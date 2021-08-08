@@ -7,28 +7,29 @@ using Bashi.Core.Extensions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Options;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
-namespace Mandarin.Services.Transactions
+namespace Mandarin.Services.Transactions.External
 {
     /// <inheritdoc />
-    internal sealed class TransactionMapper : ITransactionMapper
+    internal sealed class SquareTransactionMapper : ISquareTransactionMapper
     {
         private readonly IProductRepository productRepository;
         private readonly IFramePricesService framePricesService;
         private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransactionMapper"/> class.
+        /// Initializes a new instance of the <see cref="SquareTransactionMapper"/> class.
         /// </summary>
         /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="mandarinConfiguration">The application configuration.</param>
-        public TransactionMapper(IProductRepository productRepository,
-                                 IFramePricesService framePricesService,
-                                 IOptions<MandarinConfiguration> mandarinConfiguration)
+        public SquareTransactionMapper(IProductRepository productRepository,
+                                       IFramePricesService framePricesService,
+                                       IOptions<MandarinConfiguration> mandarinConfiguration)
         {
             this.productRepository = productRepository;
             this.framePricesService = framePricesService;
@@ -39,14 +40,24 @@ namespace Mandarin.Services.Transactions
         public IObservable<Transaction> MapToTransaction(Order order)
         {
             return this.CreateSubtransactions(order)
-                       .Select(subtransactions => new Transaction()
+                       .Select(subtransactions => new Transaction
                        {
-                           SquareId = TransactionId.Of(order.Id),
-                           TotalAmount = decimal.Divide(order.TotalMoney?.Amount ?? 0, 100),
+                           ExternalTransactionId = ExternalTransactionId.Of(order.Id),
+                           TotalAmount = decimal.Divide(order.NetAmounts.TotalMoney?.Amount ?? 0, 100),
                            Timestamp = DateTime.Parse(order.CreatedAt),
-                           InsertedBy = order.Source?.Name,
                            Subtransactions = subtransactions.AsReadOnlyList(),
                        });
+        }
+
+        private static Subtransaction CreateSubtransactionFromMoney(Product product, Money money)
+        {
+            var quantity = money.Amount ?? 0;
+            return new Subtransaction
+            {
+                Product = product,
+                Quantity = (int)quantity,
+                UnitPrice = 0.01M,
+            };
         }
 
         private IObservable<IList<Subtransaction>> CreateSubtransactions(Order order)
@@ -56,7 +67,8 @@ namespace Mandarin.Services.Transactions
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
             var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));
             var fees = order.ServiceCharges.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromFee);
-            return Observable.Merge(lineItems, discounts, returns, fees).ToList();
+            var tips = this.CreateSubtransactionFromTip(order.TotalTipMoney);
+            return Observable.Merge(lineItems, discounts, returns, fees, tips).ToList();
         }
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, DateTime orderDate)
@@ -70,45 +82,41 @@ namespace Mandarin.Services.Transactions
                                       .SelectMany(framePrice => Create(product, framePrice));
                        });
 
-            IEnumerable<Subtransaction> Create(Product product, FramePrice framePrice)
+            IObservable<Subtransaction> Create(Product product, FramePrice framePrice)
             {
+                var quantity = int.Parse(orderLineItem.Quantity);
+
                 if (framePrice != null)
                 {
-                    var quantity = int.Parse(orderLineItem.Quantity);
                     var commissionSubtotal = framePrice.Amount;
-                    var subTotal = quantity * (decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100) - commissionSubtotal);
 
-                    yield return new Subtransaction
+                    return Observable.Create<Subtransaction>(async o =>
                     {
-                        Product = product,
-                        Quantity = quantity,
-                        Subtotal = subTotal,
-                    };
+                        var framing = await this.productRepository.GetProductAsync(ProductId.TlmFraming);
 
-                    yield return new Subtransaction
-                    {
-                        Product = new Product
+                        o.OnNext(new Subtransaction
                         {
-                            ProductId = ProductId.Of("TLM-" + framePrice.ProductCode),
-                            ProductCode = ProductCode.Of("TLM-" + framePrice.ProductCode),
-                            ProductName = ProductName.Of($"Frame for {framePrice.ProductCode}"),
-                            Description = null,
-                            UnitPrice = framePrice.Amount,
-                        },
-                        Quantity = quantity,
-                        Subtotal = quantity * commissionSubtotal,
-                    };
+                            Product = product,
+                            Quantity = quantity,
+                            UnitPrice = orderLineItem.BasePriceMoney.ToDecimal() - commissionSubtotal,
+                        });
+
+                        o.OnNext(new Subtransaction
+                        {
+                            Product = framing,
+                            Quantity = quantity,
+                            UnitPrice = commissionSubtotal,
+                        });
+                    });
                 }
                 else
                 {
-                    var quantity = int.Parse(orderLineItem.Quantity);
-                    var subTotal = quantity * decimal.Divide(orderLineItem.BasePriceMoney?.Amount ?? 0, 100);
-                    yield return new Subtransaction
+                    return Observable.Return(new Subtransaction
                     {
                         Product = product,
                         Quantity = quantity,
-                        Subtotal = subTotal,
-                    };
+                        UnitPrice = orderLineItem.BasePriceMoney.ToDecimal(),
+                    });
                 }
             }
         }
@@ -152,12 +160,11 @@ namespace Mandarin.Services.Transactions
             }
 
             var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
-            var amount = decimal.Divide(quantity, 100);
             return Observable.Return(new Subtransaction
             {
                 Product = product,
                 Quantity = (int)quantity,
-                Subtotal = -amount,
+                UnitPrice = -0.01M,
             });
         }
 
@@ -168,58 +175,46 @@ namespace Mandarin.Services.Transactions
                               {
                                   var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name), orderDate);
                                   var quantity = -1 * int.Parse(item.Quantity);
-                                  var subtotal = quantity * decimal.Divide(item.BasePriceMoney?.Amount ?? 0, 100);
 
                                   return new Subtransaction
                                   {
                                       Product = product,
                                       Quantity = quantity,
-                                      Subtotal = subtotal,
+                                      UnitPrice = item.BasePriceMoney.ToDecimal(),
                                   };
                               });
         }
 
         private IObservable<Subtransaction> CreateSubtransactionFromFee(OrderServiceCharge serviceCharge)
         {
-            Product product;
-            if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                product = new Product
-                {
-                    ProductId = ProductId.Of("TLM-DELIVERY"),
-                    ProductCode = ProductCode.Of("TLM-DELIVERY"),
-                    ProductName = ProductName.Of("Shipping Fees"),
-                    Description = "Delivery costs charged to customers.",
-                    UnitPrice = 0.01m,
-                };
-            }
-            else
-            {
-                product = new Product
-                {
-                    ProductId = ProductId.Of("TLM-FEES"),
-                    ProductCode = ProductCode.Of("TLM-" + serviceCharge.Name),
-                    ProductName = ProductName.Of(serviceCharge.Name),
-                    Description = "Unknown Fee.",
-                    UnitPrice = 0.01m,
-                };
-            }
+            return Observable.FromAsync(() =>
+                             {
+                                 if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
+                                 {
+                                     return this.productRepository.GetProductAsync(ProductId.TlmDelivery);
+                                 }
 
-            var quantity = serviceCharge.TotalMoney.Amount ?? 0;
-            var amount = decimal.Divide(quantity, 100);
-            return Observable.Return(new Subtransaction
-            {
-                Product = product,
-                Quantity = (int)quantity,
-                Subtotal = amount,
-            });
+                                 return this.productRepository.GetProductAsync(ProductId.TlmUnknown);
+                             })
+                             .Select(product => SquareTransactionMapper.CreateSubtransactionFromMoney(product, serviceCharge.TotalMoney));
         }
 
-        private async Task<Product> GetProductAsync(ProductId squareId, ProductName name, DateTime orderDate)
+        private IObservable<Subtransaction> CreateSubtransactionFromTip(Money tip)
         {
-            if (squareId != null)
+            if (tip?.Amount > 0)
             {
-                var product = await this.productRepository.GetProductAsync(squareId);
+                return Observable.FromAsync(() => this.productRepository.GetProductAsync(ProductId.TlmTip))
+                                 .Select(product => SquareTransactionMapper.CreateSubtransactionFromMoney(product, tip));
+            }
+
+            return Observable.Empty<Subtransaction>();
+        }
+
+        private async Task<Product> GetProductAsync(ProductId productId, ProductName name, DateTime orderDate)
+        {
+            if (productId != null)
+            {
+                var product = await this.productRepository.GetProductAsync(productId);
                 return await MapProduct(product);
             }
             else if (name != null)
@@ -229,14 +224,7 @@ namespace Mandarin.Services.Transactions
             }
             else
             {
-                return new Product
-                {
-                    ProductId = null,
-                    ProductCode = ProductCode.Of("TLM-Unknown"),
-                    ProductName = ProductName.Of("Unknown Product"),
-                    Description = "Unknown Product",
-                    UnitPrice = null,
-                };
+                return await this.productRepository.GetProductAsync(ProductId.TlmUnknown);
             }
 
             Task<Product> MapProduct(Product originalProduct)

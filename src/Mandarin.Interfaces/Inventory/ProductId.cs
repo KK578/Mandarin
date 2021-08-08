@@ -8,6 +8,26 @@ namespace Mandarin.Inventory
     public class ProductId : TinyString
     {
         /// <summary>
+        /// The well known <see cref="ProductId"/> for TLM online delivery fees.
+        /// </summary>
+        public static readonly ProductId TlmDelivery = new("TLM-DELIVERY");
+
+        /// <summary>
+        /// The well known <see cref="ProductId"/> for TLM framing.
+        /// </summary>
+        public static readonly ProductId TlmFraming = new("TLM-FRAMING");
+
+        /// <summary>
+        /// The well known <see cref="ProductId"/> for TLM online tips.
+        /// </summary>
+        public static readonly ProductId TlmTip = new("TLM-TIP");
+
+        /// <summary>
+        /// The well known <see cref="ProductId"/> for unknown items.
+        /// </summary>
+        public static readonly ProductId TlmUnknown = new("TLM-UNKNOWN");
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ProductId"/> class.
         /// </summary>
         /// <param name="value">The unique Product Id.</param>

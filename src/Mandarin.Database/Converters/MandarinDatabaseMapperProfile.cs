@@ -3,8 +3,12 @@ using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
 using Mandarin.Database.Inventory;
 using Mandarin.Database.Stockists;
+using Mandarin.Database.Transactions;
+using Mandarin.Database.Transactions.External;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 
 namespace Mandarin.Database.Converters
 {
@@ -24,6 +28,7 @@ namespace Mandarin.Database.Converters
             this.ConfigureMapForCommissions();
             this.ConfigureMapForInventory();
             this.ConfigureMapForStockists();
+            this.ConfigureMapForTransactions();
         }
 
         private void ConfigureMapForCommissions()
@@ -44,6 +49,15 @@ namespace Mandarin.Database.Converters
                 .ReverseMap()
                 .ForMember(x => x.stockist_status, o => o.MapFrom(src => src.StatusCode));
             this.CreateMap<StockistDetailRecord, StockistDetail>().ReverseMap();
+        }
+
+        private void ConfigureMapForTransactions()
+        {
+            this.CreateMap<ExternalTransactionRecord, ExternalTransaction>().ReverseMap();
+            this.CreateMap<TransactionRecord, Transaction>().ReverseMap();
+            this.CreateMap<SubtransactionRecord, Subtransaction>()
+                .ReverseMap()
+                .ForMember(x => x.product_id, o => o.MapFrom(src => src.Product.ProductId));
         }
     }
 }

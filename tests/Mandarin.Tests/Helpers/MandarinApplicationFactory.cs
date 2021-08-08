@@ -46,6 +46,7 @@ namespace Mandarin.Tests.Helpers
                 { "Auth0:ClientId", "SuperSecretId" },
                 { "Auth0:ClientSecret", "SuperSecretValue" },
                 { "ConnectionStrings:MandarinConnection", "Host=localhost;Port=5555;Database=postgres;Username=postgres;Password=password;Maximum Pool Size=5;Include Error Detail=true" },
+                { "Hangfire:ConfigureRecurringJobs", "false" },
                 { "Mandarin:FixedCommissionAmountFilePath", WellKnownTestData.Commissions.FixedCommissions },
                 { "SendGrid:ServiceEmail", "ServiceEmail@example.com" },
                 { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },

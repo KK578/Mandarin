@@ -3,13 +3,14 @@ using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Inventory;
 using Mandarin.Services.Commission;
-using Mandarin.Services.Common;
 using Mandarin.Services.Emails;
 using Mandarin.Services.Inventory;
 using Mandarin.Services.Stockists;
 using Mandarin.Services.Transactions;
+using Mandarin.Services.Transactions.External;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
+using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendGrid;
@@ -46,7 +47,6 @@ namespace Mandarin.Services
 
         private static void AddMandarinDomainServices(this IServiceCollection services)
         {
-            services.AddTransient<ITransactionMapper, TransactionMapper>();
             services.AddTransient<ICommissionService, CommissionService>();
         }
 
@@ -76,8 +76,9 @@ namespace Mandarin.Services
 
         private static void AddTransactionServices(this IServiceCollection services)
         {
-            services.AddTransient<ITransactionService, SquareTransactionService>();
-            services.Decorate<ITransactionService, CachingTransactionServiceDecorator>();
+            services.AddTransient<ISquareTransactionMapper, SquareTransactionMapper>();
+            services.AddTransient<ISquareTransactionService, SquareTransactionService>();
+            services.AddSingleton<ITransactionSynchronizer, SquareTransactionSynchronizer>();
         }
 
         private static void AddSquareServices(this IServiceCollection services, IConfiguration configuration)

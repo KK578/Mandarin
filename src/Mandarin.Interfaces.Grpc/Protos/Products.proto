@@ -1,5 +1,6 @@
 ﻿syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 option csharp_namespace = "Mandarin.Api.Inventory";
@@ -11,6 +12,7 @@ package uk.co.thelittlemandarin;
 service Products {
   rpc GetAllProducts (GetAllProductsRequest) returns (GetAllProductsResponse);
   rpc GetProduct (GetProductRequest) returns (GetProductResponse);
+  rpc SynchronizeProducts (SynchronizeProductsRequest) returns (SynchronizeProductsResponse);
 }
 
 message GetAllProductsRequest {
@@ -30,11 +32,18 @@ message GetProductResponse {
   Product product = 1;
 }
 
+message SynchronizeProductsRequest {
+}
+
+message SynchronizeProductsResponse {
+}
 
 message Product {
   string productId = 1;
+  int32 stockistId = 7;
   google.protobuf.StringValue productCode = 2;
   string productName = 3;
   google.protobuf.StringValue description = 4;
   google.protobuf.DoubleValue unitPrice = 5;
+  google.protobuf.Timestamp lastUpdated = 6;
 }

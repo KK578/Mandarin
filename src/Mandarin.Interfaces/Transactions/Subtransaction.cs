@@ -18,14 +18,14 @@ namespace Mandarin.Transactions
         public int Quantity { get; init; }
 
         /// <summary>
-        /// Gets the total monetary amount for this subtransaction.
-        /// </summary>
-        public decimal Subtotal { get; init; }
-
-        /// <summary>
         /// Gets the unit price for the product within this subtransaction.
         /// This may differ from the product's unit price if the product has been updated since the transaction was made.
         /// </summary>
-        public decimal TransactionUnitPrice => this.Quantity == 0 ? 0 : this.Subtotal / this.Quantity;
+        public decimal UnitPrice { get; init; }
+
+        /// <summary>
+        /// Gets the total monetary amount for this subtransaction.
+        /// </summary>
+        public decimal Subtotal => this.Quantity * this.UnitPrice;
     }
 }

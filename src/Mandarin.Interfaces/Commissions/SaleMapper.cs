@@ -22,7 +22,7 @@ namespace Mandarin.Commissions
                 ProductCode = subtransaction.Product.ProductCode.Value,
                 ProductName = subtransaction.Product.ProductName.Value,
                 Quantity = subtransaction.Quantity,
-                UnitPrice = subtransaction.TransactionUnitPrice,
+                UnitPrice = subtransaction.UnitPrice,
                 Subtotal = subTotal,
                 Commission = -commission,
                 Total = subTotal - commission,

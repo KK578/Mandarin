@@ -7,16 +7,16 @@ using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
-using Mandarin.Services.Transactions;
+using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Options;
 using Moq;
 using Square.Models;
 using Xunit;
 
-namespace Mandarin.Services.Tests.Transactions
+namespace Mandarin.Services.Tests.Transactions.External
 {
-    public class TransactionMapperTests
+    public class SquareTransactionMapperTests
     {
         private readonly DateTime orderDate = DateTime.Now;
 
@@ -24,17 +24,17 @@ namespace Mandarin.Services.Tests.Transactions
         private readonly MandarinConfiguration configuration;
         private readonly Mock<IFramePricesService> framePricesService;
 
-        protected TransactionMapperTests()
+        protected SquareTransactionMapperTests()
         {
             this.productRepository = new Mock<IProductRepository>();
             this.configuration = new MandarinConfiguration();
             this.framePricesService = new Mock<IFramePricesService>();
         }
 
-        private ITransactionMapper Subject =>
-            new TransactionMapper(this.productRepository.Object,
-                                  this.framePricesService.Object,
-                                  Options.Create(this.configuration));
+        private ISquareTransactionMapper Subject =>
+            new SquareTransactionMapper(this.productRepository.Object,
+                                        this.framePricesService.Object,
+                                        Options.Create(this.configuration));
 
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)
@@ -47,6 +47,7 @@ namespace Mandarin.Services.Tests.Transactions
         private void GivenFramePriceExists(Product product, FramePrice framePrice)
         {
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, this.orderDate)).ReturnsAsync(framePrice);
+            this.productRepository.Setup(x => x.GetProductAsync(ProductId.TlmFraming)).ReturnsAsync(WellKnownTestData.Products.TlmFraming);
         }
 
         private void GivenConfigurationWithMappings(Product product, Product mappedProduct)
@@ -72,12 +73,20 @@ namespace Mandarin.Services.Tests.Transactions
             return new Order("Location",
                              TestData.WellKnownString,
                              lineItems: lineItems,
-                             totalMoney: new Money(1000, "GBP"),
+                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(1000, "GBP")),
                              createdAt: this.orderDate.ToString("O"));
         }
 
-        private Order GivenOrderProductAsDiscount(Product product)
+        private Order GivenOrderProductWithDiscount(Product product)
         {
+            var lineItems = new List<OrderLineItem>
+            {
+                new("2",
+                    catalogObjectId: product.ProductId.Value,
+                    name: product.ProductName.Value,
+                    basePriceMoney: new Money(5000, "GBP"),
+                    totalMoney: new Money(10000, "GBP")),
+            };
             var discounts = new List<OrderLineItemDiscount>
             {
                 new(catalogObjectId: product.ProductId.Value,
@@ -87,8 +96,9 @@ namespace Mandarin.Services.Tests.Transactions
             };
             return new Order("Location",
                              TestData.WellKnownString,
+                             lineItems: lineItems,
                              discounts: discounts,
-                             totalMoney: new Money(-2000, "GBP"),
+                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(8000, "GBP")),
                              createdAt: this.orderDate.ToString("O"));
         }
 
@@ -105,11 +115,11 @@ namespace Mandarin.Services.Tests.Transactions
             return new Order("Location",
                              TestData.WellKnownString,
                              returns: new List<OrderReturn> { new(returnLineItems: returns) },
-                             totalMoney: new Money(-1500, "GBP"),
+                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(-1500, "GBP")),
                              createdAt: this.orderDate.ToString("O"));
         }
 
-        public class MapToTransactionTests : TransactionMapperTests
+        public class MapToTransactionTests : SquareTransactionMapperTests
         {
             [Fact]
             public async Task ShouldConvertLineItemsToATransaction()
@@ -123,7 +133,7 @@ namespace Mandarin.Services.Tests.Transactions
                 transactions[0].TotalAmount.Should().Be(10.00m);
                 transactions[0].Subtransactions[0].Product.Should().Be(product);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(10.00m);
             }
 
@@ -160,11 +170,11 @@ namespace Mandarin.Services.Tests.Transactions
                 transactions[0].Subtransactions.Should().HaveCount(2);
                 transactions[0].Subtransactions[0].Product.Should().Be(product);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(4.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(4.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(8.00m);
                 transactions[0].Subtransactions[1].Product.ProductCode.Value.Should().StartWith("TLM");
                 transactions[0].Subtransactions[1].Quantity.Should().Be(2);
-                transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(1.00m);
+                transactions[0].Subtransactions[1].UnitPrice.Should().Be(1.00m);
                 transactions[0].Subtransactions[1].Subtotal.Should().Be(2.00m);
             }
 
@@ -173,14 +183,17 @@ namespace Mandarin.Services.Tests.Transactions
             {
                 var product = TestData.Create<Product>();
                 this.GivenInventoryServiceSetUpWithProduct(product);
-                var order = this.GivenOrderProductAsDiscount(product);
+                var order = this.GivenOrderProductWithDiscount(product);
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
 
                 transactions.Should().HaveCount(1);
-                transactions[0].TotalAmount.Should().Be(-20.00m);
-                transactions[0].Subtransactions[0].Quantity.Should().Be(2000);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(-0.01m);
-                transactions[0].Subtransactions[0].Subtotal.Should().Be(-20.00m);
+                transactions[0].TotalAmount.Should().Be(80.00m);
+                transactions[0].Subtransactions[0].Quantity.Should().Be(2);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(50.00m);
+                transactions[0].Subtransactions[0].Subtotal.Should().Be(100.00M);
+                transactions[0].Subtransactions[1].Quantity.Should().Be(2000);
+                transactions[0].Subtransactions[1].UnitPrice.Should().Be(-0.01m);
+                transactions[0].Subtransactions[1].Subtotal.Should().Be(-20.00m);
             }
 
             [Fact]
@@ -194,7 +207,7 @@ namespace Mandarin.Services.Tests.Transactions
                 transactions.Should().HaveCount(1);
                 transactions[0].TotalAmount.Should().Be(-15.00m);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(-3);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(5.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(-15.00m);
             }
 
@@ -221,7 +234,7 @@ namespace Mandarin.Services.Tests.Transactions
                                     .Build(),
                             })
                             .CreatedAt(this.orderDate.ToString("O"))
-                            .TotalMoney(new Money(1600, "GBP"))
+                            .NetAmounts(new OrderMoneyAmounts.Builder().TotalMoney(new Money(1600, "GBP")).Build())
                             .Build();
 
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
@@ -229,10 +242,10 @@ namespace Mandarin.Services.Tests.Transactions
                 transactions[0].TotalAmount.Should().Be(16.00m);
                 transactions[0].Subtransactions.Should().HaveCount(2);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(1);
-                transactions[0].Subtransactions[0].TransactionUnitPrice.Should().Be(11.00m);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(11.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(11.00m);
                 transactions[0].Subtransactions[1].Quantity.Should().Be(500);
-                transactions[0].Subtransactions[1].TransactionUnitPrice.Should().Be(0.01m);
+                transactions[0].Subtransactions[1].UnitPrice.Should().Be(0.01m);
                 transactions[0].Subtransactions[1].Subtotal.Should().Be(5.00m);
             }
         }

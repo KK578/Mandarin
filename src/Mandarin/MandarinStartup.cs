@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using Elastic.Apm.NetCoreAll;
-using Hangfire;
-using Hangfire.PostgreSql;
 using Mandarin.Configuration;
 using Mandarin.Converters;
 using Mandarin.Database;
@@ -58,14 +55,10 @@ namespace Mandarin
             services.AddRazorPages();
             services.AddGrpc();
 
-            services.AddHangfire(o => o.UseSimpleAssemblyNameTypeSerializer()
-                                       .UseRecommendedSerializerSettings()
-                                       .UsePostgreSqlStorage(this.configuration.GetConnectionString("MandarinConnection")));
-            services.AddHangfireServer(o => o.WorkerCount = 1);
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinAuthorization();
-            services.AddMandarinDatabase(this.configuration);
+            services.AddMandarinDatabase();
             services.AddAutoMapper(options =>
             {
                 options.AddProfile<MandarinTinyTypeMapperProfile>();
@@ -73,6 +66,7 @@ namespace Mandarin
                 options.AddProfile<MandarinGrpcMapperProfile>();
             });
             services.AddMandarinServices(this.configuration);
+            services.AddMandarinHangfire(this.configuration);
         }
 
         /// <summary>
@@ -88,7 +82,6 @@ namespace Mandarin
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MandarinDbContext mandarinDbContext)
         {
             mandarinDbContext.RunMigrations();
-            app.AddMandarinBackgroundJobs();
 
             if (env.IsDevelopment())
             {
@@ -101,30 +94,32 @@ namespace Mandarin
                 app.UseHsts();
             }
 
-            app.UseAllElasticApm(this.configuration);
-            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
+
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
             app.AddLegacyRedirect("/static/logo-300.png", "/static/images/logo.png");
             app.AddLegacyRedirect("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf");
 
             app.UseRouting();
-
-            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseAllElasticApm(this.configuration);
+            app.UseSerilogRequestLogging();
+
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+            app.UseMandarinHangfire(this.configuration);
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHangfireDashboardWithAuthorizationPolicy("Hangfire");
                 endpoints.MapGrpcService<CommissionsGrpcService>();
                 endpoints.MapGrpcService<EmailGrpcService>();
                 endpoints.MapGrpcService<FramePricesGrpcService>();
                 endpoints.MapGrpcService<ProductsGrpcService>();
                 endpoints.MapGrpcService<StockistsGrpcService>();
+                endpoints.MapGrpcService<TransactionsGrpcService>();
                 endpoints.MapFallbackToFile("index.html");
             });
         }
