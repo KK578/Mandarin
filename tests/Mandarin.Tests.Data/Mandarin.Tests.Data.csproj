@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
+    <PackageReference Include="MicroElements.AutoFixture.NodaTime" Version="1.0.0" />
     <PackageReference Include="Square" Version="12.0.0" />
   </ItemGroup>
 

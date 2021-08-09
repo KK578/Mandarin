@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Stockists;
@@ -58,7 +59,7 @@ namespace Mandarin.Client.Services.Tests.Stockists
             {
                 Details = existing.Details with
                 {
-                    EmailAddress = TestData.NextString(),
+                    EmailAddress = MandarinFixture.Instance.NewString,
                     FirstName = "New Name",
                 },
             };

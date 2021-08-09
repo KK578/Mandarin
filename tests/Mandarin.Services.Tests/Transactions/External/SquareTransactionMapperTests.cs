@@ -71,7 +71,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                     totalMoney: new Money(1000, "GBP")),
             };
             return new Order("Location",
-                             TestData.WellKnownString,
+                             MandarinFixture.Instance.NewString,
                              lineItems: lineItems,
                              netAmounts: new OrderMoneyAmounts(totalMoney: new Money(1000, "GBP")),
                              createdAt: this.orderDate.ToString("O"));
@@ -95,7 +95,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                     appliedMoney: new Money(2000, "GBP")),
             };
             return new Order("Location",
-                             TestData.WellKnownString,
+                             MandarinFixture.Instance.NewString,
                              lineItems: lineItems,
                              discounts: discounts,
                              netAmounts: new OrderMoneyAmounts(totalMoney: new Money(8000, "GBP")),
@@ -113,7 +113,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                     totalMoney: new Money(-1500, "GBP")),
             };
             return new Order("Location",
-                             TestData.WellKnownString,
+                             MandarinFixture.Instance.NewString,
                              returns: new List<OrderReturn> { new(returnLineItems: returns) },
                              netAmounts: new OrderMoneyAmounts(totalMoney: new Money(-1500, "GBP")),
                              createdAt: this.orderDate.ToString("O"));
@@ -124,7 +124,7 @@ namespace Mandarin.Services.Tests.Transactions.External
             [Fact]
             public async Task ShouldConvertLineItemsToATransaction()
             {
-                var product = TestData.Create<Product>();
+                var product = MandarinFixture.Instance.NewProduct;
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 var order = this.GivenOrderProductAsLineItem(product);
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
@@ -140,8 +140,8 @@ namespace Mandarin.Services.Tests.Transactions.External
             [Fact]
             public async Task ShouldPrioritiseProductMappingsIfApplicationToAProduct()
             {
-                var product = TestData.Create<Product>();
-                var mappedProduct = TestData.Create<Product>();
+                var product = MandarinFixture.Instance.NewProduct;
+                var mappedProduct = MandarinFixture.Instance.NewProduct;
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 this.GivenConfigurationWithMappings(product, mappedProduct);
                 var order = this.GivenOrderProductAsLineItem(product);
@@ -154,7 +154,7 @@ namespace Mandarin.Services.Tests.Transactions.External
             [Fact]
             public async Task ShouldIncludeTheFramePriceAsATransaction()
             {
-                var product = TestData.Create<Product>();
+                var product = MandarinFixture.Instance.NewProduct;
                 var framePrice = new FramePrice
                 {
                     ProductCode = product.ProductCode,
@@ -181,7 +181,7 @@ namespace Mandarin.Services.Tests.Transactions.External
             [Fact]
             public async Task ShouldMapDiscountsToATransaction()
             {
-                var product = TestData.Create<Product>();
+                var product = MandarinFixture.Instance.NewProduct;
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 var order = this.GivenOrderProductWithDiscount(product);
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
@@ -199,7 +199,7 @@ namespace Mandarin.Services.Tests.Transactions.External
             [Fact]
             public async Task ShouldConvertReturnsToTransactions()
             {
-                var product = TestData.Create<Product>();
+                var product = MandarinFixture.Instance.NewProduct;
                 this.GivenInventoryServiceSetUpWithProduct(product);
                 var order = this.GivenOrderProductAsReturn(product);
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();

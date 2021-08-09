@@ -38,8 +38,8 @@ namespace Mandarin.Services.Tests.Commission
 
         private void GivenTransactionServiceReturnsData()
         {
-            var product1 = TestData.Create<Product>().WithTlmProductCode() with { UnitPrice = 1.00m };
-            var product2 = TestData.Create<Product>().WithTlmProductCode() with { UnitPrice = 5.00m };
+            var product1 = MandarinFixture.Instance.NewProductTlm with { UnitPrice = 1.00m };
+            var product2 = MandarinFixture.Instance.NewProductTlm with { UnitPrice = 5.00m };
 
             var transactions = new List<Transaction>
             {

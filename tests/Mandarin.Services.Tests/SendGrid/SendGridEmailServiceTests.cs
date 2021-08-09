@@ -9,6 +9,7 @@ using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Services.Emails;
+using Mandarin.Tests.Data;
 using Microsoft.Extensions.Options;
 using Moq;
 using SendGrid;
@@ -65,7 +66,7 @@ namespace Mandarin.Services.Tests.SendGrid
             [Fact]
             public async Task ShouldCopyEmailDetailsFromConfiguration()
             {
-                var model = TestData.Create<RecordOfSales>();
+                var model = MandarinFixture.Instance.NewRecordOfSales;
 
                 this.GivenExpectedEmailMatches(result =>
                 {
@@ -86,7 +87,7 @@ namespace Mandarin.Services.Tests.SendGrid
             [Fact]
             public async Task ShouldNotSetBccIfEmailIsSentToRealContactEmail()
             {
-                var model = TestData.Create<RecordOfSales>();
+                var model = MandarinFixture.Instance.NewRecordOfSales;
                 model = model.WithMessageCustomisations(SendGridEmailServiceTests.RealContactEmail, model.CustomMessage);
 
                 this.GivenExpectedEmailMatches(result => result.Personalizations[0].Bccs.Should().BeNull());
@@ -98,7 +99,7 @@ namespace Mandarin.Services.Tests.SendGrid
             [Fact]
             public async Task ShouldRespondWithErrorIfUnsuccessfulOnSendingEmail()
             {
-                var model = TestData.Create<RecordOfSales>();
+                var model = MandarinFixture.Instance.NewRecordOfSales;
                 var sendGridResponse = new Response(HttpStatusCode.Unauthorized, new StringContent("Invalid API Key"), null);
                 this.GivenSendGridReturns(sendGridResponse);
 
@@ -111,7 +112,7 @@ namespace Mandarin.Services.Tests.SendGrid
             [Fact]
             public async Task ShouldCorrectlyProcessMessageWhenSendGridResponseBodyIsEmpty()
             {
-                var model = TestData.Create<RecordOfSales>();
+                var model = MandarinFixture.Instance.NewRecordOfSales;
                 var sendGridResponse = new Response(HttpStatusCode.Accepted, null, null);
                 this.GivenSendGridReturns(sendGridResponse);
 
@@ -123,7 +124,7 @@ namespace Mandarin.Services.Tests.SendGrid
             [Fact]
             public async Task ShouldHaveAnyExceptionMessageInResponseMessage()
             {
-                var model = TestData.Create<RecordOfSales>();
+                var model = MandarinFixture.Instance.NewRecordOfSales;
                 var ex = new Exception("Service didn't work.");
                 this.GivenSendGridThrows(ex);
                 var response = await this.Subject.SendRecordOfSalesEmailAsync(model);
@@ -135,7 +136,7 @@ namespace Mandarin.Services.Tests.SendGrid
             [Fact]
             public async Task ShouldShowSuccessIfSendGridAcceptsEmail()
             {
-                var model = TestData.Create<RecordOfSales>();
+                var model = MandarinFixture.Instance.NewRecordOfSales;
                 var sendGridResponse = new Response(HttpStatusCode.Accepted, new StringContent(string.Empty), null);
                 this.GivenSendGridReturns(sendGridResponse);
 

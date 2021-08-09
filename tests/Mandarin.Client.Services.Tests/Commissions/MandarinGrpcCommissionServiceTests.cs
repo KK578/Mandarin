@@ -8,6 +8,7 @@ using Mandarin.Stockists;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Data.Extensions;
 using Mandarin.Tests.Helpers;
+using NodaTime;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -28,8 +29,8 @@ namespace Mandarin.Client.Services.Tests.Commissions
                 Name = WellKnownTestData.Stockists.KelbyTynan.Details.DisplayName,
                 EmailAddress = WellKnownTestData.Stockists.KelbyTynan.Details.EmailAddress,
                 CustomMessage = string.Empty,
-                StartDate = new DateTime(2021, 06, 16),
-                EndDate = new DateTime(2021, 07, 17),
+                StartDate = new LocalDate(2021, 06, 16),
+                EndDate = new LocalDate(2021, 07, 17),
                 Rate = decimal.Divide(WellKnownTestData.Stockists.KelbyTynan.Commission.Rate, 100),
                 Sales = new List<Sale>
                 {

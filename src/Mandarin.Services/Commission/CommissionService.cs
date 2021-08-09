@@ -8,6 +8,7 @@ using Mandarin.Common;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
+using NodaTime;
 
 namespace Mandarin.Services.Commission
 {
@@ -69,8 +70,8 @@ namespace Mandarin.Services.Commission
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
-                        StartDate = start,
-                        EndDate = end,
+                        StartDate = LocalDate.FromDateTime(start),
+                        EndDate = LocalDate.FromDateTime(end),
                         Rate = rate,
                         Sales = new List<Sale>().AsReadOnly(),
                         Subtotal = 0,
@@ -91,8 +92,8 @@ namespace Mandarin.Services.Commission
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
-                        StartDate = start,
-                        EndDate = end,
+                        StartDate = LocalDate.FromDateTime(start),
+                        EndDate = LocalDate.FromDateTime(end),
                         Rate = rate,
                         Sales = sales,
                         Subtotal = subtotal,
