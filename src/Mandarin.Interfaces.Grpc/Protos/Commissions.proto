@@ -1,5 +1,6 @@
 ﻿syntax = "proto3";
 
+import "google/type/date.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
@@ -45,8 +46,8 @@ message RecordOfSales {
   string name = 3; // Gets the artist's name.
   google.protobuf.StringValue emailAddress = 4; // Gets the email address to send the Record of Sales to.
   string customMessage = 5; // Gets the custom message to attach to the Record of Sales.
-  google.protobuf.Timestamp startDate = 6; // Gets the start date of transactions included in the Record of Sales.
-  google.protobuf.Timestamp endDate = 7; // Gets the end date of transactions included in the Record of Sales.
+  google.type.Date startDate = 6; // Gets the start date of transactions included in the Record of Sales.
+  google.type.Date endDate = 7; // Gets the end date of transactions included in the Record of Sales.
   double rate = 8; // Gets the commission rate for the Record of Sales.
   repeated Sale sales = 9; // Gets the list of all sales in the Record of Sales.
   double subtotal = 10; // Gets the total amount of money made by the sales (before commission).
