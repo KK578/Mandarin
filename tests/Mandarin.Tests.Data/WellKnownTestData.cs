@@ -8,6 +8,7 @@ using Mandarin.Stockists;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Newtonsoft.Json;
+using NodaTime;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
@@ -238,7 +239,7 @@ namespace Mandarin.Tests.Data
             public static readonly Transaction Transaction1 = new()
             {
                 ExternalTransactionId = ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"),
-                Timestamp = new DateTime(2021, 07, 14, 11, 54, 06, DateTimeKind.Utc),
+                Timestamp = Instant.FromUtc(2021, 07, 14, 11, 54, 06),
                 TotalAmount = 45.00M,
                 Subtransactions = new List<Subtransaction>
                 {

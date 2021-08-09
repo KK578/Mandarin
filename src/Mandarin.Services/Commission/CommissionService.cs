@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bashi.Core.Extensions;
@@ -30,7 +29,7 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(Instant start, Instant end)
         {
             var transactions = await this.transactionRepository.GetAllTransactionsAsync(start, end);
             var aggregateTransactions = transactions
@@ -70,8 +69,8 @@ namespace Mandarin.Services.Commission
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
-                        StartDate = LocalDate.FromDateTime(start),
-                        EndDate = LocalDate.FromDateTime(end),
+                        StartDate = start.InUtc().Date,
+                        EndDate = end.InUtc().Date,
                         Rate = rate,
                         Sales = new List<Sale>().AsReadOnly(),
                         Subtotal = 0,
@@ -92,8 +91,8 @@ namespace Mandarin.Services.Commission
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
-                        StartDate = LocalDate.FromDateTime(start),
-                        EndDate = LocalDate.FromDateTime(end),
+                        StartDate = start.InUtc().Date,
+                        EndDate = end.InUtc().Date,
                         Rate = rate,
                         Sales = sales,
                         Subtotal = subtotal,

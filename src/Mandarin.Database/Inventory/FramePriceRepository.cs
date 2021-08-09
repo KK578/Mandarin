@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,6 +6,7 @@ using Dapper;
 using Mandarin.Database.Common;
 using Mandarin.Inventory;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace Mandarin.Database.Inventory
 {
@@ -46,7 +46,7 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FramePrice> GetByProductCodeAsync(ProductCode productCode, DateTime activeSince)
+        public Task<FramePrice> GetByProductCodeAsync(ProductCode productCode, Instant activeSince)
         {
             return this.Get(productCode,
                             db =>

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Inventory;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Authorization;
+using NodaTime;
 using static Mandarin.Api.Inventory.FramePrices;
 using FramePrice = Mandarin.Api.Inventory.FramePrice;
 
@@ -43,7 +43,7 @@ namespace Mandarin.Grpc
         public override async Task<GetFramePriceResponse> GetFramePrice(GetFramePriceRequest request, ServerCallContext context)
         {
             var productCode = this.mapper.Map<ProductCode>(request.ProductCode);
-            var transactionTime = this.mapper.Map<DateTime>(request.TransactionTime);
+            var transactionTime = this.mapper.Map<Instant>(request.TransactionTime);
             var framePrice = await this.framePricesService.GetFramePriceAsync(productCode, transactionTime);
             return new GetFramePriceResponse
             {

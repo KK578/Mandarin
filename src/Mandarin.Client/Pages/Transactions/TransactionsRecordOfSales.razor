@@ -4,6 +4,7 @@
 @using Microsoft.Extensions.Options
 @using Mandarin.Client.ViewModels.Commissions
 @using Mandarin.Client.ViewModels
+@using NodaTime
 @inject IOptions<MandarinConfiguration> configuration;
 @inject ICommissionService commissionService;
 @inject IViewModelFactory viewModelFactory;
@@ -165,7 +166,7 @@
     try
     {
       IsLoading = true;
-      var recordOfSales = await commissionService.GetRecordOfSalesForPeriodAsync(StartDate, EndDate);
+      var recordOfSales = await commissionService.GetRecordOfSalesForPeriodAsync(Instant.FromDateTimeUtc(StartDate), Instant.FromDateTimeUtc(EndDate));
       RecordOfSales = recordOfSales.Select(x => viewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
     }
     finally

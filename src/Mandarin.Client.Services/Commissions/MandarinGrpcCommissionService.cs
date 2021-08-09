@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using Mandarin.Api.Commissions;
 using Mandarin.Commissions;
+using NodaTime;
 using static Mandarin.Api.Commissions.Commissions;
 using RecordOfSales = Mandarin.Commissions.RecordOfSales;
 
@@ -28,7 +28,7 @@ namespace Mandarin.Client.Services.Commissions
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(Instant start, Instant end)
         {
             var request = new GetRecordOfSalesForPeriodRequest
             {

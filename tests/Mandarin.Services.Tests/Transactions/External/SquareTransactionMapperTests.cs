@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
-using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Configuration;
 using Mandarin.Inventory;
@@ -11,6 +9,7 @@ using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
 using Microsoft.Extensions.Options;
 using Moq;
+using NodaTime;
 using Square.Models;
 using Xunit;
 
@@ -18,7 +17,8 @@ namespace Mandarin.Services.Tests.Transactions.External
 {
     public class SquareTransactionMapperTests
     {
-        private readonly DateTime orderDate = DateTime.Now;
+        private const string OrderDateString = "2021-08-01T14:12:13Z";
+        private static readonly Instant OrderDate = Instant.FromUtc(2021, 08, 01, 14, 12, 13);
 
         private readonly Mock<IProductRepository> productRepository;
         private readonly MandarinConfiguration configuration;
@@ -46,7 +46,7 @@ namespace Mandarin.Services.Tests.Transactions.External
 
         private void GivenFramePriceExists(Product product, FramePrice framePrice)
         {
-            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, this.orderDate)).ReturnsAsync(framePrice);
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, SquareTransactionMapperTests.OrderDate)).ReturnsAsync(framePrice);
             this.productRepository.Setup(x => x.GetProductAsync(ProductId.TlmFraming)).ReturnsAsync(WellKnownTestData.Products.TlmFraming);
         }
 
@@ -54,7 +54,7 @@ namespace Mandarin.Services.Tests.Transactions.External
         {
             this.configuration.ProductMappings.Add(new ProductMapping
             {
-                TransactionsAfterDate = this.orderDate.AddDays(-1),
+                TransactionsAfterDate = SquareTransactionMapperTests.OrderDate.Minus(Duration.FromDays(1)).ToDateTimeUtc(),
                 Mappings = new Dictionary<string, string> { { product.ProductCode.Value, mappedProduct.ProductCode.Value } },
             });
             this.GivenInventoryServiceSetUpWithProduct(mappedProduct);
@@ -74,7 +74,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                              MandarinFixture.Instance.NewString,
                              lineItems: lineItems,
                              netAmounts: new OrderMoneyAmounts(totalMoney: new Money(1000, "GBP")),
-                             createdAt: this.orderDate.ToString("O"));
+                             createdAt: SquareTransactionMapperTests.OrderDateString);
         }
 
         private Order GivenOrderProductWithDiscount(Product product)
@@ -99,7 +99,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                              lineItems: lineItems,
                              discounts: discounts,
                              netAmounts: new OrderMoneyAmounts(totalMoney: new Money(8000, "GBP")),
-                             createdAt: this.orderDate.ToString("O"));
+                             createdAt: SquareTransactionMapperTests.OrderDateString);
         }
 
         private Order GivenOrderProductAsReturn(Product product)
@@ -116,7 +116,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                              MandarinFixture.Instance.NewString,
                              returns: new List<OrderReturn> { new(returnLineItems: returns) },
                              netAmounts: new OrderMoneyAmounts(totalMoney: new Money(-1500, "GBP")),
-                             createdAt: this.orderDate.ToString("O"));
+                             createdAt: SquareTransactionMapperTests.OrderDateString);
         }
 
         public class MapToTransactionTests : SquareTransactionMapperTests
@@ -130,6 +130,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
 
                 transactions.Should().HaveCount(1);
+                transactions[0].Timestamp.Should().Be(SquareTransactionMapperTests.OrderDate);
                 transactions[0].TotalAmount.Should().Be(10.00m);
                 transactions[0].Subtransactions[0].Product.Should().Be(product);
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
@@ -233,7 +234,7 @@ namespace Mandarin.Services.Tests.Transactions.External
                                     .TotalMoney(new Money(500, "GBP"))
                                     .Build(),
                             })
-                            .CreatedAt(this.orderDate.ToString("O"))
+                            .CreatedAt(SquareTransactionMapperTests.OrderDateString)
                             .NetAmounts(new OrderMoneyAmounts.Builder().TotalMoney(new Money(1600, "GBP")).Build())
                             .Build();
 

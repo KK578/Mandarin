@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Mandarin.Commissions;
-using Mandarin.Inventory;
 using Mandarin.Services.Commission;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
-using Mandarin.Tests.Data.Extensions;
 using Mandarin.Transactions;
 using Moq;
+using NodaTime;
 using Xunit;
 
 namespace Mandarin.Services.Tests.Commission
 {
     public class CommissionServiceTests
     {
+        private static readonly Instant Start = Instant.FromUtc(2021, 06, 01, 00, 00, 00);
+        private static readonly Instant End = Instant.FromUtc(2021, 07, 01, 00, 00, 00);
+
         private readonly Mock<IStockistService> stockistService;
         private readonly Mock<ITransactionRepository> transactionRepository;
 
@@ -48,7 +48,7 @@ namespace Mandarin.Services.Tests.Commission
                     TransactionId = null,
                     ExternalTransactionId = null,
                     TotalAmount = 10.00M,
-                    Timestamp = DateTime.Now,
+                    Timestamp = Instant.FromUtc(2021, 06, 15, 12, 00, 00),
                     Subtransactions = new List<Subtransaction>
                     {
                         new()
@@ -70,7 +70,7 @@ namespace Mandarin.Services.Tests.Commission
                     TransactionId = null,
                     ExternalTransactionId = null,
                     TotalAmount = 50.00m,
-                    Timestamp = DateTime.Now,
+                    Timestamp = Instant.FromUtc(2021, 06, 15, 12, 10, 00),
                     Subtransactions = new List<Subtransaction>
                     {
                         new()
@@ -83,7 +83,7 @@ namespace Mandarin.Services.Tests.Commission
                 },
             };
 
-            this.transactionRepository.Setup(x => x.GetAllTransactionsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+            this.transactionRepository.Setup(x => x.GetAllTransactionsAsync(CommissionServiceTests.Start, CommissionServiceTests.End))
                 .ReturnsAsync(transactions.AsReadOnly());
         }
 
@@ -95,7 +95,7 @@ namespace Mandarin.Services.Tests.Commission
                 this.GivenTlmStockistExists();
                 this.GivenTransactionServiceReturnsData();
 
-                var actual = await this.Subject.GetRecordOfSalesForPeriodAsync(DateTime.Now, DateTime.Now);
+                var actual = await this.Subject.GetRecordOfSalesForPeriodAsync(CommissionServiceTests.Start, CommissionServiceTests.End);
 
                 actual.Should().HaveCount(1);
                 using (new AssertionScope())

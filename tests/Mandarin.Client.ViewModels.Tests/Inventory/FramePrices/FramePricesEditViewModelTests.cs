@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,14 +12,13 @@ using Mandarin.Inventory;
 using Mandarin.Tests.Data;
 using Microsoft.AspNetCore.Components;
 using Moq;
+using NodaTime;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePricesEditViewModelTests
     {
-        private static readonly DateTime OriginalCommissionDate = new(2021, 06, 10);
-
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IProductRepository> productRepository = new();
@@ -47,7 +45,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         private void GivenServicesReturnProduct(FramePrice framePrice, Product product)
         {
             this.productRepository.Setup(x => x.GetProductAsync(product.ProductCode)).ReturnsAsync(product);
-            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>())).ReturnsAsync(framePrice);
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<Instant>())).ReturnsAsync(framePrice);
         }
 
 

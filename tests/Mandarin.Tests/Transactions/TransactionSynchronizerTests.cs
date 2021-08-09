@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Dapper;
 using FluentAssertions;
 using Mandarin.Database;
@@ -51,8 +50,9 @@ namespace Mandarin.Tests.Transactions
         [Fact]
         public async Task ShouldUpdateTheTransactionIfItIsInADifferentState()
         {
+            var anotherInstant = MandarinFixture.Instance.NewInstant;
             await this.GivenTransactionTableIsEmptyAsync();
-            await this.transactionRepository.SaveTransactionAsync(WellKnownTestData.Transactions.Transaction1 with { Timestamp = DateTime.Now });
+            await this.transactionRepository.SaveTransactionAsync(WellKnownTestData.Transactions.Transaction1 with { Timestamp = anotherInstant });
             await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
             var transaction = await this.transactionRepository.GetTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
 

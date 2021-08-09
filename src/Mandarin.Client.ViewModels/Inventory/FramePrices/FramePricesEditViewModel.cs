@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
@@ -74,7 +75,8 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
         private async Task OnLoadData(ProductCode productCode)
         {
-            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, DateTime.Now);
+            var instant = Instant.FromDateTimeUtc(DateTime.UtcNow);
+            var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, instant);
             var product = await this.productRepository.GetProductAsync(productCode);
             this.FramePrice = new FramePriceViewModel(existingFramePrice, product);
         }

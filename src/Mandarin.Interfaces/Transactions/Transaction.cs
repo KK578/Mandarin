@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Mandarin.Transactions.External;
+using NodaTime;
 
 namespace Mandarin.Transactions
 {
@@ -27,7 +27,7 @@ namespace Mandarin.Transactions
         /// <summary>
         /// Gets the time that this transaction was last updated.
         /// </summary>
-        public DateTime Timestamp { get; init; }
+        public Instant Timestamp { get; init; }
 
         /// <summary>
         /// Gets the list of all subtransactions that form this transaction.

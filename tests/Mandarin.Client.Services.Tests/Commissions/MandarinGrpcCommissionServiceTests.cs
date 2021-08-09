@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -17,6 +16,9 @@ namespace Mandarin.Client.Services.Tests.Commissions
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class MandarinGrpcCommissionServiceTests : MandarinGrpcIntegrationTestsBase
     {
+        private static readonly Instant Start = Instant.FromUtc(2021, 06, 16, 00, 00, 00);
+        private static readonly Instant End = Instant.FromUtc(2021, 07, 17, 00, 00, 00);
+
         private readonly RecordOfSales kelbyTynanRecordOfSales;
 
         public MandarinGrpcCommissionServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
@@ -56,7 +58,7 @@ namespace Mandarin.Client.Services.Tests.Commissions
         [Fact]
         public async Task ShouldBeAbleToRetrieveEntriesForRecordsOfSales()
         {
-            var recordOfSales = await this.Subject.GetRecordOfSalesForPeriodAsync(new DateTime(2021, 06, 16), new DateTime(2021, 07, 17));
+            var recordOfSales = await this.Subject.GetRecordOfSalesForPeriodAsync(MandarinGrpcCommissionServiceTests.Start, MandarinGrpcCommissionServiceTests.End);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
             salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.kelbyTynanRecordOfSales);

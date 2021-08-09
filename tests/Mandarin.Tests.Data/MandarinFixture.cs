@@ -5,6 +5,7 @@ using Mandarin.Inventory;
 using Mandarin.Tests.Data.Extensions;
 using Mandarin.Transactions;
 using MicroElements.AutoFixture.NodaTime;
+using NodaTime;
 
 namespace Mandarin.Tests.Data
 {
@@ -18,6 +19,8 @@ namespace Mandarin.Tests.Data
         }
 
         public Exception NewException => this.Create<Exception>();
+
+        public Instant NewInstant => this.Create<Instant>();
 
         public Product NewProduct => this.Create<Product>();
 
