@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using NodaTime;
 
 namespace Mandarin.Database.Transactions
 {
@@ -16,7 +16,7 @@ namespace Mandarin.Database.Transactions
         public int transaction_id { get; init; }
         public string external_transaction_id { get; init; }
         public decimal? total_amount { get; init; }
-        public DateTime timestamp { get; init; }
+        public Instant timestamp { get; init; }
         public IReadOnlyList<SubtransactionRecord> Subtransactions { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using NodaTime;
 
 namespace Mandarin.Database.Inventory
 {
@@ -14,7 +14,7 @@ namespace Mandarin.Database.Inventory
     {
         public string product_code { get; init; }
         public decimal amount { get; init; }
-        public DateTime created_at { get; init; }
-        public DateTime? active_until { get; init; }
+        public Instant created_at { get; init; }
+        public Instant? active_until { get; init; }
     }
 }
