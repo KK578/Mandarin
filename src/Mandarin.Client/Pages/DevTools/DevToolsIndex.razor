@@ -1,4 +1,5 @@
 ﻿@page "/devtools"
+@using NodaTime
 @inherits ReactiveInjectableComponentBase<IDevToolsIndexPageViewModel>
 
 <Card>
@@ -12,11 +13,33 @@
         <ReactiveButton ReactiveCommand="@ViewModel!.SynchronizeProducts" Color="Color.Danger">Update Products</ReactiveButton>
       </ListGroupItem>
       <ListGroupItem>
-        <Paragraph>Click the button to ensure all transactions between @(ViewModel!.StartDate?.ToShortDateString()) and @(ViewModel!.EndDate?.ToShortDateString()) are up to date.</Paragraph>
-        <DateEdit @bind-Date="@ViewModel!.StartDate" />
-        <DateEdit @bind-Date="@ViewModel!.EndDate" />
+        <Paragraph>Click the button to ensure all transactions between @(ViewModel!.StartDate) and @(ViewModel!.EndDate) are up to date.</Paragraph>
+        <DateEdit @bind-Date="@StartDateTime" />
+        <DateEdit @bind-Date="@EndDateTime" />
         <ReactiveButton ReactiveCommand="@ViewModel!.SynchronizeTransactions" Color="Color.Danger">Update Transactions</ReactiveButton>
       </ListGroupItem>
     </ListGroup>
   </CardBody>
 </Card>
+
+@code {
+
+  /// <summary>
+  /// Gets or sets the Start DateTime for transaction synchronization.
+  /// </summary>
+  private DateTime StartDateTime
+  {
+    get => ViewModel!.StartDate.ToDateTimeUnspecified();
+    set => ViewModel!.StartDate = LocalDate.FromDateTime(value);
+  }
+
+  /// <summary>
+  /// Gets or sets the End DateTime for transaction synchronization.
+  /// </summary>
+  private DateTime EndDateTime
+  {
+    get => ViewModel!.EndDate.ToDateTimeUnspecified();
+    set => ViewModel!.EndDate = LocalDate.FromDateTime(value);
+  }
+
+}

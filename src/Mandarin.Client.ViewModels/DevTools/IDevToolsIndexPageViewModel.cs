@@ -1,5 +1,5 @@
-﻿using System;
-using System.Reactive;
+﻿using System.Reactive;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.DevTools
@@ -22,11 +22,11 @@ namespace Mandarin.Client.ViewModels.DevTools
         /// <summary>
         /// Gets or sets the start date for synchronizing transactions.
         /// </summary>
-        DateTime? StartDate { get; set; }
+        LocalDate StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets the end date for synchronizing transactions.
         /// </summary>
-        DateTime? EndDate { get; set; }
+        LocalDate EndDate { get; set; }
     }
 }

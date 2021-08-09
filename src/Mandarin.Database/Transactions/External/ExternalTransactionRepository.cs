@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,6 +6,7 @@ using Dapper;
 using Mandarin.Database.Common;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace Mandarin.Database.Transactions.External
 {
@@ -51,7 +51,7 @@ namespace Mandarin.Database.Transactions.External
         }
 
         /// <inheritdoc />
-        public Task<ExternalTransaction> GetExternalTransactionAsync(ExternalTransactionId externalTransactionId, DateTime updatedAt)
+        public Task<ExternalTransaction> GetExternalTransactionAsync(ExternalTransactionId externalTransactionId, Instant updatedAt)
         {
             return this.Get(externalTransactionId,
                             db =>

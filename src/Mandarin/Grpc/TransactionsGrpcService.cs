@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Hangfire;
 using Mandarin.Transactions.External;
 using Microsoft.AspNetCore.Authorization;
+using NodaTime;
 using static Mandarin.Api.Transactions.Transactions;
 using Transaction = Mandarin.Api.Transactions;
 
@@ -31,8 +31,8 @@ namespace Mandarin.Grpc
         /// <inheritdoc />
         public override Task<Transaction.SynchronizeTransactionsResponse> SynchronizeTransactions(Transaction.SynchronizeTransactionsRequest request, ServerCallContext context)
         {
-            var start = this.mapper.Map<DateTime>(request.Start);
-            var end = this.mapper.Map<DateTime>(request.End);
+            var start = this.mapper.Map<LocalDate>(request.Start);
+            var end = this.mapper.Map<LocalDate>(request.End);
             this.jobs.Enqueue<ITransactionSynchronizer>(s => s.LoadExternalTransactions(start, end));
 
             return Task.FromResult(new Transaction.SynchronizeTransactionsResponse());

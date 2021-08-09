@@ -65,7 +65,7 @@ namespace Mandarin.Database.Transactions
         {
             // TODO: The base repository doesn't support get many with query semantics...
             var all = await this.GetAll();
-            return all.Where(x => x.Timestamp >= start && x.Timestamp <= end).AsReadOnlyList();
+            return all.Where(x => x.Timestamp >= start && x.Timestamp < end).AsReadOnlyList();
         }
 
         /// <inheritdoc/>

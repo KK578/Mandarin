@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using NodaTime;
 
 namespace Mandarin.Transactions.External
 {
@@ -21,9 +21,9 @@ namespace Mandarin.Transactions.External
         /// If no match is found, returns null.
         /// </summary>
         /// <param name="externalTransactionId">The unique transaction id to be searched for.</param>
-        /// <param name="updatedAt">The update time for the transaction.</param>
+        /// <param name="updatedAt">The update timestamp for the transaction.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing either the matched <see cref="ExternalTransaction"/> or null.</returns>
-        Task<ExternalTransaction> GetExternalTransactionAsync(ExternalTransactionId externalTransactionId, DateTime updatedAt);
+        Task<ExternalTransaction> GetExternalTransactionAsync(ExternalTransactionId externalTransactionId, Instant updatedAt);
 
         /// <summary>
         /// Saves the provided <see cref="ExternalTransaction"/>, and returns the new version of the

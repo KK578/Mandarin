@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reactive;
+﻿using System.Reactive;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
 using Mandarin.Transactions.External;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.DevTools
@@ -12,19 +12,21 @@ namespace Mandarin.Client.ViewModels.DevTools
     {
         private readonly IProductSynchronizer productSynchronizer;
         private readonly ITransactionSynchronizer transactionSynchronizer;
-        private DateTime? startDate;
-        private DateTime? endDate;
+        private LocalDate startDate;
+        private LocalDate endDate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DevToolsIndexPageViewModel"/> class.
         /// </summary>
         /// <param name="productSynchronizer">The service to force synchronization of products.</param>
         /// <param name="transactionSynchronizer">The service to force synchronization of transactions.</param>
+        /// <param name="clock">The application clock instance.</param>
         public DevToolsIndexPageViewModel(IProductSynchronizer productSynchronizer,
-                                          ITransactionSynchronizer transactionSynchronizer)
+                                          ITransactionSynchronizer transactionSynchronizer,
+                                          IClock clock)
         {
-            this.StartDate = DateTime.Today.AddMonths(-1);
-            this.EndDate = DateTime.Today;
+            this.StartDate = clock.GetCurrentInstant().InUtc().Date.Minus(Period.FromMonths(1));
+            this.EndDate = clock.GetCurrentInstant().InUtc().Date;
 
             this.productSynchronizer = productSynchronizer;
             this.transactionSynchronizer = transactionSynchronizer;
@@ -40,14 +42,14 @@ namespace Mandarin.Client.ViewModels.DevTools
         public ReactiveCommand<Unit, Unit> SynchronizeTransactions { get; }
 
         /// <inheritdoc />
-        public DateTime? StartDate
+        public LocalDate StartDate
         {
             get => this.startDate;
             set => this.RaiseAndSetIfChanged(ref this.startDate, value);
         }
 
         /// <inheritdoc />
-        public DateTime? EndDate
+        public LocalDate EndDate
         {
             get => this.endDate;
             set => this.RaiseAndSetIfChanged(ref this.endDate, value);
@@ -57,9 +59,7 @@ namespace Mandarin.Client.ViewModels.DevTools
 
         private Task DoSynchronizeTransactions()
         {
-            var start = this.StartDate ?? throw new Exception("Cannot synchronize with null start date.");
-            var end = this.EndDate ?? throw new Exception("Cannot synchronize with null end date.");
-            return this.transactionSynchronizer.LoadExternalTransactions(start, end);
+            return this.transactionSynchronizer.LoadExternalTransactions(this.StartDate, this.EndDate);
         }
     }
 }

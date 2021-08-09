@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NodaTime;
 using Square.Models;
 
 namespace Mandarin.Services.Transactions.External
@@ -16,6 +17,6 @@ namespace Mandarin.Services.Transactions.External
         /// <param name="start">The start datetime to query transactions for.</param>
         /// <param name="end">The end datetime to query transactions for.</param>
         /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of all Square orders.</returns>
-        IObservable<Order> GetAllOrders(DateTime start, DateTime end);
+        IObservable<Order> GetAllOrders(LocalDate start, LocalDate end);
     }
 }

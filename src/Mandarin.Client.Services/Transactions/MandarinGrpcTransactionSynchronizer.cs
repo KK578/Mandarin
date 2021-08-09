@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
-using Google.Protobuf.WellKnownTypes;
+using Google.Type;
 using Mandarin.Api.Transactions;
 using Mandarin.Transactions.External;
+using NodaTime;
 using static Mandarin.Api.Transactions.Transactions;
 
 namespace Mandarin.Client.Services.Transactions
@@ -26,20 +28,28 @@ namespace Mandarin.Client.Services.Transactions
         }
 
         /// <inheritdoc />
-        public async Task LoadExternalTransactions(DateTime start, DateTime end)
+        public Task LoadExternalTransactionsInPastDay() => throw MandarinGrpcTransactionSynchronizer.UnsupportedException();
+
+        /// <inheritdoc />
+        public Task LoadExternalTransactionsInPast2Months() => throw MandarinGrpcTransactionSynchronizer.UnsupportedException();
+
+        /// <inheritdoc />
+        public async Task LoadExternalTransactions(LocalDate start, LocalDate end)
         {
             var request = new SynchronizeTransactionsRequest
             {
-                Start = this.mapper.Map<Timestamp>(start),
-                End = this.mapper.Map<Timestamp>(end),
+                Start = this.mapper.Map<Date>(start),
+                End = this.mapper.Map<Date>(end),
             };
             await this.transactionsClient.SynchronizeTransactionsAsync(request);
         }
 
         /// <inheritdoc />
-        public Task SynchronizeTransactionAsync(ExternalTransactionId externalTransactionId)
+        public Task SynchronizeTransactionAsync(ExternalTransactionId externalTransactionId) => throw MandarinGrpcTransactionSynchronizer.UnsupportedException();
+
+        private static Exception UnsupportedException([CallerMemberName] string callerMethod = null)
         {
-            throw new NotSupportedException("Mandarin API does not support synchronizing on a transaction basis.");
+            return new NotSupportedException($"Mandarin API does not support {callerMethod}.");
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +7,8 @@ using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NodaTime;
+using NodaTime.Text;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
@@ -21,6 +22,7 @@ namespace Mandarin.Services.Transactions.External
         private readonly IExternalTransactionRepository externalTransactionRepository;
         private readonly ITransactionRepository transactionRepository;
         private readonly ISquareTransactionMapper squareTransactionMapper;
+        private readonly IClock clock;
         private readonly SemaphoreSlim semaphore;
 
         /// <summary>
@@ -31,22 +33,41 @@ namespace Mandarin.Services.Transactions.External
         /// <param name="externalTransactionRepository">The application repository for interacting with external transactions.</param>
         /// <param name="transactionRepository">The application repository for interacting with transactions.</param>
         /// <param name="squareTransactionMapper">The service to map Square orders to a Transaction.</param>
+        /// <param name="clock">The application clock instance.</param>
         public SquareTransactionSynchronizer(ILogger<SquareTransactionSynchronizer> logger,
                                              ISquareTransactionService squareTransactionService,
                                              IExternalTransactionRepository externalTransactionRepository,
                                              ITransactionRepository transactionRepository,
-                                             ISquareTransactionMapper squareTransactionMapper)
+                                             ISquareTransactionMapper squareTransactionMapper,
+                                             IClock clock)
         {
             this.logger = logger;
             this.squareTransactionService = squareTransactionService;
             this.externalTransactionRepository = externalTransactionRepository;
             this.transactionRepository = transactionRepository;
             this.squareTransactionMapper = squareTransactionMapper;
+            this.clock = clock;
             this.semaphore = new SemaphoreSlim(1);
         }
 
+        /// <inheritdoc />
+        public Task LoadExternalTransactionsInPastDay()
+        {
+            var yesterday = this.clock.GetCurrentInstant().InUtc().Date.PlusDays(-1);
+            var today = this.clock.GetCurrentInstant().InUtc().Date;
+            return this.LoadExternalTransactions(yesterday, today);
+        }
+
+        /// <inheritdoc />
+        public Task LoadExternalTransactionsInPast2Months()
+        {
+            var yesterday = this.clock.GetCurrentInstant().InUtc().Date.Minus(Period.FromMonths(1)).With(DateAdjusters.StartOfMonth);
+            var today = this.clock.GetCurrentInstant().InUtc().Date;
+            return this.LoadExternalTransactions(yesterday, today);
+        }
+
         /// <inheritdoc/>
-        public async Task LoadExternalTransactions(DateTime start, DateTime end)
+        public async Task LoadExternalTransactions(LocalDate start, LocalDate end)
         {
             await this.semaphore.WaitAsync();
             var processCount = 0;
@@ -56,7 +77,7 @@ namespace Mandarin.Services.Transactions.External
                 foreach (var order in orders)
                 {
                     var transactionId = ExternalTransactionId.Of(order.Id);
-                    var lastUpdated = DateTime.Parse(order.UpdatedAt);
+                    var lastUpdated = InstantPattern.General.Parse(order.UpdatedAt).GetValueOrThrow();
                     var externalTransaction = await this.externalTransactionRepository.GetExternalTransactionAsync(transactionId, lastUpdated);
 
                     if (externalTransaction is null)
@@ -64,7 +85,7 @@ namespace Mandarin.Services.Transactions.External
                         await this.externalTransactionRepository.SaveExternalTransactionAsync(new ExternalTransaction
                         {
                             ExternalTransactionId = transactionId,
-                            CreatedAt = DateTime.Parse(order.CreatedAt),
+                            CreatedAt = InstantPattern.General.Parse(order.CreatedAt).GetValueOrThrow(),
                             UpdatedAt = lastUpdated,
                             RawData = JsonConvert.SerializeObject(order),
                         });

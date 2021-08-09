@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Hangfire;
 using Hangfire.Common;
@@ -12,13 +10,16 @@ using Mandarin.Grpc;
 using Mandarin.Grpc.Converters;
 using Mandarin.Transactions.External;
 using Moq;
+using NodaTime;
+using NodaTime.Serialization.Protobuf;
 using Xunit;
 
 namespace Mandarin.Tests.Grpc
 {
     public class TransactionsGrpcServiceTests
     {
-        private static readonly DateTime Date = new(2021, 06, 01, 00, 00, 00, DateTimeKind.Utc);
+        private static readonly LocalDate Start = new(2021, 06, 01);
+        private static readonly LocalDate End = new(2021, 07, 01);
 
         private readonly IMapper mapper;
         private readonly Mock<IBackgroundJobClient> backgroundJobClient = new();
@@ -47,15 +48,15 @@ namespace Mandarin.Tests.Grpc
                 var jobTask = this.GivenHangfireCapturesJob();
                 var request = new SynchronizeTransactionsRequest
                 {
-                    Start = Timestamp.FromDateTime(TransactionsGrpcServiceTests.Date),
-                    End = Timestamp.FromDateTime(TransactionsGrpcServiceTests.Date.AddDays(1)),
+                    Start = TransactionsGrpcServiceTests.Start.ToDate(),
+                    End = TransactionsGrpcServiceTests.End.ToDate(),
                 };
                 await this.subject.SynchronizeTransactions(request, Mock.Of<ServerCallContext>());
 
                 var job = await jobTask;
                 job.Type.Should().Be<ITransactionSynchronizer>();
                 job.Method.Name.Should().Be(nameof(ITransactionSynchronizer.LoadExternalTransactions));
-                job.Args.Should().BeEquivalentTo(TransactionsGrpcServiceTests.Date, TransactionsGrpcServiceTests.Date.AddDays(1));
+                job.Args.Should().BeEquivalentTo(TransactionsGrpcServiceTests.Start, TransactionsGrpcServiceTests.End);
             }
         }
     }
