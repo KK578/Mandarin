@@ -231,9 +231,10 @@ namespace Mandarin.Services.Transactions.External
 
             Task<Product> MapProduct(Product originalProduct)
             {
+                var orderDateTime = orderDate.ToDateTimeUtc();
                 foreach (var mapping in this.mandarinConfiguration.Value.ProductMappings)
                 {
-                    if (orderDate.ToDateTimeUtc() > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
+                    if (orderDateTime > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
                     {
                         var mappedProductCode = ProductCode.Of(mapping.Mappings[originalProduct.ProductCode.Value]);
                         return this.productRepository.GetProductAsync(mappedProductCode);
