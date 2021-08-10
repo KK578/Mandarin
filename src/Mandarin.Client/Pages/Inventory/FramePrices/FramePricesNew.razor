@@ -29,7 +29,7 @@
                           Filter="AutocompleteFilter.Contains"/>
           </Field>
         </Validation>
-        <ValidatedDateEdit For="() => FramePrice.CreatedAt" @bind-Date="@FramePrice.CreatedAt" Label="Active From" />
+        <ValidatedInstantEdit For="() => FramePrice.CreatedAt" @bind-Date="@FramePrice.CreatedAt" Label="Active From" />
         <Fields>
           <ValidatedNumericEdit For="() => FramePrice.FramePrice" @bind-Value="@FramePrice.FramePrice"
                                 ColumnSize="ColumnSize.Is4" Label="Frame Price" AddonLabel="£"

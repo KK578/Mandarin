@@ -13,6 +13,7 @@ using Mandarin.Grpc.Converters;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
 
 namespace Mandarin.Client
 {
@@ -42,6 +43,7 @@ namespace Mandarin.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            builder.Services.AddSingleton<IClock>(SystemClock.Instance);
             builder.Services.Configure<MandarinConfiguration>(builder.Configuration.GetSection("Mandarin"));
             builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
             builder.Services.AddOidcAuthentication(options =>
