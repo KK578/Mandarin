@@ -5,6 +5,7 @@ using Mandarin.Commissions;
 using Mandarin.Common;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Tests.Data.Extensions;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Newtonsoft.Json;
@@ -12,6 +13,8 @@ using NodaTime;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
+// ReSharper disable StringLiteralTypo
+// ReSharper disable IdentifierTypo
 namespace Mandarin.Tests.Data
 {
     public static class WellKnownTestData
@@ -71,7 +74,7 @@ namespace Mandarin.Tests.Data
                 ProductName = ProductName.Of("Clementine (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 45.00M,
-                LastUpdated = new DateTime(2021, 01, 31, 22, 51, 49, 569),
+                LastUpdated = Instant.FromUtc(2021, 01, 31, 22, 51, 49).PlusMilliseconds(569),
             };
 
             public static readonly Product ClementineFramed = new()
@@ -82,7 +85,7 @@ namespace Mandarin.Tests.Data
                 ProductName = ProductName.Of("Clementine (Framed) (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 95.00M,
-                LastUpdated = new DateTime(2021, 01, 31, 22, 48, 44, 608),
+                LastUpdated = Instant.FromUtc(2021, 01, 31, 22, 48, 44).PlusMilliseconds(608),
             };
 
             public static readonly Product GiftCard = new()
@@ -214,9 +217,9 @@ namespace Mandarin.Tests.Data
 
         public static class Square
         {
-            public class CatalogApi
+            public static class CatalogApi
             {
-                public class SearchCatalogObjects
+                public static class SearchCatalogObjects
                 {
                     public static SearchCatalogObjectsResponse Page1 => WellKnownTestData.DeserializeFromFile<SearchCatalogObjectsResponse>("TestData/Square/CatalogApi/SearchCatalogObjects.1.json");
 
@@ -224,9 +227,9 @@ namespace Mandarin.Tests.Data
                 }
             }
 
-            public class OrdersApi
+            public static class OrdersApi
             {
-                public class SearchOrders
+                public static class SearchOrders
                 {
                     public const string SearchOrdersPage1 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.1.json";
                     public const string SearchOrdersPage2 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.2.json";
