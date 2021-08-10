@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using Mandarin.Commissions;
 using Mandarin.Common;
 using Mandarin.Stockists;
 using Microsoft.AspNetCore.Components;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Artists
@@ -21,6 +21,7 @@ namespace Mandarin.Client.ViewModels.Artists
         private readonly IStockistService stockistService;
         private readonly NavigationManager navigationManager;
         private readonly IValidator<IArtistViewModel> validator;
+        private readonly IClock clock;
 
         private ValidationResult validationResult;
 
@@ -30,26 +31,29 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the Stockist to ensure it can be saved.</param>
-        public ArtistsNewViewModel(IStockistService stockistService, NavigationManager navigationManager, IValidator<IArtistViewModel> validator)
+        /// <param name="clock">The application clock instance.</param>
+        public ArtistsNewViewModel(IStockistService stockistService, NavigationManager navigationManager, IValidator<IArtistViewModel> validator, IClock clock)
         {
             this.stockistService = stockistService;
             this.navigationManager = navigationManager;
             this.validator = validator;
+            this.clock = clock;
 
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
             this.Cancel = ReactiveCommand.Create(this.OnCancel);
 
-            this.Stockist = new ArtistViewModel(new Stockist
+            var stockist = new Stockist
             {
                 StatusCode = StatusMode.Active,
                 Details = new StockistDetail(),
                 Commission = new Commission
                 {
                     Rate = 100,
-                    StartDate = DateTime.Now.Date,
-                    EndDate = DateTime.Now.AddDays(90).Date,
+                    StartDate = clock.GetCurrentInstant().InUtc().Date,
+                    EndDate = clock.GetCurrentInstant().InUtc().Date.PlusDays(90),
                 },
-            });
+            };
+            this.Stockist = new ArtistViewModel(stockist, clock);
             this.Statuses = EnumUtil.GetValues<StatusMode>().Except(new[] { StatusMode.Unknown }).AsReadOnlyList();
         }
 

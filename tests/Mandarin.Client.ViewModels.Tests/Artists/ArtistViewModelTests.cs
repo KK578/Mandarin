@@ -2,6 +2,8 @@
 using Mandarin.Client.ViewModels.Artists;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Data.Extensions;
+using Moq;
+using NodaTime;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Artists
@@ -11,7 +13,8 @@ namespace Mandarin.Client.ViewModels.Tests.Artists
         [Fact]
         public void ShouldRoundTripAnExistingStockist()
         {
-            var subject = new ArtistViewModel(WellKnownTestData.Stockists.OthilieMapples);
+            var clock = Mock.Of<IClock>();
+            var subject = new ArtistViewModel(WellKnownTestData.Stockists.OthilieMapples, clock);
             subject.ToStockist().Should().MatchStockist(WellKnownTestData.Stockists.OthilieMapples);
         }
     }

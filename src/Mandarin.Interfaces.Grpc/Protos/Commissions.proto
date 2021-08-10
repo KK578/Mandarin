@@ -33,8 +33,8 @@ message GetRecordOfSalesForPeriodResponse {
 message Commission {
   int32 commissionId = 1; // Gets the commission's Database ID.
   int32 stockistId = 2; // Gets the related stockist ID related to this commission.
-  google.protobuf.Timestamp startDate = 3; // Gets the start date for this commission.
-  google.protobuf.Timestamp endDate = 4; // Gets the end date for this commission.
+  google.type.Date startDate = 3; // Gets the start date for this commission.
+  google.type.Date endDate = 4; // Gets the end date for this commission.
   google.protobuf.Int32Value rate = 5; //  Gets the agreed commission rate in percentage as an integer.
   google.protobuf.Timestamp insertedAt = 6; // Gets the time that this commission was created at.
 }

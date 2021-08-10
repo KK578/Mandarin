@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Mandarin.Commissions;
 using Mandarin.Common;
@@ -133,10 +132,10 @@ namespace Mandarin.Tests.Data
                 {
                     CommissionId = CommissionId.Of(1),
                     StockistId = StockistId.Of(1),
-                    StartDate = new DateTime(2019, 08, 23),
-                    EndDate = new DateTime(2019, 11, 23),
+                    StartDate = new LocalDate(2019, 08, 23),
+                    EndDate = new LocalDate(2019, 11, 23),
                     Rate = 10,
-                    InsertedAt = new DateTime(2019, 08, 23, 17, 36, 24, DateTimeKind.Utc),
+                    InsertedAt = Instant.FromUtc(2019, 08, 23, 17, 36, 24),
                 },
             };
 
@@ -162,10 +161,10 @@ namespace Mandarin.Tests.Data
                 {
                     CommissionId = CommissionId.Of(4),
                     StockistId = StockistId.Of(4),
-                    StartDate = new DateTime(2019, 01, 16),
-                    EndDate = new DateTime(2019, 04, 16),
+                    StartDate = new LocalDate(2019, 01, 16),
+                    EndDate = new LocalDate(2019, 04, 16),
                     Rate = 40,
-                    InsertedAt = new DateTime(2019, 01, 16, 17, 36, 24, DateTimeKind.Utc),
+                    InsertedAt = Instant.FromUtc(2019, 01, 16, 17, 36, 24),
                 },
             };
 
@@ -187,8 +186,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    StartDate = new DateTime(2019, 11, 28),
-                    EndDate = new DateTime(2020, 06, 09),
+                    StartDate = new LocalDate(2019, 11, 28),
+                    EndDate = new LocalDate(2020, 06, 09),
                     Rate = 20,
                 },
             };
@@ -208,8 +207,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    StartDate = new DateTime(2019, 11, 28),
-                    EndDate = new DateTime(2021, 07, 09),
+                    StartDate = new LocalDate(2019, 11, 28),
+                    EndDate = new LocalDate(2021, 07, 09),
                     Rate = 10,
                 },
             };

@@ -9,6 +9,7 @@ using FluentValidation.Results;
 using Mandarin.Common;
 using Mandarin.Stockists;
 using Microsoft.AspNetCore.Components;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Artists
@@ -19,6 +20,7 @@ namespace Mandarin.Client.ViewModels.Artists
         private readonly IStockistService stockistService;
         private readonly NavigationManager navigationManager;
         private readonly IValidator<IArtistViewModel> validator;
+        private readonly IClock clock;
         private readonly ObservableAsPropertyHelper<bool> isLoading;
 
         private IArtistViewModel stockist;
@@ -30,11 +32,16 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the Stockist to ensure it can be saved.</param>
-        public ArtistsEditViewModel(IStockistService stockistService, NavigationManager navigationManager, IValidator<IArtistViewModel> validator)
+        /// <param name="clock">The application clock instance.</param>
+        public ArtistsEditViewModel(IStockistService stockistService,
+                                    NavigationManager navigationManager,
+                                    IValidator<IArtistViewModel> validator,
+                                    IClock clock)
         {
             this.stockistService = stockistService;
             this.navigationManager = navigationManager;
             this.validator = validator;
+            this.clock = clock;
 
             this.LoadData = ReactiveCommand.CreateFromTask<StockistCode>(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
@@ -76,7 +83,7 @@ namespace Mandarin.Client.ViewModels.Artists
         private async Task OnLoadData(StockistCode stockistCode)
         {
             var existingStockist = await this.stockistService.GetStockistByCodeAsync(stockistCode);
-            this.Stockist = new ArtistViewModel(existingStockist);
+            this.Stockist = new ArtistViewModel(existingStockist, this.clock);
         }
 
         private async Task OnSave()

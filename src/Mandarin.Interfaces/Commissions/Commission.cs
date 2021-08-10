@@ -1,5 +1,5 @@
-﻿using System;
-using Mandarin.Stockists;
+﻿using Mandarin.Stockists;
+using NodaTime;
 
 namespace Mandarin.Commissions
 {
@@ -21,12 +21,12 @@ namespace Mandarin.Commissions
         /// <summary>
         /// Gets the start date for this commission.
         /// </summary>
-        public DateTime StartDate { get; init; }
+        public LocalDate StartDate { get; init; }
 
         /// <summary>
         /// Gets the end date for this commission.
         /// </summary>
-        public DateTime EndDate { get; init; }
+        public LocalDate EndDate { get; init; }
 
         /// <summary>
         /// Gets the agreed commission rate group for this commission.
@@ -36,6 +36,6 @@ namespace Mandarin.Commissions
         /// <summary>
         /// Gets the time that this commission was created at.
         /// </summary>
-        public DateTime? InsertedAt { get; init; }
+        public Instant? InsertedAt { get; init; }
     }
 }
