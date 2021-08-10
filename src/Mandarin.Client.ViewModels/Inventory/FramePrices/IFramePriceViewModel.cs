@@ -1,5 +1,6 @@
 ﻿using System;
 using Mandarin.Inventory;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
@@ -37,7 +38,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <summary>
         /// Gets or sets the timestamp at which the frame price should be considered as active.
         /// </summary>
-        DateTime? CreatedAt { get; set; }
+        Instant CreatedAt { get; set; }
 
         /// <summary>
         /// Builds the complete <see cref="Mandarin.Inventory.FramePrice"/> from the current values in the ViewModel.

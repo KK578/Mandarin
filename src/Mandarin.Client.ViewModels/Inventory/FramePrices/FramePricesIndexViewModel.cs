@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Mandarin.Client.ViewModels.Shared;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
+using NodaTime;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 {
@@ -13,6 +14,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly IFramePricesService framePricesService;
         private readonly IProductRepository productRepository;
         private readonly NavigationManager navigationManager;
+        private readonly IClock clock;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePricesIndexViewModel"/> class.
@@ -20,11 +22,16 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
         /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public FramePricesIndexViewModel(IFramePricesService framePricesService, IProductRepository productRepository, NavigationManager navigationManager)
+        /// <param name="clock">The application clock instance.</param>
+        public FramePricesIndexViewModel(IFramePricesService framePricesService,
+                                         IProductRepository productRepository,
+                                         NavigationManager navigationManager,
+                                         IClock clock)
         {
             this.framePricesService = framePricesService;
             this.productRepository = productRepository;
             this.navigationManager = navigationManager;
+            this.clock = clock;
         }
 
         /// <inheritdoc/>
@@ -37,7 +44,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             async Task<IFramePriceViewModel> CreateViewModel(FramePrice x)
             {
                 var product = await this.productRepository.GetProductAsync(x.ProductCode);
-                return new FramePriceViewModel(x, product);
+                return new FramePriceViewModel(x, product, this.clock);
             }
         }
 

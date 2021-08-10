@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 using Mandarin.Inventory;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
@@ -14,15 +15,16 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private string productName;
         private decimal? retailPrice;
         private decimal? framePrice;
-        private DateTime? createdAt;
+        private Instant createdAt;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePriceViewModel"/> class.
         /// </summary>
         /// <param name="framePrice">The domain model for the frame price.</param>
         /// <param name="product">The domain model for the Product underlying the frame price.</param>
-        public FramePriceViewModel(FramePrice framePrice, Product product)
-            : this()
+        /// <param name="clock">The application clock instance.</param>
+        public FramePriceViewModel(FramePrice framePrice, Product product, IClock clock)
+            : this(clock)
         {
             this.productCode = product.ProductCode.Value;
             this.productName = product.FriendlyString();
@@ -33,16 +35,17 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             this.FramePrice = framePrice.Amount;
 
             this.WhenAnyValue(vm => vm.FramePrice)
-                .Select(amount => amount == framePrice.Amount ? framePrice.CreatedAt : DateTime.Now)
+                .Select(amount => amount == framePrice.Amount ? framePrice.CreatedAt : clock.GetCurrentInstant())
                 .Subscribe(date => this.CreatedAt = date);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePriceViewModel"/> class.
         /// </summary>
-        public FramePriceViewModel()
+        /// <param name="clock">The application clock instance.</param>
+        public FramePriceViewModel(IClock clock)
         {
-            this.createdAt = DateTime.Now;
+            this.createdAt = clock.GetCurrentInstant();
             this.artistPrice = this.WhenAnyValue(x => x.RetailPrice, x => x.FramePrice, (retail, frame) => retail - frame)
                                    .ToProperty(this, x => x.ArtistPrice);
         }
@@ -79,7 +82,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         public decimal? ArtistPrice => this.artistPrice.Value;
 
         /// <inheritdoc/>
-        public DateTime? CreatedAt
+        public Instant CreatedAt
         {
             get => this.createdAt;
             set => this.RaiseAndSetIfChanged(ref this.createdAt, value);
@@ -92,7 +95,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             {
                 ProductCode = Mandarin.Inventory.ProductCode.Of(this.productCode),
                 Amount = this.FramePrice ?? throw new InvalidOperationException("No frame price has been set."),
-                CreatedAt = this.CreatedAt ?? DateTime.Now,
+                CreatedAt = this.CreatedAt,
             };
         }
     }

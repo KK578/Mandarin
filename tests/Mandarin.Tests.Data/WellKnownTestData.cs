@@ -41,7 +41,7 @@ namespace Mandarin.Tests.Data
             {
                 ProductCode = Products.ClementineFramed.ProductCode,
                 Amount = 35.00M,
-                CreatedAt = new DateTime(2021, 06, 10),
+                CreatedAt = Instant.FromUtc(2021, 06, 10, 00, 00, 00),
             };
         }
 

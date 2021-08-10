@@ -13,7 +13,6 @@ namespace Mandarin.Client.Services.Tests.Inventory
     {
         private static readonly Instant Original = Instant.FromUtc(2019, 06, 01, 00, 00, 00);
         private static readonly Instant LastMonth = Instant.FromUtc(2021, 05, 29, 12, 00, 00);
-        private static readonly Instant StartOfMonth = Instant.FromUtc(2021, 06, 01, 12, 20, 00);
         private static readonly Instant Today = Instant.FromUtc(2021, 06, 30, 12, 20, 00);
 
         public MandarinGrpcFramePricesServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
@@ -37,7 +36,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
             {
                 ProductCode = ProductCode.Of("KT20-001F"),
                 Amount = 25.00M,
-                CreatedAt = MandarinGrpcFramePricesServiceTests.Today.ToDateTimeUtc(),
+                CreatedAt = MandarinGrpcFramePricesServiceTests.Today,
             };
             await this.Subject.SaveFramePriceAsync(newFramePrice);
 
@@ -52,7 +51,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
             {
                 ProductCode = ProductCode.Of("OM19-001"),
                 Amount = 15.00M,
-                CreatedAt = MandarinGrpcFramePricesServiceTests.Today.ToDateTimeUtc(),
+                CreatedAt = MandarinGrpcFramePricesServiceTests.Today,
             };
             await this.Subject.SaveFramePriceAsync(framePrice);
 
@@ -67,7 +66,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
             {
                 ProductCode = ProductCode.Of("KT20-001F"),
                 Amount = 50.00M,
-                CreatedAt = MandarinGrpcFramePricesServiceTests.Original.ToDateTimeUtc(),
+                CreatedAt = MandarinGrpcFramePricesServiceTests.Original,
                 ActiveUntil = null,
             };
 
@@ -77,11 +76,11 @@ namespace Mandarin.Client.Services.Tests.Inventory
             {
                 ProductCode = ProductCode.Of("KT20-001F"),
                 Amount = 25.00M,
-                CreatedAt = MandarinGrpcFramePricesServiceTests.Today.ToDateTimeUtc(),
+                CreatedAt = MandarinGrpcFramePricesServiceTests.Today,
             };
             await this.Subject.SaveFramePriceAsync(newFramePrice);
 
-            (await this.Subject.GetFramePriceAsync(ProductCode.Of("KT20-001F"), MandarinGrpcFramePricesServiceTests.LastMonth)).Should().Be(original with { ActiveUntil = MandarinGrpcFramePricesServiceTests.Today.ToDateTimeUtc() });
+            (await this.Subject.GetFramePriceAsync(ProductCode.Of("KT20-001F"), MandarinGrpcFramePricesServiceTests.LastMonth)).Should().Be(original with { ActiveUntil = MandarinGrpcFramePricesServiceTests.Today });
             (await this.Subject.GetFramePriceAsync(ProductCode.Of("KT20-001F"), MandarinGrpcFramePricesServiceTests.Today)).Should().Be(newFramePrice);
         }
 

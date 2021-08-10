@@ -17,6 +17,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         private readonly IProductRepository productRepository;
         private readonly NavigationManager navigationManager;
         private readonly IValidator<IFramePriceViewModel> validator;
+        private readonly IClock clock;
 
         private readonly ObservableAsPropertyHelper<bool> isLoading;
         private IFramePriceViewModel framePrice;
@@ -29,15 +30,18 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
+        /// <param name="clock">The application clock instance.</param>
         public FramePricesEditViewModel(IFramePricesService framePricesService,
                                         IProductRepository productRepository,
                                         NavigationManager navigationManager,
-                                        IValidator<IFramePriceViewModel> validator)
+                                        IValidator<IFramePriceViewModel> validator,
+                                        IClock clock)
         {
             this.framePricesService = framePricesService;
             this.productRepository = productRepository;
             this.navigationManager = navigationManager;
             this.validator = validator;
+            this.clock = clock;
 
             this.LoadData = ReactiveCommand.CreateFromTask<ProductCode>(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);
@@ -78,7 +82,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
             var instant = Instant.FromDateTimeUtc(DateTime.UtcNow);
             var existingFramePrice = await this.framePricesService.GetFramePriceAsync(productCode, instant);
             var product = await this.productRepository.GetProductAsync(productCode);
-            this.FramePrice = new FramePriceViewModel(existingFramePrice, product);
+            this.FramePrice = new FramePriceViewModel(existingFramePrice, product, this.clock);
         }
 
         private async Task OnSave()

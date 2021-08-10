@@ -2,19 +2,24 @@
 using FluentValidation;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Tests.Data;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePriceValidatorTests
     {
-        private readonly IValidator<FramePriceViewModel> subject;
-        private readonly FramePriceViewModel value;
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 02, 12, 20, 00);
+
+        private readonly IClock clock = new FakeClock(FramePriceValidatorTests.Today);
+        private readonly IFramePriceViewModel value;
+        private readonly IValidator<IFramePriceViewModel> subject;
 
         public FramePriceValidatorTests()
         {
+            this.value = new FramePriceViewModel(WellKnownTestData.FramePrices.Clementine, WellKnownTestData.Products.ClementineFramed, this.clock);
             this.subject = new FramePriceValidator();
-            this.value = new FramePriceViewModel(WellKnownTestData.FramePrices.Clementine, WellKnownTestData.Products.ClementineFramed);
         }
 
         [Theory]

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using NodaTime;
 
 namespace Mandarin.Inventory
 {
@@ -20,11 +20,11 @@ namespace Mandarin.Inventory
         /// <summary>
         /// Gets the time the entry was created.
         /// </summary>
-        public DateTime CreatedAt { get; init; }
+        public Instant CreatedAt { get; init; }
 
         /// <summary>
         /// Gets the last time that the frame price is active til, or null.
         /// </summary>
-        public DateTime? ActiveUntil { get; init; }
+        public Instant? ActiveUntil { get; init; }
     }
 }
