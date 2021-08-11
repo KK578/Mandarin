@@ -43,7 +43,11 @@
   private DateTime SystemDate
   {
     get => Date.ToDateTimeUtc();
-    set => Date = Instant.FromDateTimeUtc(value);
+    set
+    {
+      Date = Instant.FromDateTimeUtc(value);
+      DateChanged.InvokeAsync(Date);
+    }
   }
 
 }

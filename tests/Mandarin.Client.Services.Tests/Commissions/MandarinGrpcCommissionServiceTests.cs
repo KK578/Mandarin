@@ -16,8 +16,9 @@ namespace Mandarin.Client.Services.Tests.Commissions
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class MandarinGrpcCommissionServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        private static readonly Instant Start = Instant.FromUtc(2021, 06, 16, 00, 00, 00);
-        private static readonly Instant End = Instant.FromUtc(2021, 07, 17, 00, 00, 00);
+        private static readonly LocalDate Start = new(2021, 06, 16);
+        private static readonly LocalDate End = new(2021, 07, 17);
+        private static readonly DateInterval Interval = new(MandarinGrpcCommissionServiceTests.Start, MandarinGrpcCommissionServiceTests.End);
 
         private readonly RecordOfSales kelbyTynanRecordOfSales;
 
@@ -58,7 +59,7 @@ namespace Mandarin.Client.Services.Tests.Commissions
         [Fact]
         public async Task ShouldBeAbleToRetrieveEntriesForRecordsOfSales()
         {
-            var recordOfSales = await this.Subject.GetRecordOfSalesForPeriodAsync(MandarinGrpcCommissionServiceTests.Start, MandarinGrpcCommissionServiceTests.End);
+            var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcCommissionServiceTests.Interval);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
             salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.kelbyTynanRecordOfSales);

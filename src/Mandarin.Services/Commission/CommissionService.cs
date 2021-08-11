@@ -29,9 +29,9 @@ namespace Mandarin.Services.Commission
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesForPeriodAsync(Instant start, Instant end)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateInterval interval)
         {
-            var transactions = await this.transactionRepository.GetAllTransactionsAsync(start, end);
+            var transactions = await this.transactionRepository.GetAllTransactionsAsync(interval);
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
                                         .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? ProductCode.Of("TLM-Unknown"), TransactionUnitPrice: subtransaction.UnitPrice))
@@ -69,8 +69,8 @@ namespace Mandarin.Services.Commission
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
-                        StartDate = start.InUtc().Date,
-                        EndDate = end.InUtc().Date,
+                        StartDate = interval.Start,
+                        EndDate = interval.End,
                         Rate = rate,
                         Sales = new List<Sale>().AsReadOnly(),
                         Subtotal = 0,
@@ -91,8 +91,8 @@ namespace Mandarin.Services.Commission
                         Name = stockist.Details.DisplayName,
                         EmailAddress = stockist.Details.EmailAddress,
                         CustomMessage = string.Empty,
-                        StartDate = start.InUtc().Date,
-                        EndDate = end.InUtc().Date,
+                        StartDate = interval.Start,
+                        EndDate = interval.End,
                         Rate = rate,
                         Sales = sales,
                         Subtotal = subtotal,

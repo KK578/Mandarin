@@ -32,9 +32,10 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetRecordOfSalesForPeriodResponse> GetRecordOfSalesForPeriod(GetRecordOfSalesForPeriodRequest request, ServerCallContext context)
         {
-            var startDate = this.mapper.Map<Instant>(request.StartDate);
-            var endDate = this.mapper.Map<Instant>(request.EndDate);
-            var recordOfSales = await this.commissionService.GetRecordOfSalesForPeriodAsync(startDate, endDate);
+            var startDate = this.mapper.Map<LocalDate>(request.StartDate);
+            var endDate = this.mapper.Map<LocalDate>(request.EndDate);
+            var interval = new DateInterval(startDate, endDate);
+            var recordOfSales = await this.commissionService.GetRecordOfSalesAsync(interval);
 
             return new GetRecordOfSalesForPeriodResponse
             {

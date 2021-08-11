@@ -8,33 +8,28 @@
 @inject IOptions<MandarinConfiguration> configuration;
 @inject ICommissionService commissionService;
 @inject IViewModelFactory viewModelFactory;
+@inject IClock clock
 
-<EditForm EditContext="@DatePickerEditContext">
-  <Card Margin="Margin.Is2.FromBottom">
-    <CardHeader>
-      <CardTitle>Record of Sales - Select Month</CardTitle>
-    </CardHeader>
-    <CardBody>
-      <Field>
-        <FieldLabel>Month</FieldLabel>
-        <DateEdit TValue="DateTime" @bind-Date="SelectedDate" />
-        <FieldHelp>The exact date is ignored - Only the year and month matter.</FieldHelp>
-      </Field>
-      <Alert Color="Color.Info" Visible="true">
-        <span>This will include transactions from <i>@($"{StartDate:d}")</i> to <i>@($"{EndDate:d}")</i>.</span>
-      </Alert>
-      <CardActions>
-        <Button Color="Color.Primary" Clicked="@UpdateTransactionsAsync" Disabled="@IsLoading">Update</Button>
-      </CardActions>
-    </CardBody>
-  </Card>
-</EditForm>
+<Card Margin="Margin.Is2.FromBottom">
+  <CardHeader>
+    <CardTitle>Record of Sales - Select Period</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <YearMonthEdit @bind-YearMonth="@SelectedYearMonth" />
+    <Alert Color="Color.Info" Visible="true">
+      <Text>This will include transactions from <i>@(StartDate)</i> to <i>@(EndDate)</i>.</Text>
+    </Alert>
+    <CardActions>
+      <Button Color="Color.Primary" Clicked="@UpdateTransactionsAsync" Disabled="@IsLoading">Update</Button>
+    </CardActions>
+  </CardBody>
+</Card>
 
 @if (RecordOfSales != null)
 {
   <Card Margin="Margin.Is2.FromBottom">
     <CardHeader>
-      <CardTitle>Sales by Artist Breakdown</CardTitle>
+      <CardTitle>Sales by Artist Breakdown @LoadedDateInterval</CardTitle>
     </CardHeader>
     <CardBody>
       <DataGrid Data="@RecordOfSales" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
@@ -126,13 +121,12 @@
 @code
 {
 
-  private EditContext DatePickerEditContext { get; set; }
-  private DateTime SelectedDate { get; set; } = DateTime.Today.AddMonths(-1);
-  private DateTime SelectedMonth => new(SelectedDate.Year, SelectedDate.Month, 1);
-  private DateTime StartDate => SelectedMonth.AddDays(-15);
-  private DateTime EndDate => SelectedMonth.AddMonths(1).AddDays(-15).AddHours(-1);
+  private YearMonth SelectedYearMonth { get; set; }
+  private LocalDate StartDate => SelectedYearMonth.OnDayOfMonth(1).Minus(Period.FromDays(15));
+  private LocalDate EndDate => SelectedYearMonth.OnDayOfMonth(1).PlusMonths(1).Minus(Period.FromDays(15));
   private bool IsLoading { get; set; } = false;
 
+  private DateInterval LoadedDateInterval { get; set; }
   private IList<IArtistRecordOfSalesViewModel> RecordOfSales { get; set; }
   private IArtistRecordOfSalesViewModel recordOfSalesModel;
   private IDisposable subscription;
@@ -158,7 +152,7 @@
   /// <inheritdoc />
   protected override void OnInitialized()
   {
-    DatePickerEditContext = new EditContext(this);
+    SelectedYearMonth = clock.GetCurrentInstant().InUtc().Date.Minus(Period.FromMonths(1)).ToYearMonth();
   }
 
   private async Task UpdateTransactionsAsync()
@@ -166,7 +160,10 @@
     try
     {
       IsLoading = true;
-      var recordOfSales = await commissionService.GetRecordOfSalesForPeriodAsync(Instant.FromDateTimeUtc(StartDate), Instant.FromDateTimeUtc(EndDate));
+
+      var dateInterval = new DateInterval(StartDate, EndDate);
+      var recordOfSales = await commissionService.GetRecordOfSalesAsync(dateInterval);
+      LoadedDateInterval = dateInterval;
       RecordOfSales = recordOfSales.Select(x => viewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
     }
     finally

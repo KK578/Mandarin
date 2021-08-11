@@ -19,8 +19,8 @@ service Commissions {
 
 // The request message for getting record of sales for the selected period.
 message GetRecordOfSalesForPeriodRequest {
-  google.protobuf.Timestamp startDate = 1; // The start datetime to query transactions for.
-  google.protobuf.Timestamp endDate = 2; // The end datetime to query transactions for.
+  google.type.Date startDate = 1; // The start datetime to query transactions for.
+  google.type.Date endDate = 2; // The end datetime to query transactions for.
 }
 
 // The response message containing all commission rate groups for the selected period.
