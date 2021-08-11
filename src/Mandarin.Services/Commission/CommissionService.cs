@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Bashi.Core.Extensions;
 using Mandarin.Commissions;
 using Mandarin.Common;
+using Mandarin.Extensions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
@@ -31,7 +32,7 @@ namespace Mandarin.Services.Commission
         /// <inheritdoc />
         public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateInterval interval)
         {
-            var transactions = await this.transactionRepository.GetAllTransactionsAsync(interval);
+            var transactions = await this.transactionRepository.GetAllTransactionsAsync(interval.ToInterval());
             var aggregateTransactions = transactions
                                         .SelectMany(transaction => transaction.Subtransactions.NullToEmpty())
                                         .GroupBy(subtransaction => (subtransaction.Product?.ProductCode ?? ProductCode.Of("TLM-Unknown"), TransactionUnitPrice: subtransaction.UnitPrice))

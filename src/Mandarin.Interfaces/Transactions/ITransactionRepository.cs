@@ -19,9 +19,9 @@ namespace Mandarin.Transactions
         /// <summary>
         /// Gets a list of all <see cref="Mandarin.Transactions.Transaction"/> items between the given <see cref="DateInterval"/>.
         /// </summary>
-        /// <param name="interval">The date interval in which transactions should be retrieved.</param>
+        /// <param name="interval">The interval in which transactions should be retrieved.</param>
         /// <returns>A <see cref="Task"/> containing a <see cref="IReadOnlyList{T}"/> of transactions between the given date interval.</returns>
-        Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync(DateInterval interval);
+        Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync(Interval interval);
 
         /// <summary>
         /// Finds the singular <see cref="Mandarin.Transactions.Transaction"/> that matches the provided <see cref="ExternalTransactionId"/>.

@@ -2,9 +2,9 @@
 using System.IO;
 using Mandarin.Commissions;
 using Mandarin.Common;
+using Mandarin.Extensions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
-using Mandarin.Tests.Data.Extensions;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Newtonsoft.Json;

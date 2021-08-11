@@ -61,11 +61,11 @@ namespace Mandarin.Database.Transactions
         public Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync() => this.GetAll();
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync(DateInterval interval)
+        public async Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync(Interval interval)
         {
             // TODO: The base repository doesn't support get many with query semantics...
             var all = await this.GetAll();
-            return all.Where(x => interval.Contains(x.Timestamp.InUtc().Date)).AsReadOnlyList();
+            return all.Where(x => interval.Contains(x.Timestamp)).AsReadOnlyList();
         }
 
         /// <inheritdoc/>
