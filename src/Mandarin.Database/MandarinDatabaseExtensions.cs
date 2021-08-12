@@ -1,9 +1,7 @@
-﻿using Dapper;
-using Dapper.NodaTime;
+﻿using Dapper.NodaTime;
 using DbUp.Engine.Output;
 using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
-using Mandarin.Database.Converters;
 using Mandarin.Database.Inventory;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
@@ -40,6 +38,7 @@ namespace Mandarin.Database
             services.AddTransient<IExternalTransactionRepository, ExternalTransactionRepository>();
             services.AddTransient<IFramePriceRepository, FramePriceRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IRecordOfSalesRepository, RecordOfSalesRepository>();
             services.AddTransient<IStockistRepository, StockistRepository>();
             services.AddTransient<ITransactionRepository, TransactionRepository>();
 
