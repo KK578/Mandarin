@@ -24,6 +24,11 @@ namespace Mandarin.Transactions
         public decimal UnitPrice { get; init; }
 
         /// <summary>
+        /// Gets the commission rate percentage for this subtransaction.
+        /// </summary>
+        public int? CommissionRate { get; init; }
+
+        /// <summary>
         /// Gets the total monetary amount for this subtransaction.
         /// </summary>
         public decimal Subtotal => this.Quantity * this.UnitPrice;

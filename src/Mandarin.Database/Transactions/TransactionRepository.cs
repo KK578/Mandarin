@@ -24,7 +24,7 @@ namespace Mandarin.Database.Transactions
             WHERE external_transaction_id = @external_transaction_id";
 
         private const string GetSubtransactionByIdSql = @"
-            SELECT s.subtransaction_id, s.transaction_id, s.quantity, s.unit_price, 
+            SELECT s.subtransaction_id, s.transaction_id, s.quantity, s.unit_price, s.commission_rate, 
                    p.product_id, p.stockist_id, p.product_code, p.product_name, p.description, p.unit_price, p.last_updated
             FROM billing.subtransaction s
             INNER JOIN inventory.product p ON s.product_id = p.product_id
