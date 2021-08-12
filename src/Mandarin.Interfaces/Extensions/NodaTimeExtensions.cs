@@ -14,7 +14,7 @@ namespace Mandarin.Extensions
         /// <returns>An <see cref="Interval"/> matching the same date interval.</returns>
         public static Interval ToInterval(this DateInterval dateInterval)
         {
-            return new Interval(dateInterval.Start.ToInstantAtStartOfDay(), dateInterval.End.ToInstantAtStartOfDay());
+            return new Interval(dateInterval.Start.ToInstant(), dateInterval.End.ToInstant());
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Mandarin.Extensions
         /// </summary>
         /// <param name="localDate">The local date to be converted.</param>
         /// <returns>An <see cref="Instant"/> at start of the given date in UTC.</returns>
-        public static Instant ToInstantAtStartOfDay(this LocalDate localDate)
+        public static Instant ToInstant(this LocalDate localDate)
         {
             return localDate.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant();
         }

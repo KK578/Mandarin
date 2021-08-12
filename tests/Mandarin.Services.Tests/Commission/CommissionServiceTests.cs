@@ -15,9 +15,12 @@ namespace Mandarin.Services.Tests.Commission
 {
     public class CommissionServiceTests
     {
-        private static readonly LocalDate Start = new(2021, 06, 01);
-        private static readonly LocalDate End = new(2021, 07, 01);
-        private static readonly DateInterval Interval = new(CommissionServiceTests.Start, CommissionServiceTests.End);
+        private static readonly LocalDate StartDate = new(2021, 06, 01);
+        private static readonly LocalDate EndDate = new(2021, 07, 01);
+        private static readonly DateInterval DateInterval = new(CommissionServiceTests.StartDate, CommissionServiceTests.EndDate);
+        private static readonly Instant Start = Instant.FromUtc(2021, 06, 01, 00, 00, 00);
+        private static readonly Instant End = Instant.FromUtc(2021, 07, 01, 00, 00, 00);
+        private static readonly Interval Interval = new(CommissionServiceTests.Start, CommissionServiceTests.End);
 
         private readonly Mock<IStockistService> stockistService;
         private readonly Mock<ITransactionRepository> transactionRepository;
@@ -96,7 +99,7 @@ namespace Mandarin.Services.Tests.Commission
                 this.GivenTlmStockistExists();
                 this.GivenTransactionServiceReturnsData();
 
-                var actual = await this.Subject.GetRecordOfSalesAsync(CommissionServiceTests.Interval);
+                var actual = await this.Subject.GetRecordOfSalesAsync(CommissionServiceTests.DateInterval);
 
                 actual.Should().HaveCount(1);
                 using (new AssertionScope())
