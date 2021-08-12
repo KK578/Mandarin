@@ -28,7 +28,7 @@ namespace Mandarin.Extensions
         }
 
         /// <summary>
-        /// Returns a new <see cref="Instant"/> with the given <see cref="milliseconds"/> added on.
+        /// Returns a new <see cref="Instant"/> with the given <paramref name="milliseconds"/> added on.
         /// </summary>
         /// <param name="instant">The instant to be added ot.</param>
         /// <param name="milliseconds">The milliseconds to add to <paramref name="instant"/> to create the return value.</param>
