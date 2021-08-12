@@ -1,6 +1,6 @@
-﻿using System;
-using Mandarin.Common;
+﻿using Mandarin.Common;
 using Mandarin.Stockists;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Artists
@@ -78,12 +78,12 @@ namespace Mandarin.Client.ViewModels.Artists
         /// <summary>
         /// Gets or sets the start date for this commission.
         /// </summary>
-        public DateTime StartDate { get; set; }
+        public LocalDate StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets the end date for this commission.
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public LocalDate EndDate { get; set; }
 
         /// <summary>
         /// Gets or sets the agreed commission rate group for this commission.

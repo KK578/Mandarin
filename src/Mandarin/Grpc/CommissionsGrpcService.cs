@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Mandarin.Api.Commissions;
 using Mandarin.Commissions;
 using Microsoft.AspNetCore.Authorization;
+using NodaTime;
 using static Mandarin.Api.Commissions.Commissions;
 using RecordOfSales = Mandarin.Api.Commissions.RecordOfSales;
 
@@ -32,9 +32,10 @@ namespace Mandarin.Grpc
         /// <inheritdoc/>
         public override async Task<GetRecordOfSalesForPeriodResponse> GetRecordOfSalesForPeriod(GetRecordOfSalesForPeriodRequest request, ServerCallContext context)
         {
-            var startDate = this.mapper.Map<DateTime>(request.StartDate);
-            var endDate = this.mapper.Map<DateTime>(request.EndDate);
-            var recordOfSales = await this.commissionService.GetRecordOfSalesForPeriodAsync(startDate, endDate);
+            var startDate = this.mapper.Map<LocalDate>(request.StartDate);
+            var endDate = this.mapper.Map<LocalDate>(request.EndDate);
+            var interval = new DateInterval(startDate, endDate);
+            var recordOfSales = await this.commissionService.GetRecordOfSalesAsync(interval);
 
             return new GetRecordOfSalesForPeriodResponse
             {

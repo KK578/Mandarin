@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Dapper;
 using FluentAssertions;
 using Mandarin.Database;
@@ -17,6 +16,9 @@ namespace Mandarin.Tests.Transactions
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public class TransactionSynchronizerTests : MandarinIntegrationTestsBase
     {
+        // ReSharper disable once StringLiteralTypo
+        private static readonly ExternalTransactionId ExternalTransactionId = ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV");
+
         private readonly ITransactionSynchronizer transactionSynchronizer;
         private readonly ITransactionRepository transactionRepository;
 
@@ -31,8 +33,8 @@ namespace Mandarin.Tests.Transactions
         public async Task ShouldProcessTransactionFromExternalTransactionCorrectly()
         {
             await this.GivenTransactionTableIsEmptyAsync();
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
-            var transaction = await this.transactionRepository.GetTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(TransactionSynchronizerTests.ExternalTransactionId);
+            var transaction = await this.transactionRepository.GetTransactionAsync(TransactionSynchronizerTests.ExternalTransactionId);
 
             transaction.Should().MatchTransaction(WellKnownTestData.Transactions.Transaction1);
         }
@@ -41,8 +43,8 @@ namespace Mandarin.Tests.Transactions
         public async Task ShouldNotProcessTheSameTransactionTwice()
         {
             await this.GivenTransactionTableIsEmptyAsync();
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(TransactionSynchronizerTests.ExternalTransactionId);
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(TransactionSynchronizerTests.ExternalTransactionId);
 
             var transactions = await this.transactionRepository.GetAllTransactionsAsync();
             transactions.Should().HaveCount(1);
@@ -51,10 +53,11 @@ namespace Mandarin.Tests.Transactions
         [Fact]
         public async Task ShouldUpdateTheTransactionIfItIsInADifferentState()
         {
+            var anotherInstant = MandarinFixture.Instance.NewInstant;
             await this.GivenTransactionTableIsEmptyAsync();
-            await this.transactionRepository.SaveTransactionAsync(WellKnownTestData.Transactions.Transaction1 with { Timestamp = DateTime.Now });
-            await this.transactionSynchronizer.SynchronizeTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
-            var transaction = await this.transactionRepository.GetTransactionAsync(ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"));
+            await this.transactionRepository.SaveTransactionAsync(WellKnownTestData.Transactions.Transaction1 with { Timestamp = anotherInstant });
+            await this.transactionSynchronizer.SynchronizeTransactionAsync(TransactionSynchronizerTests.ExternalTransactionId);
+            var transaction = await this.transactionRepository.GetTransactionAsync(TransactionSynchronizerTests.ExternalTransactionId);
 
             transaction.Should().MatchTransaction(WellKnownTestData.Transactions.Transaction1);
         }

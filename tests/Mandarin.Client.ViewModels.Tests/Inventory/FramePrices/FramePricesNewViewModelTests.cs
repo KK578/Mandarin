@@ -15,17 +15,22 @@ using Mandarin.Inventory;
 using Mandarin.Tests.Data;
 using Microsoft.AspNetCore.Components;
 using Moq;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePricesNewViewModelTests
     {
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 03, 12, 30, 00);
+
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IProductRepository> productRepository = new();
         private readonly Mock<IValidator<IFramePriceViewModel>> validator = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
+        private readonly IClock clock = new FakeClock(FramePricesNewViewModelTests.Today);
 
         private readonly IFramePricesNewViewModel subject;
 
@@ -34,7 +39,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             this.subject = new FramePricesNewViewModel(this.framePricesService.Object,
                                                        this.productRepository.Object,
                                                        this.navigationManager,
-                                                       this.validator.Object);
+                                                       this.validator.Object,
+                                                       this.clock);
         }
 
         private void GivenValidationResult(ValidationResult validationResult)

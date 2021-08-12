@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -8,6 +7,7 @@ using Mandarin.Stockists;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Data.Extensions;
 using Mandarin.Tests.Helpers;
+using NodaTime;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,6 +16,10 @@ namespace Mandarin.Client.Services.Tests.Commissions
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public class MandarinGrpcCommissionServiceTests : MandarinGrpcIntegrationTestsBase
     {
+        private static readonly LocalDate Start = new(2021, 06, 16);
+        private static readonly LocalDate End = new(2021, 07, 17);
+        private static readonly DateInterval Interval = new(MandarinGrpcCommissionServiceTests.Start, MandarinGrpcCommissionServiceTests.End);
+
         private readonly RecordOfSales kelbyTynanRecordOfSales;
 
         public MandarinGrpcCommissionServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
@@ -28,8 +32,8 @@ namespace Mandarin.Client.Services.Tests.Commissions
                 Name = WellKnownTestData.Stockists.KelbyTynan.Details.DisplayName,
                 EmailAddress = WellKnownTestData.Stockists.KelbyTynan.Details.EmailAddress,
                 CustomMessage = string.Empty,
-                StartDate = new DateTime(2021, 06, 16),
-                EndDate = new DateTime(2021, 07, 17),
+                StartDate = new LocalDate(2021, 06, 16),
+                EndDate = new LocalDate(2021, 07, 17),
                 Rate = decimal.Divide(WellKnownTestData.Stockists.KelbyTynan.Commission.Rate, 100),
                 Sales = new List<Sale>
                 {
@@ -55,7 +59,7 @@ namespace Mandarin.Client.Services.Tests.Commissions
         [Fact]
         public async Task ShouldBeAbleToRetrieveEntriesForRecordsOfSales()
         {
-            var recordOfSales = await this.Subject.GetRecordOfSalesForPeriodAsync(new DateTime(2021, 06, 16), new DateTime(2021, 07, 17));
+            var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcCommissionServiceTests.Interval);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
             salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.kelbyTynanRecordOfSales);

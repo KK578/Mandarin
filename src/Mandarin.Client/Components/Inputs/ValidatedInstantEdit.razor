@@ -26,13 +26,13 @@
   /// Gets or sets the value of the DateEdit.
   /// </summary>
   [Parameter]
-  public LocalDate Date { get; set; }
+  public Instant Date { get; set; }
 
   /// <summary>
   /// Gets or sets the callback to be called when <see cref="Date"/> changes.
   /// </summary>
   [Parameter]
-  public EventCallback<LocalDate> DateChanged { get; set; }
+  public EventCallback<Instant> DateChanged { get; set; }
 
   /// <summary>
   /// Gets or sets the optional ColumnSize to associate to the Field.
@@ -42,10 +42,10 @@
 
   private DateTime SystemDate
   {
-    get => Date.ToDateTimeUnspecified();
+    get => Date.ToDateTimeUtc();
     set
     {
-      Date = LocalDate.FromDateTime(value);
+      Date = Instant.FromDateTimeUtc(value);
       DateChanged.InvokeAsync(Date);
     }
   }

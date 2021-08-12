@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using NodaTime;
 
 namespace Mandarin.Database.Transactions.External
 {
@@ -13,8 +13,8 @@ namespace Mandarin.Database.Transactions.External
     internal sealed record ExternalTransactionRecord
     {
         public string external_transaction_id { get; init; }
-        public DateTime created_at { get; init; }
-        public DateTime updated_at { get; init; }
+        public Instant created_at { get; init; }
+        public Instant updated_at { get; init; }
         public string raw_data { get; init; }
     }
 }

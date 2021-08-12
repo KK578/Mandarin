@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dapper.NodaTime;
 using DbUp.Engine.Output;
 using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
@@ -33,7 +34,7 @@ namespace Mandarin.Database
             services.AddSingleton<IMigrator, Migrator>();
             services.AddTransient<MandarinDbContext>();
 
-            SqlMapper.AddTypeHandler(new DateTimeUtcHandler());
+            DapperNodaTimeSetup.Register();
 
             services.AddTransient<ICommissionRepository, CommissionRepository>();
             services.AddTransient<IExternalTransactionRepository, ExternalTransactionRepository>();

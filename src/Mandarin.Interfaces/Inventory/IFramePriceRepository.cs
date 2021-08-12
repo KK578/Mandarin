@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using NodaTime;
 
 namespace Mandarin.Inventory
 {
@@ -15,7 +15,7 @@ namespace Mandarin.Inventory
         /// <param name="productCode">The product code to search for.</param>
         /// <param name="activeSince">The timestamp at which the frame price must be active at.</param>
         /// <returns>A <see cref="Task"/> containing the <see cref="FramePrice"/> for the given product code.</returns>
-        Task<FramePrice> GetByProductCodeAsync(ProductCode productCode, DateTime activeSince);
+        Task<FramePrice> GetByProductCodeAsync(ProductCode productCode, Instant activeSince);
 
         /// <summary>
         /// Gets the list of all <see cref="FramePrice"/>.

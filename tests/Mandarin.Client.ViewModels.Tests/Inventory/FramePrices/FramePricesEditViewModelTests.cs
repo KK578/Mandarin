@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,19 +12,22 @@ using Mandarin.Inventory;
 using Mandarin.Tests.Data;
 using Microsoft.AspNetCore.Components;
 using Moq;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePricesEditViewModelTests
     {
-        private static readonly DateTime OriginalCommissionDate = new(2021, 06, 10);
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 01, 00, 00, 00);
 
         private readonly Fixture fixture = new();
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IProductRepository> productRepository = new();
-        private readonly Mock<IValidator<IFramePriceViewModel>> validator = new();
         private readonly NavigationManager navigationManager = new MockNavigationManager();
+        private readonly Mock<IValidator<IFramePriceViewModel>> validator = new();
+        private readonly IClock clock = new FakeClock(FramePricesEditViewModelTests.Today);
 
         private readonly IFramePricesEditViewModel subject;
 
@@ -34,7 +36,8 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             this.subject = new FramePricesEditViewModel(this.framePricesService.Object,
                                                         this.productRepository.Object,
                                                         this.navigationManager,
-                                                        this.validator.Object);
+                                                        this.validator.Object,
+                                                        this.clock);
         }
 
         private void GivenValidationResult(ValidationResult validationResult)
@@ -47,7 +50,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         private void GivenServicesReturnProduct(FramePrice framePrice, Product product)
         {
             this.productRepository.Setup(x => x.GetProductAsync(product.ProductCode)).ReturnsAsync(product);
-            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<DateTime>())).ReturnsAsync(framePrice);
+            this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, It.IsAny<Instant>())).ReturnsAsync(framePrice);
         }
 
 

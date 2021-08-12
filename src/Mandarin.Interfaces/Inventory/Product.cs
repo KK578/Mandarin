@@ -1,5 +1,5 @@
-﻿using System;
-using Mandarin.Stockists;
+﻿using Mandarin.Stockists;
+using NodaTime;
 
 namespace Mandarin.Inventory
 {
@@ -41,7 +41,7 @@ namespace Mandarin.Inventory
         /// <summary>
         /// Gets the last time this product was updated.
         /// </summary>
-        public DateTime? LastUpdated { get; init; }
+        public Instant? LastUpdated { get; init; }
 
         /// <summary>
         /// Gets the user friendly string for this product.

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using Mandarin.Database.Inventory;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 using Npgsql;
 
 namespace Mandarin.Database.Transactions
@@ -61,11 +61,11 @@ namespace Mandarin.Database.Transactions
         public Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync() => this.GetAll();
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync(DateTime start, DateTime end)
+        public async Task<IReadOnlyList<Transaction>> GetAllTransactionsAsync(Interval interval)
         {
             // TODO: The base repository doesn't support get many with query semantics...
             var all = await this.GetAll();
-            return all.Where(x => x.Timestamp >= start && x.Timestamp <= end).AsReadOnlyList();
+            return all.Where(x => interval.Contains(x.Timestamp)).AsReadOnlyList();
         }
 
         /// <inheritdoc/>

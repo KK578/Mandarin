@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Mandarin.Commissions;
 using Mandarin.Common;
+using Mandarin.Extensions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Newtonsoft.Json;
+using NodaTime;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
+// ReSharper disable StringLiteralTypo
+// ReSharper disable IdentifierTypo
 namespace Mandarin.Tests.Data
 {
     public static class WellKnownTestData
@@ -37,7 +40,7 @@ namespace Mandarin.Tests.Data
             {
                 ProductCode = Products.ClementineFramed.ProductCode,
                 Amount = 35.00M,
-                CreatedAt = new DateTime(2021, 06, 10),
+                CreatedAt = Instant.FromUtc(2021, 06, 10, 00, 00, 00),
             };
         }
 
@@ -70,7 +73,7 @@ namespace Mandarin.Tests.Data
                 ProductName = ProductName.Of("Clementine (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 45.00M,
-                LastUpdated = new DateTime(2021, 01, 31, 22, 51, 49, 569),
+                LastUpdated = Instant.FromUtc(2021, 01, 31, 22, 51, 49).PlusMilliseconds(569),
             };
 
             public static readonly Product ClementineFramed = new()
@@ -81,7 +84,7 @@ namespace Mandarin.Tests.Data
                 ProductName = ProductName.Of("Clementine (Framed) (Regular)"),
                 Description = "vel augue vestibulum ante ipsum primis in",
                 UnitPrice = 95.00M,
-                LastUpdated = new DateTime(2021, 01, 31, 22, 48, 44, 608),
+                LastUpdated = Instant.FromUtc(2021, 01, 31, 22, 48, 44).PlusMilliseconds(608),
             };
 
             public static readonly Product GiftCard = new()
@@ -129,10 +132,10 @@ namespace Mandarin.Tests.Data
                 {
                     CommissionId = CommissionId.Of(1),
                     StockistId = StockistId.Of(1),
-                    StartDate = new DateTime(2019, 08, 23),
-                    EndDate = new DateTime(2019, 11, 23),
+                    StartDate = new LocalDate(2019, 08, 23),
+                    EndDate = new LocalDate(2019, 11, 23),
                     Rate = 10,
-                    InsertedAt = new DateTime(2019, 08, 23, 17, 36, 24, DateTimeKind.Utc),
+                    InsertedAt = Instant.FromUtc(2019, 08, 23, 17, 36, 24),
                 },
             };
 
@@ -158,10 +161,10 @@ namespace Mandarin.Tests.Data
                 {
                     CommissionId = CommissionId.Of(4),
                     StockistId = StockistId.Of(4),
-                    StartDate = new DateTime(2019, 01, 16),
-                    EndDate = new DateTime(2019, 04, 16),
+                    StartDate = new LocalDate(2019, 01, 16),
+                    EndDate = new LocalDate(2019, 04, 16),
                     Rate = 40,
-                    InsertedAt = new DateTime(2019, 01, 16, 17, 36, 24, DateTimeKind.Utc),
+                    InsertedAt = Instant.FromUtc(2019, 01, 16, 17, 36, 24),
                 },
             };
 
@@ -183,8 +186,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    StartDate = new DateTime(2019, 11, 28),
-                    EndDate = new DateTime(2020, 06, 09),
+                    StartDate = new LocalDate(2019, 11, 28),
+                    EndDate = new LocalDate(2020, 06, 09),
                     Rate = 20,
                 },
             };
@@ -204,8 +207,8 @@ namespace Mandarin.Tests.Data
                 },
                 Commission = new Commission
                 {
-                    StartDate = new DateTime(2019, 11, 28),
-                    EndDate = new DateTime(2021, 07, 09),
+                    StartDate = new LocalDate(2019, 11, 28),
+                    EndDate = new LocalDate(2021, 07, 09),
                     Rate = 10,
                 },
             };
@@ -213,9 +216,9 @@ namespace Mandarin.Tests.Data
 
         public static class Square
         {
-            public class CatalogApi
+            public static class CatalogApi
             {
-                public class SearchCatalogObjects
+                public static class SearchCatalogObjects
                 {
                     public static SearchCatalogObjectsResponse Page1 => WellKnownTestData.DeserializeFromFile<SearchCatalogObjectsResponse>("TestData/Square/CatalogApi/SearchCatalogObjects.1.json");
 
@@ -223,9 +226,9 @@ namespace Mandarin.Tests.Data
                 }
             }
 
-            public class OrdersApi
+            public static class OrdersApi
             {
-                public class SearchOrders
+                public static class SearchOrders
                 {
                     public const string SearchOrdersPage1 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.1.json";
                     public const string SearchOrdersPage2 = "TestData/Square/OrdersApi/SearchOrders/SearchOrders.2.json";
@@ -238,7 +241,7 @@ namespace Mandarin.Tests.Data
             public static readonly Transaction Transaction1 = new()
             {
                 ExternalTransactionId = ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV"),
-                Timestamp = new DateTime(2021, 07, 14, 11, 54, 06, DateTimeKind.Utc),
+                Timestamp = Instant.FromUtc(2021, 07, 14, 11, 54, 06),
                 TotalAmount = 45.00M,
                 Subtransactions = new List<Subtransaction>
                 {

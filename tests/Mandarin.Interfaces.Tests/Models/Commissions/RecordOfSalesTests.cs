@@ -7,6 +7,7 @@ using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Tests.Data;
 using Newtonsoft.Json;
+using NodaTime;
 using Xunit;
 
 namespace Mandarin.Interfaces.Tests.Models.Commissions
@@ -18,11 +19,7 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
             [Fact]
             public void ShouldMaintainNullSalesList()
             {
-                var recordOfSales = TestData.Create<RecordOfSales>() with
-                {
-                    Sales = null,
-                };
-
+                var recordOfSales = MandarinFixture.Instance.NewRecordOfSales with { Sales = null };
                 var copy = recordOfSales.WithMessageCustomisations(null, null);
                 copy.Sales.Should().BeNull();
             }
@@ -30,14 +27,14 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
             [Fact]
             public void WithMessageCustomisations_EmailAndMessageShouldUpdateWhenNotNull()
             {
-                var original = TestData.Create<RecordOfSales>();
+                var original = MandarinFixture.Instance.NewRecordOfSales;
 
                 var copyWithNulls = original.WithMessageCustomisations(null, null);
                 copyWithNulls.EmailAddress.Should().Be(original.EmailAddress);
                 copyWithNulls.CustomMessage.Should().Be(original.CustomMessage);
 
-                var email = TestData.NextString();
-                var message = TestData.NextString();
+                var email = MandarinFixture.Instance.NewString;
+                var message = MandarinFixture.Instance.NewString;
                 var updated = original.WithMessageCustomisations(email, message);
                 updated.EmailAddress.Should().Be(email);
                 updated.CustomMessage.Should().Be(message);
@@ -56,8 +53,8 @@ namespace Mandarin.Interfaces.Tests.Models.Commissions
                     Name = "The Little Mandarin",
                     EmailAddress = "email@address.com",
                     CustomMessage = "My Message",
-                    StartDate = new DateTime(2020, 06, 01),
-                    EndDate = new DateTime(2020, 06, 03),
+                    StartDate = new LocalDate(2020, 06, 01),
+                    EndDate = new LocalDate(2020, 06, 03),
                     Rate = 0.10m,
                     Sales = new List<Sale>
                     {

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using NodaTime;
 
 namespace Mandarin.Transactions.External
 {
@@ -13,14 +13,14 @@ namespace Mandarin.Transactions.External
         public ExternalTransactionId ExternalTransactionId { get; init; }
 
         /// <summary>
-        /// Gets the time that this transaction was created at.
+        /// Gets the timestamp when this transaction was created at.
         /// </summary>
-        public DateTime CreatedAt { get; init; }
+        public Instant CreatedAt { get; init; }
 
         /// <summary>
-        /// Gets the time that this transaction was last updated.
+        /// Gets the timestamp when this transaction was last updated.
         /// </summary>
-        public DateTime UpdatedAt { get; init; }
+        public Instant UpdatedAt { get; init; }
 
         /// <summary>
         /// Gets the raw data string representing the transaction.

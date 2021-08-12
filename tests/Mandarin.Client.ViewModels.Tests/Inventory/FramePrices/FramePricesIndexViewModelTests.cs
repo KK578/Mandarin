@@ -8,12 +8,15 @@ using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Inventory;
 using Mandarin.Tests.Data;
 using Moq;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePricesIndexViewModelTests
     {
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 03, 12, 30, 00);
         private static readonly FramePrice FramePrice = new()
         {
             ProductCode = ProductCode.Of("TLM-001"),
@@ -23,9 +26,10 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
         private readonly Mock<IFramePricesService> framePricesService = new();
         private readonly Mock<IProductRepository> productRepository = new();
         private readonly MockNavigationManager navigationManager = new();
+        private readonly IClock clock = new FakeClock(FramePricesIndexViewModelTests.Today);
 
         private IFramePricesIndexViewModel Subject =>
-            new FramePricesIndexViewModel(this.framePricesService.Object, this.productRepository.Object, this.navigationManager);
+            new FramePricesIndexViewModel(this.framePricesService.Object, this.productRepository.Object, this.navigationManager, this.clock);
 
         public class IsLoadingTests : FramePricesIndexViewModelTests
         {

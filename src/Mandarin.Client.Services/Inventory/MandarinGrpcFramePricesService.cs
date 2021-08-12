@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using Mandarin.Api.Inventory;
 using Mandarin.Inventory;
+using NodaTime;
 using static Mandarin.Api.Inventory.FramePrices;
 using FramePrice = Mandarin.Inventory.FramePrice;
 
@@ -36,7 +36,7 @@ namespace Mandarin.Client.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public async Task<FramePrice> GetFramePriceAsync(ProductCode productCode, DateTime transactionTime)
+        public async Task<FramePrice> GetFramePriceAsync(ProductCode productCode, Instant transactionTime)
         {
             var request = new GetFramePriceRequest
             {

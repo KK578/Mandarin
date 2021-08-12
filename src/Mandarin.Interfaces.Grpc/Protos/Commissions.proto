@@ -1,5 +1,6 @@
 ﻿syntax = "proto3";
 
+import "google/type/date.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
@@ -18,8 +19,8 @@ service Commissions {
 
 // The request message for getting record of sales for the selected period.
 message GetRecordOfSalesForPeriodRequest {
-  google.protobuf.Timestamp startDate = 1; // The start datetime to query transactions for.
-  google.protobuf.Timestamp endDate = 2; // The end datetime to query transactions for.
+  google.type.Date startDate = 1; // The start datetime to query transactions for.
+  google.type.Date endDate = 2; // The end datetime to query transactions for.
 }
 
 // The response message containing all commission rate groups for the selected period.
@@ -32,8 +33,8 @@ message GetRecordOfSalesForPeriodResponse {
 message Commission {
   int32 commissionId = 1; // Gets the commission's Database ID.
   int32 stockistId = 2; // Gets the related stockist ID related to this commission.
-  google.protobuf.Timestamp startDate = 3; // Gets the start date for this commission.
-  google.protobuf.Timestamp endDate = 4; // Gets the end date for this commission.
+  google.type.Date startDate = 3; // Gets the start date for this commission.
+  google.type.Date endDate = 4; // Gets the end date for this commission.
   google.protobuf.Int32Value rate = 5; //  Gets the agreed commission rate in percentage as an integer.
   google.protobuf.Timestamp insertedAt = 6; // Gets the time that this commission was created at.
 }
@@ -45,8 +46,8 @@ message RecordOfSales {
   string name = 3; // Gets the artist's name.
   google.protobuf.StringValue emailAddress = 4; // Gets the email address to send the Record of Sales to.
   string customMessage = 5; // Gets the custom message to attach to the Record of Sales.
-  google.protobuf.Timestamp startDate = 6; // Gets the start date of transactions included in the Record of Sales.
-  google.protobuf.Timestamp endDate = 7; // Gets the end date of transactions included in the Record of Sales.
+  google.type.Date startDate = 6; // Gets the start date of transactions included in the Record of Sales.
+  google.type.Date endDate = 7; // Gets the end date of transactions included in the Record of Sales.
   double rate = 8; // Gets the commission rate for the Record of Sales.
   repeated Sale sales = 9; // Gets the list of all sales in the Record of Sales.
   double subtotal = 10; // Gets the total amount of money made by the sales (before commission).

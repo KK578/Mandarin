@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using NodaTime;
 
 namespace Mandarin.Database.Commissions
 {
@@ -14,9 +14,9 @@ namespace Mandarin.Database.Commissions
     {
         public int commission_id { get; init; }
         public int stockist_id { get; init; }
-        public DateTime start_date { get; init; }
-        public DateTime end_date { get; init; }
+        public LocalDate start_date { get; init; }
+        public LocalDate end_date { get; init; }
         public int rate { get; init; }
-        public DateTime inserted_at { get; init; }
+        public Instant inserted_at { get; init; }
     }
 }

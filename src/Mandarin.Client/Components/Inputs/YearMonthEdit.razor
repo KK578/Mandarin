@@ -1,0 +1,60 @@
+﻿@using NodaTime
+@inherits ValidatedEditBase
+
+<Fields>
+  <Field ColumnSize="ColumnSize.Is3.OnDesktop.Is4.OnTablet">
+    <Select @bind-SelectedValue="@Month" TValue="int">
+      <SelectItem Value="1">January</SelectItem>
+      <SelectItem Value="2">February</SelectItem>
+      <SelectItem Value="3">March</SelectItem>
+      <SelectItem Value="4">April</SelectItem>
+      <SelectItem Value="5">May</SelectItem>
+      <SelectItem Value="6">June</SelectItem>
+      <SelectItem Value="7">July</SelectItem>
+      <SelectItem Value="8">August</SelectItem>
+      <SelectItem Value="9">September</SelectItem>
+      <SelectItem Value="10">October</SelectItem>
+      <SelectItem Value="11">November</SelectItem>
+      <SelectItem Value="12">December</SelectItem>
+    </Select>
+  </Field>
+  <Field ColumnSize="ColumnSize.Is3.OnDesktop.Is4.OnTablet">
+    <NumericEdit @bind-Value="@Year" />
+  </Field>
+</Fields>
+
+@code {
+
+  /// <summary>
+  /// Gets or sets the value of the DateEdit.
+  /// </summary>
+  [Parameter]
+  public YearMonth YearMonth { get; set; }
+
+  /// <summary>
+  /// Gets or sets the callback to be called when <see cref="YearMonth"/> changes.
+  /// </summary>
+  [Parameter]
+  public EventCallback<YearMonth> YearMonthChanged { get; set; }
+
+  private int Year
+  {
+    get => YearMonth.Year;
+    set
+    {
+      YearMonth = new YearMonth(value, YearMonth.Month);
+      YearMonthChanged.InvokeAsync(YearMonth);
+    }
+  }
+
+  private int Month
+  {
+    get => YearMonth.Month;
+    set
+    {
+      YearMonth = new YearMonth(YearMonth.Year, value);
+      YearMonthChanged.InvokeAsync(YearMonth);
+    }
+  }
+
+}

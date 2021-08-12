@@ -1,6 +1,8 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
+using Google.Type;
+using NodaTime;
+using NodaTime.Serialization.Protobuf;
 
 namespace Mandarin.Grpc.Converters
 {
@@ -23,8 +25,10 @@ namespace Mandarin.Grpc.Converters
             this.CreateMap<Stockists.Stockist, Api.Stockists.Stockist>().ReverseMap();
             this.CreateMap<Stockists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
 
-            this.CreateMap<DateTime, Timestamp>().ConstructUsing(d => Timestamp.FromDateTime(DateTime.SpecifyKind(d, DateTimeKind.Utc)))
-                .ReverseMap().ConstructUsing(t => t.ToDateTime());
+            this.CreateMap<Instant, Timestamp>().ConstructUsing(instant => instant.ToTimestamp())
+                .ReverseMap().ConstructUsing(timestamp => timestamp.ToInstant());
+            this.CreateMap<LocalDate, Date>().ConstructUsing(localDate => localDate.ToDate())
+                .ReverseMap().ConstructUsing(date => date.ToLocalDate());
         }
     }
 }

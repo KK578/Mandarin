@@ -6,13 +6,12 @@ using Mandarin.Services.Commission;
 using Mandarin.Services.Emails;
 using Mandarin.Services.Inventory;
 using Mandarin.Services.Stockists;
-using Mandarin.Services.Transactions;
 using Mandarin.Services.Transactions.External;
 using Mandarin.Stockists;
-using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
 using SendGrid;
 using SendGrid.Extensions.DependencyInjection;
 using Square;
@@ -34,6 +33,7 @@ namespace Mandarin.Services
         /// <returns>The service container returned as is, for chaining calls.</returns>
         public static IServiceCollection AddMandarinServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<IClock>(SystemClock.Instance);
             services.AddLazyCache();
             services.AddMandarinDomainServices();
             services.AddEmailServices(configuration);

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Mandarin.Converters;
 using Newtonsoft.Json;
+using NodaTime;
 
 namespace Mandarin.Commissions
 {
@@ -44,15 +44,13 @@ namespace Mandarin.Commissions
         /// Gets the start date of transactions included in the Record of Sales.
         /// </summary>
         [JsonProperty("startDate")]
-        [JsonConverter(typeof(IsoDateConverter))]
-        public DateTime StartDate { get; init; }
+        public LocalDate StartDate { get; init; }
 
         /// <summary>
         /// Gets the end date of transactions included in the Record of Sales.
         /// </summary>
         [JsonProperty("endDate")]
-        [JsonConverter(typeof(IsoDateConverter))]
-        public DateTime EndDate { get; init; }
+        public LocalDate EndDate { get; init; }
 
         /// <summary>
         /// Gets the commission rate for the Record of Sales.

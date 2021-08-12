@@ -8,17 +8,22 @@ using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
 using Moq;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Artists
 {
     public class ArtistsIndexViewModelTests
     {
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 08, 12, 20, 00);
+
         private readonly Mock<IStockistService> stockistService = new();
         private readonly MockNavigationManager navigationManager = new();
+        private readonly IClock clock = new FakeClock(ArtistsIndexViewModelTests.Today);
 
         private IArtistsIndexViewModel Subject =>
-            new ArtistsIndexViewModel(this.stockistService.Object, this.navigationManager);
+            new ArtistsIndexViewModel(this.stockistService.Object, this.navigationManager, this.clock);
 
         public class IsLoadingTests : ArtistsIndexViewModelTests
         {

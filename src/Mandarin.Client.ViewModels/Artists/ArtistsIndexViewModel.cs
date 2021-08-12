@@ -5,6 +5,7 @@ using Bashi.Core.Extensions;
 using Mandarin.Client.ViewModels.Shared;
 using Mandarin.Stockists;
 using Microsoft.AspNetCore.Components;
+using NodaTime;
 
 namespace Mandarin.Client.ViewModels.Artists
 {
@@ -13,16 +14,19 @@ namespace Mandarin.Client.ViewModels.Artists
     {
         private readonly IStockistService stockistService;
         private readonly NavigationManager navigationManager;
+        private readonly IClock clock;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArtistsIndexViewModel"/> class.
         /// </summary>
         /// <param name="stockistService">The application service for interacting with stockists.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
-        public ArtistsIndexViewModel(IStockistService stockistService, NavigationManager navigationManager)
+        /// <param name="clock">The application clock instance.</param>
+        public ArtistsIndexViewModel(IStockistService stockistService, NavigationManager navigationManager, IClock clock)
         {
             this.stockistService = stockistService;
             this.navigationManager = navigationManager;
+            this.clock = clock;
         }
 
         /// <inheritdoc/>
@@ -31,9 +35,9 @@ namespace Mandarin.Client.ViewModels.Artists
             var stockists = await this.stockistService.GetStockistsAsync();
             return stockists.Select(CreateViewModel).AsReadOnlyList();
 
-            static IArtistViewModel CreateViewModel(Stockist stockist)
+            IArtistViewModel CreateViewModel(Stockist stockist)
             {
-                return new ArtistViewModel(stockist);
+                return new ArtistViewModel(stockist, this.clock);
             }
         }
 

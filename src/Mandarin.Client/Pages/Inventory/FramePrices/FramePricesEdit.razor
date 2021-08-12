@@ -21,7 +21,7 @@
     {
       <Validations @ref="validations" Mode="ValidationMode.Auto" EditContext="@EditContext" ValidateOnLoad="false">
         <ValidatedTextEdit For="() => FramePrice.ProductCode" Text="@(FramePrice.ProductName)" Label="Product" ReadOnly="true" Disabled="true" />
-        <ValidatedDateEdit For="() => FramePrice.CreatedAt" @bind-Date="@FramePrice.CreatedAt" Label="Active From" />
+        <ValidatedInstantEdit For="() => FramePrice.CreatedAt" @bind-Date="@FramePrice.CreatedAt" Label="Active From" />
         <Fields>
           <ValidatedNumericEdit For="() => FramePrice.FramePrice" @bind-Value="@FramePrice.FramePrice"
                                 ColumnSize="ColumnSize.Is4" Label="Frame Price" AddonLabel="£"

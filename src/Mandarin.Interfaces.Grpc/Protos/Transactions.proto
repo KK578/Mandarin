@@ -1,5 +1,6 @@
 ﻿syntax = "proto3";
 
+import "google/type/date.proto";
 import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Mandarin.Api.Transactions";
@@ -13,8 +14,8 @@ service Transactions {
 }
 
 message SynchronizeTransactionsRequest {
-  google.protobuf.Timestamp start = 1;
-  google.protobuf.Timestamp end = 2;
+  google.type.Date start = 1;
+  google.type.Date end = 2;
 }
 
 message SynchronizeTransactionsResponse {

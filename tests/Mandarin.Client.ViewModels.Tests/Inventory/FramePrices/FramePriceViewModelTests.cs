@@ -3,24 +3,28 @@ using FluentAssertions;
 using Mandarin.Client.ViewModels.Inventory.FramePrices;
 using Mandarin.Inventory;
 using Mandarin.Tests.Data;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
 {
     public class FramePriceViewModelTests
     {
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 08, 12, 20, 00);
         private static readonly FramePrice FramePrice = new()
         {
             ProductCode = ProductCode.Of("TLM-001"),
             Amount = 15.00M,
-            CreatedAt = new DateTime(2021, 07, 01),
+            CreatedAt = Instant.FromUtc(2021, 07, 01, 00, 00, 00),
         };
 
+        private readonly IClock clock = new FakeClock(FramePriceViewModelTests.Today);
         private readonly IFramePriceViewModel subject;
 
         public FramePriceViewModelTests()
         {
-            this.subject = new FramePriceViewModel(FramePriceViewModelTests.FramePrice, WellKnownTestData.Products.Mandarin);
+            this.subject = new FramePriceViewModel(FramePriceViewModelTests.FramePrice, WellKnownTestData.Products.Mandarin, this.clock);
         }
 
         [Fact]
@@ -78,7 +82,7 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
             [Fact]
             public void ShouldDefaultToNow()
             {
-                new FramePriceViewModel().CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+                new FramePriceViewModel(this.clock).CreatedAt.Should().Be(FramePriceViewModelTests.Today);
             }
 
             [Fact]
@@ -87,11 +91,10 @@ namespace Mandarin.Client.ViewModels.Tests.Inventory.FramePrices
                 this.subject.CreatedAt.Should().Be(FramePriceViewModelTests.FramePrice.CreatedAt);
 
                 this.subject.FramePrice = 20.00M;
-                this.subject.CreatedAt.Should().NotBeCloseTo(FramePriceViewModelTests.FramePrice.CreatedAt);
-                this.subject.CreatedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(5));
+                this.subject.CreatedAt.Should().Be(FramePriceViewModelTests.Today);
 
                 this.subject.FramePrice = 15.00M;
-                this.subject.CreatedAt.Should().BeCloseTo(FramePriceViewModelTests.FramePrice.CreatedAt);
+                this.subject.CreatedAt.Should().Be(FramePriceViewModelTests.FramePrice.CreatedAt);
             }
         }
     }

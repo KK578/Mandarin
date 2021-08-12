@@ -8,6 +8,7 @@ using FluentValidation.Results;
 using Mandarin.Client.ViewModels.Extensions;
 using Mandarin.Inventory;
 using Microsoft.AspNetCore.Components;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Inventory.FramePrices
@@ -31,10 +32,12 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
         /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="navigationManager">The service for querying and changing the current URL.</param>
         /// <param name="validator">The validator for the FramePrice to ensure it can be saved.</param>
+        /// <param name="clock">The application clock instance.</param>
         public FramePricesNewViewModel(IFramePricesService framePricesService,
                                        IProductRepository productRepository,
                                        NavigationManager navigationManager,
-                                       IValidator<IFramePriceViewModel> validator)
+                                       IValidator<IFramePriceViewModel> validator,
+                                       IClock clock)
         {
             this.framePricesService = framePricesService;
             this.productRepository = productRepository;
@@ -43,7 +46,7 @@ namespace Mandarin.Client.ViewModels.Inventory.FramePrices
 
             var products = new ObservableCollection<Product>();
             this.Products = new ReadOnlyObservableCollection<Product>(products);
-            this.FramePrice = new FramePriceViewModel();
+            this.FramePrice = new FramePriceViewModel(clock);
 
             this.LoadData = ReactiveCommand.CreateFromTask(this.OnLoadData);
             this.Save = ReactiveCommand.CreateFromTask(this.OnSave);

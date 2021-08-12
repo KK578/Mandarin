@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
 using Mandarin.Services.Transactions.External;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace Mandarin.Services.Inventory
 {
@@ -32,7 +32,7 @@ namespace Mandarin.Services.Inventory
         }
 
         /// <inheritdoc/>
-        public Task<FramePrice> GetFramePriceAsync(ProductCode productCode, DateTime transactionTime)
+        public Task<FramePrice> GetFramePriceAsync(ProductCode productCode, Instant transactionTime)
         {
             this.logger.LogDebug("Fetching frame price for '{ProductCode}' @ '{TransactionTime}'.", productCode, transactionTime);
             return this.framePriceRepository.GetByProductCodeAsync(productCode, transactionTime);

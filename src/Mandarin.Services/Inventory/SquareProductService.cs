@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
 using Microsoft.Extensions.Logging;
+using NodaTime.Text;
 using Square;
 using Square.Models;
 
@@ -112,7 +113,7 @@ namespace Mandarin.Services.Inventory
                     ProductName = ProductName.Of($"{productName} ({variation.ItemVariationData.Name})"),
                     Description = description,
                     UnitPrice = unitPrice,
-                    LastUpdated = DateTime.Parse(variation.UpdatedAt),
+                    LastUpdated = InstantPattern.ExtendedIso.Parse(variation.UpdatedAt).GetValueOrThrow(),
                 };
             }
         }

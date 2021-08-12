@@ -1,7 +1,7 @@
-﻿using System;
-using Mandarin.Commissions;
+﻿using Mandarin.Commissions;
 using Mandarin.Common;
 using Mandarin.Stockists;
+using NodaTime;
 using ReactiveUI;
 
 namespace Mandarin.Client.ViewModels.Artists
@@ -9,6 +9,8 @@ namespace Mandarin.Client.ViewModels.Artists
     /// <inheritdoc cref="IArtistViewModel" />
     internal sealed class ArtistViewModel : ReactiveObject, IArtistViewModel
     {
+        private readonly IClock clock;
+
         private string stockistCode;
         private StatusMode statusCode;
         private string firstName;
@@ -20,16 +22,18 @@ namespace Mandarin.Client.ViewModels.Artists
         private string websiteUrl;
         private string tumblrHandle;
         private string emailAddress;
-        private DateTime startDate;
-        private DateTime endDate;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private int rate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArtistViewModel"/> class.
         /// </summary>
         /// <param name="stockist">The pre-existing stockist to populate from.</param>
-        public ArtistViewModel(Stockist stockist)
+        /// <param name="clock">The application clock instance.</param>
+        public ArtistViewModel(Stockist stockist, IClock clock)
         {
+            this.clock = clock;
             this.StockistId = stockist.StockistId?.Value;
             this.stockistCode = stockist.StockistCode?.Value;
             this.statusCode = stockist.StatusCode;
@@ -132,14 +136,14 @@ namespace Mandarin.Client.ViewModels.Artists
         public int? CommissionId { get; }
 
         /// <inheritdoc />
-        public DateTime StartDate
+        public LocalDate StartDate
         {
             get => this.startDate;
             set => this.RaiseAndSetIfChanged(ref this.startDate, value);
         }
 
         /// <inheritdoc />
-        public DateTime EndDate
+        public LocalDate EndDate
         {
             get => this.endDate;
             set => this.RaiseAndSetIfChanged(ref this.endDate, value);
@@ -183,7 +187,7 @@ namespace Mandarin.Client.ViewModels.Artists
                     Rate = this.Rate,
                     StartDate = this.StartDate,
                     EndDate = this.EndDate,
-                    InsertedAt = DateTime.Now,
+                    InsertedAt = this.clock.GetCurrentInstant(),
                 },
             };
         }

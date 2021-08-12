@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -11,19 +10,26 @@ using Mandarin.Client.ViewModels.Tests.Helpers;
 using Mandarin.Common;
 using Mandarin.Stockists;
 using Moq;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Artists
 {
     public class ArtistsNewViewModelTests
     {
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 08, 12, 20, 00);
+        private static readonly LocalDate StartDate = new(2021, 08, 08);
+        private static readonly LocalDate EndDate = new(2021, 11, 06);
+
         private readonly Fixture fixture = new();
         private readonly Mock<IStockistService> stockistService = new();
         private readonly MockNavigationManager navigationManager = new();
         private readonly Mock<IValidator<IArtistViewModel>> artistValidator = new();
+        private readonly IClock clock = new FakeClock(ArtistsNewViewModelTests.Today);
 
         private IArtistsNewViewModel Subject =>
-            new ArtistsNewViewModel(this.stockistService.Object, this.navigationManager, this.artistValidator.Object);
+            new ArtistsNewViewModel(this.stockistService.Object, this.navigationManager, this.artistValidator.Object, this.clock);
 
         private void GivenValidationResult(ValidationResult validationResult)
         {
@@ -40,8 +46,8 @@ namespace Mandarin.Client.ViewModels.Tests.Artists
                 var stockist = this.Subject.Stockist;
                 stockist.StatusCode.Should().Be(StatusMode.Active);
                 stockist.Rate.Should().Be(100);
-                stockist.StartDate.Should().Be(DateTime.Today);
-                stockist.EndDate.Should().Be(DateTime.Today.AddDays(90));
+                stockist.StartDate.Should().Be(ArtistsNewViewModelTests.StartDate);
+                stockist.EndDate.Should().Be(ArtistsNewViewModelTests.EndDate);
             }
         }
 

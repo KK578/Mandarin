@@ -1,10 +1,12 @@
 ﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
+using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -29,7 +31,7 @@ namespace Mandarin.Client.Services.Tests.Emails
         public async Task ShouldBeAbleToSuccessfullySendAnEmail()
         {
             this.GivenSendGridReturns(new Response(HttpStatusCode.Accepted, null, null));
-            var recordOfSales = TestData.Create<RecordOfSales>();
+            var recordOfSales = MandarinFixture.Instance.NewRecordOfSales;
             var response = await this.Subject.SendRecordOfSalesEmailAsync(recordOfSales);
             response.IsSuccess.Should().BeTrue();
         }

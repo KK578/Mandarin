@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoFixture;
 using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Client.ViewModels.Commissions;
 using Mandarin.Commissions;
 using Mandarin.Emails;
+using Mandarin.Tests.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Moq;
 using Xunit;
@@ -30,7 +32,7 @@ namespace Mandarin.Client.ViewModels.Tests.Commissions
             var principal = new ClaimsPrincipal(identity);
             this.authenticationStateProvider = new Mock<AuthenticationStateProvider>();
             this.authenticationStateProvider.Setup(x => x.GetAuthenticationStateAsync()).ReturnsAsync(new AuthenticationState(principal));
-            this.recordOfSales = TestData.Create<RecordOfSales>();
+            this.recordOfSales = MandarinFixture.Instance.Create<RecordOfSales>();
         }
 
         private IArtistRecordOfSalesViewModel Subject =>
@@ -47,17 +49,6 @@ namespace Mandarin.Client.ViewModels.Tests.Commissions
                 subject.SendInProgress.Should().BeFalse();
                 subject.SendSuccessful.Should().BeFalse();
                 subject.StatusMessage.Should().BeNull();
-            }
-
-            [Fact]
-            public void VerifySimpleSettersAndFormatting()
-            {
-                var subject = this.Subject;
-                subject.EmailAddress = "MyEmail";
-                subject.CustomMessage = TestData.WellKnownString;
-
-                subject.ToString().Should().Contain(subject.EmailAddress);
-                subject.CustomMessage.Should().Be(TestData.WellKnownString);
             }
         }
 
@@ -76,7 +67,7 @@ namespace Mandarin.Client.ViewModels.Tests.Commissions
             [Fact]
             public void ShouldReturnStatusToNullIfPreviouslyIgnored()
             {
-                var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, TestData.Create<RecordOfSales>());
+                var subject = new ArtistRecordOfSalesViewModel(Mock.Of<IEmailService>(), null, this.recordOfSales);
                 subject.ToggleSentFlag();
                 subject.ToggleSentFlag();
 
@@ -90,7 +81,7 @@ namespace Mandarin.Client.ViewModels.Tests.Commissions
             [Fact]
             public async Task ShouldDisplayErrorIfServiceThrows()
             {
-                var exception = new Exception(TestData.WellKnownString);
+                var exception = MandarinFixture.Instance.NewException;
                 this.emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>()))
                     .ThrowsAsync(exception);
 
@@ -98,17 +89,18 @@ namespace Mandarin.Client.ViewModels.Tests.Commissions
                 await subject.SendEmailAsync();
 
                 subject.SendSuccessful.Should().BeFalse();
-                subject.StatusMessage.Should().Be(TestData.WellKnownString);
+                subject.StatusMessage.Should().Be(exception.Message);
             }
 
             [Fact]
             public async Task ShouldShowServiceResponseOnSuccess()
             {
-                var response = new EmailResponse { IsSuccess = true, Message = $"Successfully sent to {TestData.WellKnownString}!" };
+                var message = MandarinFixture.Instance.NewString;
+                var response = new EmailResponse { IsSuccess = true, Message = $"Successfully sent to {message}!" };
                 this.emailService.Setup(x => x.SendRecordOfSalesEmailAsync(It.IsAny<RecordOfSales>())).ReturnsAsync(response);
 
                 var subject = this.Subject;
-                subject.EmailAddress = TestData.WellKnownString;
+                subject.EmailAddress = message;
                 await subject.SendEmailAsync();
 
                 subject.SendSuccessful.Should().BeTrue();

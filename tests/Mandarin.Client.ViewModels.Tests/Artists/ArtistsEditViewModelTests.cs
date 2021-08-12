@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,22 +12,27 @@ using Mandarin.Common;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
 using Moq;
+using NodaTime;
+using NodaTime.Testing;
 using Xunit;
 
 namespace Mandarin.Client.ViewModels.Tests.Artists
 {
     public class ArtistsEditViewModelTests
     {
+        private static readonly Instant Today = Instant.FromUtc(2021, 08, 08, 12, 20, 00);
+
         private readonly Fixture fixture = new();
         private readonly Mock<IStockistService> stockistService = new();
         private readonly MockNavigationManager navigationManager = new();
         private readonly Mock<IValidator<IArtistViewModel>> artistValidator = new();
+        private readonly IClock clock = new FakeClock(ArtistsEditViewModelTests.Today);
 
         private readonly IArtistsEditViewModel subject;
 
         protected ArtistsEditViewModelTests()
         {
-            this.subject = new ArtistsEditViewModel(this.stockistService.Object, this.navigationManager, this.artistValidator.Object);
+            this.subject = new ArtistsEditViewModel(this.stockistService.Object, this.navigationManager, this.artistValidator.Object, this.clock);
         }
 
         private void GivenServiceReturnsStockist(Stockist stockist)
@@ -96,8 +100,8 @@ namespace Mandarin.Client.ViewModels.Tests.Artists
                 this.subject.Stockist.TumblrHandle.Should().BeNull();
                 this.subject.Stockist.EmailAddress.Should().Be("jgunny3@unicef.org");
                 this.subject.Stockist.CommissionId.Should().Be(4);
-                this.subject.Stockist.StartDate.Should().Be(new DateTime(2019, 01, 16));
-                this.subject.Stockist.EndDate.Should().Be(new DateTime(2019, 04, 16));
+                this.subject.Stockist.StartDate.Should().Be(new LocalDate(2019, 01, 16));
+                this.subject.Stockist.EndDate.Should().Be(new LocalDate(2019, 04, 16));
                 this.subject.Stockist.Rate.Should().Be(40);
             }
         }

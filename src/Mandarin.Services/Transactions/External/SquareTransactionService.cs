@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bashi.Core.Extensions;
 using Microsoft.Extensions.Logging;
+using NodaTime;
+using NodaTime.Text;
 using Square;
 using Square.Models;
 
@@ -29,7 +31,7 @@ namespace Mandarin.Services.Transactions.External
         }
 
         /// <inheritdoc/>
-        public IObservable<Order> GetAllOrders(DateTime start, DateTime end)
+        public IObservable<Order> GetAllOrders(LocalDate start, LocalDate end)
         {
             this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
             return Observable.Create<Order>(SubscribeToOrders);
@@ -43,8 +45,8 @@ namespace Mandarin.Services.Transactions.External
                                       .StateFilter(new SearchOrdersStateFilter(new[] { "COMPLETED" }))
                                       .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
                                                       .CreatedAt(new TimeRange.Builder()
-                                                                .StartAt(start.ToString("s"))
-                                                                .EndAt(end.ToString("s"))
+                                                                .StartAt(InstantPattern.General.Format(start.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant()))
+                                                                .EndAt(InstantPattern.General.Format(end.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant()))
                                                                 .Build())
                                                       .Build())
                                       .Build())
