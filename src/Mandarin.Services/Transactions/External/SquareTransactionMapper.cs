@@ -125,49 +125,33 @@ namespace Mandarin.Services.Transactions.External
 
         private IObservable<Subtransaction> CreateSubtransactionFromDiscount(OrderLineItemDiscount orderLineItemDiscount)
         {
-            Product product;
+            var productId = ResolveDiscountProductId();
+            return Observable.FromAsync(() => this.productRepository.GetProductAsync(productId))
+                             .Select(product =>
+                             {
+                                 var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
+                                 return new Subtransaction
+                                 {
+                                     Product = product,
+                                     Quantity = (int)quantity,
+                                     UnitPrice = -0.01M,
+                                 };
+                             });
 
-            if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase))
+            ProductId ResolveDiscountProductId()
             {
-                product = new Product
+                if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase))
                 {
-                    ProductId = ProductId.Of("BUN-DCM"),
-                    ProductCode = ProductCode.Of("BUN-DCM"),
-                    ProductName = ProductName.Of("Box of Macarons Discount"),
-                    Description = "Buy 6 macarons for \"£12.00\"",
-                    UnitPrice = -0.01m,
-                };
-            }
-            else if (orderLineItemDiscount.Name.Contains("pocky", StringComparison.OrdinalIgnoreCase))
-            {
-                product = new Product
-                {
-                    ProductId = ProductId.Of("BUN-DCP"),
-                    ProductCode = ProductCode.Of("BUN-DCP"),
-                    ProductName = ProductName.Of("Box of Pocky Discount"),
-                    Description = "Discount on buying multiple packs of Pocky.",
-                    UnitPrice = -0.01m,
-                };
-            }
-            else
-            {
-                product = new Product
-                {
-                    ProductId = ProductId.Of("TLM-D"),
-                    ProductCode = ProductCode.Of("TLM-D"),
-                    ProductName = ProductName.Of("Other discounts"),
-                    Description = "Discounts that aren't tracked.",
-                    UnitPrice = -0.01m,
-                };
-            }
+                    return ProductId.BunDiscountMacarons;
+                }
 
-            var quantity = orderLineItemDiscount.AppliedMoney.Amount ?? 0;
-            return Observable.Return(new Subtransaction
-            {
-                Product = product,
-                Quantity = (int)quantity,
-                UnitPrice = -0.01M,
-            });
+                if (orderLineItemDiscount.Name.Contains("pocky", StringComparison.OrdinalIgnoreCase))
+                {
+                    return ProductId.BunDiscountPocky;
+                }
+
+                return ProductId.TlmDiscount;
+            }
         }
 
         private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, Instant orderDate)
