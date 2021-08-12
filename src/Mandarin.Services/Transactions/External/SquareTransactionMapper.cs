@@ -46,7 +46,7 @@ namespace Mandarin.Services.Transactions.External
                        {
                            ExternalTransactionId = ExternalTransactionId.Of(order.Id),
                            TotalAmount = decimal.Divide(order.NetAmounts.TotalMoney?.Amount ?? 0, 100),
-                           Timestamp = InstantPattern.General.Parse(order.CreatedAt).GetValueOrThrow(),
+                           Timestamp = InstantPattern.ExtendedIso.Parse(order.CreatedAt).GetValueOrThrow(),
                            Subtransactions = subtransactions.AsReadOnlyList(),
                        });
         }
@@ -64,7 +64,7 @@ namespace Mandarin.Services.Transactions.External
 
         private IObservable<IList<Subtransaction>> CreateSubtransactions(Order order)
         {
-            var orderDate = InstantPattern.General.Parse(order.CreatedAt).GetValueOrThrow();
+            var orderDate = InstantPattern.ExtendedIso.Parse(order.CreatedAt).GetValueOrThrow();
             var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(orderLineItem => this.CreateSubtransaction(orderLineItem, orderDate));
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
             var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));

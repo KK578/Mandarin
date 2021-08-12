@@ -1,7 +1,6 @@
 ﻿syntax = "proto3";
 
 import "google/type/date.proto";
-import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Mandarin.Api.Transactions";
 option java_package = "uk.co.thelittlemandarin.mandarin.api.transaction";
