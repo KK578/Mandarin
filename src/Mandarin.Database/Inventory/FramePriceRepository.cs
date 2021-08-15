@@ -59,7 +59,7 @@ namespace Mandarin.Database.Inventory
         /// <inheritdoc/>
         public Task<IReadOnlyList<FramePrice>> GetAllAsync()
         {
-            return this.GetAll();
+            return this.GetAll(db => db.QueryAsync<FramePriceRecord>(FramePriceRepository.GetAllFramePricesSql));
         }
 
         /// <inheritdoc/>
@@ -77,12 +77,6 @@ namespace Mandarin.Database.Inventory
 
         /// <inheritdoc/>
         protected override string ExtractDisplayKey(FramePrice value) => value.ProductCode.Value;
-
-        /// <inheritdoc/>
-        protected override Task<IEnumerable<FramePriceRecord>> GetAllRecords(IDbConnection db)
-        {
-            return db.QueryAsync<FramePriceRecord>(FramePriceRepository.GetAllFramePricesSql);
-        }
 
         /// <inheritdoc/>
         protected override async Task<FramePriceRecord> UpsertRecordAsync(IDbConnection db, FramePriceRecord record)

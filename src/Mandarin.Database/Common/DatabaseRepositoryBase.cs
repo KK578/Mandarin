@@ -61,24 +61,25 @@ namespace Mandarin.Database.Common
         }
 
         /// <summary>
-        /// Gets all <typeparamref name="TDomain"/> entries.
+        /// Gets all <typeparamref name="TDomain"/> entries from the given query function.
         /// </summary>
-        /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of all entries of <typeparamref name="TDomain"/>.</returns>
-        protected async Task<IReadOnlyList<TDomain>> GetAll()
+        /// <param name="recordsFunc">The function to call with to retrieve rows from the database.</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of <typeparamref name="TDomain"/>.</returns>
+        protected async Task<IReadOnlyList<TDomain>> GetAll(Func<IDbConnection, Task<IEnumerable<TRecord>>> recordsFunc)
         {
-            this.logger.LogDebug($"Fetching all {this.typeName} entries.");
+            this.logger.LogDebug($"Fetching {this.typeName} entries.");
 
             try
             {
                 using var db = this.mandarinDbContext.GetConnection();
-                var records = await this.GetAllRecords(db);
+                var records = await recordsFunc(db);
                 var values = this.mapper.Map<List<TDomain>>(records).AsReadOnly();
                 this.logger.LogTrace($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
                 return values;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Failed to fetch all {this.typeName} entries.");
+                this.logger.LogError(ex, $"Failed to fetch {this.typeName} entries.");
                 throw;
             }
         }
@@ -138,13 +139,6 @@ namespace Mandarin.Database.Common
         /// <param name="value">Domain object to extract the primary key from.</param>
         /// <returns>The primary key of the domain object.</returns>
         protected abstract string ExtractDisplayKey(TDomain value);
-
-        /// <summary>
-        /// Gets all records in the database of <typeparamref name="TRecord"/>.
-        /// </summary>
-        /// <param name="db">The database connection.</param>
-        /// <returns>A <see cref="Task{TResult}"/> containing a sequence of <typeparamref name="TRecord"/>.</returns>
-        protected abstract Task<IEnumerable<TRecord>> GetAllRecords(IDbConnection db);
 
         /// <summary>
         /// Inserts or Updates the given record in the database. Returns the new state of the record.

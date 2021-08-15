@@ -90,7 +90,9 @@ namespace Mandarin.Database.Stockists
         /// <inheritdoc/>
         public Task<IReadOnlyList<Stockist>> GetAllStockists()
         {
-            return this.GetAll();
+            return this.GetAll(db => db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllStockistsSql,
+                                   (s, sd) => s with { Details = sd },
+                                   splitOn: "stockist_id,stockist_id"));
         }
 
         /// <inheritdoc/>
@@ -101,14 +103,6 @@ namespace Mandarin.Database.Stockists
 
         /// <inheritdoc/>
         protected override string ExtractDisplayKey(Stockist value) => value.StockistCode.Value;
-
-        /// <inheritdoc/>
-        protected override Task<IEnumerable<StockistRecord>> GetAllRecords(IDbConnection db)
-        {
-            return db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllStockistsSql,
-                                                                                       (s, sd) => s with { Details = sd },
-                                                                                       splitOn: "stockist_id,stockist_id");
-        }
 
         /// <inheritdoc/>
         protected override async Task<StockistRecord> UpsertRecordAsync(IDbConnection db, StockistRecord value)

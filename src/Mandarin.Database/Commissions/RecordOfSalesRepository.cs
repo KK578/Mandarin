@@ -47,21 +47,20 @@ namespace Mandarin.Database.Commissions
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(Interval interval) => this.GetAll();
+        public Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(Interval interval)
+        {
+            return this.GetAll(async db =>
+            {
+                var parameters = new { start_date = interval.Start, end_date = interval.End };
+                var sales = await db.QueryAsync<SaleRecord>(RecordOfSalesRepository.GetSalesSql, parameters);
+
+                // TODO: Map the sales back to stockists.
+                return new List<RecordOfSalesRecord>();
+            });
+        }
 
         /// <inheritdoc />
         protected override string ExtractDisplayKey(RecordOfSales value) => value.ToString();
-
-        /// <inheritdoc />
-        protected override async Task<IEnumerable<RecordOfSalesRecord>> GetAllRecords(IDbConnection db)
-        {
-            var interval = new Interval(Instant.FromUtc(2021, 06, 16, 00, 00, 00), Instant.FromUtc(2021, 07, 17, 00, 00, 00));
-            var parameters = new { start_date = interval.Start, end_date = interval.End };
-            var sales = await db.QueryAsync<SaleRecord>(RecordOfSalesRepository.GetSalesSql, parameters);
-
-            // TODO: Map the sales back to stockists.
-            return new List<RecordOfSalesRecord>();
-        }
 
         /// <inheritdoc />
         protected override Task<RecordOfSalesRecord> UpsertRecordAsync(IDbConnection db, RecordOfSalesRecord value)
