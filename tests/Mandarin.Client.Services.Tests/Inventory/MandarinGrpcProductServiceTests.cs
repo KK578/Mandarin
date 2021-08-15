@@ -22,7 +22,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
         public async Task ShouldBeAbleToRetrieveAllProducts()
         {
             var products = await this.Subject.GetAllProductsAsync();
-            products.Should().HaveCount(9);
+            products.Should().HaveCount(12);
         }
 
         [Fact]

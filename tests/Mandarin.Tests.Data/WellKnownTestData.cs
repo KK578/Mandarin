@@ -250,6 +250,7 @@ namespace Mandarin.Tests.Data
                         Product = Products.Clementine,
                         Quantity = 1,
                         UnitPrice = 45.00M,
+                        CommissionRate = 10,
                     },
                 }.AsReadOnly(),
             };
