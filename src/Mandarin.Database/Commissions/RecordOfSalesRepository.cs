@@ -60,12 +60,12 @@ namespace Mandarin.Database.Commissions
         /// <inheritdoc />
         public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateInterval interval)
         {
-            var sales = await this.GetAll(db =>
+            var allSales = await this.GetAll(db =>
             {
                 var parameters = new { start_date = interval.Start, end_date = interval.End };
                 return db.QueryAsync<SaleRecord>(RecordOfSalesRepository.GetSalesSql, parameters);
             });
-            var salesLookup = sales.GroupBy(x => x.StockistId).ToDictionary(x => x.Key, x => x.ToList());
+            var salesLookup = allSales.GroupBy(x => x.StockistId).ToDictionary(x => x.Key, x => x.ToList());
 
             var stockists = await this.stockistRepository.GetAllActiveStockistsAsync();
             var recordOfSales = stockists.Select(s => ToRecordOfSales(s, salesLookup.GetValueOrDefault(s.StockistId, new List<Sale>()))).ToList();
@@ -87,7 +87,7 @@ namespace Mandarin.Database.Commissions
                     StartDate = interval.Start,
                     EndDate = interval.End,
                     Rate = rate,
-                    Sales = sales.AsReadOnlyList(),
+                    Sales = stockistSales.AsReadOnlyList(),
                     Subtotal = subtotal,
                     CommissionTotal = commission,
                     Total = subtotal + commission,

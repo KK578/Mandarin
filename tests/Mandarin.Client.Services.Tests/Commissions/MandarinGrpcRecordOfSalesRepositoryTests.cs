@@ -20,12 +20,13 @@ namespace Mandarin.Client.Services.Tests.Commissions
         private static readonly LocalDate End = new(2021, 07, 17);
         private static readonly DateInterval Interval = new(MandarinGrpcRecordOfSalesRepositoryTests.Start, MandarinGrpcRecordOfSalesRepositoryTests.End);
 
-        private readonly RecordOfSales kelbyTynanRecordOfSales;
+        private readonly RecordOfSales ktRecordOfSales;
+        private readonly RecordOfSales omRecordOfSales;
 
         public MandarinGrpcRecordOfSalesRepositoryTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
-            this.kelbyTynanRecordOfSales = new RecordOfSales
+            this.ktRecordOfSales = new RecordOfSales
             {
                 StockistCode = WellKnownTestData.Stockists.KelbyTynan.StockistCode.ToString(),
                 FirstName = WellKnownTestData.Stockists.KelbyTynan.Details.FirstName,
@@ -52,6 +53,22 @@ namespace Mandarin.Client.Services.Tests.Commissions
                 CommissionTotal = -4.50M,
                 Total = 40.50M,
             };
+
+            this.omRecordOfSales = new RecordOfSales
+            {
+                StockistCode = WellKnownTestData.Stockists.OthilieMapples.StockistCode.ToString(),
+                FirstName = WellKnownTestData.Stockists.OthilieMapples.Details.FirstName,
+                Name = WellKnownTestData.Stockists.OthilieMapples.Details.DisplayName,
+                EmailAddress = WellKnownTestData.Stockists.OthilieMapples.Details.EmailAddress,
+                CustomMessage = string.Empty,
+                StartDate = new LocalDate(2021, 06, 16),
+                EndDate = new LocalDate(2021, 07, 17),
+                Rate = decimal.Divide(WellKnownTestData.Stockists.OthilieMapples.Commission.Rate, 100),
+                Sales = new List<Sale>().AsReadOnly(),
+                Subtotal = 0M,
+                CommissionTotal = 0M,
+                Total = 0M,
+            };
         }
 
         private IRecordOfSalesRepository Subject => this.Resolve<IRecordOfSalesRepository>();
@@ -62,8 +79,8 @@ namespace Mandarin.Client.Services.Tests.Commissions
             var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcRecordOfSalesRepositoryTests.Interval);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
-            salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.kelbyTynanRecordOfSales);
-            salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Total.Should().Be(0);
+            salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.ktRecordOfSales);
+            salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Should().MatchRecordOfSales(this.omRecordOfSales);
         }
     }
 }
