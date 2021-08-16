@@ -28,6 +28,13 @@ namespace Mandarin.Database.Stockists
                 INNER JOIN inventory.stockist_detail sd ON s.stockist_id = sd.stockist_id
             ORDER BY stockist_code";
 
+        private const string GetAllActiveStockistsSql = @"
+            SELECT s.*, sd.*
+            FROM inventory.stockist s
+                INNER JOIN inventory.stockist_detail sd ON s.stockist_id = sd.stockist_id
+            WHERE s.stockist_status IN ('Active', 'ActiveHidden')
+            ORDER BY stockist_code";
+
         private const string InsertStockistSql = @"
             INSERT INTO inventory.stockist (stockist_code, stockist_status)
             VALUES (@stockist_code, @stockist_Status)
@@ -72,7 +79,7 @@ namespace Mandarin.Database.Stockists
         }
 
         /// <inheritdoc/>
-        public Task<Stockist> GetStockistByCode(StockistCode stockistCode)
+        public Task<Stockist> GetStockistAsync(StockistCode stockistCode)
         {
             return this.Get(stockistCode,
                             async db =>
@@ -88,9 +95,17 @@ namespace Mandarin.Database.Stockists
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Stockist>> GetAllStockists()
+        public Task<IReadOnlyList<Stockist>> GetAllStockistsAsync()
         {
             return this.GetAll(db => db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllStockistsSql,
+                                   (s, sd) => s with { Details = sd },
+                                   splitOn: "stockist_id,stockist_id"));
+        }
+
+        /// <inheritdoc />
+        public Task<IReadOnlyList<Stockist>> GetAllActiveStockistsAsync()
+        {
+            return this.GetAll(db => db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllActiveStockistsSql,
                                    (s, sd) => s with { Details = sd },
                                    splitOn: "stockist_id,stockist_id"));
         }

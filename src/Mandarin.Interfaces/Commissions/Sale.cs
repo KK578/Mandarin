@@ -1,4 +1,5 @@
 ﻿using Mandarin.Converters;
+using Mandarin.Stockists;
 using Newtonsoft.Json;
 
 namespace Mandarin.Commissions
@@ -8,6 +9,11 @@ namespace Mandarin.Commissions
     /// </summary>
     public record Sale
     {
+        /// <summary>
+        /// Gets the Stockist ID for the stockist that this sale belongs to.
+        /// </summary>
+        public StockistId StockistId { get; init; }
+
         /// <summary>
         /// Gets the product's unique item code.
         /// </summary>

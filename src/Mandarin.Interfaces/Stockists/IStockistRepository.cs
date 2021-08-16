@@ -13,13 +13,19 @@ namespace Mandarin.Stockists
         /// </summary>
         /// <param name="stockistCode">The stockist code of the stockist.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous fetch operation of the requested stockist.</returns>
-        Task<Stockist> GetStockistByCode(StockistCode stockistCode);
+        Task<Stockist> GetStockistAsync(StockistCode stockistCode);
 
         /// <summary>
         /// Gets a list of all known stockists.
         /// </summary>
         /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of all stockists.</returns>
-        Task<IReadOnlyList<Stockist>> GetAllStockists();
+        Task<IReadOnlyList<Stockist>> GetAllStockistsAsync();
+
+        /// <summary>
+        /// Gets a list of all <see cref="Stockist"/>s who are actively considered for commission.
+        /// </summary>
+        /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of all active stockists.</returns>
+        Task<IReadOnlyList<Stockist>> GetAllActiveStockistsAsync();
 
         /// <summary>
         /// Saves the provided stockist details.
