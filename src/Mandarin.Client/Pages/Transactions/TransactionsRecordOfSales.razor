@@ -62,7 +62,7 @@
         <CardText Alignment="TextAlignment.Left">Commission: @($"{SelectedRecordOfSales.CommissionTotal:C}") (@($"{SelectedRecordOfSales.Rate:P}"))</CardText>
         <CardText Alignment="TextAlignment.Left">Total: @($"{SelectedRecordOfSales.Total:C}")</CardText>
 
-        @if (SelectedRecordOfSales.Sales != null)
+        @if (SelectedRecordOfSales.Sales?.Count > 0)
         {
           <DataGrid Data="@SelectedRecordOfSales.Sales" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
             <DataGridColumn TItem="Sale" Field="ProductCode" Caption="Product Code" />
