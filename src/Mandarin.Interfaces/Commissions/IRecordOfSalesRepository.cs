@@ -15,6 +15,6 @@ namespace Mandarin.Commissions
         /// </summary>
         /// <param name="interval">The interval for the record of sales.</param>
         /// <returns>A <see cref="Task"/> containing the list of <see cref="RecordOfSales"/> for each active stockist.</returns>
-        Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(Interval interval);
+        Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateInterval interval);
     }
 }

@@ -14,15 +14,15 @@ using Xunit.Abstractions;
 namespace Mandarin.Client.Services.Tests.Commissions
 {
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcCommissionServiceTests : MandarinGrpcIntegrationTestsBase
+    public class MandarinGrpcRecordOfSalesRepositoryTests : MandarinGrpcIntegrationTestsBase
     {
         private static readonly LocalDate Start = new(2021, 06, 16);
         private static readonly LocalDate End = new(2021, 07, 17);
-        private static readonly DateInterval Interval = new(MandarinGrpcCommissionServiceTests.Start, MandarinGrpcCommissionServiceTests.End);
+        private static readonly DateInterval Interval = new(MandarinGrpcRecordOfSalesRepositoryTests.Start, MandarinGrpcRecordOfSalesRepositoryTests.End);
 
         private readonly RecordOfSales kelbyTynanRecordOfSales;
 
-        public MandarinGrpcCommissionServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcRecordOfSalesRepositoryTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             this.kelbyTynanRecordOfSales = new RecordOfSales
@@ -54,12 +54,12 @@ namespace Mandarin.Client.Services.Tests.Commissions
             };
         }
 
-        private ICommissionService Subject => this.Resolve<ICommissionService>();
+        private IRecordOfSalesRepository Subject => this.Resolve<IRecordOfSalesRepository>();
 
         [Fact]
         public async Task ShouldBeAbleToRetrieveEntriesForRecordsOfSales()
         {
-            var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcCommissionServiceTests.Interval);
+            var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcRecordOfSalesRepositoryTests.Interval);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
             salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.kelbyTynanRecordOfSales);

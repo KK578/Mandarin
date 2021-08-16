@@ -59,11 +59,11 @@ namespace Mandarin.Client.Services
             AddMandarinGrpcClient<StockistsClient>();
             AddMandarinGrpcClient<TransactionsClient>();
 
-            services.AddTransient<ICommissionService, MandarinGrpcCommissionService>();
             services.AddTransient<IEmailService, MandarinGrpcEmailService>();
             services.AddTransient<IFramePricesService, MandarinGrpcFramePricesService>();
             services.AddTransient<IProductRepository, MandarinGrpcProductRepository>();
             services.AddTransient<IProductSynchronizer, MandarinGrpcProductSynchronizer>();
+            services.AddTransient<IRecordOfSalesRepository, MandarinGrpcRecordOfSalesRepository>();
             services.AddTransient<IStockistService, MandarinStockistGrpcService>();
             services.AddTransient<ITransactionSynchronizer, MandarinGrpcTransactionSynchronizer>();
 

@@ -12,6 +12,7 @@ namespace Mandarin.Commissions
         /// <summary>
         /// Gets the Stockist ID for the stockist that this sale belongs to.
         /// </summary>
+        [JsonIgnore]
         public StockistId StockistId { get; init; }
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace Mandarin.Database.Commissions
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(Interval interval)
+        public async Task<IReadOnlyList<RecordOfSales>> GetRecordOfSalesAsync(DateInterval interval)
         {
             var sales = await this.GetAll(db =>
             {
@@ -84,8 +84,8 @@ namespace Mandarin.Database.Commissions
                     Name = stockist.Details.DisplayName,
                     EmailAddress = stockist.Details.EmailAddress,
                     CustomMessage = string.Empty,
-                    StartDate = interval.Start.ToLocalDate(),
-                    EndDate = interval.End.ToLocalDate(),
+                    StartDate = interval.Start,
+                    EndDate = interval.End,
                     Rate = rate,
                     Sales = sales.AsReadOnlyList(),
                     Subtotal = subtotal,

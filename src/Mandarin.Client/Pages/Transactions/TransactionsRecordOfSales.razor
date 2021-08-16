@@ -6,7 +6,7 @@
 @using Mandarin.Client.ViewModels
 @using NodaTime
 @inject IOptions<MandarinConfiguration> configuration;
-@inject ICommissionService commissionService;
+@inject IRecordOfSalesRepository recordOfSalesRepository;
 @inject IViewModelFactory viewModelFactory;
 @inject IClock clock
 
@@ -162,7 +162,7 @@
       IsLoading = true;
 
       var dateInterval = new DateInterval(StartDate, EndDate);
-      var recordOfSales = await commissionService.GetRecordOfSalesAsync(dateInterval);
+      var recordOfSales = await recordOfSalesRepository.GetRecordOfSalesAsync(dateInterval);
       LoadedDateInterval = dateInterval;
       RecordOfSales = recordOfSales.Select(x => viewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
     }

@@ -2,7 +2,6 @@
 using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Inventory;
-using Mandarin.Services.Commission;
 using Mandarin.Services.Emails;
 using Mandarin.Services.Inventory;
 using Mandarin.Services.Stockists;
@@ -35,7 +34,6 @@ namespace Mandarin.Services
         {
             services.AddSingleton<IClock>(SystemClock.Instance);
             services.AddLazyCache();
-            services.AddMandarinDomainServices();
             services.AddEmailServices(configuration);
             services.AddInventoryServices();
             services.AddStockistServices();
@@ -43,11 +41,6 @@ namespace Mandarin.Services
             services.AddSquareServices(configuration);
 
             return services;
-        }
-
-        private static void AddMandarinDomainServices(this IServiceCollection services)
-        {
-            services.AddTransient<ICommissionService, CommissionService>();
         }
 
         private static void AddEmailServices(this IServiceCollection services, IConfiguration configuration)

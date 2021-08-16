@@ -11,17 +11,17 @@ using RecordOfSales = Mandarin.Commissions.RecordOfSales;
 namespace Mandarin.Client.Services.Commissions
 {
     /// <inheritdoc />
-    internal sealed class MandarinGrpcCommissionService : ICommissionService
+    internal sealed class MandarinGrpcRecordOfSalesRepository : IRecordOfSalesRepository
     {
         private readonly CommissionsClient commissionsClient;
         private readonly IMapper mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MandarinGrpcCommissionService"/> class.
+        /// Initializes a new instance of the <see cref="MandarinGrpcRecordOfSalesRepository"/> class.
         /// </summary>
         /// <param name="commissionsClient">The gRPC client to Mandarin API for Commissions.</param>
         /// <param name="mapper">The mapping service between CLR types.</param>
-        public MandarinGrpcCommissionService(CommissionsClient commissionsClient, IMapper mapper)
+        public MandarinGrpcRecordOfSalesRepository(CommissionsClient commissionsClient, IMapper mapper)
         {
             this.commissionsClient = commissionsClient;
             this.mapper = mapper;
