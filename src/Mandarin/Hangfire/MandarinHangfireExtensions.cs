@@ -25,7 +25,7 @@ namespace Mandarin.Hangfire
             services.AddHangfire(o => o.UseSimpleAssemblyNameTypeSerializer()
                                        .UseRecommendedSerializerSettings()
                                        .UsePostgreSqlStorage(configuration.GetConnectionString("MandarinConnection")));
-            services.AddHangfireServer(o => o.WorkerCount = 1);
+            services.AddHangfireServer(o => o.WorkerCount = 2);
 
             return services;
         }
