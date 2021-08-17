@@ -9,9 +9,9 @@ using Xunit.Abstractions;
 namespace Mandarin.Client.Services.Tests.Inventory
 {
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcProductServiceTests : MandarinGrpcIntegrationTestsBase
+    public class MandarinGrpcProductRepositoryTests : MandarinGrpcIntegrationTestsBase
     {
-        public MandarinGrpcProductServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcProductRepositoryTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }
@@ -22,7 +22,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
         public async Task ShouldBeAbleToRetrieveAllProducts()
         {
             var products = await this.Subject.GetAllProductsAsync();
-            products.Should().HaveCount(9);
+            products.Should().HaveCount(12);
         }
 
         [Fact]

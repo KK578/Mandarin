@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Mandarin.Database.Migrations;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -38,7 +39,24 @@ namespace Mandarin.Database
         /// </summary>
         public void RunMigrations()
         {
-            this.migrator.RunMigrations();
+            var ranNewMigrations = this.migrator.RunMigrations();
+            if (ranNewMigrations)
+            {
+                this.RefreshConnectionAfterMigration();
+                NpgsqlConnection.ClearAllPools();
+            }
+        }
+
+        private void RefreshConnectionAfterMigration()
+        {
+            using var connection = this.GetConnection();
+            if (connection is not NpgsqlConnection npgsqlConnection)
+            {
+                throw new InvalidOperationException("Cannot perform post-migration steps as database connection was not PostgreSQL.");
+            }
+
+            npgsqlConnection.Open();
+            npgsqlConnection.ReloadTypes();
         }
     }
 }

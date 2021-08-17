@@ -8,9 +8,24 @@ namespace Mandarin.Inventory
     public class ProductId : TinyString
     {
         /// <summary>
+        /// The well known <see cref="ProductId"/> for Macaron discounts.
+        /// </summary>
+        public static readonly ProductId BunDiscountMacarons = new("BUN-DCM");
+
+        /// <summary>
+        /// The well known <see cref="ProductId"/> for Pocky discounts.
+        /// </summary>
+        public static readonly ProductId BunDiscountPocky = new("BUN-DCP");
+
+        /// <summary>
         /// The well known <see cref="ProductId"/> for TLM online delivery fees.
         /// </summary>
         public static readonly ProductId TlmDelivery = new("TLM-DELIVERY");
+
+        /// <summary>
+        /// The well known <see cref="ProductId"/> for any other discounts.
+        /// </summary>
+        public static readonly ProductId TlmDiscount = new("TLM-DISCOUNT");
 
         /// <summary>
         /// The well known <see cref="ProductId"/> for TLM framing.

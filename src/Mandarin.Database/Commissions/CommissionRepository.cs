@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
@@ -62,12 +60,6 @@ namespace Mandarin.Database.Commissions
 
         /// <inheritdoc/>
         protected override string ExtractDisplayKey(Commission value) => value.CommissionId.ToString();
-
-        /// <inheritdoc/>
-        protected override Task<IEnumerable<CommissionRecord>> GetAllRecords(IDbConnection db)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <inheritdoc/>
         protected override async Task<CommissionRecord> UpsertRecordAsync(IDbConnection db, CommissionRecord value)

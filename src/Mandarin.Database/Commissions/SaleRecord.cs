@@ -1,24 +1,24 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Mandarin.Database.Inventory;
+using Mandarin.Commissions;
 
-namespace Mandarin.Database.Transactions
+namespace Mandarin.Database.Commissions
 {
     /// <summary>
-    /// Represents the database record for the billing.subtransaction table.
+    /// Represents the database record for the <see cref="Sale"/>s in a <see cref="RecordOfSales"/>.
     /// </summary>
     [SuppressMessage("ReSharper", "SA1300", Justification = "Database record should match exactly to schema.")]
     [SuppressMessage("ReSharper", "SA1516", Justification = "Database record doesn't need documentation.")]
     [SuppressMessage("ReSharper", "SA1600", Justification = "Database record doesn't need documentation.")]
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Database record should match exactly to schema.")]
-    internal sealed record SubtransactionRecord
+    internal sealed record SaleRecord
     {
-        public int subtransaction_id { get; init; }
-        public int transaction_id { get; init; }
-        public string product_id { get; init; }
+        public int stockist_id { get; init; }
+        public string product_code { get; init; }
+        public string product_name { get; init; }
         public int quantity { get; init; }
         public decimal unit_price { get; init; }
-        public int? commission_rate { get; init; }
-
-        public ProductRecord Product { get; init; }
+        public decimal subtotal { get; init; }
+        public decimal commission { get; init; }
+        public decimal total { get; init; }
     }
 }

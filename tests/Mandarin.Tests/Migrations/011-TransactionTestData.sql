@@ -1,4 +1,4 @@
-﻿INSERT INTO billing.external_transaction (external_transaction_id, updated_at, created_at, raw_data) VALUES ('sNVseFoHwzywEiVV69mNfK5eV', '2021-07-24T11:54:06Z', '2021-07-24T11:54:06Z', CAST($$
+﻿INSERT INTO billing.external_transaction (external_transaction_id, updated_at, created_at, raw_data) VALUES ('sNVseFoHwzywEiVV69mNfK5eV', '2021-07-14T11:54:06Z', '2021-07-14T11:54:06Z', CAST($$
 {
   "id": "sNVseFoHwzywEiVV69mNfK5eV",
   "state": "COMPLETED",

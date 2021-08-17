@@ -34,6 +34,9 @@ $$;
 
 CALL inventory.sp_product_upsert('TLM-GC'::varchar(32), 'TLM-GC'::varchar(12), 'eGift Card'::varchar(100), 'eGift Card'::varchar(1000), NULL::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
 CALL inventory.sp_product_upsert('TLM-DELIVERY'::varchar(32), 'TLM-DELIVERY'::varchar(12), 'Shipping Fees'::varchar(100), 'Delivery costs charged to customers'::varchar(1000), 0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
+CALL inventory.sp_product_upsert('TLM-DISCOUNT'::varchar(32), 'TLM-DISCOUNT'::varchar(12), 'Unknown Discounts'::varchar(100), 'Unknown Discounts'::varchar(1000), -0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
 CALL inventory.sp_product_upsert('TLM-FRAMING'::varchar(32), 'TLM-FRAMING'::varchar(12), 'Commission for Frame'::varchar(100), 'Commission for Frame'::varchar(1000), 0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
 CALL inventory.sp_product_upsert('TLM-TIP'::varchar(32), 'TLM-TIP'::varchar(12), 'Customer Tip'::varchar(100), 'Customer Tip'::varchar(1000), 0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
 CALL inventory.sp_product_upsert('TLM-UNKNOWN'::varchar(32), 'TLM-UNKNOWN'::varchar(12), 'Unknown Product'::varchar(100), 'Unknown Product'::varchar(1000), 0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
+CALL inventory.sp_product_upsert('BUN-DCM'::varchar(32), 'BUN-DCM'::varchar(12), 'Discount for macarons'::varchar(100), 'Discount for macarons'::varchar(1000), -0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);
+CALL inventory.sp_product_upsert('BUN-DCP'::varchar(32), 'BUN-DCP'::varchar(12), 'Discount for pocky'::varchar(100), 'Discount for pocky'::varchar(1000), -0.01::NUMERIC(6,2), CURRENT_TIMESTAMP(3)::timestamp);

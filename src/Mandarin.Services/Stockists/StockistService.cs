@@ -38,7 +38,7 @@ namespace Mandarin.Services.Stockists
             try
             {
                 // TODO: Review when Commission is actually populated.
-                var stockist = await this.stockistRepository.GetStockistByCode(stockistCode);
+                var stockist = await this.stockistRepository.GetStockistAsync(stockistCode);
                 var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
                 this.logger.LogInformation("Successfully fetched stockist ({@Stockist}).", stockist);
                 return stockist with { Commission = commission };
@@ -57,7 +57,7 @@ namespace Mandarin.Services.Stockists
             try
             {
                 // TODO: Review when Commission is actually populated.
-                var stockists = await this.stockistRepository.GetAllStockists();
+                var stockists = await this.stockistRepository.GetAllStockistsAsync();
                 var updatedStockists = await Task.WhenAll(stockists.Select(async stockist =>
                 {
                     var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);

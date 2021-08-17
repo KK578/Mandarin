@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS billing.subtransaction
     transaction_id    INT           NOT NULL REFERENCES billing.transaction (transaction_id),
     product_id        VARCHAR(32)   NOT NULL REFERENCES inventory.product (product_id),
     quantity          INT           NOT NULL,
-    unit_price        NUMERIC(6, 2) NOT NULL
+    unit_price        NUMERIC(6, 2) NOT NULL,
+    commission_rate   INT           NOT NULL
 );
 
 CREATE TYPE billing.TVP_SUBTRANSACTION AS
@@ -41,6 +42,7 @@ AS
 $$
 DECLARE
     _transaction_id INT;
+    _commission_rate INT;
     _subtransaction billing.TVP_SUBTRANSACTION;
 BEGIN
     INSERT INTO billing.transaction (external_transaction_id, total_amount, timestamp)
@@ -52,8 +54,15 @@ BEGIN
 
     FOREACH _subtransaction IN ARRAY $4
     LOOP
-        INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, unit_price)
-        SELECT _transaction_id, _subtransaction.product_id, _subtransaction.quantity, _subtransaction.unit_price;
+        SELECT c.rate INTO _commission_rate
+        FROM inventory.product p
+        INNER JOIN inventory.stockist s ON s.stockist_id = p.stockist_id
+        INNER JOIN billing.commission c ON c.stockist_id = s.stockist_id
+        WHERE p.product_id = _subtransaction.product_id
+        ORDER BY c.inserted_at DESC LIMIT 1;
+
+        INSERT INTO billing.subtransaction (transaction_id, product_id, quantity, unit_price, commission_rate)
+        SELECT _transaction_id, _subtransaction.product_id, _subtransaction.quantity, _subtransaction.unit_price, _commission_rate;
     END LOOP;
 END
 $$;

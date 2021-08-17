@@ -25,8 +25,8 @@ namespace Mandarin.Services.Tests.Stockists
 
         private void GivenRepositoriesThrowException()
         {
-            this.stockistRepository.Setup(x => x.GetStockistByCode(It.IsAny<StockistCode>())).ThrowsAsync(new NpgsqlException("Not allowed."));
-            this.stockistRepository.Setup(x => x.GetAllStockists()).ThrowsAsync(new NpgsqlException("Not allowed."));
+            this.stockistRepository.Setup(x => x.GetStockistAsync(It.IsAny<StockistCode>())).ThrowsAsync(new NpgsqlException("Not allowed."));
+            this.stockistRepository.Setup(x => x.GetAllStockistsAsync()).ThrowsAsync(new NpgsqlException("Not allowed."));
             this.stockistRepository.Setup(x => x.SaveStockistAsync(It.IsAny<Stockist>())).ThrowsAsync(new NpgsqlException("Not allowed."));
         }
 
@@ -35,11 +35,11 @@ namespace Mandarin.Services.Tests.Stockists
             var kelbyTynanWithoutCommission = WellKnownTestData.Stockists.KelbyTynan with { Commission = null };
             var othilieMapplesWithoutCommission = WellKnownTestData.Stockists.OthilieMapples with { Commission = null };
 
-            this.stockistRepository.Setup(x => x.GetStockistByCode(WellKnownTestData.Stockists.KelbyTynan.StockistCode))
+            this.stockistRepository.Setup(x => x.GetStockistAsync(WellKnownTestData.Stockists.KelbyTynan.StockistCode))
                 .ReturnsAsync(kelbyTynanWithoutCommission);
-            this.stockistRepository.Setup(x => x.GetStockistByCode(WellKnownTestData.Stockists.OthilieMapples.StockistCode))
+            this.stockistRepository.Setup(x => x.GetStockistAsync(WellKnownTestData.Stockists.OthilieMapples.StockistCode))
                 .ReturnsAsync(othilieMapplesWithoutCommission);
-            this.stockistRepository.Setup(x => x.GetAllStockists())
+            this.stockistRepository.Setup(x => x.GetAllStockistsAsync())
                 .ReturnsAsync(new List<Stockist>
                 {
                     kelbyTynanWithoutCommission,

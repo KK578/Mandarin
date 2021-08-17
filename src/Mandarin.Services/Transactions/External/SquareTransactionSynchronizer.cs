@@ -77,7 +77,7 @@ namespace Mandarin.Services.Transactions.External
                 foreach (var order in orders)
                 {
                     var transactionId = ExternalTransactionId.Of(order.Id);
-                    var lastUpdated = InstantPattern.General.Parse(order.UpdatedAt).GetValueOrThrow();
+                    var lastUpdated = InstantPattern.ExtendedIso.Parse(order.UpdatedAt).GetValueOrThrow();
                     var externalTransaction = await this.externalTransactionRepository.GetExternalTransactionAsync(transactionId, lastUpdated);
 
                     if (externalTransaction is null)
@@ -85,7 +85,7 @@ namespace Mandarin.Services.Transactions.External
                         await this.externalTransactionRepository.SaveExternalTransactionAsync(new ExternalTransaction
                         {
                             ExternalTransactionId = transactionId,
-                            CreatedAt = InstantPattern.General.Parse(order.CreatedAt).GetValueOrThrow(),
+                            CreatedAt = InstantPattern.ExtendedIso.Parse(order.CreatedAt).GetValueOrThrow(),
                             UpdatedAt = lastUpdated,
                             RawData = JsonConvert.SerializeObject(order),
                         });

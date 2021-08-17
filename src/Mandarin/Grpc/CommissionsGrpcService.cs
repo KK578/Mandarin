@@ -15,17 +15,17 @@ namespace Mandarin.Grpc
     [Authorize]
     internal sealed class CommissionsGrpcService : CommissionsBase
     {
-        private readonly ICommissionService commissionService;
+        private readonly IRecordOfSalesRepository recordOfSalesRepository;
         private readonly IMapper mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommissionsGrpcService"/> class.
         /// </summary>
-        /// <param name="commissionService">The application service for interacting with commissions and records of sales.</param>
+        /// <param name="recordOfSalesRepository">The application service for interacting with records of sales.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public CommissionsGrpcService(ICommissionService commissionService, IMapper mapper)
+        public CommissionsGrpcService(IRecordOfSalesRepository recordOfSalesRepository, IMapper mapper)
         {
-            this.commissionService = commissionService;
+            this.recordOfSalesRepository = recordOfSalesRepository;
             this.mapper = mapper;
         }
 
@@ -35,7 +35,7 @@ namespace Mandarin.Grpc
             var startDate = this.mapper.Map<LocalDate>(request.StartDate);
             var endDate = this.mapper.Map<LocalDate>(request.EndDate);
             var interval = new DateInterval(startDate, endDate);
-            var recordOfSales = await this.commissionService.GetRecordOfSalesAsync(interval);
+            var recordOfSales = await this.recordOfSalesRepository.GetRecordOfSalesAsync(interval);
 
             return new GetRecordOfSalesForPeriodResponse
             {

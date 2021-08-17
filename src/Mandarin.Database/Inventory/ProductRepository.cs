@@ -47,7 +47,10 @@ namespace Mandarin.Database.Inventory
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<Product>> GetAllProductsAsync() => this.GetAll();
+        public Task<IReadOnlyList<Product>> GetAllProductsAsync()
+        {
+            return this.GetAll(db => db.QueryAsync<ProductRecord>(ProductRepository.GetAllProductsSql));
+        }
 
         /// <inheritdoc />
         public Task<Product> GetProductAsync(ProductId productId)
@@ -87,12 +90,6 @@ namespace Mandarin.Database.Inventory
 
         /// <inheritdoc />
         protected override string ExtractDisplayKey(Product value) => value.FriendlyString();
-
-        /// <inheritdoc />
-        protected override Task<IEnumerable<ProductRecord>> GetAllRecords(IDbConnection db)
-        {
-            return db.QueryAsync<ProductRecord>(ProductRepository.GetAllProductsSql);
-        }
 
         /// <inheritdoc />
         protected override async Task<ProductRecord> UpsertRecordAsync(IDbConnection db, ProductRecord value)

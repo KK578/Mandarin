@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
+using Mandarin.Database.Commissions;
 using Mandarin.Database.Common;
 using Mandarin.Stockists;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,17 @@ namespace Mandarin.Database.Stockists
             SELECT s.*, sd.*
             FROM inventory.stockist s
                 INNER JOIN inventory.stockist_detail sd ON s.stockist_id = sd.stockist_id
+            ORDER BY stockist_code";
+
+        private const string GetAllActiveStockistsSql = @"
+            SELECT s.*, sd.*, c.*
+            FROM inventory.stockist s
+                INNER JOIN inventory.stockist_detail sd ON s.stockist_id = sd.stockist_id
+                INNER JOIN (
+                    SELECT DISTINCT ON (stockist_id) *
+                    FROM billing.commission
+                    ORDER BY stockist_id, inserted_at DESC) c ON s.stockist_id = c.stockist_id
+            WHERE s.stockist_status IN ('Active', 'ActiveHidden')
             ORDER BY stockist_code";
 
         private const string InsertStockistSql = @"
@@ -72,7 +84,7 @@ namespace Mandarin.Database.Stockists
         }
 
         /// <inheritdoc/>
-        public Task<Stockist> GetStockistByCode(StockistCode stockistCode)
+        public Task<Stockist> GetStockistAsync(StockistCode stockistCode)
         {
             return this.Get(stockistCode,
                             async db =>
@@ -88,9 +100,19 @@ namespace Mandarin.Database.Stockists
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Stockist>> GetAllStockists()
+        public Task<IReadOnlyList<Stockist>> GetAllStockistsAsync()
         {
-            return this.GetAll();
+            return this.GetAll(db => db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllStockistsSql,
+                                   (s, sd) => s with { Details = sd },
+                                   splitOn: "stockist_id,stockist_id"));
+        }
+
+        /// <inheritdoc />
+        public Task<IReadOnlyList<Stockist>> GetAllActiveStockistsAsync()
+        {
+            return this.GetAll(db => db.QueryAsync<StockistRecord, StockistDetailRecord, CommissionRecord, StockistRecord>(StockistRepository.GetAllActiveStockistsSql,
+                                   (s, sd, c) => s with { Details = sd, Commission = c },
+                                   splitOn: "stockist_id,stockist_id,commission_id"));
         }
 
         /// <inheritdoc/>
@@ -101,14 +123,6 @@ namespace Mandarin.Database.Stockists
 
         /// <inheritdoc/>
         protected override string ExtractDisplayKey(Stockist value) => value.StockistCode.Value;
-
-        /// <inheritdoc/>
-        protected override Task<IEnumerable<StockistRecord>> GetAllRecords(IDbConnection db)
-        {
-            return db.QueryAsync<StockistRecord, StockistDetailRecord, StockistRecord>(StockistRepository.GetAllStockistsSql,
-                                                                                       (s, sd) => s with { Details = sd },
-                                                                                       splitOn: "stockist_id,stockist_id");
-        }
 
         /// <inheritdoc/>
         protected override async Task<StockistRecord> UpsertRecordAsync(IDbConnection db, StockistRecord value)

@@ -37,5 +37,15 @@ namespace Mandarin.Extensions
         {
             return instant.PlusNanoseconds(milliseconds * 1_000_000);
         }
+
+        /// <summary>
+        /// Returns the given <see cref="Instant"/> as a <see cref="LocalDate"/> in UTC.
+        /// </summary>
+        /// <param name="instant">The instant to be converted.</param>
+        /// <returns>A <see cref="LocalDate"/> of the given date in UTC.</returns>
+        public static LocalDate ToLocalDate(this Instant instant)
+        {
+            return instant.InUtc().Date;
+        }
     }
 }

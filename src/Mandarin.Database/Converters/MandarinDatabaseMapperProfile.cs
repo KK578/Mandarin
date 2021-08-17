@@ -34,6 +34,7 @@ namespace Mandarin.Database.Converters
         private void ConfigureMapForCommissions()
         {
             this.CreateMap<CommissionRecord, Commission>().ReverseMap();
+            this.CreateMap<SaleRecord, Sale>().ReverseMap();
         }
 
         private void ConfigureMapForInventory()

@@ -34,13 +34,15 @@ namespace Mandarin.Database.Migrations
         }
 
         /// <inheritdoc/>
-        public void RunMigrations()
+        public bool RunMigrations()
         {
             var result = this.upgradeEngine.PerformUpgrade();
             if (!result.Successful)
             {
                 throw new InvalidOperationException($"Failed to run database migrations ({result.ErrorScript}).", result.Error);
             }
+
+            return result.Scripts.Any();
         }
 
         private static string GetFixedCommissionAmountJson(IConfiguration configuration)

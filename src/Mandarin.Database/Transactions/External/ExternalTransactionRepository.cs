@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
@@ -66,12 +65,6 @@ namespace Mandarin.Database.Transactions.External
 
         /// <inheritdoc />
         protected override string ExtractDisplayKey(ExternalTransaction value) => value.ExternalTransactionId.Value;
-
-        /// <inheritdoc />
-        protected override Task<IEnumerable<ExternalTransactionRecord>> GetAllRecords(IDbConnection db)
-        {
-            throw new System.NotImplementedException();
-        }
 
         /// <inheritdoc />
         protected override async Task<ExternalTransactionRecord> UpsertRecordAsync(IDbConnection db, ExternalTransactionRecord value)
