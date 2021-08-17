@@ -39,8 +39,12 @@ namespace Mandarin.Database
         /// </summary>
         public void RunMigrations()
         {
-            this.migrator.RunMigrations();
-            this.RefreshConnectionAfterMigration();
+            var ranNewMigrations = this.migrator.RunMigrations();
+            if (ranNewMigrations)
+            {
+                this.RefreshConnectionAfterMigration();
+                NpgsqlConnection.ClearAllPools();
+            }
         }
 
         private void RefreshConnectionAfterMigration()
