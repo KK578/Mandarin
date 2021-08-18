@@ -32,7 +32,9 @@
       <CardTitle>Sales by Artist Breakdown @LoadedDateInterval</CardTitle>
     </CardHeader>
     <CardBody>
-      <DataGrid Data="@RecordOfSales" Filterable="true" ShowPager="true" PageSize="5" Striped="true" @bind-SelectedRow="@RecordOfSalesModel" Responsive="true">
+      <DataGrid Data="@RecordOfSales" Filterable="true" Striped="true" Responsive="true"
+                ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="5"
+                @bind-SelectedRow="@RecordOfSalesModel">
         <DataGridCheckColumn TItem="IArtistRecordOfSalesViewModel" Field="SendSuccessful" Caption="Sent">
           <DisplayTemplate>
             <Check TValue="bool?" Checked="context.SendSuccessful" Disabled="true" ReadOnly="true" />
@@ -64,7 +66,9 @@
 
         @if (SelectedRecordOfSales.Sales?.Count > 0)
         {
-          <DataGrid Data="@SelectedRecordOfSales.Sales" ShowPager="true" PageSize="15" Striped="true" RowSelectable="@(_ => false)">
+          <DataGrid Data="@SelectedRecordOfSales.Sales" Striped="true" Responsive="true"
+                    ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="15"
+                    RowSelectable="@(_ => false)">
             <DataGridColumn TItem="Sale" Field="ProductCode" Caption="Product Code" />
             <DataGridColumn TItem="Sale" Field="ProductName" Caption="Product Name" />
             <DataGridColumn TItem="Sale" Field="Quantity" Caption="Quantity" />
@@ -165,6 +169,7 @@
       var recordOfSales = await recordOfSalesRepository.GetRecordOfSalesAsync(dateInterval);
       LoadedDateInterval = dateInterval;
       RecordOfSales = recordOfSales.Select(x => viewModelFactory.CreateArtistRecordOfSalesViewModel(x)).ToList();
+      RecordOfSalesModel = null;
     }
     finally
     {
