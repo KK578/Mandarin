@@ -4,11 +4,9 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Bashi.Core.Extensions;
-using Mandarin.Configuration;
 using Mandarin.Inventory;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
-using Microsoft.Extensions.Options;
 using NodaTime;
 using NodaTime.Text;
 using Square.Models;
@@ -21,21 +19,16 @@ namespace Mandarin.Services.Transactions.External
     {
         private readonly IProductRepository productRepository;
         private readonly IFramePricesService framePricesService;
-        private readonly IOptions<MandarinConfiguration> mandarinConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareTransactionMapper"/> class.
         /// </summary>
         /// <param name="productRepository">The application repository for interacting with products.</param>
         /// <param name="framePricesService">The application service for interacting with frame prices.</param>
-        /// <param name="mandarinConfiguration">The application configuration.</param>
-        public SquareTransactionMapper(IProductRepository productRepository,
-                                       IFramePricesService framePricesService,
-                                       IOptions<MandarinConfiguration> mandarinConfiguration)
+        public SquareTransactionMapper(IProductRepository productRepository, IFramePricesService framePricesService)
         {
             this.productRepository = productRepository;
             this.framePricesService = framePricesService;
-            this.mandarinConfiguration = mandarinConfiguration;
         }
 
         /// <inheritdoc/>
@@ -67,7 +60,7 @@ namespace Mandarin.Services.Transactions.External
             var orderDate = InstantPattern.ExtendedIso.Parse(order.CreatedAt).GetValueOrThrow();
             var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(orderLineItem => this.CreateSubtransaction(orderLineItem, orderDate));
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
-            var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(orderReturn => this.CreateSubtransactionsFromReturn(orderReturn, orderDate));
+            var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionsFromReturn);
             var fees = order.ServiceCharges.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromFee);
             var tips = this.CreateSubtransactionFromTip(order.TotalTipMoney);
             return Observable.Merge(lineItems, discounts, returns, fees, tips).ToList();
@@ -75,7 +68,7 @@ namespace Mandarin.Services.Transactions.External
 
         private IObservable<Subtransaction> CreateSubtransaction(OrderLineItem orderLineItem, Instant orderDate)
         {
-            return this.GetProductAsync(ProductId.Of(orderLineItem.CatalogObjectId), ProductName.Of(orderLineItem.Name), orderDate)
+            return this.GetProductAsync(ProductId.Of(orderLineItem.CatalogObjectId), ProductName.Of(orderLineItem.Name))
                        .ToObservable()
                        .SelectMany(product =>
                        {
@@ -154,12 +147,12 @@ namespace Mandarin.Services.Transactions.External
             }
         }
 
-        private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn, Instant orderDate)
+        private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn)
         {
             return orderReturn.ReturnLineItems.ToObservable()
                               .SelectMany(async item =>
                               {
-                                  var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name), orderDate);
+                                  var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name));
                                   var quantity = -1 * int.Parse(item.Quantity);
 
                                   return new Subtransaction
@@ -196,37 +189,19 @@ namespace Mandarin.Services.Transactions.External
             return Observable.Empty<Subtransaction>();
         }
 
-        private async Task<Product> GetProductAsync(ProductId productId, ProductName name, Instant orderDate)
+        private Task<Product> GetProductAsync(ProductId productId, ProductName name)
         {
             if (productId != null)
             {
-                var product = await this.productRepository.GetProductAsync(productId);
-                return await MapProduct(product);
-            }
-            else if (name != null)
-            {
-                var product = await this.productRepository.GetProductAsync(name);
-                return await MapProduct(product);
-            }
-            else
-            {
-                return await this.productRepository.GetProductAsync(ProductId.TlmUnknown);
+                return this.productRepository.GetProductAsync(productId);
             }
 
-            Task<Product> MapProduct(Product originalProduct)
+            if (name != null)
             {
-                var orderDateTime = orderDate.ToDateTimeUtc();
-                foreach (var mapping in this.mandarinConfiguration.Value.ProductMappings)
-                {
-                    if (orderDateTime > mapping.TransactionsAfterDate && mapping.Mappings.ContainsKey(originalProduct.ProductCode.Value))
-                    {
-                        var mappedProductCode = ProductCode.Of(mapping.Mappings[originalProduct.ProductCode.Value]);
-                        return this.productRepository.GetProductAsync(mappedProductCode);
-                    }
-                }
-
-                return Task.FromResult(originalProduct);
+                return this.productRepository.GetProductAsync(name);
             }
+
+            return this.productRepository.GetProductAsync(ProductId.TlmUnknown);
         }
     }
 }
