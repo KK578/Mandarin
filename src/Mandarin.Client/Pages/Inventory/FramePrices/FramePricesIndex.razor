@@ -17,7 +17,7 @@
     }
     else
     {
-      <DataGrid TItem="IFramePriceViewModel" Data="@ViewModel!.Rows" Filterable="true" Striped="true"
+      <DataGrid Data="@ViewModel!.Rows" Filterable="true" Striped="true" Responsive="true"
                 ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="15"
                 RowSelectable="@(_ => true)" @bind-SelectedRow="@ViewModel!.SelectedRow">
         <DataGridColumn TItem="IFramePriceViewModel" Caption="Product Code" Field="@(nameof(IFramePriceViewModel.ProductCode))" TextAlignment="TextAlignment.Left" />
