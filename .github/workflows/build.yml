@@ -83,7 +83,7 @@ jobs:
         if: success() || failure()
         with:
           name: XUnit Tests
-          path: tests/*/TestResults/TestResults.xml
+          path: tests/*/TestResults/*.trx
           reporter: dotnet-trx
 
       - name: "[Deploy] Publish build"
