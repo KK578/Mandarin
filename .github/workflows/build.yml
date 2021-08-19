@@ -82,7 +82,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: XUnit Tests
+          name: Tests Report
           path: tests/*/TestResults/*.trx
           reporter: dotnet-trx
 
