@@ -3,11 +3,9 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Mandarin.Configuration;
 using Mandarin.Inventory;
 using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
-using Microsoft.Extensions.Options;
 using Moq;
 using NodaTime;
 using Square.Models;
@@ -21,20 +19,15 @@ namespace Mandarin.Services.Tests.Transactions.External
         private static readonly Instant OrderDate = Instant.FromUtc(2021, 08, 01, 14, 12, 13);
 
         private readonly Mock<IProductRepository> productRepository;
-        private readonly MandarinConfiguration configuration;
         private readonly Mock<IFramePricesService> framePricesService;
 
         protected SquareTransactionMapperTests()
         {
             this.productRepository = new Mock<IProductRepository>();
-            this.configuration = new MandarinConfiguration();
             this.framePricesService = new Mock<IFramePricesService>();
         }
 
-        private ISquareTransactionMapper Subject =>
-            new SquareTransactionMapper(this.productRepository.Object,
-                                        this.framePricesService.Object,
-                                        Options.Create(this.configuration));
+        private ISquareTransactionMapper Subject => new SquareTransactionMapper(this.productRepository.Object, this.framePricesService.Object);
 
 
         private void GivenInventoryServiceSetUpWithProduct(Product product)
@@ -48,16 +41,6 @@ namespace Mandarin.Services.Tests.Transactions.External
         {
             this.framePricesService.Setup(x => x.GetFramePriceAsync(product.ProductCode, SquareTransactionMapperTests.OrderDate)).ReturnsAsync(framePrice);
             this.productRepository.Setup(x => x.GetProductAsync(ProductId.TlmFraming)).ReturnsAsync(WellKnownTestData.Products.TlmFraming);
-        }
-
-        private void GivenConfigurationWithMappings(Product product, Product mappedProduct)
-        {
-            this.configuration.ProductMappings.Add(new ProductMapping
-            {
-                TransactionsAfterDate = SquareTransactionMapperTests.OrderDate.Minus(Duration.FromDays(1)).ToDateTimeUtc(),
-                Mappings = new Dictionary<string, string> { { product.ProductCode.Value, mappedProduct.ProductCode.Value } },
-            });
-            this.GivenInventoryServiceSetUpWithProduct(mappedProduct);
         }
 
         private Order GivenOrderProductAsLineItem(Product product)
@@ -136,20 +119,6 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions[0].Subtransactions[0].Quantity.Should().Be(2);
                 transactions[0].Subtransactions[0].UnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(10.00m);
-            }
-
-            [Fact]
-            public async Task ShouldPrioritiseProductMappingsIfApplicationToAProduct()
-            {
-                var product = MandarinFixture.Instance.NewProduct;
-                var mappedProduct = MandarinFixture.Instance.NewProduct;
-                this.GivenInventoryServiceSetUpWithProduct(product);
-                this.GivenConfigurationWithMappings(product, mappedProduct);
-                var order = this.GivenOrderProductAsLineItem(product);
-                var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
-
-                transactions.Should().HaveCount(1);
-                transactions[0].Subtransactions[0].Product.Should().Be(mappedProduct);
             }
 
             [Fact]
