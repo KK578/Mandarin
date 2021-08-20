@@ -78,6 +78,17 @@ jobs:
         env:
           Square__ApiKey: ${{ secrets.SQUARE__APIKEY }}
 
+      - name: "[Test] Generate Report"
+        uses: danielpalme/ReportGenerator-GitHub-Action@4.8.12
+        with:
+          reports: "coverage/*.opencover.xml"
+          targetdir: "coverage/reports"
+          reporttypes: "lcov"
+          sourcedirs: "src/"
+          assemblyfilters: "Mandarin.*"
+          verbosity: "Info"
+          toolpath: "reportgeneratortool"
+
       - name: "[Test] Report Test Results"
         uses: dorny/test-reporter@v1
         if: success() || failure()
@@ -122,7 +133,7 @@ jobs:
         continue-on-error: true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: "./coverage/coverage.info"
+          path-to-lcov: "./coverage/reports/lcov.info"
 
 
   deploy:

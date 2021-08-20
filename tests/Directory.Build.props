@@ -10,8 +10,8 @@
     <VSTestLogger>trx%3BLogFileName=$(MSBuildProjectName).trx</VSTestLogger>
     <CollectCoverage>true</CollectCoverage>
     <MergeWith>$(MSBuildThisFileDirectory)../coverage/coverage.json</MergeWith>
-    <CoverletOutput>$(MSBuildThisFileDirectory)../coverage/</CoverletOutput>
-    <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
+    <CoverletOutput>$(MSBuildThisFileDirectory)../coverage/$(MSBuildProjectName).opencover.xml</CoverletOutput>
+    <CoverletOutputFormat>opencover</CoverletOutputFormat>
     <Exclude>[Mandarin.Views]*,[Microsoft.*]*,[*.Tests]*</Exclude>
   </PropertyGroup>
 
