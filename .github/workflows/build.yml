@@ -84,8 +84,6 @@ jobs:
           reports: "coverage/*.opencover.xml"
           targetdir: "coverage/reports"
           reporttypes: "lcov"
-          sourcedirs: "src/"
-          assemblyfilters: "Mandarin.*"
           verbosity: "Info"
 
       - name: "[Test] Report Test Results"
