@@ -83,7 +83,7 @@ jobs:
         with:
           reports: "coverage/*.opencover.xml"
           targetdir: "coverage/reports"
-          reporttypes: "lcov"
+          reporttypes: "Html;lcov"
           verbosity: "Info"
 
       - name: "[Test] Report Test Results"
@@ -124,6 +124,12 @@ jobs:
         with:
           name: Mandarin.Build
           path: publish
+
+      - name: "[Coverage] Upload build artifact"
+        uses: actions/upload-artifact@v1
+        with:
+          name: Mandarin.TestReport
+          path: coverage/reports
 
       - name: "[Coverage] Upload to Coveralls"
         uses: coverallsapp/github-action@v1.1.1
