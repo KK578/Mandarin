@@ -12,7 +12,7 @@
     <MergeWith>$(MSBuildThisFileDirectory)../coverage/coverage.json</MergeWith>
     <CoverletOutput>$(MSBuildThisFileDirectory)../coverage/</CoverletOutput>
     <CoverletOutputFormat>json,opencover,lcov</CoverletOutputFormat>
-    <Exclude>[Mandarin.Views]*,[Microsoft.*]*</Exclude>
+    <Exclude>[Mandarin.Views]*,[Microsoft.*]*,[*.Tests]*</Exclude>
   </PropertyGroup>
 
   <ItemGroup>
