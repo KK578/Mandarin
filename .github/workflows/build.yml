@@ -87,7 +87,6 @@ jobs:
           sourcedirs: "src/"
           assemblyfilters: "Mandarin.*"
           verbosity: "Info"
-          toolpath: "reportgeneratortool"
 
       - name: "[Test] Report Test Results"
         uses: dorny/test-reporter@v1
