@@ -125,7 +125,7 @@ jobs:
           name: Mandarin.Build
           path: publish
 
-      - name: "[Coverage] Upload build artifact"
+      - name: "[Coverage] Upload test reports artifact"
         uses: actions/upload-artifact@v1
         with:
           name: Mandarin.TestReport
