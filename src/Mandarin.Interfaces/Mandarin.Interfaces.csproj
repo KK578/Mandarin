@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.2.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Bashi.Core" Version="4.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
