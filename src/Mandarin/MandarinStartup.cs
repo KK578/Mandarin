@@ -58,7 +58,6 @@ namespace Mandarin
             services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinAuthorization();
-            services.AddMandarinDatabase();
             services.AddAutoMapper(options =>
             {
                 options.AddProfile<MandarinTinyTypeMapperProfile>();

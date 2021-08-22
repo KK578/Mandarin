@@ -12,6 +12,7 @@ using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
+using Assembly = System.Reflection.Assembly;
 
 namespace Mandarin.Database
 {
@@ -27,7 +28,7 @@ namespace Mandarin.Database
 
             DapperNodaTimeSetup.Register();
 
-            builder.RegisterInstance(this.ThisAssembly).AsSelf();
+            builder.RegisterInstance(this.ThisAssembly).As<Assembly>().AsSelf();
             builder.RegisterType<DbUpLogger>().As<IUpgradeLog>().InstancePerDependency();
             builder.RegisterType<Migrator>().As<IMigrator>().SingleInstance();
             builder.RegisterType<MandarinDbContext>().AsSelf().InstancePerDependency();

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Autofac;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers.Auth;
 using Mandarin.Tests.Helpers.SendGrid;
@@ -9,11 +10,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+using Assembly = System.Reflection.Assembly;
 
 namespace Mandarin.Tests.Helpers
 {
@@ -24,19 +27,21 @@ namespace Mandarin.Tests.Helpers
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration(MandarinApplicationFactory.AddTestConfiguration);
-            builder.ConfigureTestServices(services =>
-            {
-                MandarinApplicationFactory.ConfigureTestAuthentication(services);
-                this.ConfigureTestServices(services);
-            });
+            builder.ConfigureTestServices(MandarinApplicationFactory.ConfigureTestAuthentication);
             builder.ConfigureLogging(l => l.ClearProviders());
             builder.UseSerilog(this.ConfigureSerilog);
         }
 
-        protected void ConfigureTestServices(IServiceCollection services)
+        /// <inheritdoc />
+        protected override IHost CreateHost(IHostBuilder builder)
         {
-            // For detecting assemblies with Database migration scripts.
-            services.AddSingleton(this.GetType().Assembly);
+            builder.ConfigureContainer<ContainerBuilder>(this.ConfigureTestContainer);
+            return base.CreateHost(builder);
+        }
+
+        protected virtual void ConfigureTestContainer(ContainerBuilder builder)
+        {
+            builder.RegisterInstance(typeof(MandarinApplicationFactory).Assembly).As<Assembly>();
         }
 
         private static void AddTestConfiguration(WebHostBuilderContext host, IConfigurationBuilder configurationBuilder)
