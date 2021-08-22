@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SendGrid;
 using Serilog;
 
 namespace Mandarin
@@ -64,7 +65,7 @@ namespace Mandarin
                 options.AddProfile<MandarinDatabaseMapperProfile>();
                 options.AddProfile<MandarinGrpcMapperProfile>();
             });
-            services.AddMandarinServices(this.configuration);
+            services.AddHttpClient<SendGridClient>();
             services.AddMandarinHangfire(this.configuration);
         }
 

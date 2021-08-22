@@ -3,6 +3,7 @@ using System.Globalization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Mandarin.Database;
+using Mandarin.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -49,6 +50,7 @@ namespace Mandarin
         {
             builder.RegisterModule<MandarinDatabaseModule>();
             builder.RegisterModule<MandarinInterfacesModule>();
+            builder.RegisterModule<MandarinServicesModule>();
         }
     }
 }
