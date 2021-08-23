@@ -236,6 +236,53 @@ namespace Mandarin.Tests.Data
             }
         }
 
+        public static class RecordsOfSales
+        {
+            public static readonly RecordOfSales KelbyTynan = new()
+            {
+                StockistCode = Stockists.KelbyTynan.StockistCode.ToString(),
+                FirstName = Stockists.KelbyTynan.Details.FirstName,
+                Name = Stockists.KelbyTynan.Details.DisplayName,
+                EmailAddress = Stockists.KelbyTynan.Details.EmailAddress,
+                CustomMessage = string.Empty,
+                StartDate = new LocalDate(2021, 06, 16),
+                EndDate = new LocalDate(2021, 07, 17),
+                Rate = decimal.Divide(Stockists.KelbyTynan.Commission.Rate, 100),
+                Sales = new List<Sale>
+                {
+                    new()
+                    {
+                        ProductCode = Products.Clementine.ProductCode.ToString(),
+                        ProductName = Products.Clementine.ProductName.ToString(),
+                        Quantity = 1,
+                        UnitPrice = 45.00M,
+                        Subtotal = 45.00M,
+                        Commission = -4.50M,
+                        Total = 40.50M,
+                    },
+                }.AsReadOnly(),
+                Subtotal = 45.00M,
+                CommissionTotal = -4.50M,
+                Total = 40.50M,
+            };
+
+            public static readonly RecordOfSales OthilieMapples = new()
+            {
+                StockistCode = Stockists.OthilieMapples.StockistCode.ToString(),
+                FirstName = Stockists.OthilieMapples.Details.FirstName,
+                Name = Stockists.OthilieMapples.Details.DisplayName,
+                EmailAddress = Stockists.OthilieMapples.Details.EmailAddress,
+                CustomMessage = string.Empty,
+                StartDate = new LocalDate(2021, 06, 16),
+                EndDate = new LocalDate(2021, 07, 17),
+                Rate = decimal.Divide(Stockists.OthilieMapples.Commission.Rate, 100),
+                Sales = new List<Sale>().AsReadOnly(),
+                Subtotal = 0M,
+                CommissionTotal = 0M,
+                Total = 0M,
+            };
+        }
+
         public static class Transactions
         {
             public static readonly Transaction Transaction1 = new()

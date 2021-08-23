@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Mandarin.Services;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers.Auth;
+using Mandarin.Tests.Helpers.SendGrid;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -32,7 +32,7 @@ namespace Mandarin.Tests.Helpers
             builder.UseSerilog(this.ConfigureSerilog);
         }
 
-        protected virtual void ConfigureTestServices(IServiceCollection services)
+        protected void ConfigureTestServices(IServiceCollection services)
         {
             // For detecting assemblies with Database migration scripts.
             services.AddSingleton(this.GetType().Assembly);
@@ -48,8 +48,11 @@ namespace Mandarin.Tests.Helpers
                 { "ConnectionStrings:MandarinConnection", "Host=localhost;Port=5555;Database=postgres;Username=postgres;Password=password;Maximum Pool Size=5;Include Error Detail=true" },
                 { "Hangfire:ConfigureRecurringJobs", "false" },
                 { "Mandarin:FixedCommissionAmountFilePath", WellKnownTestData.Commissions.FixedCommissions },
-                { "SendGrid:ServiceEmail", "ServiceEmail@example.com" },
-                { "SendGrid:RealContactEmail", "RealContactEmail@example.com" },
+                { "SendGrid:ApiKey", "TestSendGridApiKey" },
+                { "SendGrid:Host", SendGridWireMockFixture.Host },
+                { "SendGrid:ServiceEmail", "ServiceEmail@thelittlemandarin.co.uk" },
+                { "SendGrid:RealContactEmail", "RealContactEmail@thelittlemandarin.co.uk" },
+                { "SendGrid:RecordOfSalesTemplateId", "TestRecordOfSalesTemplateId" },
                 { "Square:Environment", "Sandbox" },
             });
             configurationBuilder.AddUserSecrets(typeof(MandarinApplicationFactory).Assembly);

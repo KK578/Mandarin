@@ -1,24 +1,16 @@
-﻿using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Bashi.Tests.Framework.Data;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
-using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using Mandarin.Tests.Helpers.SendGrid;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests.Emails
 {
     [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcEmailServiceTests : MandarinGrpcIntegrationTestsBase
+    public class MandarinGrpcEmailServiceTests : MandarinGrpcIntegrationTestsBase, IClassFixture<SendGridWireMockFixture>
     {
         public MandarinGrpcEmailServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
@@ -30,17 +22,9 @@ namespace Mandarin.Client.Services.Tests.Emails
         [Fact]
         public async Task ShouldBeAbleToSuccessfullySendAnEmail()
         {
-            this.GivenSendGridReturns(new Response(HttpStatusCode.Accepted, null, null));
-            var recordOfSales = MandarinFixture.Instance.NewRecordOfSales;
+            var recordOfSales = WellKnownTestData.RecordsOfSales.KelbyTynan;
             var response = await this.Subject.SendRecordOfSalesEmailAsync(recordOfSales);
             response.IsSuccess.Should().BeTrue();
-        }
-
-        private void GivenSendGridReturns(Response response)
-        {
-            var sendGridClient = this.Fixture.Services.GetRequiredService<Mock<ISendGridClient>>();
-            sendGridClient.Setup(x => x.SendEmailAsync(It.IsAny<SendGridMessage>(), It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(response);
         }
     }
 }

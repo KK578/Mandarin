@@ -26,7 +26,7 @@ namespace Mandarin.Tests.Data
 
         public Product NewProductTlm => this.NewProduct.WithTlmProductCode();
 
-        public RecordOfSales NewRecordOfSales => this.Create<RecordOfSales>();
+        public RecordOfSales NewRecordOfSales => this.Create<RecordOfSales>() with { EmailAddress = null };
 
         public string NewString => this.Create<string>();
 
