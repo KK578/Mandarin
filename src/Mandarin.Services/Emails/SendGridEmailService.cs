@@ -4,17 +4,18 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Mandarin.Commissions;
 using Mandarin.Emails;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Serilog;
 
 namespace Mandarin.Services.Emails
 {
     /// <inheritdoc />
     internal sealed class SendGridEmailService : IEmailService
     {
-        private readonly ILogger<SendGridEmailService> logger;
+        private static readonly ILogger Log = Serilog.Log.ForContext<SendGridEmailService>();
+
         private readonly ISendGridClient sendGridClient;
         private readonly IOptions<SendGridConfiguration> sendGridConfigurationOption;
 
@@ -23,12 +24,8 @@ namespace Mandarin.Services.Emails
         /// </summary>
         /// <param name="sendGridClient">The SendGrid API Client.</param>
         /// <param name="sendGridConfigurationOption">The application configuration for Email customisations.</param>
-        /// <param name="logger">The application logger.</param>
-        public SendGridEmailService(ISendGridClient sendGridClient,
-                                    IOptions<SendGridConfiguration> sendGridConfigurationOption,
-                                    ILogger<SendGridEmailService> logger)
+        public SendGridEmailService(ISendGridClient sendGridClient, IOptions<SendGridConfiguration> sendGridConfigurationOption)
         {
-            this.logger = logger;
             this.sendGridClient = sendGridClient;
             this.sendGridConfigurationOption = sendGridConfigurationOption;
         }
@@ -64,11 +61,11 @@ namespace Mandarin.Services.Emails
                 var emails = string.Join(", ", email.Personalizations[0].Tos.Select(x => x.Email));
                 var response = await this.sendGridClient.SendEmailAsync(email);
                 var bodyContent = await GetBodyContent(response.Body);
-                this.logger.LogInformation("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
+                SendGridEmailService.Log.Information("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    this.logger.LogInformation("Sent email successfully: {@Email}", email);
+                    SendGridEmailService.Log.Information("Sent email successfully: {@Email}", email);
                     return new EmailResponse
                     {
                         IsSuccess = true,
@@ -76,7 +73,7 @@ namespace Mandarin.Services.Emails
                     };
                 }
 
-                this.logger.LogWarning("Email sent with errors: {@Response} {@Email}", response, email);
+                SendGridEmailService.Log.Warning("Email sent with errors: {@Response} {@Email}", response, email);
                 return new EmailResponse
                 {
                     IsSuccess = false,
@@ -85,7 +82,7 @@ namespace Mandarin.Services.Emails
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Exception whilst attempting to send email: {@Email}.", email);
+                SendGridEmailService.Log.Error(ex, "Exception whilst attempting to send email: {@Email}.", email);
                 return new EmailResponse
                 {
                     IsSuccess = false,

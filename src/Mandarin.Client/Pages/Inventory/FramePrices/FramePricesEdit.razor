@@ -56,8 +56,8 @@
   {
     await ViewModel!.LoadData.Execute(Mandarin.Inventory.ProductCode.Of(ProductCode));
 
-    this.EditContext = new EditContext(FramePrice);
-    this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
+    EditContext = new EditContext(FramePrice);
+    EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
   }
 
 }

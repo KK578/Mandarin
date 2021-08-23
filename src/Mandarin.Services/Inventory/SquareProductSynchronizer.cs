@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Mandarin.Services.Inventory
 {
     /// <inheritdoc />
     internal sealed class SquareProductSynchronizer : IProductSynchronizer
     {
-        private readonly ILogger<SquareProductService> logger;
+        private static readonly ILogger Log = Serilog.Log.ForContext<SquareProductService>();
+
         private readonly ISquareProductService squareProductService;
         private readonly IProductRepository productRepository;
         private readonly SemaphoreSlim semaphore;
@@ -17,14 +17,10 @@ namespace Mandarin.Services.Inventory
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareProductSynchronizer"/> class.
         /// </summary>
-        /// <param name="logger">The application logger.</param>
         /// <param name="squareProductService">The service to fetch products from Square.</param>
         /// <param name="productRepository">The application repository for interacting with products.</param>
-        public SquareProductSynchronizer(ILogger<SquareProductService> logger,
-                                         ISquareProductService squareProductService,
-                                         IProductRepository productRepository)
+        public SquareProductSynchronizer(ISquareProductService squareProductService, IProductRepository productRepository)
         {
-            this.logger = logger;
             this.squareProductService = squareProductService;
             this.productRepository = productRepository;
             this.semaphore = new SemaphoreSlim(1);
@@ -34,7 +30,7 @@ namespace Mandarin.Services.Inventory
         public async Task SynchronizeProductsAsync()
         {
             var updateCount = 0;
-            this.logger.LogInformation("Starting Square product synchronisation.");
+            SquareProductSynchronizer.Log.Information("Starting Square product synchronisation.");
             await this.semaphore.WaitAsync();
             try
             {
@@ -45,13 +41,13 @@ namespace Mandarin.Services.Inventory
 
                     if (existingProduct is null)
                     {
-                        this.logger.LogInformation("Inserting new product: {Product}", product);
+                        SquareProductSynchronizer.Log.Information("Inserting new product: {Product}", product);
                         await this.productRepository.SaveProductAsync(product);
                         updateCount++;
                     }
                     else if (!SquareProductSynchronizer.AreProductsEquivalent(product, existingProduct))
                     {
-                        this.logger.LogInformation("Updating {ProductId} to new version: {Product}", product.ProductId, product);
+                        SquareProductSynchronizer.Log.Information("Updating {ProductId} to new version: {Product}", product.ProductId, product);
                         await this.productRepository.SaveProductAsync(product);
                         updateCount++;
                     }
@@ -59,7 +55,7 @@ namespace Mandarin.Services.Inventory
             }
             finally
             {
-                this.logger.LogInformation("Finished product synchronisation - Update Count: {Count}.", updateCount);
+                SquareProductSynchronizer.Log.Information("Finished product synchronisation - Update Count: {Count}.", updateCount);
                 this.semaphore.Release();
             }
         }

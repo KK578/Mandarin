@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Hangfire;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NodaTime;
 using NodaTime.Text;
+using Serilog;
 using Square.Models;
 using Transaction = Mandarin.Transactions.Transaction;
 
@@ -17,7 +17,8 @@ namespace Mandarin.Services.Transactions.External
     /// <inheritdoc />
     internal sealed class SquareTransactionSynchronizer : ITransactionSynchronizer
     {
-        private readonly ILogger<SquareTransactionSynchronizer> logger;
+        private static readonly ILogger Log = Serilog.Log.ForContext<SquareTransactionSynchronizer>();
+
         private readonly ISquareTransactionService squareTransactionService;
         private readonly IExternalTransactionRepository externalTransactionRepository;
         private readonly ITransactionRepository transactionRepository;
@@ -28,20 +29,17 @@ namespace Mandarin.Services.Transactions.External
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareTransactionSynchronizer"/> class.
         /// </summary>
-        /// <param name="logger">The application logger.</param>
         /// <param name="squareTransactionService">The service to fetch transactions from Square.</param>
         /// <param name="externalTransactionRepository">The application repository for interacting with external transactions.</param>
         /// <param name="transactionRepository">The application repository for interacting with transactions.</param>
         /// <param name="squareTransactionMapper">The service to map Square orders to a Transaction.</param>
         /// <param name="clock">The application clock instance.</param>
-        public SquareTransactionSynchronizer(ILogger<SquareTransactionSynchronizer> logger,
-                                             ISquareTransactionService squareTransactionService,
+        public SquareTransactionSynchronizer(ISquareTransactionService squareTransactionService,
                                              IExternalTransactionRepository externalTransactionRepository,
                                              ITransactionRepository transactionRepository,
                                              ISquareTransactionMapper squareTransactionMapper,
                                              IClock clock)
         {
-            this.logger = logger;
             this.squareTransactionService = squareTransactionService;
             this.externalTransactionRepository = externalTransactionRepository;
             this.transactionRepository = transactionRepository;
@@ -96,7 +94,7 @@ namespace Mandarin.Services.Transactions.External
             }
             finally
             {
-                this.logger.LogInformation("Queued {Count} transactions for synchronization.", processCount);
+                SquareTransactionSynchronizer.Log.Information("Queued {Count} transactions for synchronization.", processCount);
                 this.semaphore.Release();
             }
         }
@@ -112,12 +110,12 @@ namespace Mandarin.Services.Transactions.External
 
             if (existingTransaction is null)
             {
-                this.logger.LogInformation("Inserting new transaction: {Transaction}", transaction);
+                SquareTransactionSynchronizer.Log.Information("Inserting new transaction: {Transaction}", transaction);
                 await this.transactionRepository.SaveTransactionAsync(transaction);
             }
             else if (!SquareTransactionSynchronizer.AreTransactionsEquivalent(transaction, existingTransaction))
             {
-                this.logger.LogInformation("Updating {TransactionId} to new version: {Transaction}", transaction.ExternalTransactionId, transaction);
+                SquareTransactionSynchronizer.Log.Information("Updating {TransactionId} to new version: {Transaction}", transaction.ExternalTransactionId, transaction);
                 await this.transactionRepository.SaveTransactionAsync(transaction);
             }
         }

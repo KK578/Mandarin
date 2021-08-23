@@ -29,7 +29,7 @@ namespace Mandarin.Tests.Helpers
                 this.ConfigureTestServices(services);
             });
             builder.ConfigureLogging(l => l.ClearProviders());
-            builder.UseSerilog(this.ConfigureSerilog, true, true);
+            builder.UseSerilog(this.ConfigureSerilog);
         }
 
         protected virtual void ConfigureTestServices(IServiceCollection services)

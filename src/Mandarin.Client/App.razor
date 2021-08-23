@@ -43,7 +43,7 @@
 
   private void NavigateToLogin()
   {
-    var loginUrl = $"authentication/login?returnUrl={Uri.EscapeDataString(this.navigationManager.Uri)}";
+    var loginUrl = $"authentication/login?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}";
     navigationManager.NavigateTo(loginUrl);
   }
 

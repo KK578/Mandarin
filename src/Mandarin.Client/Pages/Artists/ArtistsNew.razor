@@ -55,8 +55,8 @@
   {
     base.OnInitialized();
 
-    this.EditContext = new EditContext(Stockist);
-    this.EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
+    EditContext = new EditContext(Stockist);
+    EditContext.SubscribeToViewModel(ViewModel, () => validations.ValidateAll());
   }
 
 }

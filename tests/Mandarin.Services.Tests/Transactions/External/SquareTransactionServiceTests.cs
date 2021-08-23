@@ -7,7 +7,6 @@ using FluentAssertions;
 using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
 using Mandarin.Transactions.External;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NodaTime;
 using Square;
@@ -29,9 +28,7 @@ namespace Mandarin.Services.Tests.Transactions.External
             this.GivenSquareClientLocationApiReturnsData();
         }
 
-        private ISquareTransactionService Subject =>
-            new SquareTransactionService(NullLogger<SquareTransactionService>.Instance,
-                                         this.squareClient.Object);
+        private ISquareTransactionService Subject => new SquareTransactionService(this.squareClient.Object);
 
         private void GivenSquareClientLocationApiReturnsData()
         {
