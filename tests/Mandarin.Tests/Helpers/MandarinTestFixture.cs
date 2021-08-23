@@ -3,8 +3,6 @@ using Mandarin.Database;
 using Mandarin.Tests.Helpers.Database;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using SendGrid;
 
 namespace Mandarin.Tests.Helpers
 {
@@ -23,13 +21,6 @@ namespace Mandarin.Tests.Helpers
             using var scope = this.Services.CreateScope();
             var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
             await mandarinDbContext.CleanupTestDataAsync();
-        }
-
-        protected override void ConfigureTestServices(IServiceCollection services)
-        {
-            base.ConfigureTestServices(services);
-            services.AddSingleton<Mock<ISendGridClient>>();
-            services.AddTransient(s => s.GetRequiredService<Mock<ISendGridClient>>().Object);
         }
 
         private static async Task SynchronizeTransactions(ITransactionSynchronizer transactionSynchronizer)

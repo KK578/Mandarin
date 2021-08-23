@@ -4,6 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Include="__admin/mappings/*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Bashi.Tests.Framework" Version="2.0.0" />

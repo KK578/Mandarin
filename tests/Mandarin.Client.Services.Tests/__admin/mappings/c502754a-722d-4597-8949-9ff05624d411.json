@@ -1,0 +1,139 @@
+{
+  "Guid": "c502754a-722d-4597-8949-9ff05624d411",
+  "Title": "Record of Sales - Kelby Tynan",
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "/v3/mail/send",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      "POST"
+    ],
+    "Headers": [
+      {
+        "Name": "Content-Type",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "application/json",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Accept",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "application/json",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Authorization",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "Bearer TestSendGridApiKey",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Host",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "localhost:20001",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "User-Agent",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "sendgrid/9.24.0.0 csharp",
+            "IgnoreCase": true
+          }
+        ]
+      }
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "JsonMatcher",
+        "Pattern": {
+          "from": {
+            "email": "ServiceEmail@thelittlemandarin.co.uk"
+          },
+          "personalizations": [
+            {
+              "to": [
+                {
+                  "email": "ccareless0@homestead.com"
+                }
+              ],
+              "bcc": [
+                {
+                  "email": "RealContactEmail@thelittlemandarin.co.uk"
+                }
+              ],
+              "dynamic_template_data": {
+                "stockistCode": "KT20",
+                "name": "Kelby Tynan",
+                "emailAddress": "ccareless0@homestead.com",
+                "customMessage": "",
+                "startDate": "2021-06-16",
+                "endDate": "2021-07-17",
+                "rate": "10.00%",
+                "sales": [
+                  {
+                    "productCode": "KT20-001",
+                    "productName": "Clementine (Regular)",
+                    "quantity": 1,
+                    "unitPrice": "£45.00",
+                    "subtotal": "£45.00",
+                    "commission": "-£4.50",
+                    "total": "£40.50"
+                  }
+                ],
+                "subtotal": "£45.00",
+                "commissionTotal": "-£4.50",
+                "total": "£40.50"
+              }
+            }
+          ],
+          "template_id": "TestRecordOfSalesTemplateId",
+          "reply_to": {
+            "email": "RealContactEmail@thelittlemandarin.co.uk"
+          }
+        },
+        "IgnoreCase": true
+      }
+    }
+  },
+  "Response": {
+    "StatusCode": 202,
+    "Body": "",
+    "Headers": {
+      "Content-Length": "0",
+      "Server": "nginx",
+      "Date": "Sun, 22 Aug 2021 21:47:34 GMT",
+      "Connection": "keep-alive",
+      "X-Message-Id": "D3jfquvFQlqj9EIj4bceCg",
+      "Access-Control-Allow-Origin": "https://sendgrid.api-docs.io",
+      "Access-Control-Allow-Methods": "POST",
+      "Access-Control-Allow-Headers": "Authorization, Content-Type, On-behalf-of, x-sg-elas-acl",
+      "Access-Control-Max-Age": "600",
+      "X-No-CORS-Reason": "https://sendgrid.com/docs/Classroom/Basics/API/cors.html",
+      "Strict-Transport-Security": "max-age=600; includeSubDomains"
+    }
+  }
+}

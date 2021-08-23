@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Mandarin.Commissions;
@@ -20,55 +19,9 @@ namespace Mandarin.Client.Services.Tests.Commissions
         private static readonly LocalDate End = new(2021, 07, 17);
         private static readonly DateInterval Interval = new(MandarinGrpcRecordOfSalesRepositoryTests.Start, MandarinGrpcRecordOfSalesRepositoryTests.End);
 
-        private readonly RecordOfSales ktRecordOfSales;
-        private readonly RecordOfSales omRecordOfSales;
-
         public MandarinGrpcRecordOfSalesRepositoryTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
-            this.ktRecordOfSales = new RecordOfSales
-            {
-                StockistCode = WellKnownTestData.Stockists.KelbyTynan.StockistCode.ToString(),
-                FirstName = WellKnownTestData.Stockists.KelbyTynan.Details.FirstName,
-                Name = WellKnownTestData.Stockists.KelbyTynan.Details.DisplayName,
-                EmailAddress = WellKnownTestData.Stockists.KelbyTynan.Details.EmailAddress,
-                CustomMessage = string.Empty,
-                StartDate = new LocalDate(2021, 06, 16),
-                EndDate = new LocalDate(2021, 07, 17),
-                Rate = decimal.Divide(WellKnownTestData.Stockists.KelbyTynan.Commission.Rate, 100),
-                Sales = new List<Sale>
-                {
-                    new()
-                    {
-                        ProductCode = WellKnownTestData.Products.Clementine.ProductCode.ToString(),
-                        ProductName = WellKnownTestData.Products.Clementine.ProductName.ToString(),
-                        Quantity = 1,
-                        UnitPrice = 45.00M,
-                        Subtotal = 45.00M,
-                        Commission = -4.50M,
-                        Total = 40.50M,
-                    },
-                }.AsReadOnly(),
-                Subtotal = 45.00M,
-                CommissionTotal = -4.50M,
-                Total = 40.50M,
-            };
-
-            this.omRecordOfSales = new RecordOfSales
-            {
-                StockistCode = WellKnownTestData.Stockists.OthilieMapples.StockistCode.ToString(),
-                FirstName = WellKnownTestData.Stockists.OthilieMapples.Details.FirstName,
-                Name = WellKnownTestData.Stockists.OthilieMapples.Details.DisplayName,
-                EmailAddress = WellKnownTestData.Stockists.OthilieMapples.Details.EmailAddress,
-                CustomMessage = string.Empty,
-                StartDate = new LocalDate(2021, 06, 16),
-                EndDate = new LocalDate(2021, 07, 17),
-                Rate = decimal.Divide(WellKnownTestData.Stockists.OthilieMapples.Commission.Rate, 100),
-                Sales = new List<Sale>().AsReadOnly(),
-                Subtotal = 0M,
-                CommissionTotal = 0M,
-                Total = 0M,
-            };
         }
 
         private IRecordOfSalesRepository Subject => this.Resolve<IRecordOfSalesRepository>();
@@ -79,8 +32,8 @@ namespace Mandarin.Client.Services.Tests.Commissions
             var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcRecordOfSalesRepositoryTests.Interval);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
-            salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(this.ktRecordOfSales);
-            salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Should().MatchRecordOfSales(this.omRecordOfSales);
+            salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(WellKnownTestData.RecordsOfSales.KelbyTynan);
+            salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Should().MatchRecordOfSales(WellKnownTestData.RecordsOfSales.OthilieMapples);
         }
     }
 }

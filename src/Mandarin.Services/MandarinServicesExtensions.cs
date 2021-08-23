@@ -1,5 +1,5 @@
 ﻿using System;
-using Mandarin.Commissions;
+using System.Net.Http;
 using Mandarin.Emails;
 using Mandarin.Inventory;
 using Mandarin.Services.Emails;
@@ -10,9 +10,9 @@ using Mandarin.Stockists;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NodaTime;
 using SendGrid;
-using SendGrid.Extensions.DependencyInjection;
 using Square;
 using Environment = Square.Environment;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
@@ -45,13 +45,15 @@ namespace Mandarin.Services
 
         private static void AddEmailServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSendGrid(ConfigureSendGrid);
+            services.AddHttpClient<ISendGridClient, SendGridClient>(ConfigureSendGridClient);
+            services.Configure<SendGridClientOptions>(configuration.GetSection("SendGrid"));
             services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
             services.AddTransient<IEmailService, SendGridEmailService>();
 
-            void ConfigureSendGrid(IServiceProvider s, SendGridClientOptions options)
+            SendGridClient ConfigureSendGridClient(HttpClient httpClient, IServiceProvider s)
             {
-                options.ApiKey = configuration.GetValue<string>("SendGrid:ApiKey");
+                var options = s.GetRequiredService<IOptions<SendGridClientOptions>>();
+                return new SendGridClient(httpClient, options.Value);
             }
         }
 
