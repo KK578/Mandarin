@@ -9,7 +9,6 @@ using Mandarin.Database.Common;
 using Mandarin.Database.Inventory;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 using Npgsql;
 
@@ -63,9 +62,8 @@ namespace Mandarin.Database.Transactions
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
-        public TransactionRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<TransactionRepository> logger)
-            : base(mandarinDbContext, mapper, logger)
+        public TransactionRepository(MandarinDbContext mandarinDbContext, IMapper mapper)
+            : base(mandarinDbContext, mapper)
         {
         }
 

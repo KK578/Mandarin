@@ -4,7 +4,7 @@ using System.Data;
 using System.Threading.Tasks;
 using AutoMapper;
 using Dapper;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Mandarin.Database.Common
 {
@@ -17,7 +17,6 @@ namespace Mandarin.Database.Common
     {
         private readonly MandarinDbContext mandarinDbContext;
         private readonly IMapper mapper;
-        private readonly ILogger<DatabaseRepositoryBase<TDomain, TRecord>> logger;
 
         private readonly string typeName = typeof(TDomain).Name;
 
@@ -26,13 +25,17 @@ namespace Mandarin.Database.Common
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
-        protected DatabaseRepositoryBase(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<DatabaseRepositoryBase<TDomain, TRecord>> logger)
+        protected DatabaseRepositoryBase(MandarinDbContext mandarinDbContext, IMapper mapper)
         {
+            this.Log = Serilog.Log.ForContext(this.GetType());
             this.mandarinDbContext = mandarinDbContext;
             this.mapper = mapper;
-            this.logger = logger;
         }
+
+        /// <summary>
+        /// Gets the application logger.
+        /// </summary>
+        protected ILogger Log { get; }
 
         /// <summary>
         /// Gets the <typeparamref name="TDomain"/> corresponding to the given <paramref name="key"/>.
@@ -43,19 +46,19 @@ namespace Mandarin.Database.Common
         /// <returns>A <see cref="Task"/> containing the <typeparamref name="TDomain"/> for the given <paramref name="key"/>.</returns>
         protected async Task<TDomain> Get<T>(T key, Func<IDbConnection, Task<TRecord>> recordFunc)
         {
-            this.logger.LogTrace($"Fetching {this.typeName} entry for Key={{Key}}.", key);
+            this.Log.Verbose($"Fetching {this.typeName} entry for Key={{Key}}.", key);
 
             try
             {
                 using var db = this.mandarinDbContext.GetConnection();
                 var record = await recordFunc(db);
                 var value = this.mapper.Map<TDomain>(record);
-                this.logger.LogInformation($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
+                this.Log.Information($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
                 return value;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Failed to fetch {this.typeName} entry for Key={{Key}}.", key);
+                this.Log.Error(ex, $"Failed to fetch {this.typeName} entry for Key={{Key}}.", key);
                 throw;
             }
         }
@@ -67,19 +70,19 @@ namespace Mandarin.Database.Common
         /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of <typeparamref name="TDomain"/>.</returns>
         protected async Task<IReadOnlyList<TDomain>> GetAll(Func<IDbConnection, Task<IEnumerable<TRecord>>> recordsFunc)
         {
-            this.logger.LogDebug($"Fetching {this.typeName} entries.");
+            this.Log.Debug($"Fetching {this.typeName} entries.");
 
             try
             {
                 using var db = this.mandarinDbContext.GetConnection();
                 var records = await recordsFunc(db);
                 var values = this.mapper.Map<List<TDomain>>(records).AsReadOnly();
-                this.logger.LogTrace($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
+                this.Log.Verbose($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
                 return values;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Failed to fetch {this.typeName} entries.");
+                this.Log.Error(ex, $"Failed to fetch {this.typeName} entries.");
                 throw;
             }
         }
@@ -92,7 +95,7 @@ namespace Mandarin.Database.Common
         protected async Task<TDomain> Upsert(TDomain value)
         {
             var key = this.ExtractDisplayKey(value);
-            this.logger.LogDebug($"Inserting/Updating {this.typeName} entry for Key={{Key}}: {{@Value}}", key, value);
+            this.Log.Debug($"Inserting/Updating {this.typeName} entry for Key={{Key}}: {{@Value}}", key, value);
 
             try
             {
@@ -100,12 +103,12 @@ namespace Mandarin.Database.Common
                 using var db = this.mandarinDbContext.GetConnection();
                 var newRecord = await this.UpsertRecordAsync(db, record);
                 var newValue = this.mapper.Map<TDomain>(newRecord);
-                this.logger.LogTrace($"Successfully saved {this.typeName} entry for Key={{Key}}.", key);
+                this.Log.Verbose($"Successfully saved {this.typeName} entry for Key={{Key}}.", key);
                 return newValue;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Failed to save {this.typeName} entry for Key={{Key}}.", key);
+                this.Log.Error(ex, $"Failed to save {this.typeName} entry for Key={{Key}}.", key);
                 throw;
             }
         }
@@ -118,17 +121,17 @@ namespace Mandarin.Database.Common
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         protected async Task Delete(string sql, object parameters)
         {
-            this.logger.LogDebug($"Deleting {this.typeName} entry for {{Key}}.", parameters);
+            this.Log.Debug($"Deleting {this.typeName} entry for {{Key}}.", parameters);
 
             try
             {
                 using var db = this.mandarinDbContext.GetConnection();
                 var affectedRows = await db.ExecuteAsync(sql, parameters);
-                this.logger.LogInformation($"Successfully deleted {{Count}} {this.typeName} entry(ies) for Key={{Key}}.", affectedRows, parameters);
+                this.Log.Information($"Successfully deleted {{Count}} {this.typeName} entry(ies) for Key={{Key}}.", affectedRows, parameters);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Failed to fetch {this.typeName} entry for Key={{Key}}.", parameters);
+                this.Log.Error(ex, $"Failed to fetch {this.typeName} entry for Key={{Key}}.", parameters);
                 throw;
             }
         }

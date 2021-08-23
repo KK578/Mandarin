@@ -1,41 +1,32 @@
 ﻿using DbUp.Engine;
 using DbUp.Engine.Output;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Mandarin.Database.Migrations
 {
     /// <summary>
-    /// Redirects the <see cref="IUpgradeLog"/> log entries to a <see cref="ILogger{TCategoryName}"/> instance.
+    /// Redirects the <see cref="IUpgradeLog"/> log entries to Serilog.
     /// </summary>
     internal sealed class DbUpLogger : IUpgradeLog
     {
-        private readonly ILogger<UpgradeEngine> logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DbUpLogger"/> class.
-        /// </summary>
-        /// <param name="logger">The application logger.</param>
-        public DbUpLogger(ILogger<UpgradeEngine> logger)
-        {
-            this.logger = logger;
-        }
+        private static readonly ILogger Log = Serilog.Log.ForContext<UpgradeEngine>();
 
         /// <inheritdoc/>
         public void WriteInformation(string format, params object[] args)
         {
-            this.logger.LogInformation(format, args);
+            DbUpLogger.Log.Information(format, args);
         }
 
         /// <inheritdoc/>
         public void WriteError(string format, params object[] args)
         {
-            this.logger.LogError(format, args);
+            DbUpLogger.Log.Error(format, args);
         }
 
         /// <inheritdoc/>
         public void WriteWarning(string format, params object[] args)
         {
-            this.logger.LogWarning(format, args);
+            DbUpLogger.Log.Warning(format, args);
         }
     }
 }

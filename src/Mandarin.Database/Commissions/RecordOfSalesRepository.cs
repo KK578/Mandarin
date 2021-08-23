@@ -7,9 +7,7 @@ using Bashi.Core.Extensions;
 using Dapper;
 using Mandarin.Commissions;
 using Mandarin.Database.Common;
-using Mandarin.Extensions;
 using Mandarin.Stockists;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Mandarin.Database.Commissions
@@ -46,13 +44,9 @@ namespace Mandarin.Database.Commissions
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
         /// <param name="stockistRepository">The application repository for interacting with stockists.</param>
-        public RecordOfSalesRepository(MandarinDbContext mandarinDbContext,
-                                       IMapper mapper,
-                                       ILogger<RecordOfSalesRepository> logger,
-                                       IStockistRepository stockistRepository)
-            : base(mandarinDbContext, mapper, logger)
+        public RecordOfSalesRepository(MandarinDbContext mandarinDbContext, IMapper mapper, IStockistRepository stockistRepository)
+            : base(mandarinDbContext, mapper)
         {
             this.stockistRepository = stockistRepository;
         }

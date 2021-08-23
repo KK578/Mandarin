@@ -7,7 +7,6 @@ using Dapper;
 using Mandarin.Database.Commissions;
 using Mandarin.Database.Common;
 using Mandarin.Stockists;
-using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Database.Stockists
 {
@@ -69,18 +68,14 @@ namespace Mandarin.Database.Stockists
                 email_address = @email_address
             WHERE stockist_id = @stockist_id";
 
-        private readonly ILogger<StockistRepository> logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="StockistRepository"/> class.
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
-        public StockistRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<StockistRepository> logger)
-            : base(mandarinDbContext, mapper, logger)
+        public StockistRepository(MandarinDbContext mandarinDbContext, IMapper mapper)
+            : base(mandarinDbContext, mapper)
         {
-            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -132,7 +127,7 @@ namespace Mandarin.Database.Stockists
 
             if (value.stockist_id == 0)
             {
-                this.logger.LogDebug("Inserting as new Stockist entry for StockistCode={StockistCode}.", value.stockist_code);
+                this.Log.Debug("Inserting as new Stockist entry for StockistCode={StockistCode}.", value.stockist_code);
                 var stockistId = await db.ExecuteScalarAsync<int>(StockistRepository.InsertStockistSql, value);
                 value = value with
                 {
@@ -144,7 +139,7 @@ namespace Mandarin.Database.Stockists
                 return value with { stockist_id = stockistId };
             }
 
-            this.logger.LogDebug("Updating existing Stockist entry for StockistCode={StockistCode}.", value.stockist_code);
+            this.Log.Debug("Updating existing Stockist entry for StockistCode={StockistCode}.", value.stockist_code);
             await db.ExecuteAsync(StockistRepository.UpdateStockistSql, value);
             await db.ExecuteAsync(StockistRepository.UpdateStockistDetailSql, value.Details);
             transaction.Commit();

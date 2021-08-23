@@ -5,7 +5,6 @@ using AutoMapper;
 using Dapper;
 using Mandarin.Database.Common;
 using Mandarin.Inventory;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Mandarin.Database.Inventory
@@ -39,9 +38,8 @@ namespace Mandarin.Database.Inventory
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
-        public FramePriceRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<FramePriceRepository> logger)
-            : base(mandarinDbContext, mapper, logger)
+        public FramePriceRepository(MandarinDbContext mandarinDbContext, IMapper mapper)
+            : base(mandarinDbContext, mapper)
         {
         }
 

@@ -5,7 +5,6 @@ using Dapper;
 using Mandarin.Commissions;
 using Mandarin.Database.Common;
 using Mandarin.Stockists;
-using Microsoft.Extensions.Logging;
 
 namespace Mandarin.Database.Commissions
 {
@@ -35,9 +34,8 @@ namespace Mandarin.Database.Commissions
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
-        public CommissionRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<CommissionRepository> logger)
-            : base(mandarinDbContext, mapper, logger)
+        public CommissionRepository(MandarinDbContext mandarinDbContext, IMapper mapper)
+            : base(mandarinDbContext, mapper)
         {
         }
 

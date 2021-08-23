@@ -4,7 +4,6 @@ using AutoMapper;
 using Dapper;
 using Mandarin.Database.Common;
 using Mandarin.Transactions.External;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Mandarin.Database.Transactions.External
@@ -32,9 +31,8 @@ namespace Mandarin.Database.Transactions.External
         /// </summary>
         /// <param name="mandarinDbContext">The application database context.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        /// <param name="logger">The application logger.</param>
-        public ExternalTransactionRepository(MandarinDbContext mandarinDbContext, IMapper mapper, ILogger<ExternalTransactionRepository> logger)
-            : base(mandarinDbContext, mapper, logger)
+        public ExternalTransactionRepository(MandarinDbContext mandarinDbContext, IMapper mapper)
+            : base(mandarinDbContext, mapper)
         {
         }
 
