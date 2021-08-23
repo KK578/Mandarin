@@ -6,7 +6,7 @@ namespace Mandarin.Tests.Helpers.SendGrid
 {
     public sealed class SendGridWireMockFixture : IDisposable
     {
-        public const string Host = "https://localhost:20001";
+        public const string Host = "http://localhost:20001";
 
         private readonly WireMockServer server;
 
