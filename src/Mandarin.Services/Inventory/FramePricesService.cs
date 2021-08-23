@@ -25,28 +25,28 @@ namespace Mandarin.Services.Inventory
         /// <inheritdoc />
         public Task<IReadOnlyList<FramePrice>> GetAllFramePricesAsync()
         {
-            Log.Debug("Fetching all frame prices.");
+            FramePricesService.Log.Debug("Fetching all frame prices.");
             return this.framePriceRepository.GetAllAsync();
         }
 
         /// <inheritdoc/>
         public Task<FramePrice> GetFramePriceAsync(ProductCode productCode, Instant transactionTime)
         {
-            Log.Debug("Fetching frame price for '{ProductCode}' @ '{TransactionTime}'.", productCode, transactionTime);
+            FramePricesService.Log.Debug("Fetching frame price for '{ProductCode}' @ '{TransactionTime}'.", productCode, transactionTime);
             return this.framePriceRepository.GetByProductCodeAsync(productCode, transactionTime);
         }
 
         /// <inheritdoc />
         public Task SaveFramePriceAsync(FramePrice commission)
         {
-            Log.Information("Saving frame price for '{ProductCode}': {@Commission}", commission.ProductCode, commission);
+            FramePricesService.Log.Information("Saving frame price for '{ProductCode}': {@Commission}", commission.ProductCode, commission);
             return this.framePriceRepository.SaveAsync(commission);
         }
 
         /// <inheritdoc/>
         public Task DeleteFramePriceAsync(ProductCode productCode)
         {
-            Log.Information("Deleting frame price for '{ProductCode}'.", productCode);
+            FramePricesService.Log.Information("Deleting frame price for '{ProductCode}'.", productCode);
             return this.framePriceRepository.DeleteByProductCodeAsync(productCode);
         }
     }

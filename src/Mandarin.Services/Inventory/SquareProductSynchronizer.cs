@@ -30,7 +30,7 @@ namespace Mandarin.Services.Inventory
         public async Task SynchronizeProductsAsync()
         {
             var updateCount = 0;
-            Log.Information("Starting Square product synchronisation.");
+            SquareProductSynchronizer.Log.Information("Starting Square product synchronisation.");
             await this.semaphore.WaitAsync();
             try
             {
@@ -41,13 +41,13 @@ namespace Mandarin.Services.Inventory
 
                     if (existingProduct is null)
                     {
-                        Log.Information("Inserting new product: {Product}", product);
+                        SquareProductSynchronizer.Log.Information("Inserting new product: {Product}", product);
                         await this.productRepository.SaveProductAsync(product);
                         updateCount++;
                     }
                     else if (!SquareProductSynchronizer.AreProductsEquivalent(product, existingProduct))
                     {
-                        Log.Information("Updating {ProductId} to new version: {Product}", product.ProductId, product);
+                        SquareProductSynchronizer.Log.Information("Updating {ProductId} to new version: {Product}", product.ProductId, product);
                         await this.productRepository.SaveProductAsync(product);
                         updateCount++;
                     }
@@ -55,7 +55,7 @@ namespace Mandarin.Services.Inventory
             }
             finally
             {
-                Log.Information("Finished product synchronisation - Update Count: {Count}.", updateCount);
+                SquareProductSynchronizer.Log.Information("Finished product synchronisation - Update Count: {Count}.", updateCount);
                 this.semaphore.Release();
             }
         }

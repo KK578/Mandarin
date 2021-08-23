@@ -32,7 +32,7 @@ namespace Mandarin.Services.Transactions.External
         /// <inheritdoc/>
         public IObservable<Order> GetAllOrders(LocalDate start, LocalDate end)
         {
-            Log.Information("Loading Square Transactions - Between {Start} and {End}", start, end);
+            SquareTransactionService.Log.Information("Loading Square Transactions - Between {Start} and {End}", start, end);
             return Observable.Create<Order>(SubscribeToOrders);
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
@@ -57,7 +57,7 @@ namespace Mandarin.Services.Transactions.External
                     var request = builder.Cursor(response?.Cursor).Build();
                     response = await this.squareClient.OrdersApi.SearchOrdersAsync(request, ct);
                     var orders = response.Orders.NullToEmpty().ToList();
-                    Log.Information("Loading Square Transactions - Got {Count} Order(s).", orders.Count);
+                    SquareTransactionService.Log.Information("Loading Square Transactions - Got {Count} Order(s).", orders.Count);
                     foreach (var order in orders)
                     {
                         o.OnNext(order);

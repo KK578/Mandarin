@@ -94,7 +94,7 @@ namespace Mandarin.Services.Transactions.External
             }
             finally
             {
-                Log.Information("Queued {Count} transactions for synchronization.", processCount);
+                SquareTransactionSynchronizer.Log.Information("Queued {Count} transactions for synchronization.", processCount);
                 this.semaphore.Release();
             }
         }
@@ -110,12 +110,12 @@ namespace Mandarin.Services.Transactions.External
 
             if (existingTransaction is null)
             {
-                Log.Information("Inserting new transaction: {Transaction}", transaction);
+                SquareTransactionSynchronizer.Log.Information("Inserting new transaction: {Transaction}", transaction);
                 await this.transactionRepository.SaveTransactionAsync(transaction);
             }
             else if (!SquareTransactionSynchronizer.AreTransactionsEquivalent(transaction, existingTransaction))
             {
-                Log.Information("Updating {TransactionId} to new version: {Transaction}", transaction.ExternalTransactionId, transaction);
+                SquareTransactionSynchronizer.Log.Information("Updating {TransactionId} to new version: {Transaction}", transaction.ExternalTransactionId, transaction);
                 await this.transactionRepository.SaveTransactionAsync(transaction);
             }
         }

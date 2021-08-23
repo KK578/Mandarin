@@ -140,13 +140,13 @@
     get => recordOfSalesModel;
     set
     {
-      this.subscription?.Dispose();
-      this.subscription = null;
-      this.recordOfSalesModel = value;
+      subscription?.Dispose();
+      subscription = null;
+      recordOfSalesModel = value;
 
       if (value != null)
       {
-        this.subscription = value.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
+        subscription = value.StateObservable.Subscribe(x => InvokeAsync(StateHasChanged));
       }
     }
   }
@@ -180,6 +180,6 @@
 
   private void OnCloseSelectedCommission()
   {
-    this.RecordOfSalesModel = null;
+    RecordOfSalesModel = null;
   }
 }

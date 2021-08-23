@@ -70,7 +70,7 @@ namespace Mandarin.Grpc
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to save stockist.");
+                StockistsGrpcService.Log.Error(ex, "Failed to save stockist.");
                 return new SaveStockistResponse
                 {
                     Successful = false,

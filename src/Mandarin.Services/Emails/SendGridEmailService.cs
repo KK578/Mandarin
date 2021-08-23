@@ -61,11 +61,11 @@ namespace Mandarin.Services.Emails
                 var emails = string.Join(", ", email.Personalizations[0].Tos.Select(x => x.Email));
                 var response = await this.sendGridClient.SendEmailAsync(email);
                 var bodyContent = await GetBodyContent(response.Body);
-                Log.Information("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
+                SendGridEmailService.Log.Information("Response from SendGrid: Status={Status}, Message={Message}", response.StatusCode, bodyContent);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Log.Information("Sent email successfully: {@Email}", email);
+                    SendGridEmailService.Log.Information("Sent email successfully: {@Email}", email);
                     return new EmailResponse
                     {
                         IsSuccess = true,
@@ -73,7 +73,7 @@ namespace Mandarin.Services.Emails
                     };
                 }
 
-                Log.Warning("Email sent with errors: {@Response} {@Email}", response, email);
+                SendGridEmailService.Log.Warning("Email sent with errors: {@Response} {@Email}", response, email);
                 return new EmailResponse
                 {
                     IsSuccess = false,
@@ -82,7 +82,7 @@ namespace Mandarin.Services.Emails
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Exception whilst attempting to send email: {@Email}.", email);
+                SendGridEmailService.Log.Error(ex, "Exception whilst attempting to send email: {@Email}.", email);
                 return new EmailResponse
                 {
                     IsSuccess = false,

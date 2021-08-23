@@ -55,7 +55,7 @@ namespace Mandarin.Services.Inventory
                     response = await this.squareClient.CatalogApi.SearchCatalogObjectsAsync(requestBuilder.Build(), ct);
                     ct.ThrowIfCancellationRequested();
                     requestBuilder = requestBuilder.Cursor(response.Cursor);
-                    Log.Debug("Loading Square Inventory - Got {Count} Items", response.Objects.Count);
+                    SquareProductService.Log.Debug("Loading Square Inventory - Got {Count} Items", response.Objects.Count);
 
                     foreach (var item in response.Objects)
                     {

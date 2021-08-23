@@ -31,18 +31,18 @@ namespace Mandarin.Services.Stockists
         /// <inheritdoc/>
         public async Task<Stockist> GetStockistByCodeAsync(StockistCode stockistCode)
         {
-            Log.Debug("Fetching stockist '{StockistCode}'.", stockistCode);
+            StockistService.Log.Debug("Fetching stockist '{StockistCode}'.", stockistCode);
             try
             {
                 // TODO: Review when Commission is actually populated.
                 var stockist = await this.stockistRepository.GetStockistAsync(stockistCode);
                 var commission = await this.commissionRepository.GetCommissionByStockist(stockist.StockistId);
-                Log.Information("Successfully fetched stockist ({@Stockist}).", stockist);
+                StockistService.Log.Information("Successfully fetched stockist ({@Stockist}).", stockist);
                 return stockist with { Commission = commission };
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to fetch stockist (StockistCode={StockistCode}).", stockistCode);
+                StockistService.Log.Error(ex, "Failed to fetch stockist (StockistCode={StockistCode}).", stockistCode);
                 throw;
             }
         }
@@ -50,7 +50,7 @@ namespace Mandarin.Services.Stockists
         /// <inheritdoc/>
         public async Task<IReadOnlyList<Stockist>> GetStockistsAsync()
         {
-            Log.Debug("Fetching all stockists.");
+            StockistService.Log.Debug("Fetching all stockists.");
             try
             {
                 // TODO: Review when Commission is actually populated.
@@ -61,12 +61,12 @@ namespace Mandarin.Services.Stockists
                     return stockist with { Commission = commission };
                 }));
 
-                Log.Information("Successfully fetched {Count} stockist(s).", stockists.Count);
+                StockistService.Log.Information("Successfully fetched {Count} stockist(s).", stockists.Count);
                 return updatedStockists.AsReadOnlyList();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to fetch all stockists.");
+                StockistService.Log.Error(ex, "Failed to fetch all stockists.");
                 throw;
             }
         }
@@ -74,17 +74,17 @@ namespace Mandarin.Services.Stockists
         /// <inheritdoc/>
         public async Task SaveStockistAsync(Stockist stockist)
         {
-            Log.Information("Saving stockist: {@Stockist}", stockist);
+            StockistService.Log.Information("Saving stockist: {@Stockist}", stockist);
             try
             {
                 // TODO: Transactionality is broken here, there should be one transaction shared across both Stockist and Commission repositories.
                 stockist = await this.stockistRepository.SaveStockistAsync(stockist);
                 await this.commissionRepository.SaveCommissionAsync(stockist.StockistId, stockist.Commission);
-                Log.Information("Successfully saved stockist {StockistCode}", stockist.StockistCode);
+                StockistService.Log.Information("Successfully saved stockist {StockistCode}", stockist.StockistCode);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to save the stockist {@Stockist}.", stockist);
+                StockistService.Log.Error(ex, "Failed to save the stockist {@Stockist}.", stockist);
                 throw;
             }
         }
