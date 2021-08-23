@@ -5,9 +5,9 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bashi.Core.Extensions;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Text;
+using Serilog;
 using Square;
 using Square.Models;
 
@@ -16,24 +16,23 @@ namespace Mandarin.Services.Transactions.External
     /// <inheritdoc />
     internal sealed class SquareTransactionService : ISquareTransactionService
     {
-        private readonly ILogger<SquareTransactionService> logger;
+        private static readonly ILogger Log = Serilog.Log.ForContext<SquareTransactionService>();
+
         private readonly ISquareClient squareClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareTransactionService"/> class.
         /// </summary>
-        /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API Client.</param>
-        public SquareTransactionService(ILogger<SquareTransactionService> logger, ISquareClient squareClient)
+        public SquareTransactionService(ISquareClient squareClient)
         {
-            this.logger = logger;
             this.squareClient = squareClient;
         }
 
         /// <inheritdoc/>
         public IObservable<Order> GetAllOrders(LocalDate start, LocalDate end)
         {
-            this.logger.LogInformation("Loading Square Transactions - Between {Start} and {End}", start, end);
+            Log.Information("Loading Square Transactions - Between {Start} and {End}", start, end);
             return Observable.Create<Order>(SubscribeToOrders);
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
@@ -58,7 +57,7 @@ namespace Mandarin.Services.Transactions.External
                     var request = builder.Cursor(response?.Cursor).Build();
                     response = await this.squareClient.OrdersApi.SearchOrdersAsync(request, ct);
                     var orders = response.Orders.NullToEmpty().ToList();
-                    this.logger.LogInformation("Loading Square Transactions - Got {Count} Order(s).", orders.Count);
+                    Log.Information("Loading Square Transactions - Got {Count} Order(s).", orders.Count);
                     foreach (var order in orders)
                     {
                         o.OnNext(order);

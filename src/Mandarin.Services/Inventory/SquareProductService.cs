@@ -7,8 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Inventory;
-using Microsoft.Extensions.Logging;
 using NodaTime.Text;
+using Serilog;
 using Square;
 using Square.Models;
 
@@ -17,20 +17,18 @@ namespace Mandarin.Services.Inventory
     /// <inheritdoc />
     internal sealed class SquareProductService : ISquareProductService
     {
+        private static readonly ILogger Log = Serilog.Log.ForContext<SquareProductService>();
         private static readonly Regex HyphenSeparatedProductNameRegex = new("^.* - (?<name>.*)$");
         private static readonly Regex SquareBracketProductNameRegex = new("^\\[.*\\] (?<name>.*)$");
 
-        private readonly ILogger<SquareProductService> logger;
         private readonly ISquareClient squareClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SquareProductService"/> class.
         /// </summary>
-        /// <param name="logger">The application logger.</param>
         /// <param name="squareClient">The Square API client.</param>
-        public SquareProductService(ILogger<SquareProductService> logger, ISquareClient squareClient)
+        public SquareProductService(ISquareClient squareClient)
         {
-            this.logger = logger;
             this.squareClient = squareClient;
         }
 
@@ -57,7 +55,7 @@ namespace Mandarin.Services.Inventory
                     response = await this.squareClient.CatalogApi.SearchCatalogObjectsAsync(requestBuilder.Build(), ct);
                     ct.ThrowIfCancellationRequested();
                     requestBuilder = requestBuilder.Cursor(response.Cursor);
-                    this.logger.LogDebug("Loading Square Inventory - Got {Count} Items", response.Objects.Count);
+                    Log.Debug("Loading Square Inventory - Got {Count} Items", response.Objects.Count);
 
                     foreach (var item in response.Objects)
                     {

@@ -4,7 +4,6 @@ using FluentAssertions;
 using Mandarin.Inventory;
 using Mandarin.Services.Inventory;
 using Mandarin.Tests.Data;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Square;
 using Square.Models;
@@ -19,8 +18,7 @@ namespace Mandarin.Services.Tests.Inventory
 
         protected SquareProductServiceTests()
         {
-            this.subject = new SquareProductService(NullLogger<SquareProductService>.Instance,
-                                                    this.squareClient.Object);
+            this.subject = new SquareProductService(this.squareClient.Object);
         }
 
         private void GivenSquareClientCatalogApiReturnsData()

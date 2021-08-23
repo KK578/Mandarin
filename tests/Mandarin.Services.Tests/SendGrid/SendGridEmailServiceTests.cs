@@ -3,10 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Bashi.Tests.Framework.Data;
-using Bashi.Tests.Framework.Logging;
 using FluentAssertions;
-using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Services.Emails;
 using Mandarin.Tests.Data;
@@ -26,7 +23,6 @@ namespace Mandarin.Services.Tests.SendGrid
 
         private readonly Mock<ISendGridClient> sendGridClient;
         private readonly IOptions<SendGridConfiguration> configuration;
-        private readonly TestableLogger<SendGridEmailService> logger;
 
         protected SendGridEmailServiceTests()
         {
@@ -37,10 +33,9 @@ namespace Mandarin.Services.Tests.SendGrid
                 RealContactEmail = SendGridEmailServiceTests.RealContactEmail,
                 RecordOfSalesTemplateId = SendGridEmailServiceTests.TemplateId,
             });
-            this.logger = new TestableLogger<SendGridEmailService>();
         }
 
-        private IEmailService Subject => new SendGridEmailService(this.sendGridClient.Object, this.configuration, this.logger);
+        private IEmailService Subject => new SendGridEmailService(this.sendGridClient.Object, this.configuration);
 
         private void GivenExpectedEmailMatches(Action<SendGridMessage> verifyMessageFunc)
         {

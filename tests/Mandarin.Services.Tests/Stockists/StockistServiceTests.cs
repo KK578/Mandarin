@@ -5,8 +5,6 @@ using Mandarin.Commissions;
 using Mandarin.Services.Stockists;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
-using Mandarin.Tests.Data.Extensions;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Npgsql;
 using Xunit;
@@ -18,10 +16,7 @@ namespace Mandarin.Services.Tests.Stockists
         private readonly Mock<IStockistRepository> stockistRepository = new();
         private readonly Mock<ICommissionRepository> commissionRepository = new();
 
-        private IStockistService Subject =>
-            new StockistService(this.stockistRepository.Object,
-                                this.commissionRepository.Object,
-                                NullLogger<StockistService>.Instance);
+        private IStockistService Subject => new StockistService(this.stockistRepository.Object, this.commissionRepository.Object);
 
         private void GivenRepositoriesThrowException()
         {
