@@ -81,7 +81,7 @@ namespace Mandarin.Services.Tests.Stockists
             {
                 this.GivenRepositoriesReturnWellKnownTestData();
                 var actual = await this.Subject.GetStockistsAsync();
-                actual.Should().BeEquivalentTo(WellKnownTestData.Stockists.KelbyTynan, WellKnownTestData.Stockists.OthilieMapples);
+                actual.Should().Equal(WellKnownTestData.Stockists.KelbyTynan, WellKnownTestData.Stockists.OthilieMapples);
             }
         }
 
