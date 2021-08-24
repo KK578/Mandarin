@@ -56,7 +56,7 @@ namespace Mandarin.Tests.Grpc
                 var job = await jobTask;
                 job.Type.Should().Be<ITransactionSynchronizer>();
                 job.Method.Name.Should().Be(nameof(ITransactionSynchronizer.LoadExternalTransactions));
-                job.Args.Should().BeEquivalentTo(TransactionsGrpcServiceTests.Start, TransactionsGrpcServiceTests.End);
+                job.Args.Should().Equal(TransactionsGrpcServiceTests.Start, TransactionsGrpcServiceTests.End);
             }
         }
     }

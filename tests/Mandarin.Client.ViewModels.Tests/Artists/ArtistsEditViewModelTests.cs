@@ -112,7 +112,7 @@ namespace Mandarin.Client.ViewModels.Tests.Artists
             public void ShouldHaveCorrectAvailableOptions()
             {
                 var statuses = this.subject.Statuses;
-                statuses.Should().BeEquivalentTo(StatusMode.Inactive, StatusMode.ActiveHidden, StatusMode.Active);
+                statuses.Should().Equal(StatusMode.Inactive, StatusMode.ActiveHidden, StatusMode.Active);
             }
         }
 
