@@ -1,0 +1,365 @@
+{
+  "Guid": "67c021c9-2fac-49a5-bcb9-7c9c1dfe8008",
+  "Title": "Get Square Catalog",
+  "Request": {
+    "Path": {
+      "Matchers": [
+        {
+          "Name": "WildcardMatcher",
+          "Pattern": "/v2/catalog/search",
+          "IgnoreCase": false
+        }
+      ]
+    },
+    "Methods": [
+      "POST"
+    ],
+    "Headers": [
+      {
+        "Name": "Content-Type",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "application/json; charset=utf-8",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Accept",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "application/json",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Authorization",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "Bearer TestSquareApiKey",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Host",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "localhost:20002",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "User-Agent",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "Square-DotNet-SDK/12.0.0",
+            "IgnoreCase": true
+          }
+        ]
+      },
+      {
+        "Name": "Square-Version",
+        "Matchers": [
+          {
+            "Name": "WildcardMatcher",
+            "Pattern": "2021-06-16",
+            "IgnoreCase": true
+          }
+        ]
+      }
+    ],
+    "Body": {
+      "Matcher": {
+        "Name": "JsonMatcher",
+        "Pattern": {
+          "object_types": [
+            "ITEM",
+            "ITEM_VARIATION"
+          ],
+          "include_deleted_objects": true
+        },
+        "IgnoreCase": true
+      }
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "BodyAsJson": {
+      "objects": [
+        {
+          "type": "ITEM",
+          "id": "QZWSEYR75X5UKFSMRMQJ2GO6",
+          "updated_at": "2021-01-31T22:49:09.93Z",
+          "version": 1612133349930,
+          "is_deleted": false,
+          "present_at_all_locations": true,
+          "item_data": {
+            "name": "KT20-001F - Clementine (Framed)",
+            "description": "vel augue vestibulum ante ipsum primis in",
+            "visibility": "PRIVATE",
+            "category_id": "ONDCP44B57TATVEZHWQ7XVVV",
+            "variations": [
+              {
+                "type": "ITEM_VARIATION",
+                "id": "BTWEJWZCPE4XAKZRBJW53DYE",
+                "updated_at": "2021-01-31T22:48:44.608Z",
+                "version": 1612133324608,
+                "is_deleted": false,
+                "present_at_all_locations": true,
+                "item_variation_data": {
+                  "item_id": "QZWSEYR75X5UKFSMRMQJ2GO6",
+                  "name": "Regular",
+                  "sku": "KT20-001F",
+                  "ordinal": 1,
+                  "pricing_type": "FIXED_PRICING",
+                  "price_money": {
+                    "amount": 9500,
+                    "currency": "GBP"
+                  },
+                  "stockable": true
+                }
+              }
+            ],
+            "product_type": "REGULAR",
+            "skip_modifier_screen": false,
+            "ecom_visibility": "UNINDEXED"
+          }
+        },
+        {
+          "type": "ITEM_VARIATION",
+          "id": "BTWEJWZCPE4XAKZRBJW53DYE",
+          "updated_at": "2021-01-31T22:48:44.608Z",
+          "version": 1612133324608,
+          "is_deleted": false,
+          "present_at_all_locations": true,
+          "item_variation_data": {
+            "item_id": "QZWSEYR75X5UKFSMRMQJ2GO6",
+            "name": "Regular",
+            "sku": "KT20-001F",
+            "ordinal": 1,
+            "pricing_type": "FIXED_PRICING",
+            "price_money": {
+              "amount": 9500,
+              "currency": "GBP"
+            },
+            "stockable": true
+          }
+        },
+        {
+          "type": "ITEM",
+          "id": "ORVPDHG6RLVKGW4GEBHDNKNG",
+          "updated_at": "2021-01-31T22:49:47.71Z",
+          "version": 1612133387710,
+          "is_deleted": false,
+          "present_at_all_locations": true,
+          "item_data": {
+            "name": "KT20-002F - Rice Paper (Framed)",
+            "description": "pretium iaculis justo",
+            "visibility": "PRIVATE",
+            "category_id": "ONDCP44B57TATVEZHWQ7XVVV",
+            "variations": [
+              {
+                "type": "ITEM_VARIATION",
+                "id": "WUQ5IYPA55TKWA7NZB32BJGC",
+                "updated_at": "2021-01-31T22:49:47.71Z",
+                "version": 1612133387710,
+                "is_deleted": false,
+                "present_at_all_locations": true,
+                "item_variation_data": {
+                  "item_id": "ORVPDHG6RLVKGW4GEBHDNKNG",
+                  "name": "Regular",
+                  "sku": "KT20-002F",
+                  "ordinal": 1,
+                  "pricing_type": "FIXED_PRICING",
+                  "price_money": {
+                    "amount": 20000,
+                    "currency": "GBP"
+                  },
+                  "stockable": true
+                }
+              }
+            ],
+            "product_type": "REGULAR",
+            "skip_modifier_screen": false,
+            "ecom_visibility": "UNINDEXED"
+          }
+        },
+        {
+          "type": "ITEM_VARIATION",
+          "id": "WUQ5IYPA55TKWA7NZB32BJGC",
+          "updated_at": "2021-01-31T22:49:47.71Z",
+          "version": 1612133387710,
+          "is_deleted": false,
+          "present_at_all_locations": true,
+          "item_variation_data": {
+            "item_id": "ORVPDHG6RLVKGW4GEBHDNKNG",
+            "name": "Regular",
+            "sku": "KT20-002F",
+            "ordinal": 1,
+            "pricing_type": "FIXED_PRICING",
+            "price_money": {
+              "amount": 20000,
+              "currency": "GBP"
+            },
+            "stockable": true
+          }
+        },
+        {
+          "type": "ITEM",
+          "id": "Z7M5XG5DIBPPGSN6M4QLL357",
+          "updated_at": "2021-01-31T22:51:49.569Z",
+          "version": 1612133509569,
+          "is_deleted": false,
+          "present_at_all_locations": false,
+          "present_at_location_ids": [
+            "LMS9CGYRHZHH3"
+          ],
+          "item_data": {
+            "name": "KT20-002 - Rice Paper",
+            "description": "pretium iaculis justo",
+            "category_id": "ONDCP44B57TATVEZHWQ7XVVV",
+            "variations": [
+              {
+                "type": "ITEM_VARIATION",
+                "id": "QMTQ3DWESZAFV6H52SYZBRQZ",
+                "updated_at": "2021-01-31T22:51:49.569Z",
+                "version": 1612133509569,
+                "is_deleted": false,
+                "present_at_all_locations": false,
+                "present_at_location_ids": [
+                  "LMS9CGYRHZHH3"
+                ],
+                "item_variation_data": {
+                  "item_id": "Z7M5XG5DIBPPGSN6M4QLL357",
+                  "name": "Regular",
+                  "sku": "KT20-002",
+                  "ordinal": 1,
+                  "pricing_type": "FIXED_PRICING",
+                  "price_money": {
+                    "amount": 10500,
+                    "currency": "GBP"
+                  },
+                  "stockable": true
+                }
+              }
+            ],
+            "product_type": "REGULAR"
+          }
+        },
+        {
+          "type": "ITEM",
+          "id": "2BOUYVECENWR7CQAGR5HUCUL",
+          "updated_at": "2021-01-31T22:51:49.569Z",
+          "version": 1612133509569,
+          "is_deleted": false,
+          "present_at_all_locations": false,
+          "present_at_location_ids": [
+            "LMS9CGYRHZHH3"
+          ],
+          "item_data": {
+            "name": "KT20-001 - Clementine",
+            "description": "vel augue vestibulum ante ipsum primis in",
+            "category_id": "ONDCP44B57TATVEZHWQ7XVVV",
+            "variations": [
+              {
+                "type": "ITEM_VARIATION",
+                "id": "BQGTKYVIFNM6MPB57Y5QEBYN",
+                "updated_at": "2021-01-31T22:51:49.569Z",
+                "version": 1612133509569,
+                "is_deleted": false,
+                "present_at_all_locations": false,
+                "present_at_location_ids": [
+                  "LMS9CGYRHZHH3"
+                ],
+                "item_variation_data": {
+                  "item_id": "2BOUYVECENWR7CQAGR5HUCUL",
+                  "name": "Regular",
+                  "sku": "KT20-001",
+                  "ordinal": 1,
+                  "pricing_type": "FIXED_PRICING",
+                  "price_money": {
+                    "amount": 4500,
+                    "currency": "GBP"
+                  },
+                  "stockable": true
+                }
+              }
+            ],
+            "product_type": "REGULAR"
+          }
+        },
+        {
+          "type": "ITEM_VARIATION",
+          "id": "BQGTKYVIFNM6MPB57Y5QEBYN",
+          "updated_at": "2021-01-31T22:51:49.569Z",
+          "version": 1612133509569,
+          "is_deleted": false,
+          "present_at_all_locations": false,
+          "present_at_location_ids": [
+            "LMS9CGYRHZHH3"
+          ],
+          "item_variation_data": {
+            "item_id": "2BOUYVECENWR7CQAGR5HUCUL",
+            "name": "Regular",
+            "sku": "KT20-001",
+            "ordinal": 1,
+            "pricing_type": "FIXED_PRICING",
+            "price_money": {
+              "amount": 4500,
+              "currency": "GBP"
+            },
+            "stockable": true
+          }
+        },
+        {
+          "type": "ITEM_VARIATION",
+          "id": "QMTQ3DWESZAFV6H52SYZBRQZ",
+          "updated_at": "2021-01-31T22:51:49.569Z",
+          "version": 1612133509569,
+          "is_deleted": false,
+          "present_at_all_locations": false,
+          "present_at_location_ids": [
+            "LMS9CGYRHZHH3"
+          ],
+          "item_variation_data": {
+            "item_id": "Z7M5XG5DIBPPGSN6M4QLL357",
+            "name": "Regular",
+            "sku": "KT20-002",
+            "ordinal": 1,
+            "pricing_type": "FIXED_PRICING",
+            "price_money": {
+              "amount": 10500,
+              "currency": "GBP"
+            },
+            "stockable": true
+          }
+        }
+      ],
+      "latest_time": "2021-01-31T22:51:49.569Z"
+    },
+    "Headers": {
+      "Content-Type": "application/json",
+      "Square-Version": "2021-06-16",
+      "Vary": [
+        "Origin",
+        "Accept-Encoding"
+      ],
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-Speleo-Traceid": "JehdkfCDYTacG",
+      "X-XSS-Protection": "1; mode=block",
+      "Date": "Tue, 24 Aug 2021 20:05:16 GMT",
+      "Strict-Transport-Security": "max-age=631152000; includeSubDomains; preload"
+    }
+  }
+}
