@@ -83,6 +83,7 @@ namespace Mandarin.Services
             ISquareClient ConfigureSquareClient(IServiceProvider provider)
             {
                 return new SquareClient.Builder()
+                       .CustomUrl(configuration.GetValue<string>("Square:Host"))
                        .Environment(configuration.GetValue<Environment>("Square:Environment"))
                        .AccessToken(configuration.GetValue<string>("Square:ApiKey"))
                        .Build();

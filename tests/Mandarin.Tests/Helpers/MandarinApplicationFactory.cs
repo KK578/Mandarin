@@ -2,6 +2,7 @@
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers.Auth;
 using Mandarin.Tests.Helpers.SendGrid;
+using Mandarin.Tests.Helpers.Square;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -53,7 +54,9 @@ namespace Mandarin.Tests.Helpers
                 { "SendGrid:ServiceEmail", "ServiceEmail@thelittlemandarin.co.uk" },
                 { "SendGrid:RealContactEmail", "RealContactEmail@thelittlemandarin.co.uk" },
                 { "SendGrid:RecordOfSalesTemplateId", "TestRecordOfSalesTemplateId" },
-                { "Square:Environment", "Sandbox" },
+                { "Square:ApiKey", "TestSquareApiKey" },
+                { "Square:Host", SquareWireMockFixture.Host },
+                { "Square:Environment", "Custom" },
             });
             configurationBuilder.AddUserSecrets(typeof(MandarinApplicationFactory).Assembly);
         }
