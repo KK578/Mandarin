@@ -1,0 +1,20 @@
+name: Upload Test Reports
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "[Test] Report Test Results"
+        uses: dorny/test-reporter@v1
+        with:
+          artifact: Mandarin.TestReports
+          name: Tests Report
+          path: "*.trx"
+          reporter: dotnet-trx

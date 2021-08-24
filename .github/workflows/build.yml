@@ -75,24 +75,22 @@ jobs:
 
       - name: "[Test] Run Tests"
         run: dotnet test --no-build --configuration Release
-        env:
-          Square__ApiKey: ${{ secrets.SQUARE__APIKEY }}
 
       - name: "[Test] Generate Report"
         uses: danielpalme/ReportGenerator-GitHub-Action@4.8.12
-        with:
-          reports: "coverage/*.opencover.xml"
-          targetdir: "coverage/reports"
-          reporttypes: "Html;lcov"
-          verbosity: "Info"
-
-      - name: "[Test] Report Test Results"
-        uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: Tests Report
-          path: tests/*/TestResults/*.trx
-          reporter: dotnet-trx
+          reports: coverage/*.opencover.xml
+          targetdir: tests/reports
+          reporttypes: Html;lcov
+          verbosity: Info
+
+      - name: "[Coverage] Upload test reports artifact"
+        uses: actions/upload-artifact@v1
+        if: success() || failure()
+        with:
+          name: Mandarin.TestReports
+          path: tests/reports
 
       - name: "[Deploy] Publish build"
         if: github.event_name == 'release'
@@ -125,18 +123,12 @@ jobs:
           name: Mandarin.Build
           path: publish
 
-      - name: "[Coverage] Upload test reports artifact"
-        uses: actions/upload-artifact@v1
-        with:
-          name: Mandarin.TestReport
-          path: coverage/reports
-
       - name: "[Coverage] Upload to Coveralls"
         uses: coverallsapp/github-action@v1.1.1
         continue-on-error: true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: "./coverage/reports/lcov.info"
+          path-to-lcov: "./tests/reports/lcov.info"
 
 
   deploy:
