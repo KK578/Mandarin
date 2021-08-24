@@ -3,17 +3,17 @@ using Mandarin.Tests.Helpers.Logging;
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace Mandarin.Tests.Helpers.SendGrid
+namespace Mandarin.Tests.Helpers.Square
 {
-    public sealed class SendGridWireMockFixture : IDisposable
+    public sealed class SquareWireMockFixture : IDisposable
     {
-        public const string Host = "http://localhost:20001";
+        public const string Host = "http://localhost:20002";
 
         private readonly WireMockServer server;
 
-        public SendGridWireMockFixture()
+        public SquareWireMockFixture()
         {
-            this.server = WireMockServer.Start(SendGridWireMockFixture.CreateSettings());
+            this.server = WireMockServer.Start(SquareWireMockFixture.CreateSettings());
         }
 
         /// <inheritdoc />
@@ -26,8 +26,8 @@ namespace Mandarin.Tests.Helpers.SendGrid
         {
             var settings = new WireMockServerSettings
             {
-                Urls = new[] { SendGridWireMockFixture.Host },
-                Logger = new WireMockSerilogLogger<SendGridWireMockFixture>(),
+                Urls = new[] { SquareWireMockFixture.Host },
+                Logger = new WireMockSerilogLogger<SquareWireMockFixture>(),
                 ReadStaticMappings = true,
             };
 
@@ -35,7 +35,7 @@ namespace Mandarin.Tests.Helpers.SendGrid
             {
                 settings.ProxyAndRecordSettings = new ProxyAndRecordSettings
                 {
-                    Url = "https://api.sendgrid.com/",
+                    Url = "https://connect.squareupsandbox.com",
                     SaveMapping = true,
                     SaveMappingToFile = true,
                 };

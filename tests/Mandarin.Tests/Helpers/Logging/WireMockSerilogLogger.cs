@@ -4,7 +4,7 @@ using Serilog;
 using WireMock.Admin.Requests;
 using WireMock.Logging;
 
-namespace Mandarin.Tests.Helpers.SendGrid
+namespace Mandarin.Tests.Helpers.Logging
 {
     internal sealed class WireMockSerilogLogger<T> : IWireMockLogger
     {
