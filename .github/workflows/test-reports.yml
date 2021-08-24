@@ -1,6 +1,7 @@
 name: Upload Test Reports
 
 on:
+  push:
   workflow_run:
     workflows: ["Build"]
     types:
