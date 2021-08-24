@@ -8,6 +8,7 @@
 
   <PropertyGroup>
     <VSTestLogger>trx%3BLogFileName=$(MSBuildProjectName).trx</VSTestLogger>
+    <VSTestResultsDirectory>$(MSBuildThisFileDirectory)/reports/</VSTestResultsDirectory>
     <CollectCoverage>true</CollectCoverage>
     <MergeWith>$(MSBuildThisFileDirectory)../coverage/coverage.json</MergeWith>
     <CoverletOutput>$(MSBuildThisFileDirectory)../coverage/$(MSBuildProjectName).opencover.xml</CoverletOutput>
