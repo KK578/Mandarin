@@ -60,7 +60,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "Square-DotNet-SDK/12.0.0",
+            "Pattern": "Square-DotNet-SDK/13.1.0",
             "IgnoreCase": true
           }
         ]
@@ -70,7 +70,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "2021-06-16",
+            "Pattern": "2021-08-18",
             "IgnoreCase": true
           }
         ]
@@ -347,7 +347,7 @@
     },
     "Headers": {
       "Content-Type": "application/json",
-      "Square-Version": "2021-06-16",
+      "Square-Version": "2021-08-18",
       "Vary": [
         "Origin",
         "Accept-Encoding"
