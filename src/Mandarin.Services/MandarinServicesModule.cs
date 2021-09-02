@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Mandarin.Emails;
+using Mandarin.Extensions;
 using Mandarin.Inventory;
 using Mandarin.Services.Emails;
 using Mandarin.Services.Inventory;
@@ -8,6 +9,7 @@ using Mandarin.Services.Transactions.External;
 using Mandarin.Stockists;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using NodaTime;
 using SendGrid;
 using Square;
@@ -28,8 +30,8 @@ namespace Mandarin.Services
 
             builder.RegisterInstance(SystemClock.Instance).As<IClock>();
 
-            builder.Register(MandarinServicesModule.CreateSendGridClientOptions);
-            builder.Register(MandarinServicesModule.ConfigureSendGridConfiguration);
+            builder.RegisterConfiguration<SendGridClientOptions>("SendGrid");
+            builder.RegisterConfiguration<SendGridConfiguration>("SendGrid");
             builder.RegisterType<SendGridEmailService>().As<IEmailService>().InstancePerDependency();
 
             builder.RegisterType<SquareProductSynchronizer>().As<IProductSynchronizer>().SingleInstance();
@@ -43,28 +45,6 @@ namespace Mandarin.Services
             builder.RegisterType<SquareTransactionSynchronizer>().As<ITransactionSynchronizer>().SingleInstance();
 
             builder.Register(MandarinServicesModule.ConfigureSquareClient).As<ISquareClient>().InstancePerDependency();
-        }
-
-        private static SendGridClientOptions CreateSendGridClientOptions(IComponentContext context)
-        {
-            var configuration = context.Resolve<IConfiguration>();
-
-            return new SendGridClientOptions
-            {
-                ApiKey = configuration.GetValue<string>("SendGrid:ApiKey"),
-            };
-        }
-
-        private static SendGridConfiguration ConfigureSendGridConfiguration(IComponentContext context)
-        {
-            var configuration = context.Resolve<IConfiguration>();
-
-            return new SendGridConfiguration
-            {
-                ServiceEmail = configuration.GetValue<string>("SendGrid:ServiceEmail"),
-                RealContactEmail = configuration.GetValue<string>("SendGrid:RealContactEmail"),
-                RecordOfSalesTemplateId = configuration.GetValue<string>("SendGrid:RecordOfSalesTemplateId"),
-            };
         }
 
         private static ISquareClient ConfigureSquareClient(IComponentContext context)

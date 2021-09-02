@@ -3,6 +3,7 @@ using System.Globalization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Mandarin.Database;
+using Mandarin.Grpc;
 using Mandarin.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -48,8 +49,10 @@ namespace Mandarin
 
         private static void ConfigureContainer(ContainerBuilder builder)
         {
+            builder.RegisterModule<MandarinModule>();
             builder.RegisterModule<MandarinDatabaseModule>();
             builder.RegisterModule<MandarinInterfacesModule>();
+            builder.RegisterModule<MandarinInterfacesGrpcModule>();
             builder.RegisterModule<MandarinServicesModule>();
         }
     }

@@ -1,13 +1,16 @@
 ﻿using Autofac;
+using AutoMapper;
 using Dapper.NodaTime;
 using DbUp.Engine.Output;
 using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
+using Mandarin.Database.Converters;
 using Mandarin.Database.Inventory;
 using Mandarin.Database.Migrations;
 using Mandarin.Database.Stockists;
 using Mandarin.Database.Transactions;
 using Mandarin.Database.Transactions.External;
+using Mandarin.Extensions;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
@@ -33,6 +36,7 @@ namespace Mandarin.Database
             builder.RegisterType<Migrator>().As<IMigrator>().SingleInstance();
             builder.RegisterType<MandarinDbContext>().AsSelf().InstancePerDependency();
 
+            builder.RegisterProfile<MandarinDatabaseMapperProfile>();
             builder.RegisterType<CommissionRepository>().As<ICommissionRepository>().InstancePerDependency();
             builder.RegisterType<ExternalTransactionRepository>().As<IExternalTransactionRepository>().InstancePerDependency();
             builder.RegisterType<FramePriceRepository>().As<IFramePriceRepository>().InstancePerDependency();

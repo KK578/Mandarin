@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using AutoMapper;
 using Mandarin.Converters;
+using Mandarin.Extensions;
 
 namespace Mandarin
 {
@@ -14,7 +14,7 @@ namespace Mandarin
         {
             base.Load(builder);
 
-            builder.RegisterType<MandarinTinyTypeMapperProfile>().As<Profile>();
+            builder.RegisterProfile<MandarinTinyTypeMapperProfile>();
         }
     }
 }
