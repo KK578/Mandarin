@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mandarin.Configuration;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Mandarin.Client.Services.Authentication

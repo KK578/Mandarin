@@ -38,8 +38,7 @@ namespace Mandarin
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog(Program.ConfigureSerilog)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureContainer<ContainerBuilder>(Program.ConfigureContainer)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory(Program.ConfigureContainer))
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<MandarinStartup>());
 
         private static void ConfigureSerilog(HostBuilderContext h, LoggerConfiguration l)
@@ -49,7 +48,6 @@ namespace Mandarin
 
         private static void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.RegisterModule<MandarinModule>();
             builder.RegisterModule<MandarinDatabaseModule>();
             builder.RegisterModule<MandarinInterfacesModule>();
             builder.RegisterModule<MandarinInterfacesGrpcModule>();

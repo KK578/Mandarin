@@ -3,16 +3,6 @@ using System.Net.Http;
 using Grpc.Core;
 using Grpc.Net.Client.Web;
 using Mandarin.Client.Services.Authentication;
-using Mandarin.Client.Services.Commissions;
-using Mandarin.Client.Services.Emails;
-using Mandarin.Client.Services.Inventory;
-using Mandarin.Client.Services.Stockists;
-using Mandarin.Client.Services.Transactions;
-using Mandarin.Commissions;
-using Mandarin.Emails;
-using Mandarin.Inventory;
-using Mandarin.Stockists;
-using Mandarin.Transactions.External;
 using Microsoft.Extensions.DependencyInjection;
 using static Mandarin.Api.Commissions.Commissions;
 using static Mandarin.Api.Emails.Emails;
@@ -50,8 +40,6 @@ namespace Mandarin.Client.Services
                                                                    Uri baseAddress,
                                                                    Func<HttpMessageHandler> handlerFunc)
         {
-            services.AddScoped<JwtHttpMessageHandler>();
-
             AddMandarinGrpcClient<CommissionsClient>();
             AddMandarinGrpcClient<EmailsClient>();
             AddMandarinGrpcClient<FramePricesClient>();
@@ -59,20 +47,12 @@ namespace Mandarin.Client.Services
             AddMandarinGrpcClient<StockistsClient>();
             AddMandarinGrpcClient<TransactionsClient>();
 
-            services.AddTransient<IEmailService, MandarinGrpcEmailService>();
-            services.AddTransient<IFramePricesService, MandarinGrpcFramePricesService>();
-            services.AddTransient<IProductRepository, MandarinGrpcProductRepository>();
-            services.AddTransient<IProductSynchronizer, MandarinGrpcProductSynchronizer>();
-            services.AddTransient<IRecordOfSalesRepository, MandarinGrpcRecordOfSalesRepository>();
-            services.AddTransient<IStockistService, MandarinStockistGrpcService>();
-            services.AddTransient<ITransactionSynchronizer, MandarinGrpcTransactionSynchronizer>();
-
             return services;
 
             void AddMandarinGrpcClient<T>()
                 where T : ClientBase
             {
-                services.AddGrpcClient<T>(options => { options.Address = baseAddress; })
+                services.AddGrpcClient<T>(options => options.Address = baseAddress)
                         .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWebText, handlerFunc()))
                         .AddHttpMessageHandler<JwtHttpMessageHandler>();
             }

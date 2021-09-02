@@ -28,8 +28,6 @@ namespace Mandarin.Services
         {
             base.Load(builder);
 
-            builder.RegisterInstance(SystemClock.Instance).As<IClock>();
-
             builder.RegisterConfiguration<SendGridClientOptions>("SendGrid");
             builder.RegisterConfiguration<SendGridConfiguration>("SendGrid");
             builder.RegisterType<SendGridEmailService>().As<IEmailService>().InstancePerDependency();
