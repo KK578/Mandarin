@@ -7,8 +7,6 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Mandarin.Client.Services;
-using Mandarin.Client.ViewModels;
-using Mandarin.Grpc;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,10 +56,7 @@ namespace Mandarin.Client
 
         private static void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.RegisterModule<MandarinClientServicesModule>();
-            builder.RegisterModule<MandarinClientViewModelsModule>();
-            builder.RegisterModule<MandarinInterfacesModule>();
-            builder.RegisterModule<MandarinInterfacesGrpcModule>();
+            builder.RegisterModule<MandarinClientModule>();
         }
     }
 }
