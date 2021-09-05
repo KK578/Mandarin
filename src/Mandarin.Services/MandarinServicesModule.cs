@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Net.Http;
+using Autofac;
 using Mandarin.Emails;
 using Mandarin.Extensions;
 using Mandarin.Inventory;
@@ -9,8 +10,6 @@ using Mandarin.Services.Transactions.External;
 using Mandarin.Stockists;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using NodaTime;
 using SendGrid;
 using Square;
 using Environment = Square.Environment;
@@ -31,6 +30,7 @@ namespace Mandarin.Services
             builder.RegisterConfiguration<SendGridClientOptions>("SendGrid");
             builder.RegisterConfiguration<SendGridConfiguration>("SendGrid");
             builder.RegisterType<SendGridEmailService>().As<IEmailService>().InstancePerDependency();
+            builder.Register(MandarinServicesModule.ConfigureSendGridClient).As<ISendGridClient>().SingleInstance();
 
             builder.RegisterType<SquareProductSynchronizer>().As<IProductSynchronizer>().SingleInstance();
             builder.RegisterType<SquareProductService>().As<ISquareProductService>().InstancePerDependency();
@@ -43,6 +43,14 @@ namespace Mandarin.Services
             builder.RegisterType<SquareTransactionSynchronizer>().As<ITransactionSynchronizer>().SingleInstance();
 
             builder.Register(MandarinServicesModule.ConfigureSquareClient).As<ISquareClient>().InstancePerDependency();
+        }
+
+        private static ISendGridClient ConfigureSendGridClient(IComponentContext context)
+        {
+            var httpClient = context.Resolve<HttpClient>();
+            var configuration = context.Resolve<SendGridClientOptions>();
+
+            return new SendGridClient(httpClient, configuration);
         }
 
         private static ISquareClient ConfigureSquareClient(IComponentContext context)

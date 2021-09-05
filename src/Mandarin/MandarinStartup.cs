@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SendGrid;
 using Serilog;
 
 namespace Mandarin
@@ -41,12 +40,11 @@ namespace Mandarin
         {
             services.AddRazorPages();
             services.AddGrpc();
+            services.AddHttpClient();
 
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinAuthorization();
             services.AddMandarinHangfire(this.configuration);
-
-            services.AddHttpClient<SendGridClient>();
         }
 
         /// <summary>
