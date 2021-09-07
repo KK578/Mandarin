@@ -1,13 +1,8 @@
 using Elastic.Apm.NetCoreAll;
-using Mandarin.Configuration;
-using Mandarin.Converters;
 using Mandarin.Database;
-using Mandarin.Database.Converters;
 using Mandarin.Extensions;
 using Mandarin.Grpc;
-using Mandarin.Grpc.Converters;
 using Mandarin.Hangfire;
-using Mandarin.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -35,15 +30,6 @@ namespace Mandarin
 
         /// <summary>
         /// Configures the provided service collection with all the dependencies required for Mandarin.
-        /// <br />
-        /// Currently this includes:
-        /// <list type="bullet">
-        /// <item><term>Razor Pages</term></item>
-        /// <item><term>gRPC Endpoints</term></item>
-        /// <item><term>Authentication</term></item>
-        /// <item><term>Application Services</term></item>
-        /// </list>
-        ///
         /// <remarks>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// For more information on how to configure your application, visit <a href="https://go.microsoft.com/fwlink/?LinkID=398940">https://go.microsoft.com/fwlink/?LinkID=398940</a>.
@@ -54,24 +40,15 @@ namespace Mandarin
         {
             services.AddRazorPages();
             services.AddGrpc();
+            services.AddHttpClient();
 
-            services.Configure<MandarinConfiguration>(this.configuration.GetSection("Mandarin"));
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinAuthorization();
-            services.AddMandarinDatabase();
-            services.AddAutoMapper(options =>
-            {
-                options.AddProfile<MandarinTinyTypeMapperProfile>();
-                options.AddProfile<MandarinDatabaseMapperProfile>();
-                options.AddProfile<MandarinGrpcMapperProfile>();
-            });
-            services.AddMandarinServices(this.configuration);
             services.AddMandarinHangfire(this.configuration);
         }
 
         /// <summary>
         /// Configures the HTTP Pipeline for Mandarin.
-        ///
         /// <remarks>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </remarks>

@@ -1,5 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Mandarin.Database;
+using Mandarin.Grpc;
+using Mandarin.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -32,7 +37,21 @@ namespace Mandarin
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog((h, l) => l.ReadFrom.Configuration(h.Configuration))
+                .UseSerilog(Program.ConfigureSerilog)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory(Program.ConfigureContainer))
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<MandarinStartup>());
+
+        private static void ConfigureSerilog(HostBuilderContext h, LoggerConfiguration l)
+        {
+            l.ReadFrom.Configuration(h.Configuration);
+        }
+
+        private static void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule<MandarinDatabaseModule>();
+            builder.RegisterModule<MandarinInterfacesModule>();
+            builder.RegisterModule<MandarinInterfacesGrpcModule>();
+            builder.RegisterModule<MandarinServicesModule>();
+        }
     }
 }
