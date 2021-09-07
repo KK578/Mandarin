@@ -6,7 +6,6 @@ using Autofac.Extensions.DependencyInjection;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using Mandarin.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,23 +39,19 @@ namespace Mandarin.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
+            builder.Services.AddHttpClient();
             builder.Services.AddOidcAuthentication(options =>
             {
                 builder.Configuration.Bind("Auth0", options.ProviderOptions);
                 options.ProviderOptions.ResponseType = "code";
             });
 
-            builder.ConfigureContainer(new AutofacServiceProviderFactory(Program.ConfigureContainer));
-            builder.Services.AddMandarinClientServices(new Uri(builder.HostEnvironment.BaseAddress));
+            var baseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+            builder.ConfigureContainer(new AutofacServiceProviderFactory(c => c.RegisterModule(new MandarinClientModule(baseAddress))));
 
             var host = builder.Build();
             host.Services.UseBootstrapProviders().UseFontAwesomeIcons();
             return host.RunAsync();
-        }
-
-        private static void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.RegisterModule<MandarinClientModule>();
         }
     }
 }

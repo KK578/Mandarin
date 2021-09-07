@@ -14,8 +14,6 @@
     <PackageReference Include="Blazorise.Components" Version="0.9.2.3" />
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.2.3" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.2.3" />
-    <PackageReference Include="Grpc.Net.Client.Web" Version="2.39.0" />
-    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.39.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.9" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.9" />

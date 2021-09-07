@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Mandarin.Configuration;
 using Mandarin.Tests.Helpers;
 using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -20,7 +20,6 @@ namespace Mandarin.Client.Services.Tests
             : base(fixture, testOutputHelper)
         {
             var server = this.Fixture.Server;
-            var handler = server.CreateHandler();
 
             var configuration = new ConfigurationBuilder()
                                 .AddInMemoryCollection(new Dictionary<string, string>
@@ -30,14 +29,14 @@ namespace Mandarin.Client.Services.Tests
                                 .Build();
 
             var services = new ServiceCollection();
-            services.AddSingleton<IConfiguration>(configuration);
-            services.AddMandarinClientServices(server.BaseAddress, () => handler);
-            services.AddSingleton<IAccessTokenProvider, TestAuthAccessTokenProvider>();
-            services.Configure<MandarinConfiguration>(x => x.AuthenticationHeaderScheme = TestAuthHandler.AuthenticationScheme);
+            services.AddHttpClient();
 
             var factory = new AutofacServiceProviderFactory();
             var builder = factory.CreateBuilder(services);
-            builder.RegisterModule<MandarinClientModule>();
+            builder.RegisterModule(new MandarinClientModule(server.BaseAddress));
+            builder.RegisterInstance(configuration).As<IConfiguration>();
+            builder.RegisterInstance(server.CreateHandler()).As<HttpMessageHandler>();
+            builder.RegisterType<TestAuthAccessTokenProvider>().As<IAccessTokenProvider>().SingleInstance();
 
             this.clientServiceProvider = factory.CreateServiceProvider(builder);
         }
