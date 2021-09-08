@@ -12,8 +12,7 @@ using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests.Commissions
 {
-    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcRecordOfSalesRepositoryTests : MandarinGrpcIntegrationTestsBase
+    public sealed class MandarinGrpcRecordOfSalesRepositoryTests : MandarinGrpcIntegrationTestsBase
     {
         private static readonly LocalDate Start = new(2021, 06, 16);
         private static readonly LocalDate End = new(2021, 07, 17);

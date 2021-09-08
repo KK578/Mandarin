@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoFixture;
-using Bashi.Tests.Framework.Data;
 using FluentAssertions;
 using Mandarin.Stockists;
 using Mandarin.Tests.Data;
@@ -11,8 +9,7 @@ using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests.Stockists
 {
-    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcStockistServiceTests : MandarinGrpcIntegrationTestsBase
+    public sealed class MandarinGrpcStockistServiceTests : MandarinGrpcIntegrationTestsBase
     {
         public MandarinGrpcStockistServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)

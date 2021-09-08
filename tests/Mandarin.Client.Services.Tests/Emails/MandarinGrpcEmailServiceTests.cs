@@ -3,14 +3,12 @@ using FluentAssertions;
 using Mandarin.Emails;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers;
-using Mandarin.Tests.Helpers.SendGrid;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests.Emails
 {
-    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcEmailServiceTests : MandarinGrpcIntegrationTestsBase, IClassFixture<SendGridWireMockFixture>
+    public sealed class MandarinGrpcEmailServiceTests : MandarinGrpcIntegrationTestsBase
     {
         public MandarinGrpcEmailServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)

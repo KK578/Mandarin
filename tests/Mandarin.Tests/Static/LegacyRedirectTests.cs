@@ -9,8 +9,7 @@ using Xunit.Abstractions;
 
 namespace Mandarin.Tests.Static
 {
-    [Collection(nameof(MandarinTestsCollectionFixture))]
-    public class LegacyRedirectTests : MandarinIntegrationTestsBase
+    public sealed class LegacyRedirectTests : MandarinIntegrationTestsBase
     {
         private readonly HttpClient client;
 

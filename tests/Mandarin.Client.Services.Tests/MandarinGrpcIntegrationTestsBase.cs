@@ -8,10 +8,12 @@ using Mandarin.Tests.Helpers.Auth;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests
 {
+    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
     public abstract class MandarinGrpcIntegrationTestsBase : MandarinIntegrationTestsBase
     {
         private readonly IServiceProvider clientServiceProvider;

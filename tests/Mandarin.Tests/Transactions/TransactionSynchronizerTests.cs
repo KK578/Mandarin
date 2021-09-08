@@ -13,8 +13,7 @@ using Xunit.Abstractions;
 
 namespace Mandarin.Tests.Transactions
 {
-    [Collection(nameof(MandarinTestsCollectionFixture))]
-    public class TransactionSynchronizerTests : MandarinIntegrationTestsBase
+    public sealed class TransactionSynchronizerTests : MandarinIntegrationTestsBase
     {
         // ReSharper disable once StringLiteralTypo
         private static readonly ExternalTransactionId ExternalTransactionId = ExternalTransactionId.Of("sNVseFoHwzywEiVV69mNfK5eV");
