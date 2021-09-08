@@ -15,14 +15,19 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 using Assembly = System.Reflection.Assembly;
 
 namespace Mandarin.Tests.Helpers
 {
     public class MandarinApplicationFactory : WebApplicationFactory<MandarinStartup>
     {
-        public ITestOutputHelper TestOutputHelper { get; set; } = new TestOutputHelper();
+        private readonly DelegateTestOutputHelper delegateTestOutputHelper = new();
+
+        public ITestOutputHelper TestOutputHelper
+        {
+            get => this.delegateTestOutputHelper.TestOutputHelper;
+            set => this.delegateTestOutputHelper.TestOutputHelper = value;
+        }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -82,7 +87,7 @@ namespace Mandarin.Tests.Helpers
             c.MinimumLevel.Verbose()
              .MinimumLevel.Override("Elastic.Apm", LogEventLevel.Error)
              .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-             .WriteTo.TestOutput(this.TestOutputHelper, outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
+             .WriteTo.TestOutput(this.delegateTestOutputHelper, outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
         }
     }
 }

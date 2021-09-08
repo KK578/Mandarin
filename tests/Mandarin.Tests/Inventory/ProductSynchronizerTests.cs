@@ -10,8 +10,7 @@ using Xunit.Abstractions;
 
 namespace Mandarin.Tests.Inventory
 {
-    [Collection(nameof(MandarinTestsCollectionFixture))]
-    public class ProductSynchronizerTests : MandarinIntegrationTestsBase
+    public sealed class ProductSynchronizerTests : MandarinIntegrationTestsBase
     {
         private readonly IProductSynchronizer productSynchronizer;
         private readonly IProductRepository productRepository;

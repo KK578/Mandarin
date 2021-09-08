@@ -41,3 +41,8 @@
   "total_discount_money": { "amount": 0, "currency": "GBP" },
   "total_service_charge_money": { "amount": 0, "currency": "GBP" }
 }$$ AS JSON));
+
+CALL billing.sp_transaction_upsert('sNVseFoHwzywEiVV69mNfK5eV',
+                                   45,
+                                   '2021-07-14T11:54:06Z',
+                                   '{"(\"BQGTKYVIFNM6MPB57Y5QEBYN\", 1, 45)"}'::billing.tvp_subtransaction[]);

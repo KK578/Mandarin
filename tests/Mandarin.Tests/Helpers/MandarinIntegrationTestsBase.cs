@@ -1,12 +1,12 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using Mandarin.Tests.Helpers.Square;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Mandarin.Tests.Helpers
 {
-    public abstract class MandarinIntegrationTestsBase : IClassFixture<MandarinTestFixture>, IClassFixture<SquareWireMockFixture>, IAsyncLifetime
+    [Collection(nameof(MandarinTestsCollectionFixture))]
+    public abstract class MandarinIntegrationTestsBase : IAsyncLifetime
     {
         protected MandarinIntegrationTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
         {

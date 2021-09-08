@@ -8,8 +8,7 @@ using Xunit.Abstractions;
 
 namespace Mandarin.Client.Services.Tests.Inventory
 {
-    [Collection(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public class MandarinGrpcFramePricesServiceTests : MandarinGrpcIntegrationTestsBase
+    public sealed class MandarinGrpcFramePricesServiceTests : MandarinGrpcIntegrationTestsBase
     {
         private static readonly Instant Original = Instant.FromUtc(2019, 06, 01, 00, 00, 00);
         private static readonly Instant LastMonth = Instant.FromUtc(2021, 05, 29, 12, 00, 00);
