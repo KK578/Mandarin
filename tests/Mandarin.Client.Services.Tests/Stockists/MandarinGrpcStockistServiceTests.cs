@@ -11,7 +11,7 @@ namespace Mandarin.Client.Services.Tests.Stockists
 {
     public sealed class MandarinGrpcStockistServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        public MandarinGrpcStockistServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcStockistServiceTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

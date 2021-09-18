@@ -1,7 +1,7 @@
 ﻿using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace Mandarin.Tests.Helpers
+namespace Mandarin.Tests.Helpers.Logging
 {
     /// <summary>
     /// Represents a class which writes test output to a nested <see cref="ITestOutputHelper"/>.

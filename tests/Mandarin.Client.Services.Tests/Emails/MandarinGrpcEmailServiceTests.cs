@@ -10,7 +10,7 @@ namespace Mandarin.Client.Services.Tests.Emails
 {
     public sealed class MandarinGrpcEmailServiceTests : MandarinGrpcIntegrationTestsBase
     {
-        public MandarinGrpcEmailServiceTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcEmailServiceTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

@@ -18,7 +18,7 @@ namespace Mandarin.Client.Services.Tests
     {
         private readonly IServiceProvider clientServiceProvider;
 
-        protected MandarinGrpcIntegrationTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        protected MandarinGrpcIntegrationTestsBase(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             var server = this.Fixture.Server;
