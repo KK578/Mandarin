@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Mandarin.Database;
 using Mandarin.Tests.Helpers.Database;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,8 @@ namespace Mandarin.Tests.Helpers
         {
             this.Fixture = fixture;
             this.Fixture.TestOutputHelper = testOutputHelper;
+
+            AssertionOptions.AssertEquivalencyUsing(options => options.ComparingRecordsByMembers().ComparingEnumsByName());
         }
 
         protected MandarinServerFixture Fixture { get; }

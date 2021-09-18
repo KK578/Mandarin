@@ -31,8 +31,8 @@ namespace Mandarin.Client.Services.Tests.Commissions
             var recordOfSales = await this.Subject.GetRecordOfSalesAsync(MandarinGrpcRecordOfSalesRepositoryTests.Interval);
             var salesByStockistCode = recordOfSales.ToDictionary(x => StockistCode.Of(x.StockistCode));
 
-            salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().MatchRecordOfSales(WellKnownTestData.RecordsOfSales.KelbyTynan);
-            salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Should().MatchRecordOfSales(WellKnownTestData.RecordsOfSales.OthilieMapples);
+            salesByStockistCode[WellKnownTestData.Stockists.KelbyTynan.StockistCode].Should().BeEquivalentTo(WellKnownTestData.RecordsOfSales.KelbyTynan);
+            salesByStockistCode[WellKnownTestData.Stockists.OthilieMapples.StockistCode].Should().BeEquivalentTo(WellKnownTestData.RecordsOfSales.OthilieMapples);
         }
     }
 }
