@@ -13,7 +13,7 @@ namespace Mandarin.Tests.Static
     {
         private readonly HttpClient client;
 
-        public LegacyRedirectTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public LegacyRedirectTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             this.client = this.Fixture.CreateClient(new WebApplicationFactoryClientOptions

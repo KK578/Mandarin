@@ -21,7 +21,7 @@ namespace Mandarin.Tests.Transactions
         private readonly ITransactionSynchronizer transactionSynchronizer;
         private readonly ITransactionRepository transactionRepository;
 
-        public TransactionSynchronizerTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public TransactionSynchronizerTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             this.transactionSynchronizer = fixture.Services.GetRequiredService<ITransactionSynchronizer>();

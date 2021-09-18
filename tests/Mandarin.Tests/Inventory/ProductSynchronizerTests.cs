@@ -15,7 +15,7 @@ namespace Mandarin.Tests.Inventory
         private readonly IProductSynchronizer productSynchronizer;
         private readonly IProductRepository productRepository;
 
-        public ProductSynchronizerTests(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        public ProductSynchronizerTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             this.productSynchronizer = fixture.Services.GetRequiredService<IProductSynchronizer>();

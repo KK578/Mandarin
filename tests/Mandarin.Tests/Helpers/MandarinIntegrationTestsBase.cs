@@ -1,5 +1,8 @@
-﻿using System.Globalization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
+using Mandarin.Database;
+using Mandarin.Tests.Helpers.Database;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -8,24 +11,28 @@ namespace Mandarin.Tests.Helpers
     [Collection(nameof(MandarinTestsCollectionFixture))]
     public abstract class MandarinIntegrationTestsBase : IAsyncLifetime
     {
-        protected MandarinIntegrationTestsBase(MandarinTestFixture fixture, ITestOutputHelper testOutputHelper)
+        protected MandarinIntegrationTestsBase(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
         {
-            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
-            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
-            fixture.TestOutputHelper = testOutputHelper;
             this.Fixture = fixture;
+            this.Fixture.TestOutputHelper = testOutputHelper;
+
+            AssertionOptions.AssertEquivalencyUsing(options => options.ComparingRecordsByMembers().ComparingEnumsByName());
         }
 
-        public MandarinTestFixture Fixture { get; }
+        protected MandarinServerFixture Fixture { get; }
 
         public async Task InitializeAsync()
         {
-            await this.Fixture.SeedDatabaseAsync();
+            using var scope = this.Fixture.Services.CreateScope();
+            var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
+            await mandarinDbContext.SeedTestDataAsync();
         }
 
         public async Task DisposeAsync()
         {
-            await this.Fixture.CleanDatabaseAsync();
+            using var scope = this.Fixture.Services.CreateScope();
+            var mandarinDbContext = scope.ServiceProvider.GetRequiredService<MandarinDbContext>();
+            await mandarinDbContext.CleanupTestDataAsync();
         }
     }
 }

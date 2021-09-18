@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using Autofac;
 using Mandarin.Tests.Data;
 using Mandarin.Tests.Helpers.Auth;
+using Mandarin.Tests.Helpers.Logging;
 using Mandarin.Tests.Helpers.SendGrid;
 using Mandarin.Tests.Helpers.Square;
 using Microsoft.AspNetCore.Authentication;
@@ -19,9 +21,15 @@ using Assembly = System.Reflection.Assembly;
 
 namespace Mandarin.Tests.Helpers
 {
-    public class MandarinApplicationFactory : WebApplicationFactory<MandarinStartup>
+    public sealed class MandarinServerFixture : WebApplicationFactory<MandarinStartup>
     {
         private readonly DelegateTestOutputHelper delegateTestOutputHelper = new();
+
+        public MandarinServerFixture()
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-GB");
+        }
 
         public ITestOutputHelper TestOutputHelper
         {
@@ -31,8 +39,8 @@ namespace Mandarin.Tests.Helpers
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureAppConfiguration(MandarinApplicationFactory.AddTestConfiguration);
-            builder.ConfigureTestServices(MandarinApplicationFactory.ConfigureTestAuthentication);
+            builder.ConfigureAppConfiguration(MandarinServerFixture.AddTestConfiguration);
+            builder.ConfigureTestServices(MandarinServerFixture.ConfigureTestAuthentication);
             builder.ConfigureLogging(l => l.ClearProviders());
             builder.UseSerilog(this.ConfigureSerilog);
         }
@@ -40,13 +48,13 @@ namespace Mandarin.Tests.Helpers
         /// <inheritdoc />
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            builder.ConfigureContainer<ContainerBuilder>(this.ConfigureTestContainer);
+            builder.ConfigureContainer<ContainerBuilder>(MandarinServerFixture.ConfigureTestContainer);
             return base.CreateHost(builder);
         }
 
-        protected virtual void ConfigureTestContainer(ContainerBuilder builder)
+        private static void ConfigureTestContainer(ContainerBuilder builder)
         {
-            builder.RegisterInstance(typeof(MandarinApplicationFactory).Assembly).As<Assembly>();
+            builder.RegisterInstance(typeof(MandarinServerFixture).Assembly).As<Assembly>();
         }
 
         private static void AddTestConfiguration(WebHostBuilderContext host, IConfigurationBuilder configurationBuilder)
@@ -68,7 +76,7 @@ namespace Mandarin.Tests.Helpers
                 { "Square:Host", SquareWireMockFixture.Host },
                 { "Square:Environment", "Custom" },
             });
-            configurationBuilder.AddUserSecrets(typeof(MandarinApplicationFactory).Assembly);
+            configurationBuilder.AddUserSecrets(typeof(MandarinServerFixture).Assembly);
         }
 
         private static void ConfigureTestAuthentication(IServiceCollection services)

@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="Mandarin.Client.ViewModels.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazorise" Version="0.9.2.3" />
