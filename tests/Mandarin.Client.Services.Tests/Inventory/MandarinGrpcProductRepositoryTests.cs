@@ -10,7 +10,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
 {
     public sealed class MandarinGrpcProductRepositoryTests : MandarinGrpcIntegrationTestsBase
     {
-        public MandarinGrpcProductRepositoryTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcProductRepositoryTests(MandarinGrpcClientFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

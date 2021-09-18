@@ -18,7 +18,7 @@ namespace Mandarin.Client.Services.Tests.Commissions
         private static readonly LocalDate End = new(2021, 07, 17);
         private static readonly DateInterval Interval = new(MandarinGrpcRecordOfSalesRepositoryTests.Start, MandarinGrpcRecordOfSalesRepositoryTests.End);
 
-        public MandarinGrpcRecordOfSalesRepositoryTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcRecordOfSalesRepositoryTests(MandarinGrpcClientFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

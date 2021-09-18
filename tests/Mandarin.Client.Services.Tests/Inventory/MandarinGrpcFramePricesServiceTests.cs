@@ -14,7 +14,7 @@ namespace Mandarin.Client.Services.Tests.Inventory
         private static readonly Instant LastMonth = Instant.FromUtc(2021, 05, 29, 12, 00, 00);
         private static readonly Instant Today = Instant.FromUtc(2021, 06, 30, 12, 20, 00);
 
-        public MandarinGrpcFramePricesServiceTests(MandarinServerFixture fixture, ITestOutputHelper testOutputHelper)
+        public MandarinGrpcFramePricesServiceTests(MandarinGrpcClientFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }

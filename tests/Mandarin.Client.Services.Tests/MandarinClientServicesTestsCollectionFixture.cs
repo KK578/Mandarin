@@ -5,7 +5,7 @@ using Xunit;
 namespace Mandarin.Client.Services.Tests
 {
     [CollectionDefinition(nameof(MandarinClientServicesTestsCollectionFixture))]
-    public sealed class MandarinClientServicesTestsCollectionFixture : ICollectionFixture<MandarinServerFixture>, ICollectionFixture<SendGridWireMockFixture>
+    public sealed class MandarinClientServicesTestsCollectionFixture : ICollectionFixture<MandarinGrpcClientFixture>, ICollectionFixture<SendGridWireMockFixture>
     {
     }
 }
