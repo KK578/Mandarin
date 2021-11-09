@@ -76,7 +76,7 @@ namespace Mandarin.Tests.Helpers
                 { "Square:Host", SquareWireMockFixture.Host },
                 { "Square:Environment", "Custom" },
             });
-            configurationBuilder.AddUserSecrets(typeof(MandarinServerFixture).Assembly);
+            configurationBuilder.AddUserSecrets(typeof(MandarinServerFixture).Assembly, true);
         }
 
         private static void ConfigureTestAuthentication(IServiceCollection services)

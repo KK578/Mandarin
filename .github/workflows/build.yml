@@ -40,7 +40,7 @@ jobs:
       - name: "[Setup] Install .NET Core"
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.301
+          dotnet-version: 6.0.100
 
       - name: "[Setup] Install node"
         if: github.event_name == 'release'
@@ -98,8 +98,10 @@ jobs:
           dotnet publish src/Mandarin/Mandarin.csproj \
             --no-restore \
             --no-build \
-            --output publish \
+            --output ./publish \
             --configuration Release \
+            --self-contained true \
+            --runtime linux-x64 \
             /p:VersionPrefix=$GitVersion_MajorMinorPatch \
             /p:VersionSuffix=$GitVersion_PreReleaseLabel \
             /p:AssemblyVersion=$GitVersion_AssemblySemVer \

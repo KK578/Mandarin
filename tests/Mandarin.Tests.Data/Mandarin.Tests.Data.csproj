@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="MicroElements.AutoFixture.NodaTime" Version="1.0.0" />
-    <PackageReference Include="NodaTime.Testing" Version="3.0.5" />
+    <PackageReference Include="NodaTime.Testing" Version="3.0.9" />
     <PackageReference Include="Square" Version="13.1.0" />
   </ItemGroup>
 
