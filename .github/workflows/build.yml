@@ -93,7 +93,7 @@ jobs:
           path: tests/reports
 
       - name: "[Deploy] Publish build"
-#        if: github.event_name == 'release'
+        if: github.event_name == 'release'
         run: |
           dotnet publish src/Mandarin/Mandarin.csproj \
             --output ./publish \
