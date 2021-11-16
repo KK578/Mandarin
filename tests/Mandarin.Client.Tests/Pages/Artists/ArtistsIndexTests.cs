@@ -35,11 +35,13 @@ namespace Mandarin.Client.Tests.Pages.Artists
             }
         }
 
-        [Fact]
-        public void ShouldDisplayProgressBarWhilstStillLoading()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ShouldDisplayProgressBarWhilstLoading(bool isLoading)
         {
-            this.ViewModel.Setup(x => x.IsLoading).Returns(true);
-            this.Subject.HasComponent<MandarinProgressBar>().Should().BeTrue();
+            this.ViewModel.Setup(x => x.IsLoading).Returns(isLoading);
+            this.Subject.HasComponent<MandarinProgressBar>().Should().Be(isLoading);
         }
 
         [Fact]
@@ -77,7 +79,7 @@ namespace Mandarin.Client.Tests.Pages.Artists
             this.artists.Add(new ArtistViewModel(WellKnownTestData.Stockists.TheLittleMandarin, SystemClock.Instance));
 
             var row = this.Subject.Find("tbody > tr");
-            row.Click(1L);
+            row.Click();
 
             this.ViewModel.Object.SelectedRow.Should().Be(this.artists[0]);
         }
