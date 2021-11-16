@@ -57,11 +57,14 @@ jobs:
         working-directory: src/Mandarin/
         run: npm install
 
+      - name: "[Build] NuGet Restore"
+        run: dotnet restore
+
       - name: "[Build] Build Solution"
         run: |
           dotnet build \
+            --no-restore \
             --configuration Release \
-            --runtime linux-x64 \
             /p:VersionPrefix=$GitVersion_MajorMinorPatch \
             /p:VersionSuffix=$GitVersion_PreReleaseLabel \
             /p:AssemblyVersion=$GitVersion_AssemblySemVer \
@@ -93,8 +96,6 @@ jobs:
 #        if: github.event_name == 'release'
         run: |
           dotnet publish src/Mandarin/Mandarin.csproj \
-            --no-restore \
-            --no-build \
             --output ./publish \
             --configuration Release \
             --runtime linux-x64 \
