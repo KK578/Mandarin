@@ -46,7 +46,7 @@ jobs:
         if: github.event_name == 'release'
         uses: actions/setup-node@v1
         with:
-          node-version: '15.x'
+          node-version: '16.x'
 
       - name: "[Setup] Install gulp"
         if: github.event_name == 'release'
@@ -55,7 +55,7 @@ jobs:
       - name: "[Build] npm install"
         if: github.event_name == 'release'
         working-directory: src/Mandarin/
-        run: npm install
+        run: npm ci
 
       - name: "[Build] NuGet Restore"
         run: dotnet restore
