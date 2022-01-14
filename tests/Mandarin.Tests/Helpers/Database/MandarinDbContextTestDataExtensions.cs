@@ -19,20 +19,20 @@ namespace Mandarin.Tests.Helpers.Database
             using var connection = mandarinDbContext.GetConnection();
             connection.Open();
             await connection.ExecuteAsync(@"
-                DROP PROCEDURE IF EXISTS inventory.sp_frame_price_upsert(TEXT, NUMERIC, TIMESTAMP);
-                DROP PROCEDURE IF EXISTS inventory.sp_product_upsert(VARCHAR, VARCHAR, VARCHAR, VARCHAR, NUMERIC, TIMESTAMP);
-                DROP PROCEDURE IF EXISTS billing.sp_transaction_upsert(VARCHAR, NUMERIC, TIMESTAMP, billing.tvp_subtransaction[]);
+                DROP PROCEDURE inventory.sp_frame_price_upsert(TEXT, NUMERIC, TIMESTAMP WITH TIME ZONE);
+                DROP PROCEDURE inventory.sp_product_upsert(VARCHAR, VARCHAR, VARCHAR, VARCHAR, NUMERIC, TIMESTAMP WITH TIME ZONE);
+                DROP PROCEDURE billing.sp_transaction_upsert(VARCHAR, NUMERIC, TIMESTAMP WITH TIME ZONE, billing.tvp_subtransaction[]);
 
-                DROP TYPE IF EXISTS billing.tvp_subtransaction;
+                DROP TYPE billing.tvp_subtransaction;
 
-                DROP TABLE IF EXISTS billing.commission;
-                DROP TABLE IF EXISTS billing.subtransaction;
-                DROP TABLE IF EXISTS billing.transaction;
-                DROP TABLE IF EXISTS billing.external_transaction;
-                DROP TABLE IF EXISTS inventory.frame_price;
-                DROP TABLE IF EXISTS inventory.product;
-                DROP TABLE IF EXISTS inventory.stockist_detail;
-                DROP TABLE IF EXISTS inventory.stockist;
+                DROP TABLE billing.commission;
+                DROP TABLE billing.subtransaction;
+                DROP TABLE billing.transaction;
+                DROP TABLE billing.external_transaction;
+                DROP TABLE inventory.frame_price;
+                DROP TABLE inventory.product;
+                DROP TABLE inventory.stockist_detail;
+                DROP TABLE inventory.stockist;
                 TRUNCATE TABLE public.schemaversions");
         }
     }
