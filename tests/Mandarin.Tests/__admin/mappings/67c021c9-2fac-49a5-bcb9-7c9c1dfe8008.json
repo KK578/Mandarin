@@ -20,7 +20,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "application/json; charset=utf-8",
+            "Pattern": "application/json",
             "IgnoreCase": true
           }
         ]
@@ -60,7 +60,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "Square-DotNet-SDK/13.1.0",
+            "Pattern": "Square-DotNet-SDK/17.0.0",
             "IgnoreCase": true
           }
         ]
@@ -70,7 +70,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "2021-08-18",
+            "Pattern": "2021-12-15",
             "IgnoreCase": true
           }
         ]
@@ -98,6 +98,7 @@
           "type": "ITEM",
           "id": "QZWSEYR75X5UKFSMRMQJ2GO6",
           "updated_at": "2021-01-31T22:49:09.93Z",
+          "created_at": "2021-01-31T22:48:44.608Z",
           "version": 1612133349930,
           "is_deleted": false,
           "present_at_all_locations": true,
@@ -111,6 +112,7 @@
                 "type": "ITEM_VARIATION",
                 "id": "BTWEJWZCPE4XAKZRBJW53DYE",
                 "updated_at": "2021-01-31T22:48:44.608Z",
+                "created_at": "2021-01-31T22:48:44.608Z",
                 "version": 1612133324608,
                 "is_deleted": false,
                 "present_at_all_locations": true,
@@ -124,6 +126,7 @@
                     "amount": 9500,
                     "currency": "GBP"
                   },
+                  "sellable": true,
                   "stockable": true
                 }
               }
@@ -137,6 +140,7 @@
           "type": "ITEM_VARIATION",
           "id": "BTWEJWZCPE4XAKZRBJW53DYE",
           "updated_at": "2021-01-31T22:48:44.608Z",
+          "created_at": "2021-01-31T22:48:44.608Z",
           "version": 1612133324608,
           "is_deleted": false,
           "present_at_all_locations": true,
@@ -150,6 +154,7 @@
               "amount": 9500,
               "currency": "GBP"
             },
+            "sellable": true,
             "stockable": true
           }
         },
@@ -157,6 +162,7 @@
           "type": "ITEM",
           "id": "ORVPDHG6RLVKGW4GEBHDNKNG",
           "updated_at": "2021-01-31T22:49:47.71Z",
+          "created_at": "2021-01-31T22:49:47.71Z",
           "version": 1612133387710,
           "is_deleted": false,
           "present_at_all_locations": true,
@@ -170,6 +176,7 @@
                 "type": "ITEM_VARIATION",
                 "id": "WUQ5IYPA55TKWA7NZB32BJGC",
                 "updated_at": "2021-01-31T22:49:47.71Z",
+                "created_at": "2021-01-31T22:49:47.71Z",
                 "version": 1612133387710,
                 "is_deleted": false,
                 "present_at_all_locations": true,
@@ -183,6 +190,7 @@
                     "amount": 20000,
                     "currency": "GBP"
                   },
+                  "sellable": true,
                   "stockable": true
                 }
               }
@@ -196,6 +204,7 @@
           "type": "ITEM_VARIATION",
           "id": "WUQ5IYPA55TKWA7NZB32BJGC",
           "updated_at": "2021-01-31T22:49:47.71Z",
+          "created_at": "2021-01-31T22:49:47.71Z",
           "version": 1612133387710,
           "is_deleted": false,
           "present_at_all_locations": true,
@@ -209,6 +218,7 @@
               "amount": 20000,
               "currency": "GBP"
             },
+            "sellable": true,
             "stockable": true
           }
         },
@@ -216,6 +226,7 @@
           "type": "ITEM",
           "id": "Z7M5XG5DIBPPGSN6M4QLL357",
           "updated_at": "2021-01-31T22:51:49.569Z",
+          "created_at": "2021-01-31T22:51:49.569Z",
           "version": 1612133509569,
           "is_deleted": false,
           "present_at_all_locations": false,
@@ -231,6 +242,7 @@
                 "type": "ITEM_VARIATION",
                 "id": "QMTQ3DWESZAFV6H52SYZBRQZ",
                 "updated_at": "2021-01-31T22:51:49.569Z",
+                "created_at": "2021-01-31T22:51:49.569Z",
                 "version": 1612133509569,
                 "is_deleted": false,
                 "present_at_all_locations": false,
@@ -247,6 +259,7 @@
                     "amount": 10500,
                     "currency": "GBP"
                   },
+                  "sellable": true,
                   "stockable": true
                 }
               }
@@ -258,6 +271,7 @@
           "type": "ITEM",
           "id": "2BOUYVECENWR7CQAGR5HUCUL",
           "updated_at": "2021-01-31T22:51:49.569Z",
+          "created_at": "2021-01-31T22:51:49.569Z",
           "version": 1612133509569,
           "is_deleted": false,
           "present_at_all_locations": false,
@@ -273,6 +287,7 @@
                 "type": "ITEM_VARIATION",
                 "id": "BQGTKYVIFNM6MPB57Y5QEBYN",
                 "updated_at": "2021-01-31T22:51:49.569Z",
+                "created_at": "2021-01-31T22:51:49.569Z",
                 "version": 1612133509569,
                 "is_deleted": false,
                 "present_at_all_locations": false,
@@ -289,6 +304,7 @@
                     "amount": 4500,
                     "currency": "GBP"
                   },
+                  "sellable": true,
                   "stockable": true
                 }
               }
@@ -300,6 +316,7 @@
           "type": "ITEM_VARIATION",
           "id": "BQGTKYVIFNM6MPB57Y5QEBYN",
           "updated_at": "2021-01-31T22:51:49.569Z",
+          "created_at": "2021-01-31T22:51:49.569Z",
           "version": 1612133509569,
           "is_deleted": false,
           "present_at_all_locations": false,
@@ -316,6 +333,7 @@
               "amount": 4500,
               "currency": "GBP"
             },
+            "sellable": true,
             "stockable": true
           }
         },
@@ -323,6 +341,7 @@
           "type": "ITEM_VARIATION",
           "id": "QMTQ3DWESZAFV6H52SYZBRQZ",
           "updated_at": "2021-01-31T22:51:49.569Z",
+          "created_at": "2021-01-31T22:51:49.569Z",
           "version": 1612133509569,
           "is_deleted": false,
           "present_at_all_locations": false,
@@ -339,6 +358,7 @@
               "amount": 10500,
               "currency": "GBP"
             },
+            "sellable": true,
             "stockable": true
           }
         }
@@ -347,7 +367,7 @@
     },
     "Headers": {
       "Content-Type": "application/json",
-      "Square-Version": "2021-08-18",
+      "Square-Version": "2021-12-15",
       "Vary": [
         "Origin",
         "Accept-Encoding"
@@ -356,9 +376,9 @@
       "X-Download-Options": "noopen",
       "X-Frame-Options": "SAMEORIGIN",
       "X-Permitted-Cross-Domain-Policies": "none",
-      "X-Speleo-Traceid": "JehdkfCDYTacG",
+      "X-Speleo-Traceid": "FbcYVVYGkZZQT",
       "X-XSS-Protection": "1; mode=block",
-      "Date": "Tue, 24 Aug 2021 20:05:16 GMT",
+      "Date": "Fri, 14 Jan 2022 23:22:13 GMT",
       "Strict-Transport-Security": "max-age=631152000; includeSubDomains; preload"
     }
   }
