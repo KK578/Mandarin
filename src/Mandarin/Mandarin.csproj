@@ -19,7 +19,7 @@
     <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.3" />
     <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.41.0" />
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.40.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.41.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
     <PackageReference Include="Hangfire.PostgreSql" Version="1.9.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
