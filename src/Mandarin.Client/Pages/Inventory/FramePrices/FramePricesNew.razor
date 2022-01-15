@@ -7,7 +7,7 @@
 <Card>
   <CardHeader>
     <CardTitle>New Frame Price</CardTitle>
-    <CardActions Float="Float.Right">
+    <CardActions Float="Float.End">
       <ReactiveButton ReactiveCommand="@ViewModel!.Save" Color="Color.Primary">Save</ReactiveButton>
       <ReactiveButton ReactiveCommand="@ViewModel!.Cancel" Color="Color.Danger">Cancel</ReactiveButton>
     </CardActions>
@@ -23,7 +23,7 @@
         <Validation>
           <Field>
             <FieldLabel>Product</FieldLabel>
-            <Autocomplete TItem="Product" Data="@(ViewModel!.Products)" @bind-SelectedValue="@SelectedProduct"
+            <Autocomplete Data="@(ViewModel!.Products)" @bind-SelectedValue="@ViewModel!.SelectedProduct"
                           Placeholder="Start typing to search..." MinLength="2"
                           TextField="@((Product item) => item.FriendlyString())" ValueField="@((Product item) => item)"
                           Filter="AutocompleteFilter.Contains"/>
@@ -52,15 +52,6 @@
 
   private EditContext EditContext { get; set; }
   private IFramePriceViewModel FramePrice => ViewModel!.FramePrice;
-
-  /// <summary>
-  /// Gets or sets the selected product.
-  /// </summary>
-  private object SelectedProduct
-  {
-    get => ViewModel!.SelectedProduct;
-    set => ViewModel!.SelectedProduct = (Product) value;
-  }
 
   /// <inheritdoc />
   protected override async void OnInitialized()

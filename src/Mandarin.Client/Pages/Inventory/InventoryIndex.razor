@@ -17,9 +17,9 @@
                 ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="10"
                 RowSelectable="@(_ => false)">
         <DataGridColumn TItem="Product" Field="ProductCode" Caption="Product Code" Width="150px" />
-        <DataGridColumn TItem="Product" Field="ProductName" Caption="Name" Width="400px" TextAlignment="TextAlignment.Right" />
-        <DataGridColumn TItem="Product" Field="Description" Caption="Description" TextAlignment="TextAlignment.Right" />
-        <DataGridNumericColumn TItem="Product" Field="UnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" Width="150px" TextAlignment="TextAlignment.Right" />
+        <DataGridColumn TItem="Product" Field="ProductName" Caption="Name" Width="400px" TextAlignment="TextAlignment.End" />
+        <DataGridColumn TItem="Product" Field="Description" Caption="Description" TextAlignment="TextAlignment.End" />
+        <DataGridNumericColumn TItem="Product" Field="UnitPrice" Caption="Unit Price" DisplayFormat="{0:C}" Width="150px" TextAlignment="TextAlignment.End" />
       </DataGrid>
     }
   </CardBody>

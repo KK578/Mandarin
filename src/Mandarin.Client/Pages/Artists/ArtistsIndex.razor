@@ -6,7 +6,7 @@
 <Card>
   <CardHeader>
     <CardTitle>All Artists</CardTitle>
-    <CardActions Float="Float.Right">
+    <CardActions Float="Float.End">
       <ReactiveButton ReactiveCommand="@ViewModel!.EditSelected" Color="Color.Secondary">Edit</ReactiveButton>
       <ReactiveButton ReactiveCommand="@ViewModel!.CreateNew" Color="Color.Primary">New</ReactiveButton>
     </CardActions>
@@ -22,8 +22,8 @@
                 ShowPager="true" PagerPosition="DataGridPagerPosition.Top" PageSize="10"
                 RowSelectable="@(_ => true)" @bind-SelectedRow="@ViewModel!.SelectedRow">
         <DataGridColumn TItem="IArtistViewModel" Field="StockistCode" Caption="Code" Width="75px" />
-        <DataGridColumn TItem="IArtistViewModel" Field="DisplayName" Caption="Name" TextAlignment="TextAlignment.Right" />
-        <DataGridColumn TItem="IArtistViewModel" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.Right">
+        <DataGridColumn TItem="IArtistViewModel" Field="DisplayName" Caption="Name" TextAlignment="TextAlignment.End" />
+        <DataGridColumn TItem="IArtistViewModel" Field="StatusCode" Caption="Status" TextAlignment="TextAlignment.End">
           <DisplayTemplate>@context.StatusCode.GetDescription()</DisplayTemplate>
         </DataGridColumn>
       </DataGrid>
