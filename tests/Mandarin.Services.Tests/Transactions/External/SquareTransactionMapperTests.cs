@@ -93,12 +93,28 @@ namespace Mandarin.Services.Tests.Transactions.External
                     catalogObjectId: product.ProductId.Value,
                     name: product.ProductName.Value,
                     basePriceMoney: new Money(500, "GBP"),
-                    totalMoney: new Money(-1500, "GBP")),
+                    totalMoney: new Money(1500, "GBP")),
             };
             return new Order("Location",
                              MandarinFixture.Instance.NewString,
                              returns: new List<OrderReturn> { new(returnLineItems: returns) },
-                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(-1500, "GBP")),
+                             netAmounts: new OrderMoneyAmounts(new Money(-1500, "GBP")),
+                             createdAt: SquareTransactionMapperTests.OrderDateString);
+        }
+
+        private Order GivenOrderServiceChargeReturn()
+        {
+            var returns = new List<OrderReturnServiceCharge>
+            {
+                new("4",
+                    name: "Shipping",
+                    totalMoney: new Money(500, "GBP")),
+            };
+
+            return new Order("Location",
+                             MandarinFixture.Instance.NewString,
+                             returns: new List<OrderReturn> { new(returnServiceCharges: returns) },
+                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(-500, "GBP")),
                              createdAt: SquareTransactionMapperTests.OrderDateString);
         }
 
@@ -179,6 +195,22 @@ namespace Mandarin.Services.Tests.Transactions.External
                 transactions[0].Subtransactions[0].Quantity.Should().Be(-3);
                 transactions[0].Subtransactions[0].UnitPrice.Should().Be(5.00m);
                 transactions[0].Subtransactions[0].Subtotal.Should().Be(-15.00m);
+            }
+
+
+            [Fact]
+            public async Task ShouldConvertServiceChargeReturnsToTransactions()
+            {
+                this.GivenInventoryServiceSetUpWithProduct(WellKnownTestData.Products.TlmDelivery);
+                var order = this.GivenOrderServiceChargeReturn();
+                var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
+
+                transactions.Should().HaveCount(1);
+                transactions[0].TotalAmount.Should().Be(-5.00m);
+                transactions[0].Subtransactions[0].Product.Should().Be(WellKnownTestData.Products.TlmDelivery);
+                transactions[0].Subtransactions[0].Quantity.Should().Be(-500);
+                transactions[0].Subtransactions[0].UnitPrice.Should().Be(0.01m);
+                transactions[0].Subtransactions[0].Subtotal.Should().Be(-5.00m);
             }
 
             [Fact]

@@ -106,6 +106,16 @@ namespace Mandarin.Tests.Data
                 Description = "Commission for Frame",
                 UnitPrice = 0.01M,
             };
+
+            public static readonly Product TlmDelivery = new()
+            {
+                ProductId = ProductId.TlmDelivery,
+                StockistId = Stockists.TheLittleMandarin.StockistId,
+                ProductCode = ProductCode.Of("TLM-DELIVERY"),
+                ProductName = ProductName.Of("Shipping Fees"),
+                Description = "Shipping Fees",
+                UnitPrice = 0.01M,
+            };
         }
 
         public static class Stockists
