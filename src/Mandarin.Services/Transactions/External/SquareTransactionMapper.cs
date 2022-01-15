@@ -61,7 +61,7 @@ namespace Mandarin.Services.Transactions.External
             var lineItems = order.LineItems.NullToEmpty().ToObservable().SelectMany(orderLineItem => this.CreateSubtransaction(orderLineItem, orderDate));
             var discounts = order.Discounts.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromDiscount);
             var returns = order.Returns.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionsFromReturn);
-            var fees = order.ServiceCharges.NullToEmpty().ToObservable().SelectMany(this.CreateSubtransactionFromFee);
+            var fees = order.ServiceCharges.NullToEmpty().ToObservable().SelectMany(serviceCharge => this.CreateSubtransactionFromServiceCharge(serviceCharge.Name, serviceCharge.TotalMoney));
             var tips = this.CreateSubtransactionFromTip(order.TotalTipMoney);
             return Observable.Merge(lineItems, discounts, returns, fees, tips).ToList();
         }
@@ -149,33 +149,42 @@ namespace Mandarin.Services.Transactions.External
 
         private IObservable<Subtransaction> CreateSubtransactionsFromReturn(OrderReturn orderReturn)
         {
-            return orderReturn.ReturnLineItems.ToObservable()
-                              .SelectMany(async item =>
-                              {
-                                  var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name));
-                                  var quantity = -1 * int.Parse(item.Quantity);
+            var lineItems = orderReturn.ReturnLineItems.NullToEmpty()
+                                       .ToObservable()
+                                       .SelectMany(async item =>
+                                       {
+                                           var product = await this.GetProductAsync(ProductId.Of(item.CatalogObjectId), ProductName.Of(item.Name));
+                                           var quantity = -1 * int.Parse(item.Quantity);
 
-                                  return new Subtransaction
-                                  {
-                                      Product = product,
-                                      Quantity = quantity,
-                                      UnitPrice = item.BasePriceMoney.ToDecimal(),
-                                  };
-                              });
+                                           return new Subtransaction
+                                           {
+                                               Product = product,
+                                               Quantity = quantity,
+                                               UnitPrice = item.BasePriceMoney.ToDecimal(),
+                                           };
+                                       });
+
+            var serviceCharges = orderReturn.ReturnServiceCharges.NullToEmpty()
+                                            .ToObservable()
+                                            .SelectMany(serviceCharge =>
+                                            {
+                                                var money = new Money(serviceCharge.TotalMoney.Amount * -1, serviceCharge.TotalMoney.Currency);
+                                                return this.CreateSubtransactionFromServiceCharge(serviceCharge.Name, money);
+                                            });
+
+            return lineItems.Merge(serviceCharges);
         }
 
-        private IObservable<Subtransaction> CreateSubtransactionFromFee(OrderServiceCharge serviceCharge)
+        private IObservable<Subtransaction> CreateSubtransactionFromServiceCharge(string serviceChargeName, Money serviceChargeMoney)
         {
-            return Observable.FromAsync(() =>
-                             {
-                                 if (serviceCharge.Name?.Equals("Shipping", StringComparison.OrdinalIgnoreCase) == true)
-                                 {
-                                     return this.productRepository.GetProductAsync(ProductId.TlmDelivery);
-                                 }
+            var productId = serviceChargeName?.ToUpper() switch
+            {
+                "SHIPPING" => ProductId.TlmDelivery,
+                _ => ProductId.TlmUnknown,
+            };
 
-                                 return this.productRepository.GetProductAsync(ProductId.TlmUnknown);
-                             })
-                             .Select(product => SquareTransactionMapper.CreateSubtransactionFromMoney(product, serviceCharge.TotalMoney));
+            return Observable.FromAsync(() => this.productRepository.GetProductAsync(productId))
+                             .Select(product => SquareTransactionMapper.CreateSubtransactionFromMoney(product, serviceChargeMoney));
         }
 
         private IObservable<Subtransaction> CreateSubtransactionFromTip(Money tip)
