@@ -1,5 +1,5 @@
 ﻿using Blazorise;
-using Blazorise.Bootstrap;
+using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Bunit;
 using Microsoft.AspNetCore.Components;
@@ -25,10 +25,11 @@ namespace Mandarin.Client.Tests.Helpers
 
         private void SetupBlazorise()
         {
-            this.Services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+            this.Services.AddBlazorise().AddBootstrap5Providers().AddFontAwesomeIcons();
 
-            this.JSInterop.Setup<bool>("blazorise.button.initialize", _ => true);
-            this.JSInterop.Setup<bool>("blazorise.textEdit.initialize", _ => true);
+            var blazoriseModule = this.JSInterop.SetupModule(i => i.Arguments[0] is string requestedModule && requestedModule.StartsWith("./_content/Blazorise/"));
+            blazoriseModule.SetupVoid("initialize", _ => true);
+            blazoriseModule.Setup<string>("getUserAgent");
         }
     }
 }
