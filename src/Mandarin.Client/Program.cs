@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Blazorise;
-using Blazorise.Bootstrap;
+using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -38,7 +38,7 @@ namespace Mandarin.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrapProviders().AddFontAwesomeIcons();
+            builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrap5Providers().AddFontAwesomeIcons();
             builder.Services.AddHttpClient();
             builder.Services.AddOidcAuthentication(options =>
             {
@@ -50,7 +50,6 @@ namespace Mandarin.Client
             builder.ConfigureContainer(new AutofacServiceProviderFactory(c => c.RegisterModule(new MandarinClientModule(baseAddress))));
 
             var host = builder.Build();
-            host.Services.UseBootstrapProviders().UseFontAwesomeIcons();
             return host.RunAsync();
         }
     }
