@@ -35,6 +35,7 @@ namespace Mandarin.Database.Commissions
                   GROUP BY s.product_id, s.unit_price) sum
                      INNER JOIN inventory.product p ON p.product_id = sum.product_id
                      INNER JOIN inventory.stockist s ON s.stockist_id = p.stockist_id
+            WHERE sum.quantity > 0
             ORDER BY p.product_code";
 
         private readonly IStockistRepository stockistRepository;
