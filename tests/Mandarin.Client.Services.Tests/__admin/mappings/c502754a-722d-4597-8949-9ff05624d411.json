@@ -60,7 +60,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "sendgrid/9.24.2.0 csharp",
+            "Pattern": "sendgrid/9.25.2.0 csharp",
             "IgnoreCase": true
           }
         ]
