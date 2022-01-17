@@ -110,11 +110,10 @@ jobs:
           echo $GitVersion_NuGetVersionV2 > publish/Version.txt
 
       - name: "[Deploy] Create Octopus BuildInformation.json"
-        if: github.event_name == 'release'
-        working-directory: src/Mandarin/
-        run: |
-          gulp buildInformation
-          mv BuildInformation.json ../../publish/
+#        if: github.event_name == 'release'
+        uses: xo-energy/action-octopus-build-information@v1.1.0
+        with:
+          output_path: publish
 
       - name: "[Deploy] Upload build artifact"
         if: github.event_name == 'release'
