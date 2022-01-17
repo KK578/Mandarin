@@ -113,6 +113,9 @@ jobs:
 #        if: github.event_name == 'release'
         uses: xo-energy/action-octopus-build-information@v1.1.0
         with:
+          octopus_api_key: ${{ secrets.OCTOPUS_TOKEN }}
+          octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
+          octopus_project: Mandarin
           output_path: publish
 
       - name: "[Deploy] Upload build artifact"
