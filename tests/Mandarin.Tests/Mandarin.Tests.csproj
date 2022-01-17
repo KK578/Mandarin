@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1" />
     <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.3" />
-    <PackageReference Include="WireMock.Net" Version="1.4.31" />
+    <PackageReference Include="WireMock.Net" Version="1.4.32" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 
