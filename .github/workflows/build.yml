@@ -110,7 +110,7 @@ jobs:
           echo $GitVersion_NuGetVersionV2 > publish/Version.txt
 
       - name: "[Deploy] Create Octopus BuildInformation.json"
-#        if: github.event_name == 'release'
+        if: github.event_name == 'release'
         uses: xo-energy/action-octopus-build-information@v1.1.0
         with:
           octopus_api_key: ${{ secrets.OCTOPUS_TOKEN }}
@@ -119,7 +119,7 @@ jobs:
           output_path: publish
 
       - name: "[Deploy] Upload build artifact"
-#        if: github.event_name == 'release'
+        if: github.event_name == 'release'
         uses: actions/upload-artifact@v1
         with:
           name: Mandarin.Build
@@ -149,7 +149,7 @@ jobs:
       - name: "[Metadata] octo build-information"
         uses: docker://octopusdeploy/octo:7.4.3275
         with:
-          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/BuildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/buildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
 
       - name: "[Deploy] octo pack"
         uses: docker://octopusdeploy/octo:7.4.3275
