@@ -42,21 +42,6 @@ jobs:
         with:
           dotnet-version: 6.0.100
 
-      - name: "[Setup] Install node"
-        if: github.event_name == 'release'
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16.x'
-
-      - name: "[Setup] Install gulp"
-        if: github.event_name == 'release'
-        run: npm install -g gulp-cli
-
-      - name: "[Build] npm install"
-        if: github.event_name == 'release'
-        working-directory: src/Mandarin/
-        run: npm ci
-
       - name: "[Build] NuGet Restore"
         run: dotnet restore
 
@@ -111,10 +96,12 @@ jobs:
 
       - name: "[Deploy] Create Octopus BuildInformation.json"
         if: github.event_name == 'release'
-        working-directory: src/Mandarin/
-        run: |
-          gulp buildInformation
-          mv BuildInformation.json ../../publish/
+        uses: xo-energy/action-octopus-build-information@v1.1.0
+        with:
+          octopus_api_key: ${{ secrets.OCTOPUS_TOKEN }}
+          octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
+          octopus_project: Mandarin
+          output_path: publish
 
       - name: "[Deploy] Upload build artifact"
         if: github.event_name == 'release'
@@ -147,7 +134,7 @@ jobs:
       - name: "[Metadata] octo build-information"
         uses: docker://octopusdeploy/octo:7.4.3275
         with:
-          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/BuildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/buildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
 
       - name: "[Deploy] octo pack"
         uses: docker://octopusdeploy/octo:7.4.3275
