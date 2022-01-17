@@ -9,16 +9,16 @@ This is the Blazor Web Application for [https://thelittlemandarin.co.uk](https:/
 ## Building from Source
 
 Requirements:
- - .NET Core SDK 3.1.x
- - Node.js/npm
- - Gulp CLI
- 
+ - .NET Core SDK 6.x
+ - A running postgresql instance.
+   - Update `src/Mandarin/appsettings.json` to match your postgres instance's connection details.
+   - Alternatively, run against a new default instance against docker  
+     `docker run --name mandarin-db -p 5432:5432 -d postgres`
+ - For tests, a throwaway postgresql instance running against port 5555.  
+   `docker run --name mandarin-test-db -p 5555:5432 -d postgres`
+
 ```sh
 $ git clone https://github.com/KK578/Mandarin.git
-$ cd Mandarin/src/Mandarin
-$ npm install
-$ gulp
-$ cd ../../
 $ dotnet build
 $ dotnet test
 $ dotnet run --project src/Mandarin/Mandarin.csproj
