@@ -45,6 +45,7 @@ namespace Mandarin
             services.AddMandarinAuthentication(this.configuration);
             services.AddMandarinAuthorization();
             services.AddMandarinHangfire(this.configuration);
+            services.AddMandarinHealthChecks(this.configuration);
         }
 
         /// <summary>
@@ -77,6 +78,7 @@ namespace Mandarin
             app.UseStaticFiles();
             app.AddLegacyRedirect("/static/logo-300.png", "/static/images/logo.png");
             app.AddLegacyRedirect("/static/Century-Schoolbook-Std-Regular.otf", "/static/fonts/Century-Schoolbook-Std-Regular.otf");
+            app.UseMandarinHealthChecks();
 
             app.UseRouting();
             app.UseCookiePolicy();
