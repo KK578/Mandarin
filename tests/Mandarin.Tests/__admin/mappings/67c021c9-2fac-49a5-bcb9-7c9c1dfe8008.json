@@ -60,7 +60,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "Square-DotNet-SDK/17.0.0",
+            "Pattern": "Square-DotNet-SDK/*",
             "IgnoreCase": true
           }
         ]
@@ -70,7 +70,7 @@
         "Matchers": [
           {
             "Name": "WildcardMatcher",
-            "Pattern": "2021-12-15",
+            "Pattern": "*",
             "IgnoreCase": true
           }
         ]
