@@ -53,7 +53,7 @@ namespace Mandarin.Database.Common
                 using var db = this.mandarinDbContext.GetConnection();
                 var record = await recordFunc(db);
                 var value = this.mapper.Map<TDomain>(record);
-                this.Log.Information($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
+                this.Log.Verbose($"Successfully fetched {this.typeName} entry for Key={{Key}}.", key);
                 return value;
             }
             catch (Exception ex)
@@ -70,14 +70,14 @@ namespace Mandarin.Database.Common
         /// <returns>A <see cref="Task{TResult}"/> containing a <see cref="IReadOnlyList{T}"/> of <typeparamref name="TDomain"/>.</returns>
         protected async Task<IReadOnlyList<TDomain>> GetAll(Func<IDbConnection, Task<IEnumerable<TRecord>>> recordsFunc)
         {
-            this.Log.Debug($"Fetching {this.typeName} entries.");
+            this.Log.Verbose($"Fetching {this.typeName} entries.");
 
             try
             {
                 using var db = this.mandarinDbContext.GetConnection();
                 var records = await recordsFunc(db);
                 var values = this.mapper.Map<List<TDomain>>(records).AsReadOnly();
-                this.Log.Verbose($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
+                this.Log.Debug($"Successfully fetched {{Count}} {this.typeName} entries.", values.Count);
                 return values;
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace Mandarin.Database.Common
         protected async Task<TDomain> Upsert(TDomain value)
         {
             var key = this.ExtractDisplayKey(value);
-            this.Log.Debug($"Inserting/Updating {this.typeName} entry for Key={{Key}}: {{@Value}}", key, value);
+            this.Log.Verbose($"Inserting/Updating {this.typeName} entry for Key={{Key}}: {{@Value}}", key, value);
 
             try
             {
@@ -103,7 +103,7 @@ namespace Mandarin.Database.Common
                 using var db = this.mandarinDbContext.GetConnection();
                 var newRecord = await this.UpsertRecordAsync(db, record);
                 var newValue = this.mapper.Map<TDomain>(newRecord);
-                this.Log.Verbose($"Successfully saved {this.typeName} entry for Key={{Key}}.", key);
+                this.Log.Information($"Successfully saved {this.typeName} entry for Key={{Key}}.", key);
                 return newValue;
             }
             catch (Exception ex)
