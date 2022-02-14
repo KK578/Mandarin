@@ -21,7 +21,7 @@
     <PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.42.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
-    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.5" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.9.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
