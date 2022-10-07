@@ -133,7 +133,8 @@ namespace Mandarin.Services.Transactions.External
 
             ProductId ResolveDiscountProductId()
             {
-                if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase))
+                if (orderLineItemDiscount.Name.Contains("macaron", StringComparison.OrdinalIgnoreCase) ||
+                    orderLineItemDiscount.Name.Contains("dacquoise", StringComparison.OrdinalIgnoreCase))
                 {
                     return ProductId.BunDiscountMacarons;
                 }
