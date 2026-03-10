@@ -1,0 +1,9 @@
+packages:
+  - name: square
+    environment:
+      SQUARE_ENVIRONMENT: "${SQUARE_ENVIRONMENT}"
+      SQUARE_API_KEY: "${SQUARE_API_KEY}"
+      DATABASE_URL: "${DATABASE_URL}"
+    functions:
+      - name: product-sync
+        runtime: nodejs:18
