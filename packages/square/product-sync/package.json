@@ -2,17 +2,21 @@
   "name": "product-sync",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "dotenv": "^17.3.1",
-    "pg": "^8.20.0",
+    "pg": "^8.13.3",
     "square": "^44.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "@types/pg": "^8.11.11",
+    "typescript": "^5.8.2"
   }
 }
