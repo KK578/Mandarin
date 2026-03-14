@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^3.5.0",
+    "@auth0/nextjs-auth0": "^4.16.0",
     "daisyui": "^5.5.19",
     "next": "16.1.6",
     "react": "19.2.3",
@@ -24,5 +24,6 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "browserslist": "> 1%"
 }
