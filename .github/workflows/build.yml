@@ -71,7 +71,7 @@ jobs:
           verbosity: Info
 
       - name: "[Coverage] Upload test reports artifact"
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: Mandarin.TestReports
@@ -105,7 +105,7 @@ jobs:
 
       - name: "[Deploy] Upload build artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: Mandarin.Build
           path: publish
