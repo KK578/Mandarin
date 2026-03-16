@@ -1,4 +1,23 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes: all;
+@plugin "daisyui";
+
+@font-face {
+  font-family: "Century Schoolbook";
+  src: url("/fonts/Century-Schoolbook-Std-Regular.otf");
+}
+
+@theme {
+  --font-tlm: "Century Schoolbook", serif;
+  --color-tlm: #c9b85b;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  --color-primary: #c9b85b;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  prefersdark: true;
+  --color-primary: #c9b85b;
 }
