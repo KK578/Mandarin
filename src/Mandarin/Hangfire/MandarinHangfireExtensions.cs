@@ -14,6 +14,8 @@ namespace Mandarin.Hangfire
     /// </summary>
     internal static class MandarinHangfireExtensions
     {
+        private static readonly TimeSpan HangfireInterval = TimeSpan.FromHours(1);
+
         /// <summary>
         /// Registers the Hangfire services into the provided service container.
         /// </summary>
@@ -24,8 +26,19 @@ namespace Mandarin.Hangfire
         {
             services.AddHangfire(o => o.UseSimpleAssemblyNameTypeSerializer()
                                        .UseRecommendedSerializerSettings()
-                                       .UsePostgreSqlStorage(configuration.GetConnectionString("MandarinConnection")));
-            services.AddHangfireServer(o => o.WorkerCount = 2);
+                                       .UsePostgreSqlStorage(configuration.GetConnectionString("MandarinConnection"), new PostgreSqlStorageOptions
+                                       {
+                                           InvisibilityTimeout = MandarinHangfireExtensions.HangfireInterval,
+                                           QueuePollInterval = MandarinHangfireExtensions.HangfireInterval,
+                                       }));
+            services.AddHangfireServer(o => 
+            {
+                o.CancellationCheckInterval = MandarinHangfireExtensions.HangfireInterval;
+                o.HeartbeatInterval = MandarinHangfireExtensions.HangfireInterval;
+                o.SchedulePollingInterval = MandarinHangfireExtensions.HangfireInterval;
+                o.ServerCheckInterval = MandarinHangfireExtensions.HangfireInterval;
+                o.WorkerCount = 2;
+            });
 
             return services;
         }
