@@ -93,7 +93,6 @@ namespace Mandarin.Tests.Helpers
         private void ConfigureSerilog(WebHostBuilderContext b, LoggerConfiguration c)
         {
             c.MinimumLevel.Verbose()
-             .MinimumLevel.Override("Elastic.Apm", LogEventLevel.Error)
              .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
              .WriteTo.TestOutput(this.delegateTestOutputHelper, outputTemplate: "{Timestamp:HH:mm:ss.ffff} {Level:u3} {SourceContext}: {Message:lj}{NewLine}{Exception}");
         }

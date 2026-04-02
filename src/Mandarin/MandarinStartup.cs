@@ -1,4 +1,3 @@
-using Elastic.Apm.NetCoreAll;
 using Mandarin.Database;
 using Mandarin.Extensions;
 using Mandarin.Grpc;
@@ -73,8 +72,6 @@ namespace Mandarin
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
             app.AddLegacyRedirect("/static/logo-300.png", "/static/images/logo.png");
@@ -86,7 +83,6 @@ namespace Mandarin
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseAllElasticApm(this.configuration);
             app.UseSerilogRequestLogging();
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
