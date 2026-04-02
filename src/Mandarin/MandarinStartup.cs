@@ -65,6 +65,7 @@ namespace Mandarin
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
+                app.UseHttpsRedirection();
             }
             else
             {
