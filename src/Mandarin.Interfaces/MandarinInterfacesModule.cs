@@ -4,6 +4,7 @@ using AutoMapper;
 using Mandarin.Configuration;
 using Mandarin.Converters;
 using Mandarin.Extensions;
+using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Mandarin
@@ -28,7 +29,8 @@ namespace Mandarin
         private static IMapper ConfigureAutoMapper(IComponentContext context)
         {
             var profiles = context.Resolve<IEnumerable<Profile>>();
-            return new Mapper(new MapperConfiguration(config => config.AddProfiles(profiles)));
+            var loggerFactory = context.Resolve<ILoggerFactory>();
+            return new Mapper(new MapperConfiguration(config => config.AddProfiles(profiles), loggerFactory));
         }
     }
 }

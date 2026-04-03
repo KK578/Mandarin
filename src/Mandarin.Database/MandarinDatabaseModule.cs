@@ -1,6 +1,6 @@
-﻿using Autofac;
-using AutoMapper;
-using Dapper.NodaTime;
+﻿using System.Data;
+using Autofac;
+using Dapper;
 using DbUp.Engine.Output;
 using Mandarin.Commissions;
 using Mandarin.Database.Commissions;
@@ -15,6 +15,7 @@ using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
+using NodaTime;
 using Assembly = System.Reflection.Assembly;
 
 namespace Mandarin.Database
@@ -29,7 +30,11 @@ namespace Mandarin.Database
         {
             base.Load(builder);
 
-            DapperNodaTimeSetup.Register();
+            SqlMapper.AddTypeMap(typeof(Instant), DbType.DateTime2);
+            SqlMapper.AddTypeMap(typeof(LocalDate), DbType.Date);
+            SqlMapper.AddTypeMap(typeof(LocalDateTime), DbType.DateTime);
+            SqlMapper.AddTypeMap(typeof(LocalTime), DbType.Time);
+            SqlMapper.AddTypeMap(typeof(OffsetDateTime), DbType.DateTimeOffset);
 
             builder.RegisterInstance(this.ThisAssembly).As<Assembly>().AsSelf();
             builder.RegisterType<DbUpLogger>().As<IUpgradeLog>().InstancePerDependency();
