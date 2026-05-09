@@ -42,7 +42,8 @@ namespace Mandarin.Tests.Helpers
             builder.ConfigureAppConfiguration(MandarinServerFixture.AddTestConfiguration);
             builder.ConfigureTestServices(MandarinServerFixture.ConfigureTestAuthentication);
             builder.ConfigureLogging(l => l.ClearProviders());
-            builder.UseSerilog(this.ConfigureSerilog);
+
+            // builder.UseSerilog(this.ConfigureSerilog);
         }
 
         /// <inheritdoc />

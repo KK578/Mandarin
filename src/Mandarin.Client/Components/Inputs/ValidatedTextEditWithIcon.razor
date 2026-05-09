@@ -7,14 +7,14 @@
         <AddonLabel><Icon Class="@Icon.IconClass" Name="@Icon.IconName" IconStyle="@Icon.IconStyle" /></AddonLabel>
       </Addon>
       <Addon AddonType="@AddonType.Body">
-        <TextEdit @attributes="@AdditionalAttributes"
+        <TextInput @attributes="@AdditionalAttributes"
                   Disabled="@Disabled" Placeholder="@Label" ReadOnly="@ReadOnly" Text="@Text" TextChanged="@TextChanged">
           <Feedback>
             <ValidationError>
               <ValidationMessage For="@For" />
             </ValidationError>
           </Feedback>
-        </TextEdit>
+        </TextInput>
       </Addon>
     </Addons>
   </Field>

@@ -14,6 +14,7 @@ namespace Mandarin.Tests.Helpers.Database
             return Task.CompletedTask;
         }
 
+        [DapperAot(false)]
         public static async Task CleanupTestDataAsync(this MandarinDbContext mandarinDbContext)
         {
             using var connection = mandarinDbContext.GetConnection();

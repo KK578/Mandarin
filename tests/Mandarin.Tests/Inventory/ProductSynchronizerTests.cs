@@ -39,6 +39,7 @@ namespace Mandarin.Tests.Inventory
             products.Should().HaveCount(12);
         }
 
+        [DapperAot(false)]
         private async Task GivenProductTableIsEmptyAsync()
         {
             var db = this.Fixture.Services.GetRequiredService<MandarinDbContext>();

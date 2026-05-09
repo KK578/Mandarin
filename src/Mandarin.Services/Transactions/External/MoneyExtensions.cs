@@ -1,4 +1,4 @@
-﻿using Square.Models;
+﻿using Square;
 
 namespace Mandarin.Services.Transactions.External
 {

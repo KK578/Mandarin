@@ -15,7 +15,9 @@ using Mandarin.Inventory;
 using Mandarin.Stockists;
 using Mandarin.Transactions;
 using Mandarin.Transactions.External;
+using Microsoft.Extensions.Configuration;
 using NodaTime;
+using Npgsql;
 using Assembly = System.Reflection.Assembly;
 
 namespace Mandarin.Database
@@ -36,6 +38,8 @@ namespace Mandarin.Database
             SqlMapper.AddTypeMap(typeof(LocalTime), DbType.Time);
             SqlMapper.AddTypeMap(typeof(OffsetDateTime), DbType.DateTimeOffset);
 
+            builder.Register(MandarinDatabaseModule.BuildNpgsqlDataSource).SingleInstance();
+
             builder.RegisterInstance(this.ThisAssembly).As<Assembly>().AsSelf();
             builder.RegisterType<DbUpLogger>().As<IUpgradeLog>().InstancePerDependency();
             builder.RegisterType<Migrator>().As<IMigrator>().SingleInstance();
@@ -49,6 +53,17 @@ namespace Mandarin.Database
             builder.RegisterType<RecordOfSalesRepository>().As<IRecordOfSalesRepository>().InstancePerDependency();
             builder.RegisterType<StockistRepository>().As<IStockistRepository>().InstancePerDependency();
             builder.RegisterType<TransactionRepository>().As<ITransactionRepository>().InstancePerDependency();
+        }
+
+        private static NpgsqlDataSource BuildNpgsqlDataSource(IComponentContext context)
+        {
+            var configuration = context.Resolve<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("MandarinConnection");
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+            dataSourceBuilder.UseNodaTime();
+            dataSourceBuilder.MapComposite<SubtransactionRecord>("billing.tvp_subtransaction");
+
+            return dataSourceBuilder.Build();
         }
     }
 }

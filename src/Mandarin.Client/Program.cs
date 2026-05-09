@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI.Builder;
 
 namespace Mandarin.Client
 {
@@ -38,13 +40,18 @@ namespace Mandarin.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddBlazorise(o => o.DelayTextOnKeyPress = true).AddBootstrap5Providers().AddFontAwesomeIcons();
+            builder.Services.AddBlazorise(o => o.Debounce = true).AddBootstrap5Providers().AddFontAwesomeIcons();
             builder.Services.AddHttpClient();
             builder.Services.AddOidcAuthentication(options =>
             {
                 builder.Configuration.Bind("Auth0", options.ProviderOptions);
                 options.ProviderOptions.ResponseType = "code";
             });
+
+            RxAppBuilder.CreateReactiveUIBuilder()
+                        .WithBlazor()
+                        .WithViewsFromAssembly(Assembly.GetExecutingAssembly())
+                        .BuildApp();
 
             var baseAddress = new Uri(builder.HostEnvironment.BaseAddress);
             builder.ConfigureContainer(new AutofacServiceProviderFactory(c => c.RegisterModule(new MandarinClientModule(baseAddress))));

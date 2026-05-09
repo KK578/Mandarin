@@ -5,13 +5,13 @@
 <Validation Validator="@OnValidate">
   <Field ColumnSize="@ColumnSize">
     <FieldLabel>@(Label)</FieldLabel>
-    <DateEdit @attributes="@AdditionalAttributes" @bind-Date="@SystemDate" Disabled="@Disabled" ReadOnly="@ReadOnly">
+    <DateInput @attributes="@AdditionalAttributes" @bind-Value="@SystemDate" Disabled="@Disabled" ReadOnly="@ReadOnly">
       <Feedback>
         <ValidationError>
           <ValidationMessage For="@For" />
         </ValidationError>
       </Feedback>
-    </DateEdit>
+    </DateInput>
   </Field>
 </Validation>
 

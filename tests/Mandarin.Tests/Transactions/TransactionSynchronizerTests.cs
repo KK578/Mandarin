@@ -61,6 +61,7 @@ namespace Mandarin.Tests.Transactions
             transaction.Should().MatchTransaction(WellKnownTestData.Transactions.Transaction1);
         }
 
+        [DapperAot(false)]
         private async Task GivenTransactionTableIsEmptyAsync()
         {
             var db = this.Fixture.Services.GetRequiredService<MandarinDbContext>();

@@ -3,14 +3,14 @@
 <Validation Validator="@OnValidate">
   <Field ColumnSize="@ColumnSize">
     <FieldLabel>@(Label)</FieldLabel>
-    <TextEdit @attributes="@AdditionalAttributes"
+    <TextInput @attributes="@AdditionalAttributes"
               Disabled="@Disabled" ReadOnly="@ReadOnly" Text="@Text" TextChanged="@TextChanged">
       <Feedback>
         <ValidationError>
           <ValidationMessage For="@For" />
         </ValidationError>
       </Feedback>
-    </TextEdit>
+    </TextInput>
   </Field>
 </Validation>
 

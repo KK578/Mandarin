@@ -9,7 +9,8 @@ using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using NodaTime;
 using NodaTime.Text;
-using Square.Models;
+using Square;
+using Product = Mandarin.Inventory.Product;
 using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Services.Transactions.External
@@ -169,7 +170,11 @@ namespace Mandarin.Services.Transactions.External
                                             .ToObservable()
                                             .SelectMany(serviceCharge =>
                                             {
-                                                var money = new Money(serviceCharge.TotalMoney.Amount * -1, serviceCharge.TotalMoney.Currency);
+                                                var money = new Money
+                                                {
+                                                    Amount = serviceCharge.TotalMoney!.Amount * -1,
+                                                    Currency = serviceCharge.TotalMoney!.Currency,
+                                                };
                                                 return this.CreateSubtransactionFromServiceCharge(serviceCharge.Name, money);
                                             });
 

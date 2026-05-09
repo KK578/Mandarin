@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Threading.Tasks;
 using Blazorise.DataGrid;
 using Bunit;
 using FluentAssertions;
@@ -38,14 +39,16 @@ namespace Mandarin.Client.Tests.Pages.Artists
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void ShouldDisplayProgressBarWhilstLoading(bool isLoading)
+        public async Task ShouldDisplayProgressBarWhilstLoading(bool isLoading)
         {
             this.ViewModel.Setup(x => x.IsLoading).Returns(isLoading);
             this.Subject.HasComponent<MandarinProgressBar>().Should().Be(isLoading);
+
+            await this.DisposeAsync();
         }
 
         [Fact]
-        public void ShouldHaveButtonsBoundToCorrectCommands()
+        public async Task ShouldHaveButtonsBoundToCorrectCommands()
         {
             var buttons = this.Subject.FindComponents<ReactiveButton<Unit, Unit>>();
             buttons.Should().HaveCount(2);
@@ -55,10 +58,12 @@ namespace Mandarin.Client.Tests.Pages.Artists
 
             buttons[1].Instance.ReactiveCommand.Should().Be(this.ViewModel.Object.CreateNew);
             buttons[1].Markup.Should().Contain("New");
+
+            await this.DisposeAsync();
         }
 
         [Fact]
-        public void ShouldBindDataGridRowsToViewModel()
+        public async Task ShouldBindDataGridRowsToViewModel()
         {
             this.artists.Add(new ArtistViewModel(WellKnownTestData.Stockists.TheLittleMandarin, SystemClock.Instance));
             this.artists.Add(new ArtistViewModel(WellKnownTestData.Stockists.ArlueneWoodes, SystemClock.Instance));
@@ -70,18 +75,22 @@ namespace Mandarin.Client.Tests.Pages.Artists
 
             var cells = dataGrid.FindAll("tbody > tr > td");
             cells.Select(x => x.TextContent).Should().BeEquivalentTo("TLM", "The Little Mandarin Team", "Active", "AW20", "Arluene Woodes", "Active");
+
+            await this.DisposeAsync();
         }
 
         [Fact]
-        public void ShouldPushSelectedRowToViewModel()
+        public async Task ShouldPushSelectedRowToViewModel()
         {
             this.ViewModel.SetupProperty(x => x.SelectedRow);
             this.artists.Add(new ArtistViewModel(WellKnownTestData.Stockists.TheLittleMandarin, SystemClock.Instance));
 
             var row = this.Subject.Find("tbody > tr");
-            row.Click();
+            await row.ClickAsync();
 
             this.ViewModel.Object.SelectedRow.Should().Be(this.artists[0]);
+
+            await this.DisposeAsync();
         }
     }
 }

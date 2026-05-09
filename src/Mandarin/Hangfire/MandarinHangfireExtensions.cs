@@ -26,12 +26,17 @@ namespace Mandarin.Hangfire
         {
             services.AddHangfire(o => o.UseSimpleAssemblyNameTypeSerializer()
                                        .UseRecommendedSerializerSettings()
-                                       .UsePostgreSqlStorage(configuration.GetConnectionString("MandarinConnection"), new PostgreSqlStorageOptions
-                                       {
-                                           InvisibilityTimeout = MandarinHangfireExtensions.HangfireInterval,
-                                           QueuePollInterval = MandarinHangfireExtensions.HangfireInterval,
-                                       }));
-            services.AddHangfireServer(o => 
+                                       .UsePostgreSqlStorage(
+                                           options =>
+                                           {
+                                               options.UseNpgsqlConnection(configuration.GetConnectionString("MandarinConnection"));
+                                           },
+                                           new PostgreSqlStorageOptions
+                                           {
+                                               InvisibilityTimeout = MandarinHangfireExtensions.HangfireInterval,
+                                               QueuePollInterval = MandarinHangfireExtensions.HangfireInterval,
+                                           }));
+            services.AddHangfireServer(o =>
             {
                 o.CancellationCheckInterval = MandarinHangfireExtensions.HangfireInterval;
                 o.HeartbeatInterval = MandarinHangfireExtensions.HangfireInterval;

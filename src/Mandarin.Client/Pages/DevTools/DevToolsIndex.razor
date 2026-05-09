@@ -14,8 +14,8 @@
       </ListGroupItem>
       <ListGroupItem>
         <Paragraph>Click the button to ensure all transactions between @(ViewModel!.StartDate) and @(ViewModel!.EndDate) are up to date.</Paragraph>
-        <DateEdit @bind-Date="@StartDateTime" />
-        <DateEdit @bind-Date="@EndDateTime" />
+        <DateInput @bind-Value="@StartDateTime" />
+        <DateInput @bind-Value="@EndDateTime" />
         <ReactiveButton ReactiveCommand="@ViewModel!.SynchronizeTransactions" Color="Color.Danger">Update Transactions</ReactiveButton>
       </ListGroupItem>
     </ListGroup>

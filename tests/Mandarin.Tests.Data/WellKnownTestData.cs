@@ -9,7 +9,8 @@ using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Newtonsoft.Json;
 using NodaTime;
-using Square.Models;
+using Square;
+using Product = Mandarin.Inventory.Product;
 using Transaction = Mandarin.Transactions.Transaction;
 
 // ReSharper disable StringLiteralTypo

@@ -11,17 +11,17 @@ namespace Mandarin.Database
     /// </summary>
     public class MandarinDbContext
     {
-        private readonly IConfiguration configuration;
+        private readonly NpgsqlDataSource dataSource;
         private readonly IMigrator migrator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MandarinDbContext"/> class.
         /// </summary>
-        /// <param name="configuration">Application configuration for configuring services.</param>
+        /// <param name="dataSource">The pre-configured Postgres data source to connect to.</param>
         /// <param name="migrator">The service for upgrading the database schema.</param>
-        public MandarinDbContext(IConfiguration configuration, IMigrator migrator)
+        public MandarinDbContext(NpgsqlDataSource dataSource, IMigrator migrator)
         {
-            this.configuration = configuration;
+            this.dataSource = dataSource;
             this.migrator = migrator;
         }
 
@@ -31,7 +31,7 @@ namespace Mandarin.Database
         /// <returns>The connection to the database.</returns>
         public IDbConnection GetConnection()
         {
-            return new NpgsqlConnection(this.configuration.GetConnectionString("MandarinConnection"));
+            return this.dataSource.CreateConnection();
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ using Mandarin.Api.Transactions;
 using Mandarin.Grpc;
 using Mandarin.Grpc.Converters;
 using Mandarin.Transactions.External;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NodaTime;
 using NodaTime.Serialization.Protobuf;
@@ -27,7 +28,7 @@ namespace Mandarin.Tests.Grpc
 
         protected TransactionsGrpcServiceTests()
         {
-            this.mapper = new MapperConfiguration(c => c.AddProfile<MandarinGrpcMapperProfile>()).CreateMapper();
+            this.mapper = new MapperConfiguration(c => c.AddProfile<MandarinGrpcMapperProfile>(), NullLoggerFactory.Instance).CreateMapper();
             this.subject = new TransactionsGrpcService(this.mapper, this.backgroundJobClient.Object);
         }
 

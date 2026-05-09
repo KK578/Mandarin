@@ -12,14 +12,14 @@
         <AddonLabel>@AddonLabel</AddonLabel>
       </Addon>
       <Addon AddonType="AddonType.Body">
-        <NumericEdit @attributes="@AdditionalAttributes"
+        <NumericInput @attributes="@AdditionalAttributes"
                      Disabled="@Disabled" Max="@Max" Min="@Min" ReadOnly="@ReadOnly" Value="@Value" ValueChanged="@ValueChanged">
           <Feedback>
             <ValidationError>
               <ValidationMessage For="@For" />
             </ValidationError>
           </Feedback>
-        </NumericEdit>
+        </NumericInput>
       </Addon>
     </Addons>
   </Field>
