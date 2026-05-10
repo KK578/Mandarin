@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using NodaTime;
 using NodaTime.Text;
 using Serilog;
-using Square.Models;
+using Square;
 using Transaction = Mandarin.Transactions.Transaction;
 
 namespace Mandarin.Services.Transactions.External

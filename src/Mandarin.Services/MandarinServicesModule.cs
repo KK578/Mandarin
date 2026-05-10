@@ -12,7 +12,6 @@ using Mandarin.Transactions.External;
 using Microsoft.Extensions.Configuration;
 using SendGrid;
 using Square;
-using Environment = Square.Environment;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Mandarin.Services
@@ -57,11 +56,13 @@ namespace Mandarin.Services
         {
             var configuration = context.Resolve<IConfiguration>();
 
-            return new SquareClient.Builder()
-                   .CustomUrl(configuration.GetValue<string>("Square:Host"))
-                   .Environment(configuration.GetValue<Environment>("Square:Environment"))
-                   .AccessToken(configuration.GetValue<string>("Square:ApiKey"))
-                   .Build();
+            var apiKey = configuration.GetValue<string>("Square:ApiKey");
+            var clientOptions = new ClientOptions
+            {
+                BaseUrl = configuration.GetValue<string>("Square:Host"),
+            };
+
+            return new SquareClient(apiKey, clientOptions);
         }
     }
 }

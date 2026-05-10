@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
@@ -10,7 +11,7 @@ using Mandarin.Transactions.External;
 using Moq;
 using NodaTime;
 using Square;
-using Square.Models;
+using Square.Orders;
 using Xunit;
 
 namespace Mandarin.Services.Tests.Transactions.External
@@ -32,22 +33,22 @@ namespace Mandarin.Services.Tests.Transactions.External
 
         private void GivenSquareClientLocationApiReturnsData()
         {
-            this.squareClient.Setup(x => x.LocationsApi.ListLocationsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ListLocationsResponse(locations: new List<Location> { new("Location1") }));
+            this.squareClient.Setup(x => x.Locations.ListAsync(It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ListLocationsResponse { Locations = new List<Location> { new() { Id = "Location1" } } });
         }
 
         private void GivenSquareClientOrdersApiReturnsData()
         {
-            this.squareClient.Setup(x => x.OrdersApi.SearchOrdersAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<CancellationToken>()))
+            this.squareClient.Setup(x => x.Orders.SearchAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<SearchOrdersResponse>(WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage1));
-            this.squareClient.Setup(x => x.OrdersApi.SearchOrdersAsync(It.Is<SearchOrdersRequest>(y => y.Cursor == WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage2), It.IsAny<CancellationToken>()))
+            this.squareClient.Setup(x => x.Orders.SearchAsync(It.Is<SearchOrdersRequest>(y => y.Cursor == WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage2), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => WellKnownTestData.DeserializeFromFile<SearchOrdersResponse>(WellKnownTestData.Square.OrdersApi.SearchOrders.SearchOrdersPage2));
         }
 
         private Task<SearchOrdersRequest> GivenSquareClientOrdersApiCapturesRequest()
         {
             var tcs = new TaskCompletionSource<SearchOrdersRequest>();
-            this.squareClient.Setup(x => x.OrdersApi.SearchOrdersAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<CancellationToken>()))
+            this.squareClient.Setup(x => x.Orders.SearchAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .Callback((SearchOrdersRequest r, CancellationToken _) => tcs.SetResult(r))
                 .ReturnsAsync(new SearchOrdersResponse());
 
@@ -58,7 +59,7 @@ namespace Mandarin.Services.Tests.Transactions.External
         {
             var waitHandle = new ManualResetEvent(false);
             this.squareClient
-                .Setup(x => x.OrdersApi.SearchOrdersAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Orders.SearchAsync(It.IsAny<SearchOrdersRequest>(), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .Returns(() => Task.Run(() =>
                 {
                     waitHandle.WaitOne();
@@ -79,16 +80,16 @@ namespace Mandarin.Services.Tests.Transactions.External
         public class GetAllOrdersTests : SquareTransactionServiceTests
         {
             [Fact]
-            public void ShouldThrowExceptionWhenRequestIsCancelled()
+            public async Task ShouldThrowExceptionWhenRequestIsCancelled()
             {
                 var waitHandle = this.GivenSquareClientOrderApiWaitsToContinue();
                 var cts = new CancellationTokenSource();
                 var task = this.Subject.GetAllOrders(SquareTransactionServiceTests.Start, SquareTransactionServiceTests.End).ToList().ToTask(cts.Token);
-                task.Wait(10);
-                cts.Cancel();
+                await task.WaitAsync(TimeSpan.FromMilliseconds(10), cts.Token);
+                await cts.CancelAsync();
                 waitHandle.Set();
 
-                task.Awaiting(x => x).Should().ThrowAsync<TaskCanceledException>();
+                await task.Awaiting(x => x).Should().ThrowAsync<TaskCanceledException>();
             }
 
             [Fact]

@@ -3,7 +3,7 @@
 
 <Fields>
   <Field ColumnSize="ColumnSize.Is3.OnDesktop.Is4.OnTablet">
-    <Select @bind-SelectedValue="@Month" TValue="int">
+    <Select @bind-Value="@Month" TValue="int">
       <SelectItem Value="1">January</SelectItem>
       <SelectItem Value="2">February</SelectItem>
       <SelectItem Value="3">March</SelectItem>
@@ -19,7 +19,7 @@
     </Select>
   </Field>
   <Field ColumnSize="ColumnSize.Is3.OnDesktop.Is4.OnTablet">
-    <NumericEdit @bind-Value="@Year" />
+    <NumericInput @bind-Value="@Year" />
   </Field>
 </Fields>
 

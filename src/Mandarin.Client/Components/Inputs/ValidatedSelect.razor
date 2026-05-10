@@ -5,7 +5,7 @@
   <Field>
     <FieldLabel>@(Label)</FieldLabel>
     <Select @attributes="@AdditionalAttributes"
-            Disabled="@Disabled" ReadOnly="@ReadOnly" SelectedValue="@SelectedValue" SelectedValueChanged="@SelectedValueChanged">
+            Disabled="@Disabled" ReadOnly="@ReadOnly" Value="@SelectedValue" @ValueChanged="@SelectedValueChanged">
       <ChildContent>
         @foreach (var option in Options)
         {

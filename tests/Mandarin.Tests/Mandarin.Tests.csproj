@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <UserSecretsId>3f0fc735-6e13-4ab9-85e8-0bf30131674a</UserSecretsId>
   </PropertyGroup>
@@ -12,13 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Autofac" Version="9.1.0" />
     <PackageReference Include="Bashi.Tests.Framework" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.2" />
-    <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.3" />
-    <PackageReference Include="WireMock.Net" Version="1.5.6" />
-    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.5" />
+    <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.19" />
+    <PackageReference Include="WireMock.Net" Version="2.5.0" />
   </ItemGroup>
 
   <ItemGroup>

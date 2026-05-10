@@ -6,7 +6,7 @@ using Mandarin.Services.Inventory;
 using Mandarin.Tests.Data;
 using Moq;
 using Square;
-using Square.Models;
+using Square.Catalog;
 using Xunit;
 
 namespace Mandarin.Services.Tests.Inventory
@@ -23,9 +23,9 @@ namespace Mandarin.Services.Tests.Inventory
 
         private void GivenSquareClientCatalogApiReturnsData()
         {
-            this.squareClient.Setup(x => x.CatalogApi.SearchCatalogObjectsAsync(It.Is<SearchCatalogObjectsRequest>(request => request.Cursor == null), It.IsAny<CancellationToken>()))
+            this.squareClient.Setup(x => x.Catalog.SearchAsync(It.Is<SearchCatalogObjectsRequest>(request => request.Cursor == null), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page1);
-            this.squareClient.Setup(x => x.CatalogApi.SearchCatalogObjectsAsync(It.Is<SearchCatalogObjectsRequest>(request => request.Cursor == nameof(WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page2)), It.IsAny<CancellationToken>()))
+            this.squareClient.Setup(x => x.Catalog.SearchAsync(It.Is<SearchCatalogObjectsRequest>(request => request.Cursor == nameof(WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page2)), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => WellKnownTestData.Square.CatalogApi.SearchCatalogObjects.Page2);
         }
 
@@ -33,7 +33,7 @@ namespace Mandarin.Services.Tests.Inventory
         {
             var waitHandle = new ManualResetEvent(false);
             this.squareClient
-                .Setup(x => x.CatalogApi.SearchCatalogObjectsAsync(It.IsAny<SearchCatalogObjectsRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Catalog.SearchAsync(It.IsAny<SearchCatalogObjectsRequest>(), It.IsAny<RequestOptions>(), It.IsAny<CancellationToken>()))
                 .Returns(() => Task.Run(() =>
                 {
                     waitHandle.WaitOne();

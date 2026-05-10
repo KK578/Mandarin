@@ -7,7 +7,9 @@ using System.Text.RegularExpressions;
 using DbUp;
 using DbUp.Engine;
 using DbUp.Engine.Output;
+using DbUp.Postgresql;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace Mandarin.Database.Migrations
 {
@@ -20,11 +22,12 @@ namespace Mandarin.Database.Migrations
         /// Initializes a new instance of the <see cref="Migrator"/> class.
         /// </summary>
         /// <param name="configuration">Application configuration for configuring services.</param>
+        /// <param name="dataSource">The pre-configured database source to connect to.</param>
         /// <param name="assemblies">The assemblies where there are migration scripts to run.</param>
         /// <param name="upgradeLog">The logger instance for DbUp.</param>
-        public Migrator(IConfiguration configuration, IEnumerable<Assembly> assemblies, IUpgradeLog upgradeLog)
+        public Migrator(IConfiguration configuration, NpgsqlDataSource dataSource, IEnumerable<Assembly> assemblies, IUpgradeLog upgradeLog)
         {
-            this.upgradeEngine = DeployChanges.To.PostgresqlDatabase(configuration.GetConnectionString("MandarinConnection"))
+            this.upgradeEngine = DeployChanges.To.PostgresqlDatabase(new PostgresqlConnectionManager(dataSource))
                                               .WithScriptsEmbeddedInAssemblies(assemblies.ToArray())
                                               .WithTransactionPerScript()
                                               .WithScriptNameComparer(new MigrationIdComparer())

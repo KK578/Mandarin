@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,10 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="4.17.0" />
+    <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="MicroElements.AutoFixture.NodaTime" Version="1.0.0" />
-    <PackageReference Include="NodaTime.Testing" Version="3.0.9" />
-    <PackageReference Include="Square" Version="17.1.0" />
+    <PackageReference Include="NodaTime.Testing" Version="3.3.1" />
+    <PackageReference Include="Square" Version="43.0.0" />
   </ItemGroup>
 
 </Project>

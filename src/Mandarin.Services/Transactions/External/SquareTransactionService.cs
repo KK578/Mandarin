@@ -9,7 +9,7 @@ using NodaTime;
 using NodaTime.Text;
 using Serilog;
 using Square;
-using Square.Models;
+using Square.Orders;
 
 namespace Mandarin.Services.Transactions.External
 {
@@ -37,25 +37,34 @@ namespace Mandarin.Services.Transactions.External
 
             async Task SubscribeToOrders(IObserver<Order> o, CancellationToken ct)
             {
-                var builder = new SearchOrdersRequest.Builder();
-                builder.LocationIds(await this.ListAllLocationsAsync(ct));
-                builder.Query(new SearchOrdersQuery.Builder()
-                              .Filter(new SearchOrdersFilter.Builder()
-                                      .StateFilter(new SearchOrdersStateFilter(new[] { "COMPLETED" }))
-                                      .DateTimeFilter(new SearchOrdersDateTimeFilter.Builder()
-                                                      .CreatedAt(new TimeRange.Builder()
-                                                                .StartAt(InstantPattern.General.Format(start.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant()))
-                                                                .EndAt(InstantPattern.General.Format(end.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant()))
-                                                                .Build())
-                                                      .Build())
-                                      .Build())
-                              .Build());
+                var request = new SearchOrdersRequest
+                {
+                    LocationIds = await this.ListAllLocationsAsync(ct),
+                    Query = new SearchOrdersQuery
+                    {
+                        Filter = new SearchOrdersFilter
+                        {
+                            StateFilter = new SearchOrdersStateFilter
+                            {
+                                States = [OrderState.Completed],
+                            },
+                            DateTimeFilter = new SearchOrdersDateTimeFilter
+                            {
+                                CreatedAt = new TimeRange
+                                {
+                                    StartAt = InstantPattern.General.Format(start.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant()),
+                                    EndAt = InstantPattern.General.Format(end.AtStartOfDayInZone(DateTimeZone.Utc).ToInstant()),
+                                },
+                            },
+                        },
+                    },
+                };
 
                 SearchOrdersResponse response = null;
                 do
                 {
-                    var request = builder.Cursor(response?.Cursor).Build();
-                    response = await this.squareClient.OrdersApi.SearchOrdersAsync(request, ct);
+                    request = request with { Cursor = response?.Cursor };
+                    response = await this.squareClient.Orders.SearchAsync(request, cancellationToken: ct);
                     var orders = response.Orders.NullToEmpty().ToList();
                     SquareTransactionService.Log.Information("Loading Square Transactions - Got {Count} Order(s).", orders.Count);
                     foreach (var order in orders)
@@ -71,9 +80,15 @@ namespace Mandarin.Services.Transactions.External
 
         private async Task<ReadOnlyCollection<string>> ListAllLocationsAsync(CancellationToken ct)
         {
-            var locations = await this.squareClient.LocationsApi.ListLocationsAsync(ct);
+            var locations = await this.squareClient.Locations.ListAsync(cancellationToken: ct);
             ct.ThrowIfCancellationRequested();
-            return locations.Locations.Select(x => x.Id).ToList().AsReadOnly();
+
+            if (locations.Locations is not null)
+            {
+                return locations.Locations.Select(x => x.Id).ToList().AsReadOnly();
+            }
+
+            return [];
         }
     }
 }

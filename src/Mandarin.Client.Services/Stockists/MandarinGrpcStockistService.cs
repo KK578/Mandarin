@@ -10,17 +10,17 @@ using Stockist = Mandarin.Stockists.Stockist;
 namespace Mandarin.Client.Services.Stockists
 {
     /// <inheritdoc />
-    internal sealed class MandarinStockistGrpcService : IStockistService
+    internal sealed class MandarinGrpcStockistService : IStockistService
     {
         private readonly StockistsClient stockistsClient;
         private readonly IMapper mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MandarinStockistGrpcService"/> class.
+        /// Initializes a new instance of the <see cref="MandarinGrpcStockistService"/> class.
         /// </summary>
         /// <param name="stockistsClient">The gRPC client to Mandarin API for Stockists.</param>
         /// <param name="mapper">The mapper to translate between different object types.</param>
-        public MandarinStockistGrpcService(StockistsClient stockistsClient, IMapper mapper)
+        public MandarinGrpcStockistService(StockistsClient stockistsClient, IMapper mapper)
         {
             this.stockistsClient = stockistsClient;
             this.mapper = mapper;

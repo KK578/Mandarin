@@ -8,7 +8,9 @@ using Hangfire.States;
 using Mandarin.Api.Transactions;
 using Mandarin.Grpc;
 using Mandarin.Grpc.Converters;
+using Mandarin.Transactions;
 using Mandarin.Transactions.External;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NodaTime;
 using NodaTime.Serialization.Protobuf;
@@ -23,12 +25,13 @@ namespace Mandarin.Tests.Grpc
 
         private readonly IMapper mapper;
         private readonly Mock<IBackgroundJobClient> backgroundJobClient = new();
+        private readonly Mock<ITransactionSummaryRepository> transactionSummaryRepository = new();
         private readonly TransactionsGrpcService subject;
 
         protected TransactionsGrpcServiceTests()
         {
-            this.mapper = new MapperConfiguration(c => c.AddProfile<MandarinGrpcMapperProfile>()).CreateMapper();
-            this.subject = new TransactionsGrpcService(this.mapper, this.backgroundJobClient.Object);
+            this.mapper = new MapperConfiguration(c => c.AddProfile<MandarinGrpcMapperProfile>(), NullLoggerFactory.Instance).CreateMapper();
+            this.subject = new TransactionsGrpcService(this.mapper, this.backgroundJobClient.Object, this.transactionSummaryRepository.Object);
         }
 
         private Task<Job> GivenHangfireCapturesJob()

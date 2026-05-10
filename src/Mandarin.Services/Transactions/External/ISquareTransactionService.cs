@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NodaTime;
-using Square.Models;
+using Square;
 
 namespace Mandarin.Services.Transactions.External
 {
@@ -12,7 +12,7 @@ namespace Mandarin.Services.Transactions.External
     internal interface ISquareTransactionService
     {
         /// <summary>
-        /// Gets a list of all known <see cref="Square.Models.Order"/>.
+        /// Gets a list of all known <see cref="Square.Order"/>.
         /// </summary>
         /// <param name="start">The start datetime to query transactions for.</param>
         /// <param name="end">The end datetime to query transactions for.</param>

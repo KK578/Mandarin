@@ -59,9 +59,9 @@
       <CardTitle>Sales for @(SelectedRecordOfSales.Name)</CardTitle>
     </CardHeader>
     <CardBody>
-      <CardText Alignment="TextAlignment.Start">Subtotal: @($"{SelectedRecordOfSales.Subtotal:C}")</CardText>
-      <CardText Alignment="TextAlignment.Start">Commission: @($"{SelectedRecordOfSales.CommissionTotal:C}") (@($"{SelectedRecordOfSales.Rate:P}"))</CardText>
-      <CardText Alignment="TextAlignment.Start">Total: @($"{SelectedRecordOfSales.Total:C}")</CardText>
+      <CardText TextAlignment="TextAlignment.Start">Subtotal: @($"{SelectedRecordOfSales.Subtotal:C}")</CardText>
+      <CardText TextAlignment="TextAlignment.Start">Commission: @($"{SelectedRecordOfSales.CommissionTotal:C}") (@($"{SelectedRecordOfSales.Rate:P}"))</CardText>
+      <CardText TextAlignment="TextAlignment.Start">Total: @($"{SelectedRecordOfSales.Total:C}")</CardText>
 
       @if (SelectedRecordOfSales.Sales?.Count > 0)
       {
@@ -84,7 +84,7 @@
 
       <Field>
         <FieldLabel>Email Address:</FieldLabel>
-        <TextEdit Placeholder="@SelectedRecordOfSales.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.EmailAddress" />
+        <TextInput Placeholder="@SelectedRecordOfSales.EmailAddress" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.EmailAddress" />
       </Field>
 
       <Field>
@@ -100,7 +100,7 @@
             </DropdownMenu>
           </Dropdown>
         </FieldLabel>
-        <MemoEdit Placeholder="Custom Message" Rows="10" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.CustomMessage" />
+        <MemoInput Placeholder="Custom Message" Rows="10" Disabled="@(RecordOfSalesModel.SendInProgress || RecordOfSalesModel.SendSuccessful)" @bind-Text="@RecordOfSalesModel.CustomMessage" />
       </Field>
 
       <Alert Visible="@(!string.IsNullOrEmpty(RecordOfSalesModel.StatusMessage))" Color="Color.Secondary">@(RecordOfSalesModel.StatusMessage)</Alert>

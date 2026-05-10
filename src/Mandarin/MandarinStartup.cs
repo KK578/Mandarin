@@ -1,10 +1,10 @@
-using Elastic.Apm.NetCoreAll;
 using Mandarin.Database;
 using Mandarin.Extensions;
 using Mandarin.Grpc;
 using Mandarin.Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,6 +65,7 @@ namespace Mandarin
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
+                app.UseHttpsRedirection();
             }
             else
             {
@@ -72,7 +73,10 @@ namespace Mandarin
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
+            });
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
@@ -85,7 +89,6 @@ namespace Mandarin
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseAllElasticApm(this.configuration);
             app.UseSerilogRequestLogging();
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });

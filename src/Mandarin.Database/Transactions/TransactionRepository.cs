@@ -132,7 +132,6 @@ namespace Mandarin.Database.Transactions
         protected override async Task<TransactionRecord> UpsertRecordAsync(IDbConnection db, TransactionRecord value)
         {
             db.Open();
-            (db as NpgsqlConnection)?.TypeMapper.MapComposite<SubtransactionRecord>("billing.tvp_subtransaction");
             await db.ExecuteAsync(TransactionRepository.UpsertTransactionSql, value);
             return value;
         }

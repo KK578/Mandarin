@@ -9,7 +9,7 @@ using ReactiveUI;
 
 namespace Mandarin.Client.Tests.Helpers
 {
-    public abstract class MandarinTestContext<TView, TViewModel> : TestContext
+    public abstract class MandarinTestContext<TView, TViewModel> : BunitContext
         where TView : IComponent
         where TViewModel : class, IReactiveObject
     {
@@ -21,7 +21,7 @@ namespace Mandarin.Client.Tests.Helpers
 
         protected Mock<TViewModel> ViewModel { get; } = new();
 
-        protected IRenderedComponent<TView> Subject => this.RenderComponent<TView>();
+        protected IRenderedComponent<TView> Subject => this.Render<TView>();
 
         private void SetupBlazorise()
         {

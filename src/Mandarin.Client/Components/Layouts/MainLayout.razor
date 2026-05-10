@@ -1,7 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject NavigationManager navigation
-@inject SignOutSessionStateManager signOutManager
 
 <Layout Sider="true">
   <LayoutSider>
@@ -44,6 +43,7 @@
                 <BarDropdownToggle><BarIcon IconName="IconName.DollarSign" />Payments</BarDropdownToggle>
                 <BarDropdownMenu>
                   <BarDropdownItem To="/transactions/record-of-sales">Records of Sales</BarDropdownItem>
+                  @* <BarDropdownItem To="/transactions/summaries">Transaction Summaries</BarDropdownItem> *@
                 </BarDropdownMenu>
               </BarDropdown>
             </BarItem>
@@ -87,10 +87,9 @@
     navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(navigation.Uri)}");
   }
 
-  private async Task OnLogOut()
+  private void OnLogOut()
   {
-    await signOutManager.SetSignOutState();
-    navigation.NavigateTo("authentication/logout");
+    navigation.NavigateToLogout("authentication/logout");
   }
 
 }

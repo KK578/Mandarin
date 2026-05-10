@@ -25,22 +25,30 @@ jobs:
 
     steps:
       - name: "[Setup] Checkout Repository"
-        uses: actions/checkout@v1
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: "[Setup] Ensure 'master' branch exists"
         run: |
           git fetch --tags
           git branch --create-reflog master origin/master
-
-      - name: "[Setup] Create GitVersion"
-        uses: docker://gittools/gitversion:5.6.1-alpine.3.12-x64-3.1
+          
+      - name: "[Setup] Install GitVersion"
+        uses: gittools/actions/gitversion/setup@v4.5.0
         with:
-          args: /github/workspace /nofetch /output buildserver
+          versionSpec: '6.7.x'
+
+      - name: "[Setup] Determine GitVersion"
+        id: version_step # step id used as a reference for output values
+        uses: gittools/actions/gitversion/execute@v4.5.0
+        with:
+          updateProjectFiles: true
 
       - name: "[Setup] Install .NET Core"
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 6.0.100
+          dotnet-version: 10.0.203
 
       - name: "[Build] NuGet Restore"
         run: dotnet restore
@@ -50,11 +58,6 @@ jobs:
           dotnet build \
             --no-restore \
             --configuration Release \
-            /p:VersionPrefix=$GitVersion_MajorMinorPatch \
-            /p:VersionSuffix=$GitVersion_PreReleaseLabel \
-            /p:AssemblyVersion=$GitVersion_AssemblySemVer \
-            /p:FileVersion=$GitVersion_AssemblySemFileVer \
-            /p:InformationalVersion=$GitVersion_InformationalVersion \
             /p:RepositoryBranch=${GITHUB_REF#refs/heads/} \
             /p:RepositoryCommit=$GITHUB_SHA
 
@@ -85,23 +88,18 @@ jobs:
             --configuration Release \
             --runtime linux-x64 \
             --self-contained true \
-            /p:VersionPrefix=$GitVersion_MajorMinorPatch \
-            /p:VersionSuffix=$GitVersion_PreReleaseLabel \
-            /p:AssemblyVersion=$GitVersion_AssemblySemVer \
-            /p:FileVersion=$GitVersion_AssemblySemFileVer \
-            /p:InformationalVersion=$GitVersion_InformationalVersion \
             /p:RepositoryBranch=${GITHUB_REF#refs/heads/} \
             /p:RepositoryCommit=$GITHUB_SHA
           echo $GitVersion_NuGetVersionV2 > publish/Version.txt
 
-      - name: "[Deploy] Create Octopus BuildInformation.json"
-        if: github.event_name == 'release'
-        uses: xo-energy/action-octopus-build-information@v1.1.0
-        with:
-          octopus_api_key: ${{ secrets.OCTOPUS_TOKEN }}
-          octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
-          octopus_project: Mandarin
-          output_path: publish
+#      - name: "[Deploy] Create Octopus BuildInformation.json"
+#        if: github.event_name == 'release'
+#        uses: xo-energy/action-octopus-build-information@v1.1.0
+#        with:
+#          octopus_api_key: ${{ secrets.OCTOPUS_TOKEN }}
+#          octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
+#          octopus_project: Mandarin
+#          output_path: publish
 
       - name: "[Deploy] Upload build artifact"
         if: github.event_name == 'release'
@@ -118,30 +116,30 @@ jobs:
           path-to-lcov: "./tests/reports/lcov.info"
 
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'release'
-    steps:
-      - name: "[Artifacts] Download build artifact"
-        uses: actions/download-artifact@v1
-        with:
-          name: Mandarin.Build
-
-      - name: "[Deploy] Set Version Environment Variable"
-        run: echo "GitVersion_NuGetVersionV2=$(cat Mandarin.Build/Version.txt)" >> $GITHUB_ENV
-
-      - name: "[Metadata] octo build-information"
-        uses: docker://octopusdeploy/octo:7.4.3275
-        with:
-          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/buildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
-
-      - name: "[Deploy] octo pack"
-        uses: docker://octopusdeploy/octo:7.4.3275
-        with:
-          args: pack --id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --format zip --basePath Mandarin.Build
-
-      - name: "[Deploy] octo push"
-        uses: docker://octopusdeploy/octo:7.4.3275
-        with:
-          args: push --package Mandarin.${{ env.GitVersion_NuGetVersionV2 }}.zip --replace-existing --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+#  deploy:
+#    runs-on: ubuntu-latest
+#    needs: build
+#    if: github.event_name == 'release'
+#    steps:
+#      - name: "[Artifacts] Download build artifact"
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: Mandarin.Build
+#
+#      - name: "[Deploy] Set Version Environment Variable"
+#        run: echo "GitVersion_NuGetVersionV2=$(cat Mandarin.Build/Version.txt)" >> $GITHUB_ENV
+#
+#      - name: "[Metadata] octo build-information"
+#        uses: docker://octopusdeploy/octo:7.4.3275
+#        with:
+#          args: build-information --package-id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --file Mandarin.Build/buildInformation.json --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}
+#
+#      - name: "[Deploy] octo pack"
+#        uses: docker://octopusdeploy/octo:7.4.3275
+#        with:
+#          args: pack --id Mandarin --version ${{ env.GitVersion_NuGetVersionV2 }} --format zip --basePath Mandarin.Build
+#
+#      - name: "[Deploy] octo push"
+#        uses: docker://octopusdeploy/octo:7.4.3275
+#        with:
+#          args: push --package Mandarin.${{ env.GitVersion_NuGetVersionV2 }}.zip --replace-existing --server ${{ secrets.OCTOPUS_SERVER_URL }} --apiKey ${{ secrets.OCTOPUS_TOKEN }}

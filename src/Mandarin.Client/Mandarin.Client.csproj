@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
 
@@ -10,20 +10,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="Bashi.Core" Version="4.0.0" />
-    <PackageReference Include="Blazorise" Version="0.9.5.5" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="0.9.5.5" />
-    <PackageReference Include="Blazorise.Components" Version="0.9.5.5" />
-    <PackageReference Include="Blazorise.DataGrid" Version="0.9.5.5" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.5.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageReference Include="ReactiveUI.Blazor" Version="18.3.1" />
+    <PackageReference Include="Blazorise" Version="2.0.3" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="2.0.3" />
+    <PackageReference Include="Blazorise.Components" Version="2.0.3" />
+    <PackageReference Include="Blazorise.DataGrid" Version="2.0.3" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.5" />
+    <PackageReference Include="ReactiveUI.Blazor" Version="23.1.8" />
   </ItemGroup>
 
   <ItemGroup>

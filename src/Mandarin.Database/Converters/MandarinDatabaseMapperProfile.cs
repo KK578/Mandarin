@@ -59,6 +59,7 @@ namespace Mandarin.Database.Converters
             this.CreateMap<SubtransactionRecord, Subtransaction>()
                 .ReverseMap()
                 .ForMember(x => x.product_id, o => o.MapFrom(src => src.Product.ProductId));
+            this.CreateMap<TransactionSummaryRecord, TransactionSummary>().ReverseMap();
         }
     }
 }

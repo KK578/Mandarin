@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Components.Web;
 using ReactiveUI;
 
 namespace Mandarin.Client.Components.Reactive
@@ -30,7 +30,7 @@ namespace Mandarin.Client.Components.Reactive
         {
             base.OnInitialized();
 
-            this.Clicked = EventCallback.Factory.Create(this, () => this.ReactiveCommand.Execute().ToTask());
+            this.Clicked = EventCallback.Factory.Create<MouseEventArgs>(this, () => this.ReactiveCommand.Execute().ToTask());
             this.ReactiveCommand.CanExecute
                 .CombineLatest(this.ReactiveCommand.IsExecuting, (canExecute, isExecuting) => isExecuting || !canExecute)
                 .Subscribe(isDisabled =>

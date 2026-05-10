@@ -8,8 +8,9 @@ using Mandarin.Services.Transactions.External;
 using Mandarin.Tests.Data;
 using Moq;
 using NodaTime;
-using Square.Models;
+using Square;
 using Xunit;
+using Product = Mandarin.Inventory.Product;
 
 namespace Mandarin.Services.Tests.Transactions.External
 {
@@ -47,75 +48,102 @@ namespace Mandarin.Services.Tests.Transactions.External
         {
             var lineItems = new List<OrderLineItem>
             {
-                new("2",
-                    catalogObjectId: product.ProductId.Value,
-                    name: product.ProductName.Value,
-                    basePriceMoney: new Money(500, "GBP"),
-                    totalMoney: new Money(1000, "GBP")),
+                new()
+                {
+                    CatalogObjectId = product.ProductId.Value,
+                    Name = product.ProductName.Value,
+                    BasePriceMoney = new Money { Amount = 500, Currency = Currency.Gbp },
+                    TotalMoney = new Money { Amount = 1000, Currency = Currency.Gbp },
+                    Quantity = "2",
+                },
             };
-            return new Order("Location",
-                             MandarinFixture.Instance.NewString,
-                             lineItems: lineItems,
-                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(1000, "GBP")),
-                             createdAt: SquareTransactionMapperTests.OrderDateString);
+
+            return new Order
+            {
+                Id = MandarinFixture.Instance.NewString,
+                LocationId = "Location",
+                LineItems = lineItems,
+                NetAmounts = new OrderMoneyAmounts { TotalMoney = new Money { Amount = 1000, Currency = Currency.Gbp } },
+                CreatedAt = SquareTransactionMapperTests.OrderDateString,
+            };
         }
 
         private Order GivenOrderProductWithDiscount(Product product)
         {
             var lineItems = new List<OrderLineItem>
             {
-                new("2",
-                    catalogObjectId: product.ProductId.Value,
-                    name: product.ProductName.Value,
-                    basePriceMoney: new Money(5000, "GBP"),
-                    totalMoney: new Money(10000, "GBP")),
+                new()
+                {
+                    CatalogObjectId = product.ProductId.Value,
+                    Name = product.ProductName.Value,
+                    BasePriceMoney = new Money { Amount = 5000, Currency = Currency.Gbp },
+                    TotalMoney = new Money { Amount = 10000, Currency = Currency.Gbp },
+                    Quantity = "2",
+                },
             };
             var discounts = new List<OrderLineItemDiscount>
             {
-                new(catalogObjectId: product.ProductId.Value,
-                    name: product.ProductName.Value,
-                    amountMoney: new Money(2000, "GBP"),
-                    appliedMoney: new Money(2000, "GBP")),
+                new()
+                {
+                    CatalogObjectId = product.ProductId.Value,
+                    Name = product.ProductName.Value,
+                    AmountMoney = new Money { Amount = 2000, Currency = Currency.Gbp },
+                    AppliedMoney = new Money { Amount = 2000, Currency = Currency.Gbp },
+                },
             };
-            return new Order("Location",
-                             MandarinFixture.Instance.NewString,
-                             lineItems: lineItems,
-                             discounts: discounts,
-                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(8000, "GBP")),
-                             createdAt: SquareTransactionMapperTests.OrderDateString);
+            return new Order
+            {
+                Id = MandarinFixture.Instance.NewString,
+                LocationId = "Location",
+                LineItems = lineItems,
+                Discounts = discounts,
+                NetAmounts = new OrderMoneyAmounts { TotalMoney = new Money { Amount = 8000, Currency = Currency.Gbp } },
+                CreatedAt = SquareTransactionMapperTests.OrderDateString,
+            };
         }
 
         private Order GivenOrderProductAsReturn(Product product)
         {
             var returns = new List<OrderReturnLineItem>
             {
-                new("3",
-                    catalogObjectId: product.ProductId.Value,
-                    name: product.ProductName.Value,
-                    basePriceMoney: new Money(500, "GBP"),
-                    totalMoney: new Money(1500, "GBP")),
+                new()
+                {
+                    CatalogObjectId = product.ProductId.Value,
+                    Name = product.ProductName.Value,
+                    BasePriceMoney = new Money { Amount = 500, Currency = Currency.Gbp },
+                    TotalMoney = new Money { Amount = 1500, Currency = Currency.Gbp },
+                    Quantity = "3",
+                },
             };
-            return new Order("Location",
-                             MandarinFixture.Instance.NewString,
-                             returns: new List<OrderReturn> { new(returnLineItems: returns) },
-                             netAmounts: new OrderMoneyAmounts(new Money(-1500, "GBP")),
-                             createdAt: SquareTransactionMapperTests.OrderDateString);
+            return new Order
+            {
+                Id = MandarinFixture.Instance.NewString,
+                LocationId = "Location",
+                Returns = new List<OrderReturn> { new() { ReturnLineItems = returns } },
+                NetAmounts = new OrderMoneyAmounts { TotalMoney = new Money { Amount = -1500, Currency = Currency.Gbp } },
+                CreatedAt = SquareTransactionMapperTests.OrderDateString,
+            };
         }
 
         private Order GivenOrderServiceChargeReturn()
         {
             var returns = new List<OrderReturnServiceCharge>
             {
-                new("4",
-                    name: "Shipping",
-                    totalMoney: new Money(500, "GBP")),
+                new()
+                {
+                    Name = "Shipping",
+                    TotalMoney = new Money { Amount = 500, Currency = Currency.Gbp },
+                },
             };
 
-            return new Order("Location",
-                             MandarinFixture.Instance.NewString,
-                             returns: new List<OrderReturn> { new(returnServiceCharges: returns) },
-                             netAmounts: new OrderMoneyAmounts(totalMoney: new Money(-500, "GBP")),
-                             createdAt: SquareTransactionMapperTests.OrderDateString);
+            return new Order
+            {
+                Id = MandarinFixture.Instance.NewString,
+                LocationId = "Location",
+                Returns = new List<OrderReturn> { new() { ReturnServiceCharges = returns } },
+                NetAmounts = new OrderMoneyAmounts { TotalMoney = new Money { Amount = -500, Currency = Currency.Gbp } },
+                CreatedAt = SquareTransactionMapperTests.OrderDateString,
+            };
         }
 
         public class MapToTransactionTests : SquareTransactionMapperTests
@@ -217,27 +245,33 @@ namespace Mandarin.Services.Tests.Transactions.External
             public async Task ShouldIncludeDeliveryFeesAsAnItem()
             {
                 this.GivenInventoryServiceSetUpWithProduct(WellKnownTestData.Products.TheTrickster);
-                var order = new Order.Builder("Location")
-                            .LineItems(new List<OrderLineItem>
-                            {
-                                new OrderLineItem.Builder("1")
-                                    .CatalogObjectId("CatalogId")
-                                    .Name("[HC20W-003] The Trickster")
-                                    .BasePriceMoney(new Money(1100, "GBP"))
-                                    .TotalMoney(new Money(1100, "GBP"))
-                                    .Build(),
-                            })
-                            .ServiceCharges(new List<OrderServiceCharge>
-                            {
-                                new OrderServiceCharge.Builder()
-                                    .Name("Shipping")
-                                    .AmountMoney(new Money(500, "GBP"))
-                                    .TotalMoney(new Money(500, "GBP"))
-                                    .Build(),
-                            })
-                            .CreatedAt(SquareTransactionMapperTests.OrderDateString)
-                            .NetAmounts(new OrderMoneyAmounts.Builder().TotalMoney(new Money(1600, "GBP")).Build())
-                            .Build();
+                var order = new Order()
+                {
+                    LocationId = "Location",
+                    LineItems = new List<OrderLineItem>
+                    {
+                        new()
+                        {
+                            Uid = "1",
+                            CatalogObjectId = "CatalogId",
+                            Name = "[HC20W-003] The Trickster",
+                            BasePriceMoney = new Money { Amount = 1100, Currency = Currency.Gbp },
+                            TotalMoney = new Money { Amount = 1100, Currency = Currency.Gbp },
+                            Quantity = "1",
+                        },
+                    },
+                    ServiceCharges = new List<OrderServiceCharge>
+                    {
+                        new()
+                        {
+                            Name = "Shipping",
+                            AmountMoney = new Money { Amount = 500, Currency = Currency.Gbp },
+                            TotalMoney = new Money { Amount = 500, Currency = Currency.Gbp },
+                        },
+                    },
+                    NetAmounts = new OrderMoneyAmounts { TotalMoney = new Money { Amount = 1600, Currency = Currency.Gbp } },
+                    CreatedAt = SquareTransactionMapperTests.OrderDateString,
+                };
 
                 var transactions = await this.Subject.MapToTransaction(order).ToList().ToTask();
                 transactions.Should().HaveCount(1);

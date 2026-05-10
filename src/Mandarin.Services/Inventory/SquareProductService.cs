@@ -10,7 +10,8 @@ using Mandarin.Inventory;
 using NodaTime.Text;
 using Serilog;
 using Square;
-using Square.Models;
+using Square.Catalog;
+using Product = Mandarin.Inventory.Product;
 
 namespace Mandarin.Services.Inventory
 {
@@ -46,18 +47,22 @@ namespace Mandarin.Services.Inventory
 
             async Task ListFullCatalog(IObserver<CatalogObject> o, CancellationToken ct)
             {
-                var requestBuilder = new SearchCatalogObjectsRequest.Builder()
-                                     .ObjectTypes(new List<string> { "ITEM", "ITEM_VARIATION" })
-                                     .IncludeDeletedObjects(true);
+                var request = new SearchCatalogObjectsRequest
+                {
+                    ObjectTypes = [CatalogObjectType.Item, CatalogObjectType.ItemVariation],
+                    IncludeDeletedObjects = true,
+                };
+
                 SearchCatalogObjectsResponse response;
                 do
                 {
-                    response = await this.squareClient.CatalogApi.SearchCatalogObjectsAsync(requestBuilder.Build(), ct);
+                    response = await this.squareClient.Catalog.SearchAsync(request, cancellationToken: ct);
                     ct.ThrowIfCancellationRequested();
-                    requestBuilder = requestBuilder.Cursor(response.Cursor);
-                    SquareProductService.Log.Debug("Loading Square Inventory - Got {Count} Items", response.Objects.Count);
+                    request = request with { Cursor = response.Cursor };
+                    var products = response.Objects?.ToList() ?? [];
+                    SquareProductService.Log.Debug("Loading Square Inventory - Got {Count} Items", products.Count);
 
-                    foreach (var item in response.Objects)
+                    foreach (var item in products)
                     {
                         o.OnNext(item);
                     }
@@ -70,22 +75,22 @@ namespace Mandarin.Services.Inventory
 
         private static IEnumerable<CatalogItem> MergeCatalogItems(IList<CatalogObject> catalog)
         {
-            var variations = catalog.Where(x => x.Type == "ITEM_VARIATION").ToList();
-            var items = catalog.Where(x => x.Type == "ITEM").ToList();
+            var variations = catalog.Where(x => x.IsItemVariation).ToList();
+            var items = catalog.Where(x => x.IsItem).Select(x => x.AsItem()).ToList();
 
             foreach (var item in items)
             {
-                var itemVariations = variations.Where(x => x.ItemVariationData.ItemId == item.Id).ToList();
+                var itemVariations = variations.Where(x => x.AsItemVariation().ItemVariationData!.ItemId == item.Id).ToList();
                 if (itemVariations.Count > 0)
                 {
-                    yield return item.ItemData.ToBuilder().Variations(itemVariations).Build();
+                    yield return item.ItemData! with { Variations = itemVariations };
                 }
             }
         }
 
         private static IEnumerable<Product> MapToProduct(CatalogItem catalogItem)
         {
-            if (catalogItem == null)
+            if (catalogItem == null || catalogItem.Variations is null)
             {
                 yield break;
             }
@@ -93,9 +98,10 @@ namespace Mandarin.Services.Inventory
             var productName = SquareProductService.GetProductName(catalogItem.Name);
             var description = catalogItem.Description;
 
-            foreach (var variation in catalogItem.Variations)
+            foreach (var variationItem in catalogItem.Variations)
             {
-                if (variation.ItemVariationData.Sku == null)
+                var variation = variationItem.AsItemVariation();
+                if (variation.ItemVariationData!.Sku == null)
                 {
                     continue;
                 }
