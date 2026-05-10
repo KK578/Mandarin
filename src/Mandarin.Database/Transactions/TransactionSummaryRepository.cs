@@ -39,7 +39,8 @@ namespace Mandarin.Database.Transactions
         {
             return this.GetAll(async db =>
             {
-                var parameters = new { start_date = interval.Start, end_Date = interval.End };
+                // NOTE: Summaries include all entries in the given interval (inclusive of the boundaries).
+                var parameters = new { start_date = interval.Start, end_Date = interval.End.PlusDays(1) };
                 var transactionSummaries = await db.QueryAsync<TransactionSummaryRecord>(TransactionSummaryRepository.GetTransactionSummariesSql, parameters);
 
                 return transactionSummaries;

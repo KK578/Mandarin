@@ -40,8 +40,8 @@
 {
 
   private YearMonth SelectedYearMonth { get; set; }
-  private LocalDate StartDate => SelectedYearMonth.OnDayOfMonth(1).Minus(Period.FromDays(15));
-  private LocalDate EndDate => SelectedYearMonth.OnDayOfMonth(1).PlusMonths(1).Minus(Period.FromDays(15));
+  private LocalDate StartDate => SelectedYearMonth.ToDateInterval().Start;
+  private LocalDate EndDate => SelectedYearMonth.ToDateInterval().End;
   private bool IsLoading { get; set; } = false;
 
   private DateInterval LoadedDateInterval { get; set; }
@@ -59,7 +59,7 @@
     {
       IsLoading = true;
 
-      var dateInterval = new DateInterval(StartDate, EndDate);
+      var dateInterval = SelectedYearMonth.ToDateInterval();
       var transactionSummaries = await TransactionSummaryRepository.GetTransactionSummariesAsync(dateInterval);
       LoadedDateInterval = dateInterval;
       ViewModels = transactionSummaries.Select(CreateViewModel).ToList();
