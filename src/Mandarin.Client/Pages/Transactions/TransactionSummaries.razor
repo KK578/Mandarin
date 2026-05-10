@@ -1,0 +1,78 @@
+﻿@page "/transactions/summaries"
+@using Mandarin.Client.ViewModels.Transactions
+@using Mandarin.Transactions
+@using NodaTime
+@inject ITransactionSummaryRepository TransactionSummaryRepository;
+@inject IClock Clock;
+
+<Card Margin="Margin.Is2.FromBottom">
+  <CardHeader>
+    <CardTitle>Transaction Summary - Select Period</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <YearMonthEdit @bind-YearMonth="@SelectedYearMonth" />
+    <Alert Color="Color.Info" Visible="true">
+      <Text>This will include transactions from <i>@(StartDate)</i> to <i>@(EndDate)</i>.</Text>
+    </Alert>
+    <CardActions>
+      <Button Color="Color.Primary" Clicked="@FetchTransactionsAsync" Disabled="@IsLoading">Fetch</Button>
+    </CardActions>
+  </CardBody>
+</Card>
+
+@if (ViewModels != null)
+{
+  <Card Margin="Margin.Is2.FromBottom">
+    <CardHeader>
+      <CardTitle>Transaction Summary @LoadedDateInterval</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <DataGrid Data="@ViewModels" Filterable="true" Striped="true" Responsive="true">
+        <DataGridColumn TItem="ITransactionSummaryViewModel" Field="Date" Caption="Date" />
+        <DataGridColumn TItem="ITransactionSummaryViewModel" Field="Revenue" Caption="Revenue" DisplayFormat="{0:C}" />
+        <DataGridColumn TItem="ITransactionSummaryViewModel" Field="Refund" Caption="Refunds" DisplayFormat="{0:C}" />
+      </DataGrid>
+    </CardBody>
+  </Card>
+}
+
+@code
+{
+
+  private YearMonth SelectedYearMonth { get; set; }
+  private LocalDate StartDate => SelectedYearMonth.OnDayOfMonth(1).Minus(Period.FromDays(15));
+  private LocalDate EndDate => SelectedYearMonth.OnDayOfMonth(1).PlusMonths(1).Minus(Period.FromDays(15));
+  private bool IsLoading { get; set; } = false;
+
+  private DateInterval LoadedDateInterval { get; set; }
+  private IList<ITransactionSummaryViewModel> ViewModels { get; set; }
+
+  /// <inheritdoc />
+  protected override void OnInitialized()
+  {
+    SelectedYearMonth = Clock.GetCurrentInstant().InUtc().Date.Minus(Period.FromMonths(1)).ToYearMonth();
+  }
+
+  private async Task FetchTransactionsAsync()
+  {
+    try
+    {
+      IsLoading = true;
+
+      var dateInterval = new DateInterval(StartDate, EndDate);
+      var transactionSummaries = await TransactionSummaryRepository.GetTransactionSummariesAsync(dateInterval);
+      LoadedDateInterval = dateInterval;
+      ViewModels = transactionSummaries.Select(CreateViewModel).ToList();
+    }
+    finally
+    {
+      IsLoading = false;
+      StateHasChanged();
+    }
+
+    static ITransactionSummaryViewModel CreateViewModel(TransactionSummary record)
+    {
+      return new TransactionSummaryViewModel(record);
+    }
+  }
+}

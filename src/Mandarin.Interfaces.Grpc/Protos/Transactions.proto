@@ -10,6 +10,7 @@ package uk.co.thelittlemandarin;
 // The product service definition.
 service Transactions {
   rpc SynchronizeTransactions (SynchronizeTransactionsRequest) returns (SynchronizeTransactionsResponse);
+  rpc GetTransactionSummaries (GetTransactionSummariesRequest) returns (GetTransactionSummariesResponse);
 }
 
 message SynchronizeTransactionsRequest {
@@ -18,4 +19,19 @@ message SynchronizeTransactionsRequest {
 }
 
 message SynchronizeTransactionsResponse {
+}
+
+message TransactionSummary {
+  google.type.Date date = 1;
+  double revenue = 2;
+  double refund = 3;
+}
+
+message GetTransactionSummariesRequest {
+  google.type.Date start = 1;
+  google.type.Date end = 2;
+}
+
+message GetTransactionSummariesResponse {
+  repeated TransactionSummary summaries = 1;
 }

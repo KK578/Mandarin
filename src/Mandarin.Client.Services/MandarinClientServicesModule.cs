@@ -15,6 +15,7 @@ using Mandarin.Commissions;
 using Mandarin.Emails;
 using Mandarin.Inventory;
 using Mandarin.Stockists;
+using Mandarin.Transactions;
 using Mandarin.Transactions.External;
 using Microsoft.Extensions.Http;
 using static Mandarin.Api.Commissions.Commissions;
@@ -67,7 +68,8 @@ namespace Mandarin.Client.Services
             builder.RegisterType<MandarinGrpcProductRepository>().As<IProductRepository>().InstancePerDependency();
             builder.RegisterType<MandarinGrpcProductSynchronizer>().As<IProductSynchronizer>().InstancePerDependency();
             builder.RegisterType<MandarinGrpcRecordOfSalesRepository>().As<IRecordOfSalesRepository>().InstancePerDependency();
-            builder.RegisterType<MandarinStockistGrpcService>().As<IStockistService>().InstancePerDependency();
+            builder.RegisterType<MandarinGrpcStockistService>().As<IStockistService>().InstancePerDependency();
+            builder.RegisterType<MandarinGrpcTransactionSummaryRepository>().As<ITransactionSummaryRepository>().InstancePerDependency();
             builder.RegisterType<MandarinGrpcTransactionSynchronizer>().As<ITransactionSynchronizer>().InstancePerDependency();
         }
 

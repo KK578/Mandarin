@@ -24,6 +24,7 @@ namespace Mandarin.Grpc.Converters
             this.CreateMap<Inventory.FramePrice, Api.Inventory.FramePrice>().ReverseMap();
             this.CreateMap<Stockists.Stockist, Api.Stockists.Stockist>().ReverseMap();
             this.CreateMap<Stockists.StockistDetail, Api.Stockists.StockistDetail>().ReverseMap();
+            this.CreateMap<Transactions.TransactionSummary, Api.Transactions.TransactionSummary>().ReverseMap();
 
             this.CreateMap<Instant, Timestamp>().ConstructUsing(instant => instant.ToTimestamp())
                 .ReverseMap().ConstructUsing(timestamp => timestamp.ToInstant());

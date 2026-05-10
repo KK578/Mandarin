@@ -32,7 +32,7 @@ namespace Mandarin.Database
         {
             base.Load(builder);
 
-            SqlMapper.AddTypeMap(typeof(Instant), DbType.DateTime2);
+            SqlMapper.AddTypeMap(typeof(Instant), DbType.DateTimeOffset);
             SqlMapper.AddTypeMap(typeof(LocalDate), DbType.Date);
             SqlMapper.AddTypeMap(typeof(LocalDateTime), DbType.DateTime);
             SqlMapper.AddTypeMap(typeof(LocalTime), DbType.Time);
@@ -53,6 +53,7 @@ namespace Mandarin.Database
             builder.RegisterType<RecordOfSalesRepository>().As<IRecordOfSalesRepository>().InstancePerDependency();
             builder.RegisterType<StockistRepository>().As<IStockistRepository>().InstancePerDependency();
             builder.RegisterType<TransactionRepository>().As<ITransactionRepository>().InstancePerDependency();
+            builder.RegisterType<TransactionSummaryRepository>().As<ITransactionSummaryRepository>().InstancePerDependency();
         }
 
         private static NpgsqlDataSource BuildNpgsqlDataSource(IComponentContext context)
