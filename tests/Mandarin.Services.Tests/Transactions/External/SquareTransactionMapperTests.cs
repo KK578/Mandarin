@@ -50,12 +50,11 @@ namespace Mandarin.Services.Tests.Transactions.External
             {
                 new()
                 {
-                    Uid = "2",
                     CatalogObjectId = product.ProductId.Value,
                     Name = product.ProductName.Value,
                     BasePriceMoney = new Money { Amount = 500, Currency = Currency.Gbp },
                     TotalMoney = new Money { Amount = 1000, Currency = Currency.Gbp },
-                    Quantity = "1",
+                    Quantity = "2",
                 },
             };
 
@@ -75,12 +74,11 @@ namespace Mandarin.Services.Tests.Transactions.External
             {
                 new()
                 {
-                    Uid = "2",
                     CatalogObjectId = product.ProductId.Value,
                     Name = product.ProductName.Value,
                     BasePriceMoney = new Money { Amount = 5000, Currency = Currency.Gbp },
                     TotalMoney = new Money { Amount = 10000, Currency = Currency.Gbp },
-                    Quantity = "1",
+                    Quantity = "2",
                 },
             };
             var discounts = new List<OrderLineItemDiscount>
@@ -110,12 +108,11 @@ namespace Mandarin.Services.Tests.Transactions.External
             {
                 new()
                 {
-                    Uid = "3",
                     CatalogObjectId = product.ProductId.Value,
                     Name = product.ProductName.Value,
                     BasePriceMoney = new Money { Amount = 500, Currency = Currency.Gbp },
                     TotalMoney = new Money { Amount = 1500, Currency = Currency.Gbp },
-                    Quantity = "1",
+                    Quantity = "3",
                 },
             };
             return new Order
@@ -134,7 +131,6 @@ namespace Mandarin.Services.Tests.Transactions.External
             {
                 new()
                 {
-                    Uid = "4",
                     Name = "Shipping",
                     TotalMoney = new Money { Amount = 500, Currency = Currency.Gbp },
                 },
